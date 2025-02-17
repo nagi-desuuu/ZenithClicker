@@ -38,6 +38,21 @@ function GAME:freshLockState()
     Cards[9].lock = true
 end
 
+local function task_startSpin()
+    for i = 1, #Cards do
+        local C = Cards[i]
+        if C.lock then
+            C.lock = false
+            C:shake()
+        else
+            C:spin()
+        end
+        if C.active then
+            C:setActive(true)
+        end
+        TASK.yieldT(.01)
+    end
+end
 function GAME:start()
     BGM.set(BgmSets.extra, 'volume', 1)
     SFX.play('zenith_start')
@@ -48,12 +63,8 @@ function GAME:start()
     self.floor = 1
     self.altitude = 0
 
-    for _, C in next, Cards do
-        C.lock = false
-        if C.active then
-            C:setActive(true)
-        end
-    end
+    TASK.removeTask_code(task_startSpin)
+    TASK.new(task_startSpin)
 end
 
 function GAME:finish()
@@ -78,12 +89,13 @@ function GAME:finish()
     if self.floor > DATA.maxFloor then
         DATA.maxFloor = self.floor
     end
+    -- TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
     GAME:freshLockState()
 end
 
 local function task_cancelAll(auto)
-    for i=1,#Cards do
-        local C=Cards[i]
+    for i = 1, #Cards do
+        local C = Cards[i]
         if C.active then
             C:setActive(auto)
             TASK.yieldT(.026)
@@ -93,7 +105,7 @@ end
 function GAME:cancelAll(auto)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(task_cancelAll)
-    TASK.new(task_cancelAll,auto)
+    TASK.new(task_cancelAll, auto)
 end
 
 return GAME
