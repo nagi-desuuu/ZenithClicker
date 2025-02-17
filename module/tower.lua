@@ -49,10 +49,8 @@ function scene.keyDown(key)
         GAME:cancelAll()
     elseif key == 'space' then
         if GAME.playing then
-            SFX.play('losestock')
             GAME:finish()
         else
-            SFX.play('menuconfirm')
             GAME:start()
         end
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
@@ -79,8 +77,7 @@ function scene.update(dt)
 end
 
 local origAuth = GC.newText(FONT.get(30), "All Arts & Sounds from TETR.IO, by osk team")
-local title = GC.newText(FONT.get(50), "QUICK PICK")
-local titleExp = GC.newText(FONT.get(50), "EXPERT QUICK PICK")
+local title = GC.newText(FONT.get(50), "EXPERT QUICK PICK")
 local slogan = GC.newText(FONT.get(30), "CROWD THE TOWER!")
 local sloganExp = GC.newText(FONT.get(30), "THRONG THE TOWER!")
 -- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
@@ -102,9 +99,10 @@ function scene.draw()
         GC.mDraw(GAME.modText, 800, 362, nil, k, k * 1.1)
 
         GC.replaceTransform(SCR.xOy_ul)
-        GC.draw(GAME.mod_EX > 0 and titleExp or title, 10, 0, nil, 1, 1.1)
+        GC.draw(title, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
         GC.replaceTransform(SCR.xOy_dl)
-        GC.draw(GAME.mod_EX > 0 and sloganExp or slogan, 6, 2, nil, 1, 1.26, 0, origAuth:getHeight())
+        GC.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        GC.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
 
         GC.replaceTransform(SCR.xOy_dr)
         GC.setColor(.26, .26, .26)
@@ -128,7 +126,6 @@ scene.widgetList = {
         pos = { .5, .5 }, y = -220, w = 800, h = 260, cornerR = 2,
         color = 'lF',
         sound_hover = 'menuhover',
-        sound_release = 'menuconfirm',
         fontSize = 100, text = "START",
         onClick = function()
             if GAME.playing then
@@ -154,8 +151,8 @@ scene.widgetList = {
         pos = { .5, .5 }, x = 500, y = -280, w = 160, h = 140, cornerR = 2,
         color = 'lF',
         fontSize = 80, text = "?", textColor = 'DR',
-        labelPos='leftBottom',
-        floatText = STRING.trimIndent[[
+        labelPos = 'leftBottom',
+        floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Feed required cards to send players to scales the tower.
             The higher the tower, more tricky players will come!
             There's no leaderboard, but how high can you reach?

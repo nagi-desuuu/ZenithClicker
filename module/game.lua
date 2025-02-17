@@ -1,6 +1,7 @@
 ---@class Game
 local GAME = {
     forfeitTimer = 0,
+    exTimer = 0,
     bg = { .1, 0, 0 },
 
     mod_EX = 0,
@@ -55,6 +56,8 @@ local function task_startSpin()
 end
 function GAME:start()
     BGM.set(BgmSets.extra, 'volume', 1)
+
+    SFX.play('menuconfirm')
     SFX.play('zenith_start')
 
     self.playing = true
@@ -72,6 +75,8 @@ function GAME:finish()
     local l = TABLE.copy(BgmSets.extra)
     BGM.set(TABLE.popRandom(l), 'volume', 1)
     BGM.set(TABLE.popRandom(l), 'volume', 1)
+
+    SFX.play('losestock')
 
     table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
     for _, C in next, Cards do
@@ -102,6 +107,7 @@ function GAME.task_cancelAll(auto)
         end
     end
 end
+
 function GAME:cancelAll(auto)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)

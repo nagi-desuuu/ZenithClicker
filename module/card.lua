@@ -45,7 +45,7 @@ function Card:setActive(auto)
         if GAME.mod_AS > 0 then
             if self.active then
                 if not auto then
-                    self.burn = GAME.mod_AS==1 and 2 + GAME.floor / 2 or 1e99
+                    self.burn = GAME.mod_AS == 1 and 2 + GAME.floor / 2 or 1e99
                 end
             else
                 if self.burn and not auto then
@@ -67,6 +67,7 @@ function Card:setActive(auto)
             BGM.set('expert', 'volume', self.active and 1 or 0)
             local s, e = TABLE.copy(GAME.bg), self.active and { .2, 0, 0 } or { .1, 0, 0 }
             TWEEN.new(function(t)
+                GAME.exTimer = self.active and t or (1 - t)
                 for i = 1, 3 do
                     GAME.bg[i] = MATH.lerp(s[i], e[i], t)
                 end
