@@ -76,6 +76,8 @@ function scene.update(dt)
     end
 end
 
+local shadeColor={.3, .15, 0}
+local textColor={.7, .5, .3}
 local origAuth = GC.newText(FONT.get(30), "All Arts & Sounds from TETR.IO, by osk team")
 local title = GC.newText(FONT.get(50), "EXPERT QUICK PICK")
 local slogan = GC.newText(FONT.get(30), "CROWD THE TOWER!")
@@ -97,6 +99,13 @@ function scene.draw()
         GC.setColor(.7, .5, .3)
         local k = math.min(.9, 760 / GAME.modText:getWidth())
         GC.mDraw(GAME.modText, 800, 362, nil, k, k * 1.1)
+
+        if FloatOnCard then
+            local C=Cards[FloatOnCard]
+            if C.lock then C=DeckData[0] end
+            FONT.set(60) GC.strokePrint('full',3,shadeColor,textColor,C.fullName,800,842,nil,'center')
+            FONT.set(30) GC.strokePrint('full',2,shadeColor,textColor,C.desc,    800,926,nil,'center')
+        end
 
         GC.replaceTransform(SCR.xOy_ul)
         GC.draw(title, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)

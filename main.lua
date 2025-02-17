@@ -41,15 +41,16 @@ BgmSets = {
 }
 
 DeckData = {
-    { initOrder = 0, nameOrder = 7, name = 'expert',     id = 'EX', lockover = 'lockover-9' },
-    { initOrder = 1, nameOrder = 3, name = 'nohold',     id = 'NH', lockfull = 'lockfull-2' },
-    { initOrder = 2, nameOrder = 1, name = 'messy',      id = 'MS', lockfull = 'lockfull-3' },
-    { initOrder = 3, nameOrder = 6, name = 'gravity',    id = 'GV', lockfull = 'lockfull-4' },
-    { initOrder = 4, nameOrder = 2, name = 'volatile',   id = 'VL', lockfull = 'lockfull-5' },
-    { initOrder = 5, nameOrder = 4, name = 'doublehole', id = 'DH', lockfull = 'lockfull-6' },
-    { initOrder = 6, nameOrder = 0, name = 'invisible',  id = 'IN', lockfull = 'lockfull-7' },
-    { initOrder = 7, nameOrder = 5, name = 'allspin',    id = 'AS', lockfull = 'lockfull-8' },
-    { initOrder = 8, nameOrder = 8, name = 'duo',        id = '2P', lockover = 'lockover-incompatible' },
+    { initOrder = 1, nameOrder = 8, id = 'EX', lockover = 'lockover-9',            name = 'expert',     fullName = "< EXPERT MODE >",         desc = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE" },
+    { initOrder = 2, nameOrder = 4, id = 'NH', lockfull = 'lockfull-2',            name = 'nohold',     fullName = "< NO HOLD >",             desc = "CANCELING IS DISABLED" },
+    { initOrder = 3, nameOrder = 2, id = 'MS', lockfull = 'lockfull-3',            name = 'messy',      fullName = "< MESSIER GARBAGE  >",    desc = "TAROTS WILL BE SHUFFLED BY FLOOR" },
+    { initOrder = 4, nameOrder = 7, id = 'GV', lockfull = 'lockfull-4',            name = 'gravity',    fullName = "< GRAVITY >",             desc = "AUTO CLICK AND COMMIT, TIMED BY FLOOR" },
+    { initOrder = 5, nameOrder = 3, id = 'VL', lockfull = 'lockfull-5',            name = 'volatile',   fullName = "< VOLATILE GARBAGE >",    desc = "LARGER GAPS BETWEEN TAROTS, BUT MUST CLICK TWICE" },
+    { initOrder = 6, nameOrder = 5, id = 'DH', lockfull = 'lockfull-6',            name = 'doublehole', fullName = "< DOUBLE HOLE GARBAGE >", desc = "COMBOS MAY SPAWN HARDER" },
+    { initOrder = 7, nameOrder = 1, id = 'IN', lockfull = 'lockfull-7',            name = 'invisible',  fullName = "< INVISIBLE >",           desc = "TAROTS FACE DOWN, AND HINTS FLASH ONCE EVERY TWO SECONDS" },
+    { initOrder = 8, nameOrder = 6, id = 'AS', lockfull = 'lockfull-8',            name = 'allspin',    fullName = "< ALL-SPIN >",            desc = "KEYBOARD IS AVAILABLE, BUT SELECTING THE SAME TAROT TWICE IS PENALIZED" },
+    { initOrder = 9, nameOrder = 9, id = '2P', lockover = 'lockover-incompatible', name = 'duo',        fullName = "< DUO >",                 desc = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST" },
+    [0] = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
 }
 local modName = {
     prio = {
@@ -124,7 +125,7 @@ Fatigue = {
     { time = 420, event = function() --[[TODO]] end, text = "YOUR BODY GROWS WEAK…" },
     { time = 480, event = function() --[[TODO]] end, text = "ALL SENSES BLUR TOGETHER…" },
     { time = 540, event = function() --[[TODO]] end, text = "YOUR CONSCIOUSNESS FADES…" },
-    { time = 600, event = function() --[[TODO]] end, text = "THIS IS THE END." },
+    { time = 600, event = function() --[[TODO]] end, text = "THIS IS THE END" },
     { time = 1e99 },
 }
 FatigueRevEx = {
@@ -134,7 +135,7 @@ FatigueRevEx = {
     { time = 480, event = function() --[[TODO]] end, text = "YOUR CLOSEST ALLIES DEFECT…" },
     { time = 540, event = function() --[[TODO]] end, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
     { time = 600, event = function() --[[TODO]] end, text = "THE REVOLUTION HAS BEGUN…" },
-    { time = 660, event = function() --[[TODO]] end, text = "THE END OF AN ERA." },
+    { time = 660, event = function() --[[TODO]] end, text = "THE END OF AN ERA" },
     { time = 1e99 },
 }
 
@@ -209,7 +210,7 @@ function GetComboName(list)
     return str .. modName.noun[list[#list]]
 end
 
-for _, d in next, DeckData do table.insert(Cards, require 'module/card'.new(d)) end
+for i = 1, #DeckData do table.insert(Cards, require 'module/card'.new(DeckData[i])) end
 RefreshLayout()
 for i, C in next, Cards do C.x, C.y = C.tx, C.ty + 260 + 26 * 1.6 ^ i end
 

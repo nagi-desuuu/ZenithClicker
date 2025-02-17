@@ -6,8 +6,11 @@ function Card.new(d)
     ---@class Card
     local obj = setmetatable({
         initOrder = d.initOrder,
-        name = d.name,
         id = d.id,
+        name = d.name,
+        fullName = d.fullName,
+        desc = d.desc,
+
         frontImg = GC.newImage('assets/' .. d.name .. '.png'),
         backImg = GC.newImage('assets/' .. d.name .. '-back.png'),
         lockfull = d.lockfull and GC.newImage('assets/' .. d.lockfull .. '.png'),
@@ -104,13 +107,13 @@ function Card:flip()
     local s, e = self.kx, self.front and 1 or -1
     TWEEN.new(function(t)
         self.kx = MATH.lerp(s, e, t)
-    end):setUnique('flip_' .. self.name):setEase('OutQuad'):setDuration(0.26):run()
+    end):setUnique('flip_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
 end
 
 function Card:shake()
     TWEEN.new(function(t)
         self.size = MATH.lerp(.56, .62, t)
-    end):setUnique('shake_' .. self.name):setEase('OutBack'):setDuration(0.26):run()
+    end):setUnique('shake_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
 end
 
 function Card:spin()
@@ -125,7 +128,7 @@ function Card:spin()
         if not self.front then
             self.kx = -self.kx
         end
-    end):setUnique('spin_' .. self.name)
+    end):setUnique('spin_' .. self.id)
         :setEase(GAME.mod_IN > 0 and 'OutInQuart' or 'OutQuart')
         :setDuration(0.42):run()
 end
