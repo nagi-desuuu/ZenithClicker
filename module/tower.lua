@@ -78,7 +78,7 @@ end
 
 local shadeColor={.3, .15, 0}
 local textColor={.7, .5, .3}
-local origAuth = GC.newText(FONT.get(30), "All Arts & Sounds from TETR.IO, by osk team")
+local origAuth = GC.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
 local title = GC.newText(FONT.get(50), "EXPERT QUICK PICK")
 local slogan = GC.newText(FONT.get(30), "CROWD THE TOWER!")
 local sloganExp = GC.newText(FONT.get(30), "THRONG THE TOWER!")
@@ -162,7 +162,7 @@ scene.widgetList = {
         fontSize = 80, text = "?", textColor = 'DR',
         labelPos = 'leftBottom',
         floatText = STRING.trimIndent [[
-            Welcome to Zenith Clicker! Feed required cards to send players to scales the tower.
+            Welcome to Zenith Clicker! Select required tarots to send players to scales the tower.
             The higher the tower, more tricky players will come!
             There's no leaderboard, but how high can you reach?
         ]],
