@@ -1,4 +1,5 @@
 ---@class Card
+---@field burn false | number
 local Card = {}
 Card.__index = Card
 function Card.new(d)
@@ -11,10 +12,12 @@ function Card.new(d)
         backImg = GC.newImage('assets/' .. d.name .. '-back.png'),
         lockfull = d.lockfull and GC.newImage('assets/' .. d.lockfull .. '.png'),
         lockover = d.lockover and GC.newImage('assets/' .. d.lockover .. '.png'),
+
         lock = false,
         active = false,
         front = true,
         upright = true,
+
         x = 0,
         y = 0,
         kx = 1,
@@ -23,6 +26,8 @@ function Card.new(d)
         r = 0,
         tx = 0,
         ty = 0,
+
+        burn = false,
     }, Card)
     return obj
 end
@@ -36,7 +41,27 @@ end
 function Card:setActive(auto)
     local noSpin
     self.active = not self.active
-    if not GAME.playing then
+    if GAME.playing then
+        if GAME.mod_AS > 0 then
+            if self.active then
+                if not auto then
+                    self.burn = GAME.mod_AS==1 and 2 + GAME.floor / 2 or 1e99
+                end
+            else
+                if self.burn and not auto then
+                    TASK.removeTask_code(GAME.task_cancelAll)
+                    local cards = TABLE.copy(Cards, 0)
+                    TABLE.delete(cards, self)
+                    for _ = 1, 4 do
+                        local C = TABLE.popRandom(cards)
+                        C:setActive(C.active)
+                    end
+                    SFX.play('wound')
+                end
+                self.burn = false
+            end
+        end
+    else
         GAME['mod_' .. self.id] = self.active and 1 or 0
         if self.id == 'EX' then
             BGM.set('expert', 'volume', self.active and 1 or 0)
@@ -109,6 +134,13 @@ local activeFrame = GC.newImage('assets/outline.png')
 function Card:update(dt)
     self.x = MATH.expApproach(self.x, self.tx, dt * 16)
     self.y = MATH.expApproach(self.y, self.ty, dt * 16)
+    if self.burn then
+        self.burn = self.burn - dt
+        if self.burn <= 0 then
+            self.burn = false
+            SFX.play('wound_repel')
+        end
+    end
 end
 
 local gc = love.graphics
@@ -142,11 +174,15 @@ function Card:draw()
         end
         gc.shear(dx * 26e-3, dy * 26e-3)
     end
+    GC.setColor(1, 1, 1)
     GC.draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
     if img2 then
         GC.draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
     if self.active then
+        if self.burn then
+            GC.setColor(love.timer.getTime() * 6 % .6 + .4, 1, 1)
+        end
         GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
     end
     gc.pop()

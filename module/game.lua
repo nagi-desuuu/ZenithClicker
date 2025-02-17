@@ -93,7 +93,7 @@ function GAME:finish()
     GAME:freshLockState()
 end
 
-local function task_cancelAll(auto)
+function GAME.task_cancelAll(auto)
     for i = 1, #Cards do
         local C = Cards[i]
         if C.active then
@@ -104,8 +104,8 @@ local function task_cancelAll(auto)
 end
 function GAME:cancelAll(auto)
     if GAME.mod_NH == 2 then return end
-    TASK.removeTask_code(task_cancelAll)
-    TASK.new(task_cancelAll, auto)
+    TASK.removeTask_code(GAME.task_cancelAll)
+    TASK.new(GAME.task_cancelAll, auto)
 end
 
 return GAME
