@@ -45,6 +45,11 @@ function Card:setActive(auto)
     local noSpin
     self.active = not self.active
     if GAME.playing then
+        if GAME.mod_NH > 0 then
+            if not self.active then
+                GAME:cancelAll()
+            end
+        end
         if GAME.mod_AS > 0 then
             if self.active then
                 if not auto then

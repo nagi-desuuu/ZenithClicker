@@ -53,6 +53,9 @@ local function task_startSpin()
         end
         TASK.yieldT(.01)
     end
+    if GAME.mod_MS > 0 then
+        GAME:shuffleCards()
+    end
 end
 function GAME:start()
     BGM.set(BgmSets.extra, 'volume', 1)
@@ -112,6 +115,11 @@ function GAME:cancelAll(auto)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, auto)
+end
+
+function GAME:shuffleCards()
+    TABLE.shuffle(Cards)
+    RefreshLayout()
 end
 
 return GAME
