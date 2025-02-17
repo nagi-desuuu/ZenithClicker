@@ -40,6 +40,7 @@ function scene.keyDown(key)
             if TASK.lock('sure_quit', 2.6) then
                 MSG('io', "PRESS AGAIN TO QUIT", 2.6)
             else
+                BGM.set('all', 'volume', 0, 1.6)
                 SCN.back()
             end
         end

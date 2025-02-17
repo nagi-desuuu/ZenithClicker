@@ -231,10 +231,6 @@ function ZENITHA.globalEvent.keyDown(key)
     end
 end
 
-function ZENITHA.globalEvent.requestQuit()
-    BGM.set('all', 'volume', 0)
-end
-
 function ZENITHA.globalEvent.quit()
     DATA.flush()
     love.timer.sleep(.1)
