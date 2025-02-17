@@ -81,14 +81,19 @@ function GAME:finish()
     GAME:freshLockState()
 end
 
-function GAME:cancelAll()
-    if GAME.mod_NH < 2 then
-        for _, C in next, Cards do
-            if C.active then
-                C:setActive()
-            end
+local function task_cancelAll(auto)
+    for i=1,#Cards do
+        local C=Cards[i]
+        if C.active then
+            C:setActive(auto)
+            TASK.yieldT(.026)
         end
     end
+end
+function GAME:cancelAll(auto)
+    if GAME.mod_NH == 2 then return end
+    TASK.removeTask_code(task_cancelAll)
+    TASK.new(task_cancelAll,auto)
 end
 
 return GAME
