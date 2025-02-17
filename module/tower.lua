@@ -135,14 +135,25 @@ scene.widgetList = {
         name = 'reset', type = 'button',
         pos = { .5, .5 }, x = 500, y = -140, w = 160, h = 100, cornerR = 2,
         color = 'DR',
-        sound_hover = 'menuhover',
+        sound_hover = 'menutap',
         sound_release = 'menuclick',
-        fontSize = 40, text = "RESET",
-        textColor = 'dR',
+        fontSize = 40, text = "RESET", textColor = 'dR',
         onClick = function()
             GAME:cancelAll()
         end,
     },
+    WIDGET.new {
+        name = 'hint', type = 'hint',
+        pos = { .5, .5 }, x = 500, y = -280, w = 160, h = 140, cornerR = 2,
+        color = 'lF',
+        fontSize = 80, text = "?", textColor = 'DR',
+        labelPos='leftBottom',
+        floatText = STRING.trimIndent[[
+            Welcome to Zenith Clicker! Feed required cards to send players to scales the tower.
+            The higher the tower, more tricky players will come!
+            There's no leaderboard, but how high can you reach?
+        ]],
+    }
 }
 
 return scene
