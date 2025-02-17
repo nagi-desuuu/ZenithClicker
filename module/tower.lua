@@ -41,13 +41,20 @@ function scene.keyDown(key)
                 MSG('io', "PRESS AGAIN TO QUIT", 2.6)
             else
                 BGM.set('all', 'volume', 0, 1.6)
+                SFX.play('menuback')
                 SCN.back()
             end
         end
     elseif key == 'z' then
         GAME:cancelAll()
     elseif key == 'space' then
-        -- TODO
+        if GAME.playing then
+            SFX.play('losestock')
+            GAME:finish()
+        else
+            SFX.play('menuconfirm')
+            GAME:start()
+        end
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then C:setActive() end
