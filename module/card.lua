@@ -81,7 +81,7 @@ function Card:setActive(auto)
     if GAME.playing then
         if not auto then
             if GAME.mod_NH > 0 and not self.active then
-                GAME:cancelAll()
+                GAME.cancelAll()
             end
             if GAME.mod_AS > 0 then
                 if self.burn then
@@ -127,7 +127,7 @@ function Card:setActive(auto)
             W.text = self.active and 'SPIN' or 'RESET'
             W:reset()
         end
-        GAME:freshComboText()
+        GAME.freshComboText()
     end
     if not auto then -- Sound and animation
         if self.lock then

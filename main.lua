@@ -270,7 +270,7 @@ end)
 
 -- Load data
 DATA.load()
-GAME:freshLockState()
+GAME.freshLockState()
 
 -- Test
 TASK.new(function()

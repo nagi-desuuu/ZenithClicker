@@ -44,19 +44,19 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
-        GAME:cancelAll()
+        GAME.cancelAll()
     elseif key == 'space' then
         if GAME.playing then
-            GAME:finish()
+            GAME.finish()
         else
-            GAME:start()
+            GAME.start()
         end
     elseif key == '\\' then
         if not GAME.playing then
             local unlocked
             for i = 1, #Cards - 1 do
                 if Cards[i].lock then
-                Cards[i].lock = false
+                    Cards[i].lock = false
                     unlocked = true
                     Cards[i]:shake()
                 end
@@ -113,14 +113,14 @@ function scene.keyUp(key)
 end
 
 function scene.update(dt)
-    GAME:update(dt)
+    GAME.update(dt)
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
     if love.keyboard.isDown('escape') and GAME.playing then
         GAME.forfeitTimer = GAME.forfeitTimer + dt
         if GAME.forfeitTimer > 2.6 then
-            GAME:finish()
+            GAME.finish()
         end
     else
         if GAME.forfeitTimer > 0 then
@@ -210,9 +210,9 @@ scene.widgetList = {
         fontSize = 100, text = "START",
         onClick = function()
             if GAME.playing then
-                GAME:finish()
+                GAME.finish()
             else
-                GAME:start()
+                GAME.start()
             end
         end,
     },
@@ -223,7 +223,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 40, text = "RESET", textColor = 'dR',
-        onClick = function() GAME:cancelAll() end,
+        onClick = function() GAME.cancelAll() end,
     },
     WIDGET.new {
         name = 'hint', type = 'hint',

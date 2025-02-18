@@ -1,3 +1,7 @@
+---@class Question
+---@field text string
+---@field comboStr string
+
 ---@class Game
 ---@field dmgHeal number
 ---@field dmgWrong number
@@ -30,13 +34,14 @@ local GAME = {
     mod_2P = 0,
 
     playing = false,
+    questions = {}, --- @type Question[]
 }
 
-function GAME:freshComboText()
-    self.modText:set(GetComboName(nil,GAME.mod_DH==2))
+function GAME.freshComboText()
+    GAME.modText:set(GetComboName(nil, GAME.mod_DH == 2))
 end
 
-function GAME:freshLockState()
+function GAME.freshLockState()
     Cards[1].lock = DATA.maxFloor < 9
     Cards[2].lock = DATA.maxFloor < 2
     Cards[3].lock = DATA.maxFloor < 3
@@ -63,10 +68,10 @@ local function task_startSpin()
         TASK.yieldT(.01)
     end
     if GAME.mod_MS > 0 then
-        GAME:shuffleCards()
+        GAME.shuffleCards()
     end
 end
-function GAME:start()
+function GAME.start()
     SCN.scenes.main.widgetList.hint:setVisible(false)
     MSG.setSafeY(0)
     MSG('io', "The game is still working in progress.\nYou can only press START to forfeit game", 4.2)
@@ -74,29 +79,30 @@ function GAME:start()
     BGM.set(BgmSets.extra, 'volume', 1)
 
     SFX.play('menuconfirm')
-    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start', nil, nil, self.mod_GV)
+    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start', nil, nil, GAME.mod_GV)
 
-    self.playing = true
-    self.dmgHeal = 2
-    self.dmgWrong = 1
-    self.dmgDelay = 15
-    self.dmgCycle = 3
+    GAME.playing = true
+    GAME.dmgHeal = 2
+    GAME.dmgWrong = 1
+    GAME.dmgDelay = 15
+    GAME.dmgCycle = 3
 
-    self.time = 0
-    self.xp = 0
-    self.rank = 1
-    self.floor = 1
-    self.fatigue = 1
-    self.altitude = 0
-    self.live = 20
-    self.dmgTimer = 0
-    self.b2b = 0
+    GAME.time = 0
+    GAME.xp = 0
+    GAME.rank = 1
+    GAME.floor = 1
+    GAME.fatigue = 1
+    GAME.altitude = 0
+    GAME.heightBuffer = 0
+    GAME.live = 20
+    GAME.dmgTimer = 0
+    GAME.b2b = 0
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
 end
 
-function GAME:finish()
+function GAME.finish()
     SCN.scenes.main.widgetList.hint:setVisible(true)
     MSG.setSafeY(62)
     MSG.clear()
@@ -116,24 +122,24 @@ function GAME:finish()
         C.lock = GAME['mod_' .. C.id] < 0
     end
 
-    self.playing = false
+    GAME.playing = false
 
-    -- if self.floor > DATA.maxFloor then DATA.maxFloor = self.floor end
-    -- if self.altitude > DATA.maxAltitude then DATA.maxAltitude = self.altitude end
+    -- if GAME.floor > DATA.maxFloor then DATA.maxFloor = GAME.floor end
+    -- if GAME.altitude > DATA.maxAltitude then DATA.maxAltitude = GAME.altitude end
 
     TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
-    self:remDebuff()
-    self:freshLockState()
+    GAME.remDebuff()
+    GAME.freshLockState()
 end
 
-function GAME:commit()
+function GAME.commit()
     local result
     -- TODO
-    self:remDebuff()
+    GAME.remDebuff()
     if result then
-        self.live = math.min(self.live + math.max(self.dmgHeal, 0), 20)
+        GAME.live = math.min(GAME.live + math.max(GAME.dmgHeal, 0), 20)
         -- TODO
-        if self.mod_MS == 2 then
+        if GAME.mod_MS == 2 then
             local r1 = math.random(#Cards)
             local r2 = math.random(#Cards - 1)
             if r2 >= r1 then r2 = r2 + 1 end
@@ -141,20 +147,20 @@ function GAME:commit()
             RefreshLayout()
         end
     else
-        self.live = math.max(self.live - math.min(self.dmgWrong, 1), 0)
+        GAME.live = math.max(GAME.live - math.min(GAME.dmgWrong, 1), 0)
         -- TODO
-        if self.live <= 0 then
-            self:finish()
+        if GAME.live <= 0 then
+            GAME.finish()
             return
         end
     end
-    if result or self.mod_EX > 0 then
-        self:cancelAll(true)
+    if result or GAME.mod_EX > 0 then
+        GAME.cancelAll(true)
     end
 end
 
-function GAME:task_cancelAll(noSpin)
-    local spinMode = not noSpin and self.mod_AS > 0
+function GAME.task_cancelAll(noSpin)
+    local spinMode = not noSpin and GAME.mod_AS > 0
     for i = 1, #Cards do
         local C = Cards[i]
         if spinMode or C.active then
@@ -164,72 +170,95 @@ function GAME:task_cancelAll(noSpin)
     end
 end
 
-function GAME:cancelAll(noSpin)
-    if self.mod_NH == 2 then return end
-    TASK.removeTask_code(self.task_cancelAll)
-    TASK.new(self.task_cancelAll, self, noSpin)
+function GAME.cancelAll(noSpin)
+    if GAME.mod_NH == 2 then return end
+    TASK.removeTask_code(GAME.task_cancelAll)
+    TASK.new(GAME.task_cancelAll, GAME, noSpin)
 end
 
-function GAME:remDebuff()
-    if self.mod_AS then for _, C in next, Cards do C.burn = false end end
+function GAME.remDebuff()
+    if GAME.mod_AS then for _, C in next, Cards do C.burn = false end end
 end
 
-function GAME:shuffleCards()
+function GAME.shuffleCards()
     TABLE.shuffle(Cards)
     RefreshLayout()
 end
 
-function GAME:upFloor()
-    self.floor = self.floor + 1
-    if self.mod_MS == 1 and (self.floor % 2 == 1 or self.floor == 10) then self:shuffleCards() end
+function GAME.upFloor()
+    GAME.floor = GAME.floor + 1
+    if GAME.mod_MS == 1 and (GAME.floor % 2 == 1 or GAME.floor == 10) then GAME.shuffleCards() end
     TEXT:add {
         text = "Floor",
         x = 160, y = 290, k = 1.6, fontSize = 30,
         color = 'LY', duration = 2.6,
     }
     TEXT:add {
-        text = tostring(self.floor),
+        text = tostring(GAME.floor),
         x = 240, y = 280, k = 2.6, fontSize = 30,
         color = 'LY', duration = 2.6, align = 'left',
     }
     TEXT:add {
-        text = Floors[self.floor].name,
+        text = Floors[GAME.floor].name,
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = 2.6,
     }
-    SFX.play('zenith_levelup_' .. Floors[self.floor].sfx)
+    SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx)
 end
 
-function GAME:update(dt)
-    if self.playing then
-        self.time = self.time + dt
-        local curFtgStag = (self.mod_EX == 2 and FatigueRevEx or Fatigue)[self.fatigue]
-        if self.time >= curFtgStag.time then
+function GAME.addHeight(h)
+    GAME.heightBuffer = GAME.heightBuffer + h * GAME.rank / 4
+end
+
+function GAME.addXP(xp)
+    GAME.xp = GAME.xp + xp
+    if GAME.xp >= 4 * GAME.rank then
+        GAME.xp = GAME.xp - 4 * GAME.rank
+        GAME.rank = GAME.rank + 1
+
+        -- Rank skip
+        if GAME.xp >= 4 * GAME.rank then
+            GAME.rank = GAME.rank + math.floor(GAME.xp / (4 * GAME.rank))
+        end
+
+        SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4))
+    end
+end
+
+function GAME.update(dt)
+    if GAME.playing then
+        GAME.time = GAME.time + dt
+        local curFtgStag = (GAME.mod_EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
+        if GAME.time >= curFtgStag.time then
             local e = curFtgStag.event
             for i = 1, #e, 2 do
                 GAME[e[i]] = GAME[e[i]] + e[i + 1]
             end
-            self.fatigue = self.fatigue + 1
+            GAME.fatigue = GAME.fatigue + 1
         end
 
-        local distRemain = Floors[self.floor].top - self.altitude
-        self.altitude = self.altitude + dt * self.rank / 4 * MATH.icLerp(1, 6, distRemain)
+        local releaseHeight = GAME.heightBuffer
+        GAME.heightBuffer = math.max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
+        releaseHeight = releaseHeight - GAME.heightBuffer
+
+        GAME.altitude =
+            GAME.altitude + releaseHeight +
+            GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.altitude)
 
         -- if love.keyboard.isDown('z') then
         --     GAME.altitude = GAME.altitude + dt * 260
         -- end
 
-        if self.altitude >= Floors[self.floor].top then
-            GAME:upFloor()
+        if GAME.altitude >= Floors[GAME.floor].top then
+            GAME.upFloor()
         end
 
-        self.xp = self.xp - dt * (self.mod_EX and 5 or 3) * self.rank * (self.rank + 1) / 60
-        if self.xp <= 0 then
-            self.xp = 0
-            if self.rank > 1 then
-                self.rank = self.rank - 1
+        GAME.xp = GAME.xp - dt * (GAME.mod_EX and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+        if GAME.xp <= 0 then
+            GAME.xp = 0
+            if GAME.rank > 1 then
+                GAME.rank = GAME.rank - 1
                 SFX.play('speed_down')
-                -- SFX.play('speed_up_'..MATH.clamp(GAME.rank-1,1,4))
             end
         end
     end
