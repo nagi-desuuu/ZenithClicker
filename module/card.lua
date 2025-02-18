@@ -31,6 +31,7 @@ function Card.new(d)
         ty = 0,
 
         burn = false,
+        charge = 0,
     }, Card)
     return obj
 end
@@ -42,6 +43,34 @@ function Card:mouseOn(x, y)
 end
 
 function Card:setActive(auto)
+    if GAME.mod_VL == 1 then
+        if not self.active then
+            self.charge = self.charge + 1
+            SFX.play('clearline',.3)
+            if self.charge < 1.2 then
+                self:shake()
+                SFX.play('combo_3',.626,nil,-2+GAME.mod_GV)
+                return
+            end
+            SFX.play('combo_4',.626,nil,GAME.mod_GV)
+            self.charge = 0
+        end
+    elseif GAME.mod_VL == 2 then
+        self.charge = self.charge + 1
+        if self.charge < 2.1 then
+            SFX.play('clearline',.3)
+            self:shake()
+            if self.charge<1.2 then
+                SFX.play('combo_1',.626,nil,GAME.mod_GV)
+            else
+                SFX.play('combo_2',.626,nil,1+GAME.mod_GV)
+            end
+            return
+        end
+        SFX.play('clearquad',.3)
+        SFX.play('combo_4',.626,nil,GAME.mod_GV)
+        self.charge = 0
+    end
     local noSpin
     self.active = not self.active
     if GAME.playing then
@@ -81,7 +110,7 @@ function Card:setActive(auto)
                 end
             end):setDuration(self.active and .26 or .1):run()
         elseif self.id == 'GV' then
-            BGM.set('all', 'pitch', self.active and 2 ^ (1 / 12) or 1, .26)
+            BGM.set('all', 'pitch', self.active and 2 ^ (GAME.mod_GV / 12) or 1, .26)
         elseif self.id == 'IN' then
             BGM.set('all', 'highgain', self.active and .7 or 1)
             for _, C in next, Cards do C:flip() end
@@ -98,7 +127,7 @@ function Card:setActive(auto)
     if not auto then
         if self.active then
             SFX.play('card_select')
-            SFX.play('card_tone_' .. self.name)
+            SFX.play('card_tone_' .. self.name,nil,nil,GAME.mod_GV)
             if not noSpin then self:spin() end
         else
             SFX.play('card_slide_' .. math.random(4))
@@ -149,6 +178,9 @@ function Card:update(dt)
             self.burn = false
             SFX.play('wound_repel')
         end
+    end
+    if self.charge > 0 then
+        self.charge = math.max(self.charge - dt, 0)
     end
 end
 

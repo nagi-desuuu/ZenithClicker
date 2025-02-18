@@ -64,7 +64,7 @@ function GAME:start()
     BGM.set(BgmSets.extra, 'volume', 1)
 
     SFX.play('menuconfirm')
-    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start')
+    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start',nil,nil,GAME.mod_GV)
 
     self.playing = true
     self.xp = 0
