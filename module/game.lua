@@ -58,6 +58,8 @@ local function task_startSpin()
     end
 end
 function GAME:start()
+    MSG('io',"The game is still working in progress.\nYou can only press START to forfeit game", 4.2)
+
     BGM.set(BgmSets.extra, 'volume', 1)
 
     SFX.play('menuconfirm')
