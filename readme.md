@@ -6,4 +6,7 @@
 
 > All Arts & Sounds from [TETR.IO](https://tetr.io) by osk, an online stacker game with Awesome Graphics and Musics!
 
+Inspired by mod selection screen of tetr.io QP2, its interactive feel is really not good for quickly picking the mods needed,  
+and there's still no convenient way to know which mods are included in a specific combo.
+
 Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
