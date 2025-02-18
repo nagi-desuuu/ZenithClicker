@@ -158,10 +158,18 @@ function MouseOnCard(x, y)
     if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
         return FloatOnCard
     end
-    for i = #Cards, 1, -1 do
-        if Cards[i]:mouseOn(x, y) then
-            return i
+    local cid,dist = 0, 1e99
+    for j = 1,#Cards do
+        if Cards[j]:mouseOn(x, y) then
+            local dist2 = MATH.distance(x, y, Cards[j].x, Cards[j].y)
+            if dist2 < dist then
+                dist = dist2
+                cid = j
+            end
         end
+    end
+    if cid > 0 then
+        return cid
     end
 end
 

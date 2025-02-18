@@ -89,13 +89,13 @@ local sloganExp = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 function scene.draw()
     gc.clear(GAME.bg, 0, 0)
     gc.setColor(1, 1, 1)
-    if not FloatOnCard then
-        for i = #Cards, 1, -1 do Cards[i]:draw() end
-    else
+    if FloatOnCard then
         for i = #Cards, 1, -1 do
             if i ~= FloatOnCard then Cards[i]:draw() end
         end
         Cards[FloatOnCard]:draw()
+    else
+        for i = #Cards, 1, -1 do Cards[i]:draw() end
     end
 
     if GAME.playing then
@@ -170,6 +170,7 @@ scene.widgetList = {
         pos = { .5, .5 }, x = 500, y = -230, w = 80, cornerR = 40,
         color = 'lF',
         fontSize = 80, text = "?", textColor = 'dF',
+        sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.

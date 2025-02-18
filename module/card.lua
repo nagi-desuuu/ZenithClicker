@@ -234,6 +234,7 @@ function Card:draw()
     if self.active then
         GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
     end
+    -- GC.mRect('line',0,0,260*2,350*2)
     gc.pop()
 end
 
