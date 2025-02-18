@@ -173,7 +173,7 @@ end
 function GAME.cancelAll(noSpin)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
-    TASK.new(GAME.task_cancelAll, GAME, noSpin)
+    TASK.new(GAME.task_cancelAll, noSpin)
 end
 
 function GAME.remDebuff()
