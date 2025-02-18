@@ -167,8 +167,8 @@ scene.widgetList = {
         fontSize = 80, text = "?", textColor = 'DR',
         labelPos = 'leftBottom',
         floatText = STRING.trimIndent [[
-            Welcome to Zenith Clicker! Select required tarots to send players to scales the tower.
-            The higher the tower, more tricky players will come!
+            Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
+            The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
         ]],
     }
