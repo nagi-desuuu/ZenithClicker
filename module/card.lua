@@ -44,9 +44,9 @@ end
 
 function Card:setActive(auto)
     if GAME.mod_VL == 1 then
-        if not self.active then
+        if not self.active and not auto then
             self.charge = self.charge + 1
-            SFX.play('clearline',.3)
+            SFX.play('clearline',.42)
             if self.charge < 1.2 then
                 self:shake()
                 SFX.play('combo_3',.626,nil,-2+GAME.mod_GV)
@@ -56,7 +56,7 @@ function Card:setActive(auto)
             self.charge = 0
         end
     elseif GAME.mod_VL == 2 then
-        self.charge = self.charge + 1
+        self.charge = self.charge + (auto and 2.6 or 1)
         if self.charge < 2.1 then
             SFX.play('clearline',.3)
             self:shake()
@@ -67,8 +67,10 @@ function Card:setActive(auto)
             end
             return
         end
-        SFX.play('clearquad',.3)
-        SFX.play('combo_4',.626,nil,GAME.mod_GV)
+        if not auto then
+            SFX.play('clearquad',.3)
+            SFX.play('combo_4',.626,nil,GAME.mod_GV)
+        end
         self.charge = 0
     end
     local noSpin
