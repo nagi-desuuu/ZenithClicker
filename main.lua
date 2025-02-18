@@ -53,17 +53,7 @@ DeckData = {
     [0] = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
 }
 local modName = {
-    prio = {
-        ['IN'] = 0,
-        ['MS'] = 1,
-        ['VL'] = 2,
-        ['NH'] = 3,
-        ['DH'] = 4,
-        ['AS'] = 5,
-        ['GV'] = 6,
-        ['EX'] = 7,
-        ['2P'] = 8,
-    },
+    prio = { ['IN'] = 0, ['MS'] = 1, ['VL'] = 2, ['NH'] = 3, ['DH'] = 4, ['AS'] = 5, ['GV'] = 6, ['EX'] = 7, ['2P'] = 8 },
     adj = {
         ['IN'] = "INVISIBLE",
         ['MS'] = "MESSY",
@@ -88,26 +78,13 @@ local modName = {
     },
 }
 
-Combos = {
-    { name = [["A MODERN CLASSIC"]],     check = 'NH GV' },
-    { name = [["DEADLOCK"]],             check = 'MS NH DH' },
-    { name = [["THE ESCAPE ARTIST"]],    check = 'MS DH AS' },
-    { name = [["THE GRANDMASTER"]],      check = 'IN GV' },
-    { name = [["EMPEROR'S DECADENCE"]],  check = 'NH DH EX' },
-    { name = [["DIVINE MASTERY"]],       check = 'MS VL DH EX' },
-    { name = [["THE STARVING ARTIST"]],  check = 'NH AS' },
-    { name = [["THE CON ARTIST"]],       check = 'VL AS EX' },
-    { name = [["TRAINED PROFESIONALS"]], check = 'EX 2P' },
-    { name = [["SWAMP WATER LITE"]],     check = function(i) return #i == 7 * 3 - 1 and not i:find('2P') end },
-    { name = [["SWAMP WATER"]],          check = function(i) return #i == 8 * 3 - 1 and not i:find('2P') end },
-}
-for _, cmb in next, Combos do
-    if type(cmb.check) == 'string' then
-        local cmbStr = table.concat(TABLE.sort(cmb.check:split(' ')), ' ')
-        cmb.check = function(i)
-            return i == cmbStr
-        end
-    end
+BasicComboCount = 9
+Combos = require "module/combo_data"
+for i = 1, #Combos do
+    local cmb = Combos[i]
+    cmb.name = '"' .. cmb.name:upper() .. '"'
+    local cmbStr = table.concat(TABLE.sort(cmb.set:split(' ')), ' ')
+    Combos[cmbStr] = Combos[cmbStr] or cmb
 end
 
 Floors = {
@@ -188,7 +165,9 @@ function MouseOnCard(x, y)
     end
 end
 
-function GetComboName(list)
+---@param list? string[]
+---@param extend? boolean use extended combo lib from community
+function GetComboName(list,extend)
     if not list then
         list = {}
         for _, C in next, Cards do
@@ -202,11 +181,7 @@ function GetComboName(list)
     if #list == 1 then return modName.noun[list[1]] end
 
     local str = table.concat(TABLE.sort(list), ' ')
-    for _, cmb in next, Combos do
-        if cmb.check(str) then
-            return cmb.name
-        end
-    end
+    if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
 
     str = ""
     table.sort(list, function(a, b) return modName.prio[a] < modName.prio[b] end)

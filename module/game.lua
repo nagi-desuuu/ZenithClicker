@@ -33,7 +33,7 @@ local GAME = {
 }
 
 function GAME:freshComboText()
-    self.modText:set(GetComboName())
+    self.modText:set(GetComboName(nil,GAME.mod_DH==2))
 end
 
 function GAME:freshLockState()
