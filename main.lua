@@ -102,22 +102,21 @@ local modName = {
 }
 
 Combos = {
-    { name = [["A MODERN CLASSIC"]],    check = 'NH GV' },
-    { name = [["DEADLOCK"]],            check = 'MS NH DH' },
-    { name = [["THE ESCAPE ARTIST"]],   check = 'MS DH AS' },
-    { name = [["THE GRANDMASTER"]],     check = 'IN GV' },
-    { name = [["EMPEROR'S DECADENCE"]], check = 'NH DH EX' },
-    { name = [["DIVINE MASTERY"]],      check = 'MS VL DH EX' },
-    { name = [["THE STARVING ARTIST"]], check = 'NH AS' },
-    { name = [["THE CON ARTIST"]],      check = 'VL AS EX' },
-    { name = [["SWAMP WATER LITE"]],    check = function(i) return #i == 7 * 3 - 1 and not i:find('2P') end },
-    { name = [["SWAMP WATER"]],         check = function(i) return #i == 8 * 3 - 1 and not i:find('2P') end },
+    { name = [["A MODERN CLASSIC"]],     check = 'NH GV' },
+    { name = [["DEADLOCK"]],             check = 'MS NH DH' },
+    { name = [["THE ESCAPE ARTIST"]],    check = 'MS DH AS' },
+    { name = [["THE GRANDMASTER"]],      check = 'IN GV' },
+    { name = [["EMPEROR'S DECADENCE"]],  check = 'NH DH EX' },
+    { name = [["DIVINE MASTERY"]],       check = 'MS VL DH EX' },
+    { name = [["THE STARVING ARTIST"]],  check = 'NH AS' },
+    { name = [["THE CON ARTIST"]],       check = 'VL AS EX' },
+    { name = [["TRAINED PROFESIONALS"]], check = 'EX 2P' },
+    { name = [["SWAMP WATER LITE"]],     check = function(i) return #i == 7 * 3 - 1 and not i:find('2P') end },
+    { name = [["SWAMP WATER"]],          check = function(i) return #i == 8 * 3 - 1 and not i:find('2P') end },
 }
 for _, cmb in next, Combos do
     if type(cmb.check) == 'string' then
-        local list = cmb.check:split(' ')
-        table.sort(list)
-        local cmbStr = table.concat(list, ' ')
+        local cmbStr = table.concat(TABLE.sort(cmb.check:split(' ')), ' ')
         cmb.check = function(i)
             return i == cmbStr
         end
@@ -200,8 +199,7 @@ function GetComboName(list)
     if #list == 0 then return "" end
     if #list == 1 then return modName.noun[list[1]] end
 
-    table.sort(list)
-    local str = table.concat(list, ' ')
+    local str = table.concat(TABLE.sort(list), ' ')
     for _, cmb in next, Combos do
         if cmb.check(str) then
             return cmb.name
