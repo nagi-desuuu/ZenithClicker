@@ -87,7 +87,7 @@ Combos = require "module/combo_data"
 for i = 1, #Combos do
     local cmb = Combos[i]
     cmb.name = '"' .. cmb.name:upper() .. '"'
-    local cmbStr = table.concat(TABLE.sort(cmb.set:split(' ')), ' ')
+    local cmbStr = table.concat(TABLE.sort(cmb.set:trim():split('%s+',true)), ' ')
     Combos[cmbStr] = Combos[cmbStr] or cmb
 end
 
