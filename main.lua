@@ -8,6 +8,9 @@ STRING.install()
 
 SCR.setSize(1600, 1000)
 
+MSG.addCategory('io', COLOR.lD, COLOR.L)
+MSG.setSafeY(62)
+
 BGM.setMaxSources(8)
 BGM.load {
     piano = 'assets/piano.ogg',
@@ -125,7 +128,7 @@ MessyBias = TABLE.new(0, 9)
 function RefreshLayout()
     local baseDist = (GAME.mod_EX > 0 and 100 or 110) + GAME.mod_VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
-    local dodge = GAME.mod_VL < 1 and 260 or 220
+    local dodge = GAME.mod_VL == 0 and 260 or 220
     local baseY = 726 + 15 * GAME.mod_GV
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
@@ -158,8 +161,8 @@ function MouseOnCard(x, y)
     if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
         return FloatOnCard
     end
-    local cid,dist = 0, 1e99
-    for j = 1,#Cards do
+    local cid, dist = 0, 1e99
+    for j = 1, #Cards do
         if Cards[j]:mouseOn(x, y) then
             local dist2 = MATH.distance(x, y, Cards[j].x, Cards[j].y)
             if dist2 < dist then
@@ -175,7 +178,7 @@ end
 
 ---@param list? string[]
 ---@param extend? boolean use extended combo lib from community
-function GetComboName(list,extend)
+function GetComboName(list, extend)
     if not list then
         list = {}
         for _, C in next, Cards do

@@ -16,7 +16,7 @@ function scene.mouseMove(x, y, dx, dy)
     end
 end
 
-function scene.mouseClick(x, y, k)
+local function click(x, y, k)
     local C = Cards[MouseOnCard(x, y)]
     if C then
         if GAME.playing then
@@ -32,9 +32,7 @@ function scene.mouseClick(x, y, k)
     end
 end
 
-MSG.addCategory('io', COLOR.lD, COLOR.L)
-MSG.setSafeY(62)
-function scene.keyDown(key)
+local function keyPress(key)
     if key == 'escape' then
         if not GAME.playing then
             if TASK.lock('sure_quit', 2.6) then
@@ -63,7 +61,47 @@ function scene.keyDown(key)
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then C:setActive() end
     end
+end
+
+local cancelNextClick
+function scene.mouseDown(x, y, k)
+    if GAME.mod_EX == 0 then
+        click(x, y, k)
+        if GAME.mod_EX > 0 then
+            cancelNextClick = true
+        end
+    end
+end
+
+function scene.mouseClick(x, y, k)
+    if cancelNextClick then
+        cancelNextClick = false
+        return
+    end
+    if GAME.mod_EX > 0 then
+        click(x, y, k)
+    end
+end
+
+local cancelNextPress
+function scene.keyDown(key)
+    if GAME.mod_EX == 0 then
+        keyPress(key)
+        if GAME.mod_EX > 0 then
+            cancelNextPress = true
+        end
+    end
     return true
+end
+
+function scene.keyUp(key)
+    if cancelNextPress then
+        cancelNextPress = false
+        return
+    end
+    if GAME.mod_EX > 0 then
+        keyPress(key)
+    end
 end
 
 function scene.update(dt)

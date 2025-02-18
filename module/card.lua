@@ -158,7 +158,7 @@ end
 
 function Card:spin()
     TWEEN.new(function(t)
-        if GAME.mod_IN < 1 then
+        if GAME.mod_IN == 0 then
             self.ky = .9 + .1 * math.cos(t * 6.2831853)
             self.r = t * 6.2831853
             self.kx = math.cos((GAME.mod_AS + 1) * t * 6.2831853)
