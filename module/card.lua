@@ -52,10 +52,10 @@ function Card:setActive(auto)
             SFX.play('clearline', .42)
             if self.charge < 1.2 then
                 self:shake()
-                SFX.play('combo_3', .626, nil, -2 + GAME.mod_GV)
+                SFX.play('combo_3', .626, 0, -2 + GAME.mod_GV)
                 return
             end
-            SFX.play('combo_4', .626, nil, GAME.mod_GV)
+            SFX.play('combo_4', .626, 0, GAME.mod_GV)
             self.charge = 0
         end
     elseif GAME.mod_VL == 2 then
@@ -64,15 +64,15 @@ function Card:setActive(auto)
             SFX.play('clearline', .3)
             self:shake()
             if self.charge < 1.2 then
-                SFX.play('combo_1', .626, nil, GAME.mod_GV)
+                SFX.play('combo_1', .626, 0, GAME.mod_GV)
             else
-                SFX.play('combo_2', .626, nil, 1 + GAME.mod_GV)
+                SFX.play('combo_2', .626, 0, 1 + GAME.mod_GV)
             end
             return
         end
         if not auto then
             SFX.play('clearquad', .3)
-            SFX.play('combo_4', .626, nil, GAME.mod_GV)
+            SFX.play('combo_4', .626, 0, GAME.mod_GV)
         end
         self.charge = 0
     end
@@ -135,7 +135,7 @@ function Card:setActive(auto)
         else
             if self.active then
                 SFX.play('card_select')
-                SFX.play('card_tone_' .. self.name, nil, nil, GAME.mod_GV)
+                SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
                 if not noSpin then self:spin() end
             else
                 SFX.play('card_slide_' .. math.random(4))

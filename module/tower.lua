@@ -36,6 +36,7 @@ local function keyPress(key)
     if key == 'escape' then
         if not GAME.playing then
             if TASK.lock('sure_quit', 2.6) then
+                SFX.play('menuclick')
                 MSG('io', "PRESS AGAIN TO QUIT", 2.6)
             else
                 BGM.set('all', 'volume', 0, 1.6)

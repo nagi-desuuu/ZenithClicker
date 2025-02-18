@@ -78,7 +78,7 @@ function GAME.start()
 
     BGM.set(BgmSets.extra, 'volume', 1)
 
-    SFX.play('menuconfirm')
+    SFX.play('menuconfirm',.8)
     SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start', nil, nil, GAME.mod_GV)
 
     GAME.playing = true
@@ -112,7 +112,7 @@ function GAME.finish()
     BGM.set(TABLE.popRandom(l), 'volume', 1)
     BGM.set(TABLE.popRandom(l), 'volume', 1)
 
-    SFX.play('shatter')
+    SFX.play('shatter',.8)
 
     table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
     for _, C in next, Cards do
@@ -203,7 +203,7 @@ function GAME.upFloor()
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = 2.6,
     }
-    SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx)
+    SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx, 1, 0, GAME.mod_GV)
 end
 
 function GAME.addHeight(h)
