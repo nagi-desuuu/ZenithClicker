@@ -40,19 +40,6 @@ BgmSets = {
     extra = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
 
-Floors = {
-    { top = 50,   name = "Hall of Beginnings",   sfx = false },
-    { top = 150,  name = "The Hotel",            sfx = "c" },
-    { top = 300,  name = "The Casino",           sfx = "b" },
-    { top = 450,  name = "The Arena",            sfx = "a" },
-    { top = 650,  name = "The Museum",           sfx = "fsharp" },
-    { top = 850,  name = "Abandoned Offices",    sfx = "e" },
-    { top = 1100, name = "The Laboratory",       sfx = "a" },
-    { top = 1350, name = "The Core",             sfx = "ahalfsharp" },
-    { top = 1650, name = "Corruption",           sfx = "e" },
-    { top = 1e99, name = "Platform of The Gods", sfx = "e" },
-}
-
 DeckData = {
     { initOrder = 1, nameOrder = 8, id = 'EX', lockover = 'lockover-9',            name = 'expert',     fullName = "< EXPERT MODE >",         desc = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE",                      revName = "> THE TYRANT <",      revDesc = "FEAR, OPPRESSION, AND LIMITLESS AMBITION." },
     { initOrder = 2, nameOrder = 4, id = 'NH', lockfull = 'lockfull-2',            name = 'nohold',     fullName = "< NO HOLD >",             desc = "CANCELING IS DISABLED",                                             revName = "> ASCETICISM <",      revDesc = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE." },
@@ -123,28 +110,43 @@ for _, cmb in next, Combos do
     end
 end
 
+Floors = {
+    { top = 50,   event = {},                                name = "Hall of Beginnings",   sfx = false },
+    { top = 150,  event = { 'dmgWrong', 1 },                 name = "The Hotel",            sfx = "c" },
+    { top = 300,  event = { 'dmgDelay', -1 },                name = "The Casino",           sfx = "b" },
+    { top = 450,  event = { 'dmgCycle', -1 },                name = "The Arena",            sfx = "a" },
+    { top = 650,  event = { 'dmgDelay', -1 },                name = "The Museum",           sfx = "fsharp" },
+    { top = 850,  event = { 'dmgWrong', 1 },                 name = "Abandoned Offices",    sfx = "e" },
+    { top = 1100, event = { 'dmgDelay', -1 },                name = "The Laboratory",       sfx = "a" },
+    { top = 1350, event = { 'dmgDelay', -1 },                name = "The Core",             sfx = "ahalfsharp" },
+    { top = 1650, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Corruption",           sfx = "e" },
+    { top = 1e99, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Platform of The Gods", sfx = "e" },
+    -- Initial: Delay=15. Cycle=3, Wrong=1
+    -- Total: Delay-7, Cycle-1, Wrong+4
+}
+
 Fatigue = {
-    { time = 360, event = function() --[[TODO]] end, text = "FATIGUE SETS IN…" },
-    { time = 420, event = function() --[[TODO]] end, text = "YOUR BODY GROWS WEAK…" },
-    { time = 480, event = function() --[[TODO]] end, text = "ALL SENSES BLUR TOGETHER…" },
-    { time = 540, event = function() --[[TODO]] end, text = "YOUR CONSCIOUSNESS FADES…" },
-    { time = 600, event = function() --[[TODO]] end, text = "THIS IS THE END" },
-    { time = 1e99 },
+    { time = 360, event = { 'dmgDelay', -1 }, text = "FATIGUE SETS IN…" },
+    { time = 420, event = { 'dmgCycle', -1 }, text = "YOUR BODY GROWS WEAK…" },
+    { time = 480, event = { 'dmgDelay', -1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…" },
+    { time = 540, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…" },
+    { time = 600, event = { 'dmgDelay', -2, 'dmgWrong', 1 }, text = "THIS IS THE END" },
+    { time = 1e99 }, -- Total: Delay-5, Cycle-1, Wrong+2
 }
 FatigueRevEx = {
-    { time = 300, event = function() --[[TODO]] end, text = "YOUR POWER SLIPS…" },
-    { time = 360, event = function() --[[TODO]] end, text = "WHISPERS OF DISCONTENT SPREAD…" },
-    { time = 420, event = function() --[[TODO]] end, text = "PROTESTERS LINE THE STREETS…" },
-    { time = 480, event = function() --[[TODO]] end, text = "YOUR CLOSEST ALLIES DEFECT…" },
-    { time = 540, event = function() --[[TODO]] end, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
-    { time = 600, event = function() --[[TODO]] end, text = "THE REVOLUTION HAS BEGUN…" },
-    { time = 660, event = function() --[[TODO]] end, text = "THE END OF AN ERA" },
-    { time = 1e99 },
+    { time = 300, event = { 'dmgDelay', -2 }, text = "YOUR POWER SLIPS…" },
+    { time = 360, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "WHISPERS OF DISCONTENT SPREAD…" },
+    { time = 420, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "PROTESTERS LINE THE STREETS…" },
+    { time = 480, event = { 'dmgCycle', -.5, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…" },
+    { time = 540, event = { 'dmgDelay', -2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
+    { time = 600, event = { 'dmgDelay', -1.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…" },
+    { time = 660, event = { 'dmgDelay', -2 }, text = "THE END OF AN ERA" },
+    { time = 1e99 }, -- Total: Delay-7.5, Cycle-1.5, Wrong+5
 }
 
 MessyBias = TABLE.new(0, 9)
 function RefreshLayout()
-    local baseDist = 110 + GAME.mod_VL * 20
+    local baseDist = (GAME.mod_EX > 0 and 100 or 110) + GAME.mod_VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
     local dodge = GAME.mod_VL < 1 and 260 or 220
     local baseY = 726 + 15 * GAME.mod_GV
@@ -286,9 +288,7 @@ GAME:freshLockState()
 
 -- Test
 TASK.new(function()
-    for _, s in next, {
-        'purchase_start',
-    } do
+    for _, s in next, ([[]]):split('%s+', true) do
         SFX.play(s)
         TASK.yieldT(1)
     end

@@ -61,46 +61,7 @@ function scene.keyDown(key)
 end
 
 function scene.update(dt)
-    local GAME = GAME
-    if GAME.playing then
-        local distRemain = Floors[GAME.floor].top - GAME.altitude
-        GAME.altitude = GAME.altitude + dt * GAME.rank / 4 * MATH.icLerp(1, 6, distRemain)
-
-        -- if love.keyboard.isDown('z') then
-        --     GAME.altitude = GAME.altitude + dt * 260
-        -- end
-
-        if GAME.altitude >= Floors[GAME.floor].top then
-            GAME.floor = GAME.floor + 1
-            if GAME.mod_MS == 1 and (GAME.floor % 2 == 1 or GAME.floor == 10) then GAME:shuffleCards() end
-            TEXT:add {
-                text = "Floor",
-                x = 160, y = 290, k = 1.6, fontSize = 30,
-                color = 'LY', duration = 2.6,
-            }
-            TEXT:add {
-                text = tostring(GAME.floor),
-                x = 240, y = 280, k = 2.6, fontSize = 30,
-                color = 'LY', duration = 2.6, align = 'left',
-            }
-            TEXT:add {
-                text = Floors[GAME.floor].name,
-                x = 200, y = 350, k = 1.2, fontSize = 30,
-                color = 'LY', duration = 2.6,
-            }
-            SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx)
-        end
-
-        GAME.xp = GAME.xp - dt * (GAME.mod_EX and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
-        if GAME.xp <= 0 then
-            GAME.xp = 0
-            if GAME.rank > 1 then
-                GAME.rank = GAME.rank - 1
-                SFX.play('speed_down')
-                -- SFX.play('speed_up_'..MATH.clamp(GAME.rank-1,1,4))
-            end
-        end
-    end
+    GAME:update(dt)
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -202,9 +163,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 40, text = "RESET", textColor = 'dR',
-        onClick = function()
-            GAME:cancelAll()
-        end,
+        onClick = function() GAME:cancelAll() end,
     },
     WIDGET.new {
         name = 'hint', type = 'hint',
