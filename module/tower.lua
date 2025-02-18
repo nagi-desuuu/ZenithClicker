@@ -61,6 +61,45 @@ function scene.keyDown(key)
 end
 
 function scene.update(dt)
+    local GAME = GAME
+    if GAME.playing then
+        local distRemain = Floors[GAME.floor].top - GAME.altitude
+        GAME.altitude = GAME.altitude + dt * GAME.rank / 4 * MATH.icLerp(1, 6, distRemain)
+
+        -- if love.keyboard.isDown('z') then
+        --     GAME.altitude = GAME.altitude + dt * 260
+        -- end
+
+        if GAME.altitude >= Floors[GAME.floor].top then
+            GAME.floor = GAME.floor + 1
+            TEXT:add {
+                text = "Floor",
+                x = 160, y = 290, k = 1.6, fontSize = 30,
+                color='LY', duration = 2.6,
+            }
+            TEXT:add {
+                text = tostring(GAME.floor),
+                x = 240, y = 280, k = 2.6, fontSize = 30,
+                color='LY', duration = 2.6, align='left',
+            }
+            TEXT:add {
+                text = Floors[GAME.floor].name,
+                x = 200, y = 350, k = 1.2, fontSize = 30,
+                color='LY', duration = 2.6,
+            }
+            SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx)
+        end
+
+        GAME.xp = GAME.xp - dt * (GAME.mod_EX and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+        if GAME.xp <= 0 then
+            GAME.xp = 0
+            if GAME.rank > 1 then
+                GAME.rank = GAME.rank - 1
+                SFX.play('speed_down')
+                -- SFX.play('speed_up_'..MATH.clamp(GAME.rank-1,1,4))
+            end
+        end
+    end
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -76,16 +115,18 @@ function scene.update(dt)
     end
 end
 
+local gc = love.graphics
+
 local shadeColor = { .3, .15, 0 }
 local textColor = { .7, .5, .3 }
-local origAuth = GC.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
-local title = GC.newText(FONT.get(50), "EXPERT QUICK PICK")
-local slogan = GC.newText(FONT.get(30), "CROWD THE TOWER!")
-local sloganExp = GC.newText(FONT.get(30), "THRONG THE TOWER!")
+local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
+local title = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
+local slogan = gc.newText(FONT.get(30), "CROWD THE TOWER!")
+local sloganExp = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 -- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
 function scene.draw()
-    GC.clear(GAME.bg, 0, 0)
-    GC.setColor(1, 1, 1)
+    gc.clear(GAME.bg, 0, 0)
+    gc.setColor(1, 1, 1)
     if not FloatOnCard then
         for i = #Cards, 1, -1 do Cards[i]:draw() end
     else
@@ -95,49 +136,53 @@ function scene.draw()
         Cards[FloatOnCard]:draw()
     end
 
-    if not GAME.playing then
-        GC.setColor(.7, .5, .3)
+    if GAME.playing then
+        gc.setColor(COLOR.L)
+        FONT.set(40)
+        GC.mStr(("%.1fm"):format(GAME.altitude), 800, 942)
+    else
+        gc.setColor(.7, .5, .3)
         local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 362, nil, k, k * 1.1)
+        GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
 
         if FloatOnCard then
             local C = Cards[FloatOnCard]
             if C.lock then C = DeckData[0] end
-            GC.setColor(.3, .1, 0, .62)
-            GC.mRect('fill',800,910,1260,126,10)
-            GC.setColor(.7, .5, .3)
+            gc.setColor(.3, .1, 0, .62)
+            GC.mRect('fill', 800, 910, 1260, 126, 10)
+            gc.setColor(.7, .5, .3)
             FONT.set(60)
             GC.strokePrint('full', 3, shadeColor, textColor, C.fullName, 800, 842, nil, 'center')
             FONT.set(30)
             GC.strokePrint('full', 2, shadeColor, textColor, C.desc, 800, 926, nil, 'center')
         end
 
-        GC.replaceTransform(SCR.xOy_ul)
-        GC.draw(title, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
-        GC.replaceTransform(SCR.xOy_dl)
-        GC.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-        GC.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.replaceTransform(SCR.xOy_ul)
+        gc.draw(title, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
+        gc.replaceTransform(SCR.xOy_dl)
+        gc.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
 
-        GC.replaceTransform(SCR.xOy_dr)
-        GC.setColor(.26, .26, .26)
-        GC.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
+        gc.replaceTransform(SCR.xOy_dr)
+        gc.setColor(.26, .26, .26)
+        gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
     end
 end
 
 function scene.overDraw()
     if GAME.forfeitTimer > 0 then
-        GC.replaceTransform(SCR.origin)
-        GC.setColor(.872, .26, .26, GAME.forfeitTimer * .6)
-        GC.rectangle('fill', 0, SCR.h, SCR.w, -SCR.h * GAME.forfeitTimer / 2.6 * .5)
-        GC.setColor(.626, 0, 0, GAME.forfeitTimer * .6)
-        GC.rectangle('fill', 0, SCR.h * (1 - GAME.forfeitTimer / 2.6 * .5), SCR.w, -5)
+        gc.replaceTransform(SCR.origin)
+        gc.setColor(.872, .26, .26, GAME.forfeitTimer * .6)
+        gc.rectangle('fill', 0, SCR.h, SCR.w, -SCR.h * GAME.forfeitTimer / 2.6 * .5)
+        gc.setColor(.626, 0, 0, GAME.forfeitTimer * .6)
+        gc.rectangle('fill', 0, SCR.h * (1 - GAME.forfeitTimer / 2.6 * .5), SCR.w, -5)
     end
 end
 
 scene.widgetList = {
     WIDGET.new {
         name = 'start', type = 'button',
-        pos = { .5, .5 }, y = -220, w = 800, h = 260, cornerR = 2,
+        pos = { .5, .5 }, y = -170, w = 800, h = 200, cornerR = 2,
         color = 'lF',
         sound_hover = 'menuhover',
         fontSize = 100, text = "START",
@@ -151,7 +196,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'reset', type = 'button',
-        pos = { .5, .5 }, x = 500, y = -140, w = 160, h = 100, cornerR = 2,
+        pos = { .5, .5 }, x = 500, y = -120, w = 160, h = 100, cornerR = 2,
         color = 'DR',
         sound_hover = 'menutap',
         sound_release = 'menuclick',
@@ -162,9 +207,9 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'hint', type = 'hint',
-        pos = { .5, .5 }, x = 500, y = -280, w = 160, h = 140, cornerR = 2,
+        pos = { .5, .5 }, x = 500, y = -230, w = 80, cornerR = 40,
         color = 'lF',
-        fontSize = 80, text = "?", textColor = 'DR',
+        fontSize = 80, text = "?", textColor = 'dF',
         labelPos = 'leftBottom',
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.

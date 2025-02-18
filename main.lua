@@ -40,6 +40,19 @@ BgmSets = {
     extra = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
 
+Floors = {
+    { top = 50,   name = "Hall of Beginnings",   sfx = false },
+    { top = 150,  name = "The Hotel",            sfx = "c" },
+    { top = 300,  name = "The Casino",           sfx = "b" },
+    { top = 450,  name = "The Arena",            sfx = "a" },
+    { top = 650,  name = "The Museum",           sfx = "fsharp" },
+    { top = 850,  name = "Abandoned Offices",    sfx = "e" },
+    { top = 1100, name = "The Laboratory",       sfx = "a" },
+    { top = 1350, name = "The Core",             sfx = "ahalfsharp" },
+    { top = 1650, name = "Corruption",           sfx = "e" },
+    { top = 1e99, name = "Platform of The Gods", sfx = "e" },
+}
+
 DeckData = {
     { initOrder = 1, nameOrder = 8, id = 'EX', lockover = 'lockover-9',            name = 'expert',     fullName = "< EXPERT MODE >",         desc = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE" },
     { initOrder = 2, nameOrder = 4, id = 'NH', lockfull = 'lockfull-2',            name = 'nohold',     fullName = "< NO HOLD >",             desc = "CANCELING IS DISABLED" },
@@ -261,7 +274,7 @@ end)
 -- Messy position daemon
 TASK.new(function()
     local t = -.1
-    local step = 60 / 184
+    local step = 2 * 60 / 184
     while true do
         local T = BGM.tell()
         if T < t then t = -.1 end
@@ -269,7 +282,7 @@ TASK.new(function()
             t = t + step
             if GAME.mod_MS > 0 then
                 for i = 1, 9 do
-                    MessyBias[i] = math.random(-5, 5)
+                    MessyBias[i] = Cards[i].active and math.random(-6, 2) or math.random(-2, 6)
                 end
                 RefreshLayout()
             end
@@ -285,7 +298,7 @@ GAME:freshLockState()
 -- Test
 TASK.new(function()
     for _, s in next, {
-        '',
+        'purchase_start',
     } do
         SFX.play(s)
         TASK.yieldT(1)

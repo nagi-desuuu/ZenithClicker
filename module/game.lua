@@ -18,7 +18,7 @@ local GAME = {
     modText = GC.newText(FONT.get(30)),
     time = 0,
     xp = 0,
-    rank = 0,
+    rank = 1,
     floor = 1,
     altitude = 0,
 }
@@ -58,16 +58,17 @@ local function task_startSpin()
     end
 end
 function GAME:start()
+    MSG.setSafeY(0)
     MSG('io',"The game is still working in progress.\nYou can only press START to forfeit game", 4.2)
 
     BGM.set(BgmSets.extra, 'volume', 1)
 
     SFX.play('menuconfirm')
-    SFX.play('zenith_start')
+    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start')
 
     self.playing = true
     self.xp = 0
-    self.rank = 0
+    self.rank = 1
     self.floor = 1
     self.altitude = 0
 
@@ -76,6 +77,7 @@ function GAME:start()
 end
 
 function GAME:finish()
+    MSG.setSafeY(62)
     BGM.set(BgmSets.extra, 'volume', 0)
     local l = TABLE.copy(BgmSets.extra)
     BGM.set(TABLE.popRandom(l), 'volume', 1)
@@ -93,12 +95,9 @@ function GAME:finish()
 
     self.playing = false
 
-    if self.altitude > DATA.maxAltitude then
-        DATA.maxAltitude = self.altitude
-    end
-    if self.floor > DATA.maxFloor then
-        DATA.maxFloor = self.floor
-    end
+    -- if self.floor > DATA.maxFloor then DATA.maxFloor = self.floor end
+    -- if self.altitude > DATA.maxAltitude then DATA.maxAltitude = self.altitude end
+
     -- TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
     GAME:freshLockState()
 end
