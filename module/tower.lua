@@ -53,6 +53,12 @@ function scene.keyDown(key)
         else
             GAME:start()
         end
+    elseif key == '\\' then
+        if not GAME.playing then
+            for i = 1, #Cards - 1 do
+                Cards[i].lock = false
+            end
+        end
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then C:setActive() end
@@ -79,7 +85,7 @@ end
 
 local gc = love.graphics
 
-local shortcut=('QWERTYUIO'):atomize()
+local shortcut = ('QWERTYUIO'):atomize()
 local shadeColor = { .3, .15, 0 }
 local textColor = { .7, .5, .3 }
 local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
@@ -98,11 +104,11 @@ function scene.draw()
     else
         for i = #Cards, 1, -1 do Cards[i]:draw() end
     end
-    if GAME.mod_AS>0 then
+    if GAME.mod_AS > 0 then
         FONT.set(60)
-        for i = 1,#Cards do
+        for i = 1, #Cards do
             local C = Cards[i]
-            GC.strokePrint('full',4,shadeColor,COLOR.lR,shortcut[i],C.x+80,C.y+120)
+            GC.strokePrint('full', 4, shadeColor, COLOR.lR, shortcut[i], C.x + 80, C.y + 120)
         end
     end
 
