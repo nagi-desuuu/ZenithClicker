@@ -150,13 +150,7 @@ function Card:flip()
     local s, e = self.kx, self.front and 1 or -1
     TWEEN.new(function(t)
         self.kx = MATH.lerp(s, e, t)
-    end):setUnique('flip_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
-end
-
-function Card:shake()
-    TWEEN.new(function(t)
-        self.size = MATH.lerp(.56, .62, t)
-    end):setUnique('shake_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
+    end):setUnique('spin_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
 end
 
 function Card:spin()
@@ -172,8 +166,27 @@ function Card:spin()
             self.kx = -self.kx
         end
     end):setUnique('spin_' .. self.id)
+        :setOnKill(function()
+            self.ky = 1
+            self.r = 0
+            -- self.kx = self.front and 1 or -1
+        end)
         :setEase(GAME.mod_IN > 0 and 'OutInQuart' or 'OutQuart')
         :setDuration(0.42):run()
+end
+
+function Card:shake()
+    self.r = MATH.coin(-.26, .26)
+    local s, e = self.r, 0
+    TWEEN.new(function(t)
+        self.r = MATH.lerp(s, e, t)
+    end):setUnique('shake_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
+end
+
+function Card:flick()
+    TWEEN.new(function(t)
+        self.size = MATH.lerp(.56, .62, t)
+    end):setUnique('flick_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
 end
 
 local activeFrame = GC.newImage('assets/outline.png')

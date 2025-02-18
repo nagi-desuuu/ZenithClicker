@@ -25,7 +25,7 @@ local function click(x, y, k)
             if not C.lock then
                 C:setActive()
             else
-                C:shake()
+                C:flick()
                 SFX.play('no')
             end
         end
@@ -59,7 +59,7 @@ local function keyPress(key)
                 if Cards[i].lock then
                     Cards[i].lock = false
                     unlocked = true
-                    Cards[i]:shake()
+                    Cards[i]:flick()
                 end
             end
             if unlocked then

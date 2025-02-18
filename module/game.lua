@@ -58,7 +58,7 @@ local function task_startSpin()
         local C = Cards[i]
         if C.lock then
             C.lock = false
-            C:shake()
+            C:flick()
         else
             C:spin()
         end
