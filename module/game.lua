@@ -58,13 +58,14 @@ local function task_startSpin()
     end
 end
 function GAME:start()
+    SCN.scenes.main.widgetList.hint:setVisible(false)
     MSG.setSafeY(0)
-    MSG('io',"The game is still working in progress.\nYou can only press START to forfeit game", 4.2)
+    MSG('io', "The game is still working in progress.\nYou can only press START to forfeit game", 4.2)
 
     BGM.set(BgmSets.extra, 'volume', 1)
 
     SFX.play('menuconfirm')
-    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start',nil,nil,GAME.mod_GV)
+    SFX.play(Cards[9].active and 'zenith_start_duo' or 'zenith_start', nil, nil, GAME.mod_GV)
 
     self.playing = true
     self.xp = 0
@@ -77,7 +78,9 @@ function GAME:start()
 end
 
 function GAME:finish()
+    SCN.scenes.main.widgetList.hint:setVisible(true)
     MSG.setSafeY(62)
+
     BGM.set(BgmSets.extra, 'volume', 0)
     local l = TABLE.copy(BgmSets.extra)
     BGM.set(TABLE.popRandom(l), 'volume', 1)
@@ -99,23 +102,34 @@ function GAME:finish()
     -- if self.altitude > DATA.maxAltitude then DATA.maxAltitude = self.altitude end
 
     -- TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
+    if self.mod_AS then for _, C in next, Cards do C.burn = false end end
     GAME:freshLockState()
 end
 
-function GAME.task_cancelAll(auto)
+function GAME:commit()
+    -- TODO
+    if self.mod_MS == 2 then
+        table.insert(Cards, math.random(#Cards), table.remove(Cards, math.random(#Cards)))
+        RefreshLayout()
+    end
+    if self.mod_AS then for _, C in next, Cards do C.burn = false end end
+end
+
+function GAME:task_cancelAll()
+    local spinMode = self.mod_AS > 0
     for i = 1, #Cards do
         local C = Cards[i]
-        if C.active then
-            C:setActive(auto)
+        if spinMode or C.active then
+            C:setActive(true)
             TASK.yieldT(.026)
         end
     end
 end
 
-function GAME:cancelAll(auto)
+function GAME:cancelAll()
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
-    TASK.new(GAME.task_cancelAll, auto)
+    TASK.new(GAME.task_cancelAll, GAME)
 end
 
 function GAME:shuffleCards()

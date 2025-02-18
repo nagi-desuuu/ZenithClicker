@@ -46,58 +46,54 @@ function Card:setActive(auto)
     if GAME.mod_VL == 1 then
         if not self.active and not auto then
             self.charge = self.charge + 1
-            SFX.play('clearline',.42)
+            SFX.play('clearline', .42)
             if self.charge < 1.2 then
                 self:shake()
-                SFX.play('combo_3',.626,nil,-2+GAME.mod_GV)
+                SFX.play('combo_3', .626, nil, -2 + GAME.mod_GV)
                 return
             end
-            SFX.play('combo_4',.626,nil,GAME.mod_GV)
+            SFX.play('combo_4', .626, nil, GAME.mod_GV)
             self.charge = 0
         end
     elseif GAME.mod_VL == 2 then
         self.charge = self.charge + (auto and 2.6 or 1)
         if self.charge < 2.1 then
-            SFX.play('clearline',.3)
+            SFX.play('clearline', .3)
             self:shake()
-            if self.charge<1.2 then
-                SFX.play('combo_1',.626,nil,GAME.mod_GV)
+            if self.charge < 1.2 then
+                SFX.play('combo_1', .626, nil, GAME.mod_GV)
             else
-                SFX.play('combo_2',.626,nil,1+GAME.mod_GV)
+                SFX.play('combo_2', .626, nil, 1 + GAME.mod_GV)
             end
             return
         end
         if not auto then
-            SFX.play('clearquad',.3)
-            SFX.play('combo_4',.626,nil,GAME.mod_GV)
+            SFX.play('clearquad', .3)
+            SFX.play('combo_4', .626, nil, GAME.mod_GV)
         end
         self.charge = 0
     end
     local noSpin
     self.active = not self.active
     if GAME.playing then
-        if GAME.mod_NH > 0 then
-            if not self.active then
+        if not auto then
+            if GAME.mod_NH > 0 and not self.active then
                 GAME:cancelAll()
             end
-        end
-        if GAME.mod_AS > 0 then
-            if self.active then
-                if not auto then
-                    self.burn = GAME.mod_AS == 1 and 2 + GAME.floor / 2 or 1e99
-                end
-            else
-                if self.burn and not auto then
+            if GAME.mod_AS > 0 then
+                if self.burn then
+                    self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
                     local cards = TABLE.copy(Cards, 0)
                     TABLE.delete(cards, self)
                     for _ = 1, 4 do
                         local C = TABLE.popRandom(cards)
-                        C:setActive(C.active)
+                        C:setActive(true)
                     end
                     SFX.play('wound')
+                else
+                    self.burn = GAME.mod_AS == 1 and 2 + GAME.floor / 2 or 1e99
                 end
-                self.burn = false
             end
         end
     else
@@ -111,17 +107,21 @@ function Card:setActive(auto)
                     GAME.bg[i] = MATH.lerp(s[i], e[i], t)
                 end
             end):setDuration(self.active and .26 or .1):run()
+        elseif self.id == 'NH' then
+            BGM.set('piano', 'volume', self.active and .2 or 1)
         elseif self.id == 'GV' then
             BGM.set('all', 'pitch', self.active and 2 ^ (GAME.mod_GV / 12) or 1, .26)
+        elseif self.id == 'DH' then
+            local W = SCN.scenes.main.widgetList.start
+            W.text = self.active and 'COMMENCE' or 'START'
+            W:reset()
         elseif self.id == 'IN' then
             BGM.set('all', 'highgain', self.active and .7 or 1)
             for _, C in next, Cards do C:flip() end
             noSpin = true
-        elseif self.id == 'NH' then
-            BGM.set('piano', 'volume', self.active and .2 or 1)
-        elseif self.id == 'DH' then
-            local W = SCN.scenes.main.widgetList.start
-            W.text = self.active and 'COMMENCE' or 'START'
+        elseif self.id == 'AS' then
+            local W = SCN.scenes.main.widgetList.reset
+            W.text = self.active and 'SPIN' or 'RESET'
             W:reset()
         end
         GAME:freshComboText()
@@ -129,7 +129,7 @@ function Card:setActive(auto)
     if not auto then
         if self.active then
             SFX.play('card_select')
-            SFX.play('card_tone_' .. self.name,nil,nil,GAME.mod_GV)
+            SFX.play('card_tone_' .. self.name, nil, nil, GAME.mod_GV)
             if not noSpin then self:spin() end
         else
             SFX.play('card_slide_' .. math.random(4))
@@ -217,15 +217,17 @@ function Card:draw()
         end
         gc.shear(dx * 26e-3, dy * 26e-3)
     end
-    GC.setColor(1, 1, 1)
+    GC.setColor(
+        self.burn and (
+            love.timer.getTime() % .16 < .08 and COLOR.lF
+            or COLOR.Y
+        ) or COLOR.LL
+    )
     GC.draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
     if img2 then
         GC.draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
     if self.active then
-        if self.burn then
-            GC.setColor(love.timer.getTime() * 6 % .6 + .4, 1, 1)
-        end
         GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
     end
     gc.pop()
