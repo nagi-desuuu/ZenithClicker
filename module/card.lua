@@ -1,3 +1,6 @@
+local abs = math.abs
+
+
 ---@class Card
 ---@field burn false | number
 local Card = {}
@@ -38,8 +41,8 @@ end
 
 function Card:mouseOn(x, y)
     return
-        math.abs(x - self.x) <= self.size * 260 and
-        math.abs(y - self.y) <= self.size * 350
+        abs(x - self.x) <= self.size * 260 and
+        abs(y - self.y) <= self.size * 350
 end
 
 function Card:setActive(auto)
@@ -203,24 +206,23 @@ function Card:draw()
         end
         img2 = self.lock and self.lockover
     end
+
     gc.push('transform')
     gc.translate(self.x, self.y)
     gc.rotate(self.r)
-    gc.scale(math.abs(self.size * self.kx), self.size * self.ky)
+    gc.scale(abs(self.size * self.kx), self.size * self.ky)
+
+    -- Fake 3D
     if self == Cards[FloatOnCard] then
         local dx, dy = (MX - self.x) / (260 * self.size), (MY - self.y) / (350 * self.size)
-        dx = MATH.sign(dx) * math.abs(dx) ^ .6
-        dy = MATH.sign(dy) * math.abs(dy) ^ .6
-        dx, dy = dx * math.abs(dy), dy * math.abs(dx)
-        if dx > 0 and dy > 0 then
-            dx, dy = -dx, -dy
-        elseif dx > 0 then
-            dy = -dy
-        elseif dy > 0 then
-            dx = -dx
-        end
-        gc.shear(dx * 26e-3, dy * 26e-3)
+        local d = (abs(dx) - abs(dy)) * .026
+        gc.scale(math.min(1, 1 - d), math.min(1, 1 + d))
+        local D = -MATH.sign(dx * dy) * abs(dx * dy) ^ .626 * .026
+        gc.shear(D, D)
+        gc.scale(1 - abs(D))
     end
+
+    -- Draw card
     GC.setColor(
         self.burn and (
             love.timer.getTime() % .16 < .08 and COLOR.lF
@@ -234,6 +236,7 @@ function Card:draw()
     if self.active then
         GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
     end
+
     -- GC.mRect('line',0,0,260*2,350*2)
     gc.pop()
 end
