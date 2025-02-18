@@ -72,20 +72,21 @@ function scene.update(dt)
 
         if GAME.altitude >= Floors[GAME.floor].top then
             GAME.floor = GAME.floor + 1
+            if GAME.mod_MS == 1 and (GAME.floor % 2 == 1 or GAME.floor == 10) then GAME:shuffleCards() end
             TEXT:add {
                 text = "Floor",
                 x = 160, y = 290, k = 1.6, fontSize = 30,
-                color='LY', duration = 2.6,
+                color = 'LY', duration = 2.6,
             }
             TEXT:add {
                 text = tostring(GAME.floor),
                 x = 240, y = 280, k = 2.6, fontSize = 30,
-                color='LY', duration = 2.6, align='left',
+                color = 'LY', duration = 2.6, align = 'left',
             }
             TEXT:add {
                 text = Floors[GAME.floor].name,
                 x = 200, y = 350, k = 1.2, fontSize = 30,
-                color='LY', duration = 2.6,
+                color = 'LY', duration = 2.6,
             }
             SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx)
         end
