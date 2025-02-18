@@ -53,8 +53,16 @@ local function keyPress(key)
         end
     elseif key == '\\' then
         if not GAME.playing then
+            local unlocked
             for i = 1, #Cards - 1 do
+                if Cards[i].lock then
                 Cards[i].lock = false
+                    unlocked = true
+                    Cards[i]:shake()
+                end
+            end
+            if unlocked then
+                SFX.play('notify')
             end
         end
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
