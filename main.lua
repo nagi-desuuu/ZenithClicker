@@ -3,6 +3,7 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(120)
 ZENITHA.setShowFPS(false)
 ZENITHA.setVersionText("")
+ZENITHA.setClickDist(62)
 
 STRING.install()
 
