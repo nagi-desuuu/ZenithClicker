@@ -181,14 +181,15 @@ TASK.new(function()
 end)
 
 -- Messy position daemon
+-- Expert guitar randomization daemon
 TASK.new(function()
-    local t = -.1
-    local step = 2 * 60 / 184
+    local t1, step1 = -.1, 2 * 60 / 184
+    local t2, step2 = 0, 2 * 60 / 184 / 4
     while true do
         local T = BGM.tell()
-        if T < t then t = -.1 end
-        if T > t + step then
-            t = t + step
+        if T < t1 then t1 = -.1 end
+        if T > t1 + step1 then
+            t1 = t1 + step1
             if GAME.mod_MS > 0 then
                 for i = 1, 9 do
                     MessyBias[i] = Cards[i].active and math.random(-6, 2) or math.random(-2, 6)
@@ -196,22 +197,12 @@ TASK.new(function()
                 GAME.refreshLayout()
             end
         end
-        coroutine.yield()
-    end
-end)
-
--- Expert guitar randomization daemon
-TASK.new(function()
-    local t = 0
-    local step = 2 * 60 / 184 / 4
-    while true do
-        local T = BGM.tell()
-        if T < t then t = 0 end
-        if T > t + step then
-            t = t + step
+        if T < t2 then t2 = 0 end
+        if T > t2 + step2 then
+            t2 = t2 + step2
             if not GAME.playing and GAME.mod_EX > 0 then
                 local v = MATH.roll(.626)
-                BGM.set('expert', 'volume', v and MATH.rand(.6,1) or 0, v and 0 or .1)
+                BGM.set('expert', 'volume', v and MATH.rand(.42, .626) or 0, v and 0 or .1)
             end
         end
         coroutine.yield()
@@ -243,6 +234,7 @@ TASK.new(function()
     for _, s in next, ([[ ]]):split('%s+', true) do
         SFX.play(s)
         TASK.yieldT(1)
+        love.window.setIcon(love.image.newImageData('assets/icon.png'))
     end
 end)
 
