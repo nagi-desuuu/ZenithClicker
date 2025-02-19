@@ -206,7 +206,7 @@ return {
 
     -- boardappear=                 {0,   1.5989795918367347},
     -- boardlock_clear=             {122, 1.9877777777777794},
-    boardlock_clink = { 375, 0.9887755102041069 },
+    -- boardlock_clink=             {375, 0.9887755102041069},
     -- boardlock_fail=              {660, 1},
     -- boardlock_revive=            {379, 3.7051700680272006},
     -- boardlock=                   {128, 2},

@@ -43,7 +43,7 @@ local function mousePress(x, y, k)
             C:setActive()
         else
             C:flick()
-            SFX.play('boardlock_clink')
+            SFX.play('no')
         end
     end
 end
