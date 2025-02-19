@@ -105,6 +105,9 @@ function Card:setActive(auto)
         GAME['mod_' .. self.id] = self.active and 1 or 0
         if self.id == 'EX' then
             BGM.set('expert', 'volume', self.active and 1 or 0)
+            TWEEN.new(function(t)
+                GAME.exTimer = self.active and t or (1 - t)
+            end):setDuration(self.active and .26 or .1):run()
         elseif self.id == 'NH' then
             BGM.set('piano', 'volume', self.active and .2 or 1)
         elseif self.id == 'GV' then
