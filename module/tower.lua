@@ -210,11 +210,6 @@ function scene.draw()
         end
     end
 
-    -- Current combo
-    gc.setColor(.7, .5, .3)
-    local k = math.min(.9, 760 / GAME.modText:getWidth())
-    GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
-
     -- Thruster
     gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
     GC.mRect('fill', 800, 975, 420, 26)
@@ -270,6 +265,11 @@ function scene.draw()
 end
 
 function scene.overDraw()
+    -- Current combo
+    gc.setColor(.7, .5, .3)
+    local k = math.min(.9, 760 / GAME.modText:getWidth())
+    GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+
     if GAME.forfeitTimer > 0 then
         gc.replaceTransform(SCR.origin)
         gc.setColor(.872, .26, .26, GAME.forfeitTimer * .6)
@@ -279,11 +279,57 @@ function scene.overDraw()
     end
 end
 
+function WIDGET._prototype.button:draw()
+    gc.push('transform')
+    gc.translate(self._x, self._y)
+
+    if self._pressTime > 0 then
+        gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)
+    end
+    local w, h = self.w, self.h
+
+    local fillC = self.fillColor
+    local frameC = self.frameColor
+
+    -- Background
+    gc.setColor(fillC[1], fillC[2], fillC[3], fillC[4])
+    GC.mRect('fill', 0, 0, w, h)
+
+    -- Frame
+    gc.setLineWidth(self.lineWidth)
+    gc.setColor(frameC[1] * .2, frameC[2] * .2, frameC[3] * .2)
+    gc.line(-w / 2, h / 2, w / 2, h / 2, w / 2, -h / 2)
+    gc.setColor(.2 + frameC[1] * .8, .2 + frameC[2] * .8, .2 + frameC[3] * .8)
+    gc.line(-w / 2, h / 2, -w / 2, -h / 2, w / 2, -h / 2)
+
+    -- Highlight
+    if self._hoverTime > 0 then
+        gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .16)
+        GC.mRect('fill', 0, 0, w, h)
+    end
+
+    -- Drawable
+    local startX =
+        self.alignX == 'center' and 0 or
+        self.alignX == 'left' and -w * .5 + self.marginX or
+        w * .5 - self.marginX
+    local startY =
+        self.alignY == 'center' and 0 or
+        self.alignY == 'top' and -h * .5 + self.marginY or
+        h * .5 - self.marginY
+    if self._text then
+        gc.setColor(self.textColor)
+        WIDGET._alignDraw(self, self._text, startX, startY, nil, self.textScale)
+    end
+    gc.pop()
+end
+
 scene.widgetList = {
     WIDGET.new {
         name = 'start', type = 'button',
-        pos = { .5, .5 }, y = -170, w = 800, h = 200, cornerR = 2,
-        color = 'lF',
+        pos = { .5, .5 }, y = -170, w = 800, h = 200,
+        color = { .35, .12, .05 },
+        textColor = textColor,
         sound_hover = 'menuhover',
         fontSize = 100, text = "START",
         onClick = function()
@@ -296,7 +342,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'reset', type = 'button',
-        pos = { .5, .5 }, x = 500, y = -120, w = 160, h = 100, cornerR = 2,
+        pos = { .5, .5 }, x = 500, y = -120, w = 160, h = 100,
         color = 'DR',
         sound_hover = 'menutap',
         sound_release = 'menuclick',
