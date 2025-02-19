@@ -263,6 +263,11 @@ function GAME.start()
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
     GAME.showHint = true
+
+    DiscordRPC.update {
+        details = GAME.mod_EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
+        state = "In Game",
+    }
 end
 
 ---@param reason 'forfeit' | 'wrongAns' | 'killed'
@@ -307,6 +312,11 @@ function GAME.finish(reason)
     TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
     GAME.clearCardBuff()
     GAME.refreshLockState()
+
+    DiscordRPC.update {
+        details = "QUICK PICK",
+        state = "Enjoying Music",
+    }
 end
 
 function GAME.takeDamage(dmg, killReason)
@@ -363,14 +373,14 @@ end
 
 function GAME.task_cancelAll(noSpin)
     local spinMode = not noSpin and GAME.mod_AS > 0
-    local list={}
+    local list = {}
     for i = 1, #Cards do
         local C = Cards[i]
         if spinMode or C.active then
             table.insert(list, C)
         end
     end
-    for i=1, #list do
+    for i = 1, #list do
         local C = list[i]
         if spinMode or C.active then
             C:setActive(true)

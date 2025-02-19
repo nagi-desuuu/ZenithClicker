@@ -210,3 +210,14 @@ TASK.new(function()
         TASK.yieldT(1)
     end
 end)
+
+if SYSTEM == 'Web' then
+    _G[('DiscordRPC')] = { update = NULL, setEnable = NULL }
+else
+    DiscordRPC = require 'module/discordRPC'
+    DiscordRPC.setEnable(true)
+    DiscordRPC.update {
+        details = "QUICK PICK",
+        state = "Enjoying Music",
+    }
+end
