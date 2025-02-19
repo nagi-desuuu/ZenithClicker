@@ -145,19 +145,19 @@ function GAME.refreshLockState()
     Cards['DH'].lock = DATA.maxFloor < 6
     Cards['IN'].lock = DATA.maxFloor < 7
     Cards['AS'].lock = DATA.maxFloor < 8
-    Cards['2P'].lock = true
+    Cards['2P'].lock = true -- Not really locked forever! Try to find the way to play it
 end
 
 -- for floor = 1, 10 do
---     local stat = { 0, 0, 0, 0, 0, 0 }
+--     local stat = { 0, 0, 0, 0, 0 }
 --     local sum = 0
 --     for _ = 1, 620 do
---         local base = .626 + floor ^ .5 / 4
+--         local base = .626 + floor ^ .5 / 5
 --         local var = floor / 4.2
 
 --         local r = base + var * math.abs(MATH.randNorm())
 --         r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
---         r = MATH.clamp(r, 1, 6)
+--         r = MATH.clamp(r, 1, 5)
 --         stat[r] = stat[r] + 1
 --         sum = sum + r
 --     end
@@ -166,7 +166,7 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .626 + GAME.floor ^ .5 / 4
+    local base = .626 + GAME.floor ^ .5 / 5
     local var = GAME.floor / 4.2
     if GAME.mod_DH then base = base + .626 end
 
