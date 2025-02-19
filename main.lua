@@ -1,6 +1,7 @@
 require 'Zenitha'
 
-ZENITHA.setMainLoopSpeed(120)
+ZENITHA.setMainLoopSpeed(240)
+ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
 ZENITHA.setVersionText("")
 ZENITHA.setClickDist(62)
