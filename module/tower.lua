@@ -147,7 +147,7 @@ function scene.update(dt)
         Cards[i]:update(dt)
     end
     if love.keyboard.isDown('escape') and GAME.playing then
-        GAME.forfeitTimer = GAME.forfeitTimer + dt * MATH.clampInterpolate(0, 6, 26, 1, GAME.time)
+        GAME.forfeitTimer = GAME.forfeitTimer + dt * MATH.clampInterpolate(4, 6, 10, 2, GAME.questCount)
         if TASK.lock('forfeit_sfx', .0872) then
             SFX.play('detonate1', MATH.clampInterpolate(0, .4, 2, .6, GAME.forfeitTimer))
         end

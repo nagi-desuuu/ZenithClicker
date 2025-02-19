@@ -88,11 +88,11 @@ function Card:setActive(auto)
                 if self.burn then
                     self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
+                    GAME.showHint = true
                     local cards = TABLE.copy(Cards, 0)
                     TABLE.delete(cards, self)
-                    for _ = 1, 4 do
-                        local C = TABLE.popRandom(cards)
-                        C:setActive(true)
+                    for _ = 1, GAME.mod_AS == 1 and 2 or 4 do
+                        TABLE.popRandom(cards):setActive(true)
                     end
                     SFX.play('wound')
                 else
@@ -237,8 +237,8 @@ function Card:draw()
     -- Draw card
     GC.setColor(
         self.burn and (
-            love.timer.getTime() % .16 < .08 and COLOR.lF
-            or COLOR.Y
+            GAME.time % .16 < .08 and COLOR.LF
+            or COLOR.lY
         ) or COLOR.LL
     )
     GC.draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
@@ -249,32 +249,34 @@ function Card:draw()
     local r, g, b = 1, .26, 0
     local a = 0
 
-    if self.active then
-        a = 1
-        if GAME.playing and not self.hintMark then
-            r, g, b = .4 + .2 * math.sin(GAME.time * 42), 0, 0
-        end
-    else
-        if self.hintMark then
-            r, g, b = 1, 1, 1
-            local qt = GAME.questTime
-            if GAME.mod_IN == 0 then
-                if GAME.mod_EX > 0 then qt = qt - 1.5 end
-                a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
-                    MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
-            elseif GAME.mod_IN == 1 then
-                if GAME.mod_EX > 0 then qt = qt * .626 end
-                a = -.1 + .4 * math.sin(3.1416 + qt * 3)
-            else
-                a = 0
+    if not GAME.playing or GAME.showHint then
+        if self.active then
+            a = 1
+            if GAME.playing and not self.hintMark then
+                r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
+            end
+        else
+            if self.hintMark then
+                r, g, b = 1, 1, 1
+                local qt = GAME.questTime
+                if GAME.mod_IN == 0 then
+                    if GAME.mod_EX > 0 then qt = qt - 1.5 end
+                    a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
+                        MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
+                elseif GAME.mod_IN == 1 then
+                    if GAME.mod_EX > 0 then qt = qt * .626 end
+                    a = -.1 + .4 * math.sin(3.1416 + qt * 3)
+                else
+                    a = 0
+                end
             end
         end
-    end
-    if a > 0 then
-        GC.setShader(outlineShader)
-        GC.setColor(r, g, b, a)
-        GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
-        GC.setShader()
+        if a > 0 then
+            GC.setShader(outlineShader)
+            GC.setColor(r, g, b, a)
+            GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+            GC.setShader()
+        end
     end
 
     -- GC.mRect('line',0,0,260*2,350*2)

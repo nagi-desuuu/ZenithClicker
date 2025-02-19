@@ -11,6 +11,7 @@
 ---
 ---@field time number
 ---@field questTime number
+---@field questCount number
 ---@field rank number
 ---@field xp number
 ---@field rankupLast boolean
@@ -242,6 +243,8 @@ function GAME.start()
     GAME.queueLen = GAME.mod_NH == 2 and 1 or 3
 
     GAME.time = 0
+    GAME.questTime = 0
+    GAME.questCount = 0
     GAME.rank = 1
     GAME.xp = 0
     GAME.rankupLast = false
@@ -261,6 +264,7 @@ function GAME.start()
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
+    GAME.showHint = true
 end
 
 ---@param reason 'forfeit' | 'wrongAns' | 'killed'
@@ -347,6 +351,7 @@ function GAME.commit()
         end
 
         table.remove(GAME.quests, 1)
+        GAME.questCount = GAME.questCount + 1
         GAME.genQuest()
         GAME.questReady()
     else
@@ -354,6 +359,7 @@ function GAME.commit()
     end
     if result or GAME.mod_EX > 0 then
         GAME.cancelAll(true)
+        GAME.showHint = false
     end
 end
 
@@ -373,6 +379,7 @@ function GAME.task_cancelAll(noSpin)
         end
         TASK.yieldT(.026)
     end
+    GAME.showHint = true
 end
 
 function GAME.cancelAll(noSpin)
