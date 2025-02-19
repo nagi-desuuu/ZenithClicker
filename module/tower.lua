@@ -39,9 +39,9 @@ local function mousePress(x, y, k)
     mouseMove(x, y)
     local C = Cards[FloatOnCard]
     if C then
-        if GAME.playing then
+        if GAME.playing or not C.lock then
             C:setActive()
-        elseif C.lock then
+        else
             C:flick()
             SFX.play('boardlock_clink')
         end
@@ -86,9 +86,9 @@ local function keyPress(key)
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then
-            if GAME.playing then
+            if GAME.playing or not C.lock then
                 C:setActive()
-            elseif C.lock then
+            else
                 C:flick()
                 SFX.play('boardlock_clink')
             end

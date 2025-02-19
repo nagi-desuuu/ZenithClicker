@@ -183,8 +183,24 @@ function GAME.genQuest()
         combo = combo,
         name = GAME.getComboName(combo, GAME.mod_DH == 2),
     })
+end
 
+function GAME.questReady()
     GAME.dmgTimer = GAME.dmgDelay
+    GAME.clearCardBuff()
+    local Q = GAME.quests[1].combo
+    for i = 1, #Q do
+        Cards[Q[i]].hintTimer = 0
+    end
+end
+
+function GAME.clearCardBuff()
+    for _, C in ipairs(Cards) do
+        if GAME.mod_AS then
+            C.burn = false
+        end
+        C.hintTimer = false
+    end
 end
 
 local function task_startSpin()
@@ -239,6 +255,7 @@ function GAME.start()
 
     TABLE.clear(GAME.quests)
     while #GAME.quests < GAME.queueLen do GAME.genQuest() end
+    GAME.questReady()
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
@@ -284,7 +301,7 @@ function GAME.finish(reason)
     -- if newPB then SFX.play('newrecord') end
 
     TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
-    GAME.remDebuff()
+    GAME.clearCardBuff()
     GAME.refreshLockState()
 end
 
@@ -304,8 +321,6 @@ end
 
 function GAME.commit()
     if #GAME.quests == 0 then return end
-
-    GAME.remDebuff()
 
     local Q = GAME.quests[1]
 
@@ -331,6 +346,7 @@ function GAME.commit()
 
         table.remove(GAME.quests, 1)
         GAME.genQuest()
+        GAME.questReady()
     else
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
     end
@@ -354,10 +370,6 @@ function GAME.cancelAll(noSpin)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, noSpin)
-end
-
-function GAME.remDebuff()
-    if GAME.mod_AS then for _, C in next, Cards do C.burn = false end end
 end
 
 function GAME.shuffleCards()

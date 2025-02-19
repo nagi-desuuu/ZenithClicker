@@ -3,6 +3,7 @@ local abs = math.abs
 
 ---@class Card
 ---@field burn false | number
+---@field hintTimer false | number
 local Card = {}
 Card.__index = Card
 function Card.new(d)
@@ -34,6 +35,7 @@ function Card.new(d)
         ty = 0,
 
         burn = false,
+        hintTimer = false,
         charge = 0,
     }, Card)
     return obj
@@ -199,6 +201,9 @@ function Card:update(dt)
     end
     if self.charge > 0 then
         self.charge = math.max(self.charge - dt, 0)
+    end
+    if self.hintTimer then
+        self.hintTimer = self.hintTimer + dt
     end
 end
 
