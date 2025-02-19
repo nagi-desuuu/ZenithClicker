@@ -23,7 +23,6 @@
 ---@field b2b number
 local GAME = {
     modText = GC.newText(FONT.get(30)),
-    bg = { .1, 0, 0 },
     forfeitTimer = 0,
     exTimer = 0,
 
@@ -40,6 +39,7 @@ local GAME = {
     playing = false,
     quests = {}, --- @type Question[]
 
+    floor = 1,
     rank = 1,
     xp = 0,
     altitude = 0,

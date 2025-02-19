@@ -105,13 +105,6 @@ function Card:setActive(auto)
         GAME['mod_' .. self.id] = self.active and 1 or 0
         if self.id == 'EX' then
             BGM.set('expert', 'volume', self.active and 1 or 0)
-            local s, e = TABLE.copy(GAME.bg), self.active and { .2, 0, 0 } or { .1, 0, 0 }
-            TWEEN.new(function(t)
-                GAME.exTimer = self.active and t or (1 - t)
-                for i = 1, 3 do
-                    GAME.bg[i] = MATH.lerp(s[i], e[i], t)
-                end
-            end):setDuration(self.active and .26 or .1):run()
         elseif self.id == 'NH' then
             BGM.set('piano', 'volume', self.active and .2 or 1)
         elseif self.id == 'GV' then

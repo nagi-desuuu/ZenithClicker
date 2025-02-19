@@ -27,6 +27,21 @@ BGM.load {
 SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
 SFX.setVol(.6)
 
+IMG.init {
+    floorBG = {
+        'assets/1fa.jpg',
+        'assets/2fa.jpg',
+        'assets/3fa.jpg',
+        'assets/4fa.jpg',
+        'assets/5fa.jpg',
+        'assets/6fa.jpg',
+        'assets/7fa.jpg',
+        'assets/8fa.jpg',
+        'assets/9fa.jpg',
+        'assets/10fa.jpg',
+    }
+}
+
 DATA = require 'module/data'
 
 GAME = require 'module/game'
