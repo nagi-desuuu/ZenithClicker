@@ -130,16 +130,12 @@ function Card:setActive(auto)
     end
     GAME.refreshComboText()
     if not auto then -- Sound and animation
-        if self.lock then
-            SFX.play(self.active and 'boardlock_clink' or 'boardlock_fail')
+        if self.active then
+            SFX.play('card_select')
+            SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
+            if not noSpin then self:spin() end
         else
-            if self.active then
-                SFX.play('card_select')
-                SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
-                if not noSpin then self:spin() end
-            else
-                SFX.play('card_slide_' .. math.random(4))
-            end
+            SFX.play('card_slide_' .. math.random(4))
         end
     end
     GAME.refreshLayout()

@@ -37,17 +37,13 @@ end
 
 local function mousePress(x, y, k)
     mouseMove(x, y)
-    local C = Cards[MouseOnCard(x, y)]
+    local C = Cards[FloatOnCard]
     if C then
         if GAME.playing then
             C:setActive()
-        else
-            if not C.lock then
-                C:setActive()
-            else
-                C:flick()
-                SFX.play('no')
-            end
+        elseif C.lock then
+            C:flick()
+            SFX.play('boardlock_clink')
         end
     end
 end
@@ -89,7 +85,14 @@ local function keyPress(key)
         end
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
-        if C then C:setActive() end
+        if C then
+            if GAME.playing then
+                C:setActive()
+            elseif C.lock then
+                C:flick()
+                SFX.play('boardlock_clink')
+            end
+        end
     end
 end
 
@@ -211,7 +214,7 @@ function scene.draw()
 
     -- Thruster
     gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
-    GC.mRect('fill', 800, 975, 420 , 26)
+    GC.mRect('fill', 800, 975, 420, 26)
     gc.setColor(rankColor[GAME.rank] or COLOR.L)
     GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
     GC.setLineWidth(2)
