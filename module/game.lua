@@ -18,7 +18,8 @@
 ---@field fatigue number
 ---@field live number
 ---@field dmgTimer number
----@field b2b number
+---@field chain number
+---@field chaining boolean
 local GAME = {
     modText = GC.newText(FONT.get(30)),
     forfeitTimer = 0,
@@ -191,20 +192,13 @@ end
 function GAME.questReady()
     GAME.dmgTimer = GAME.dmgDelay
     GAME.questTime = 0
-    GAME.clearCardBuff()
-    local Q = GAME.quests[1].combo
-    for i = 1, #Q do
-        Cards[Q[i]].hintMark = true
-    end
-end
-
-function GAME.clearCardBuff()
+    GAME.fault = false
     for _, C in ipairs(Cards) do
-        if GAME.mod_AS then
-            C.burn = false
-        end
+        C.touchCount = 0
         C.hintMark = false
     end
+    local Q = GAME.quests[1].combo
+    for i = 1, #Q do Cards[Q[i]].hintMark = true end
 end
 
 function GAME.anim_setMenuHide(t)
@@ -233,6 +227,7 @@ local function task_startSpin()
     if GAME.mod_MS > 0 then
         GAME.shuffleCards()
     end
+    GAME.questReady()
 end
 function GAME.start()
     SCN.scenes.main.widgetList.hint:setVisible(false)
@@ -266,7 +261,8 @@ function GAME.start()
     GAME.heightBuffer = 0
     GAME.live = 20
     GAME.dmgTimer = 0
-    GAME.b2b = 0
+    GAME.chain = 0
+    GAME.chaining = false
 
     TABLE.clear(GAME.quests)
     while #GAME.quests < GAME.queueLen do GAME.genQuest() end
@@ -306,7 +302,8 @@ function GAME.finish(reason)
         if (GAME['mod_' .. C.id] > 0) ~= C.active then
             C:setActive(true)
         end
-        C.lock = GAME['mod_' .. C.id] < 0
+        C.touchCount = 0
+        C.hintMark = false
     end
 
     GAME.playing = false
@@ -335,7 +332,7 @@ function GAME.finish(reason)
     -- end
 
     TASK.removeTask_code(task_startSpin)
-    GAME.clearCardBuff()
+    for _, C in ipairs(Cards) do C:clearBuff() end
     GAME.refreshLockState()
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
@@ -371,10 +368,53 @@ function GAME.commit()
     if result then
         GAME.live = math.min(GAME.live + math.max(GAME.dmgHeal, 0), 20)
 
+        local attack = TABLE.find(hand, '2P') and 6 or 4
+        local xp = 0
+        if GAME.fault then
+            xp = xp + 2
+            if GAME.chain < 4 then
+                SFX.play('clearline', .62)
+            else
+                SFX.play('clearline')
+                SFX.play(
+                    GAME.chain < 8 and 'b2bcharge_blast_1' or
+                    GAME.chain < 12 and 'b2bcharge_blast_2' or
+                    GAME.chain < 24 and 'b2bcharge_blast_3' or
+                    'b2bcharge_blast_4'
+                )
+                if GAME.chain >= 8 then
+                    SFX.play('thunder' .. math.random(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
+                end
+                while GAME.chain > 0 and GAME.live < 20 do
+                    GAME.chain = math.max(GAME.chain - 2, 0)
+                    GAME.live = math.min(GAME.live + 1, 20)
+                end
+                if GAME.chain > 0 then
+                    attack = attack + GAME.chain
+                end
+            end
+            GAME.chain = 0
+        else
+            SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
+            xp = xp + 3
+            GAME.chain = GAME.chain + 1
+            if GAME.chain < 4 then
+            elseif GAME.chain < 8 then
+                if GAME.chain == 4 then SFX.play('b2bcharge_start') end
+                SFX.play('b2bcharge_1', .8)
+            elseif GAME.chain < 12 then
+                SFX.play('b2bcharge_2', .8)
+            elseif GAME.chain < 24 then
+                SFX.play('b2bcharge_3', .8)
+            else
+                SFX.play('b2bcharge_4', .8)
+            end
+        end
+
         SFX.play(TABLE.find(hand, '2P') and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod_GV)
 
-        GAME.addHeight(TABLE.find(hand, '2P') and 15 or 10)
-        GAME.addXP(2.6 + .26 * #hand)
+        GAME.addHeight(attack)
+        GAME.addXP(attack + xp)
 
         if GAME.mod_MS == 2 then
             local r1 = math.random(#Cards)
@@ -387,39 +427,44 @@ function GAME.commit()
         table.remove(GAME.quests, 1)
         GAME.questCount = GAME.questCount + 1
         GAME.genQuest()
+
+        GAME.showHint = false
+        GAME.cancelAll(true, true)
+
         GAME.questReady()
     else
+        GAME.fault = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
-    end
-    if result or GAME.mod_EX > 0 then
-        GAME.cancelAll(true)
-        GAME.showHint = false
+        if GAME.mod_EX > 0 then
+            GAME.showHint = false
+            GAME.cancelAll(true, true)
+        end
     end
 end
 
-function GAME.task_cancelAll(noSpin)
+function GAME.task_cancelAll(noSpin, instant)
     local spinMode = not noSpin and GAME.mod_AS > 0
-    local list = {}
+    local list = TABLE.copy(Cards, 0)
+    local needFlip = {}
     for i = 1, #Cards do
-        local C = Cards[i]
-        if spinMode or C.active then
-            table.insert(list, C)
-        end
+        needFlip[i] = spinMode or Cards[i].active
     end
     for i = 1, #list do
-        local C = list[i]
-        if spinMode or C.active then
-            C:setActive(true)
+        if needFlip[i] then
+            list[i]:setActive(true)
+            if not instant then
+                TASK.yieldT(.026)
+            end
         end
-        TASK.yieldT(.026)
+        list[i]:clearBuff()
     end
     GAME.showHint = GAME.mod_IN < 2
 end
 
-function GAME.cancelAll(noSpin)
+function GAME.cancelAll(noSpin, instant)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
-    TASK.new(GAME.task_cancelAll, noSpin)
+    TASK.new(GAME.task_cancelAll, noSpin, instant)
 end
 
 function GAME.shuffleCards()
@@ -469,7 +514,7 @@ function GAME.addXP(xp)
             GAME.rank = GAME.rank + math.floor(GAME.xp / (4 * GAME.rank))
         end
 
-        SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4))
+        SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4), .4 + GAME.xpLockLevel / 10)
     end
 end
 
@@ -508,14 +553,14 @@ function GAME.update(dt)
         if GAME.xpLockTimer > 0 then
             GAME.xpLockTimer = GAME.xpLockTimer - dt
         else
-            GAME.xp = GAME.xp - dt * (GAME.mod_EX and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+            GAME.xp = GAME.xp - dt * (GAME.mod_EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
             if GAME.xp <= 0 then
                 GAME.xp = 0
                 if GAME.rank > 1 then
                     GAME.rank = GAME.rank - 1
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
-                    SFX.play('speed_down')
+                    SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                 end
             end
         end

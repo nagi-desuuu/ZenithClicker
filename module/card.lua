@@ -33,6 +33,7 @@ function Card.new(d)
         tx = 0,
         ty = 0,
 
+        touchCount = 0,
         burn = false,
         hintMark = false,
         charge = 0,
@@ -44,6 +45,11 @@ function Card:mouseOn(x, y)
     return
         abs(x - self.x) <= self.size * 260 and
         abs(y - self.y) <= self.size * 350
+end
+
+function Card:clearBuff()
+    if GAME.mod_AS then self.burn = false end
+    self.charge = 0
 end
 
 function Card:setActive(auto)
@@ -80,6 +86,14 @@ function Card:setActive(auto)
     local noSpin
     self.active = not self.active
     if GAME.playing then
+        self.touchCount = self.touchCount + 1
+        if self.touchCount == 1 then
+            if self.hintMark then
+                GAME.addXP(1)
+            end
+        elseif self.touchCount == 2 then
+            GAME.fault = true
+        end
         if not auto then
             if GAME.mod_NH > 0 and not self.active then
                 GAME.cancelAll()

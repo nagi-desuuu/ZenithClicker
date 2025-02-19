@@ -210,6 +210,12 @@ function scene.draw()
         end
     end
 
+    -- Debug
+    -- FONT.set(40) gc.setColor(1, 1, 1)
+    -- for i = 1, #Cards do
+    --     GC.print(Cards[i].touchCount, Cards[i].x, Cards[i].y-260)
+    -- end
+
     -- Thruster
     gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
     GC.mRect('fill', 800, 975, 420, 26)
