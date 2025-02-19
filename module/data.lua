@@ -3,6 +3,7 @@ local flushCHN, dataCHN = love.thread.getChannel('save_flush'), love.thread.getC
 ---@class Techmino.Data: Techmino._Data
 local _DATA = {
     maxAltitude = 0,
+    maxAltitude_ex = 0,
     maxFloor = 1,
 }
 

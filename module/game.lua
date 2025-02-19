@@ -237,7 +237,7 @@ end
 function GAME.start()
     SCN.scenes.main.widgetList.hint:setVisible(false)
     MSG.clear()
-    MSG('io', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
+    MSG('dark', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
 
     BGM.set(BgmSets.extra, 'volume', 1)
     BGM.set('expert', 'volume', MATH.sign(GAME.mod_EX))
@@ -320,9 +320,21 @@ function GAME.finish(reason)
     --     DATA.maxAltitude = GAME.altitude
     --     newPB = true
     -- end
-    -- if newPB then SFX.play('newrecord') end
+    -- if GAME.mod_EX>0 and GAME.altitude > DATA.maxAltitude_ex then
+    --     DATA.maxAltitude_ex = GAME.altitude
+    --     newPB = true
+    -- end
+    -- if newPB then
+    --     TEXT:add {
+    --         text = "PERSOANL BEST",
+    --         x = 800, y = 450, k = 3, fontSize = 60,
+    --         style = 'beat', inPoint = .26, outPoint = .62,
+    --         color = 'lY', duration = 6.2,
+    --     }
+    --     SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+    -- end
 
-    TASK.removeTask_code(task_startSpin) -- Double hit quickly then you can...
+    TASK.removeTask_code(task_startSpin)
     GAME.clearCardBuff()
     GAME.refreshLockState()
 

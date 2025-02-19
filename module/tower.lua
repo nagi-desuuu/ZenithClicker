@@ -53,7 +53,7 @@ local function keyPress(key)
         if not GAME.playing then
             if TASK.lock('sure_quit', 2.6) then
                 SFX.play('menuclick')
-                MSG('io', "PRESS AGAIN TO QUIT", 2.6)
+                MSG('dark', "PRESS AGAIN TO QUIT", 2.6)
             else
                 BGM.set('all', 'volume', 0, 1.6)
                 SFX.play('menuback')
@@ -181,7 +181,6 @@ local rankColor = {
     { 1,  .8, 1 },
 }
 local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
-local title = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 local slogan = gc.newText(FONT.get(30), "CROWD THE TOWER!")
 local sloganExp = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 -- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
@@ -256,16 +255,21 @@ function scene.draw()
     if GAME.textHide < 1 then
         local d = GAME.textHide * 70
         gc.replaceTransform(SCR.xOy_ul)
+        gc.translate(0, -d)
         gc.setColor(shadeColor)
-        GC.rectangle('fill', 0, 0, 1600, 70 - d)
+        GC.rectangle('fill', 0, 0, 1600, 70)
         gc.setColor(textColor)
-        gc.draw(title, GAME.exTimer * 205 - 195, -d, nil, 1, 1.1)
+        FONT.set(50)
+        gc.print("EXPERT QUICK PICK", GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
+        gc.printf("Personal Best: " .. (GAME.mod_EX and DATA.maxAltitude_ex or DATA.maxAltitude) .. "m", 0, 0, 1590,'right',nil,1,1.1)
+
         gc.replaceTransform(SCR.xOy_dl)
-        gc.draw(slogan, 6, 2 + GAME.exTimer * 42 + d, nil, 1, 1.26, 0, origAuth:getHeight())
-        gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42 + d, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.translate(0, d)
+        gc.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
         gc.replaceTransform(SCR.xOy_dr)
         gc.setColor(.26, .26, .26)
-        gc.draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
+        gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
     end
 end
 
