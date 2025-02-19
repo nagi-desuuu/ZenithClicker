@@ -147,17 +147,33 @@ function GAME.refreshLockState()
     Cards['2P'].lock = true
 end
 
+-- for floor = 1, 10 do
+--     local stat = { 0, 0, 0, 0, 0, 0 }
+--     local sum = 0
+--     for _ = 1, 620 do
+--         local base = .626 + floor ^ .5 / 4
+--         local var = floor / 4.2
+
+--         local r = base + var * math.abs(MATH.randNorm())
+--         r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
+--         r = MATH.clamp(r, 1, 6)
+--         stat[r] = stat[r] + 1
+--         sum = sum + r
+--     end
+--     print(("Floor %2d : %s"):format(floor, table.concat(stat, ', ')), "E(x)=" .. sum / MATH.sum(stat))
+-- end
+
 function GAME.genQuest()
     local combo = {}
-    local base = 1.2 + GAME.floor / 6
-    local var = GAME.floor
-    if GAME.mod_DH then base = base + 1 end
+    local base = .626 + GAME.floor ^ .5 / 4
+    local var = GAME.floor / 4.2
+    if GAME.mod_DH then base = base + .626 end
 
-    local r = base + var * math.abs(MATH.randNorm()) / 3
+    local r = base + var * math.abs(MATH.randNorm())
     r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
 
     local pool = TABLE.copyAll(ModWeight)
-    for _ = 1, math.min(r, 6) do
+    for _ = 1, math.min(r, 5) do
         local mod = MATH.randFreqAll(pool)
         pool[mod] = nil
         table.insert(combo, mod)
@@ -302,8 +318,8 @@ function GAME.commit()
 
         SFX.play(TABLE.find(hand, '2P') and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod_GV)
 
-        GAME.addHeight(10)
-        GAME.addXP(2.6)
+        GAME.addHeight(TABLE.find(hand, '2P') and 15 or 10)
+        GAME.addXP(2.6 + .26 * #hand)
 
         if GAME.mod_MS == 2 then
             local r1 = math.random(#Cards)

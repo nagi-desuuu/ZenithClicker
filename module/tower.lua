@@ -208,7 +208,7 @@ function scene.draw()
     local k = math.min(.9, 760 / GAME.modText:getWidth())
     GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
 
-    -- Altitude and XP
+    -- Thruster
     gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
     GC.mRect('fill', 800, 975, 420 , 26)
     gc.setColor(rankColor[GAME.rank] or COLOR.L)
@@ -216,6 +216,8 @@ function scene.draw()
     GC.setLineWidth(2)
     gc.setColor(1, 1, 1, .42)
     GC.mRect('line', 800, 975, 420, 26)
+
+    -- Altitude
     FONT.set(40)
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
 
