@@ -272,5 +272,5 @@ return {
     -- timer2=                      {464, 0.4},
     -- userjoin=                    {308, 0.7},
     -- userleave=                   {204, 0.3},
-    -- warning=                     {271, 1.2},
+    warning = { 271, 1.2 },
 }

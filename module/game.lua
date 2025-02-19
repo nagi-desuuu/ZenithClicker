@@ -12,14 +12,10 @@
 ---@field time number
 ---@field questTime number
 ---@field questCount number
----@field rank number
----@field xp number
 ---@field rankupLast boolean
 ---@field xpLockLevel number
 ---@field xpLockTimer number
----@field floor number
 ---@field fatigue number
----@field altitude number
 ---@field live number
 ---@field dmgTimer number
 ---@field b2b number
@@ -86,7 +82,7 @@ local modName = {
 ---@param list? string[]
 ---@param extend? boolean use extended combo lib from community
 function GAME.getComboName(list, extend)
-    if not list then list = GAME.getHand() end
+    list = list and TABLE.copy(list) or GAME.getHand()
 
     if #list == 0 then return "" end
     if #list == 1 then return modName.noun[list[1]] end
@@ -175,6 +171,8 @@ function GAME.genQuest()
     r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
 
     local pool = TABLE.copyAll(ModWeight)
+    local lastQ = GAME.quests[#GAME.quests]
+    if lastQ then pool[lastQ.combo[1]] = nil end
     for _ = 1, math.min(r, 5) do
         local mod = MATH.randFreqAll(pool)
         pool[mod] = nil
@@ -456,6 +454,7 @@ function GAME.update(dt)
                 GAME[e[i]] = GAME[e[i]] + e[i + 1]
             end
             GAME.fatigue = GAME.fatigue + 1
+            SFX.play('warning')
         end
 
         local releaseHeight = GAME.heightBuffer
