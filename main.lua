@@ -199,6 +199,24 @@ TASK.new(function()
     end
 end)
 
+-- Expert guitar randomization daemon
+TASK.new(function()
+    local t = 0
+    local step = 2 * 60 / 184 / 4
+    while true do
+        local T = BGM.tell()
+        if T < t then t = 0 end
+        if T > t + step then
+            t = t + step
+            if not GAME.playing and GAME.mod_EX > 0 then
+                local v = MATH.roll(.626)
+                BGM.set('expert', 'volume', v and MATH.rand(.6,1) or 0, v and 0 or .1)
+            end
+        end
+        coroutine.yield()
+    end
+end)
+
 -- Background transition deamon
 TASK.new(function()
     while true do

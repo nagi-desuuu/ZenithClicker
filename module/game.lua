@@ -231,6 +231,7 @@ function GAME.start()
     MSG('io', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
 
     BGM.set(BgmSets.extra, 'volume', 1)
+    BGM.set('expert', 'volume', 1)
 
     SFX.play('menuconfirm', .8)
     SFX.play(Cards['2P'].active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod_GV)
