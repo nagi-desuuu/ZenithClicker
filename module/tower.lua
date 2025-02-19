@@ -4,19 +4,39 @@ function scene.load()
     love.keyboard.setKeyRepeat(false)
 end
 
-function scene.mouseMove(x, y, dx, dy)
+local function MouseOnCard(x, y)
+    if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
+        return FloatOnCard
+    end
+    local cid, dist = 0, 1e99
+    for j = 1, #Cards do
+        if Cards[j]:mouseOn(x, y) then
+            local dist2 = MATH.distance(x, y, Cards[j].x, Cards[j].y)
+            if dist2 < dist then
+                dist = dist2
+                cid = j
+            end
+        end
+    end
+    if cid > 0 then
+        return cid
+    end
+end
+
+local function mouseMove(x, y)
     MX, MY = x, y
     local new = MouseOnCard(x, y)
     if FloatOnCard ~= new then
         FloatOnCard = new
-        RefreshLayout()
-        if FloatOnCard then
+        if new then
             SFX.play('card_slide_' .. math.random(4), .5)
         end
+        GAME.refreshLayout()
     end
 end
 
-local function click(x, y, k)
+local function mousePress(x, y, k)
+    mouseMove(x, y)
     local C = Cards[MouseOnCard(x, y)]
     if C then
         if GAME.playing then
@@ -48,7 +68,7 @@ local function keyPress(key)
         GAME.cancelAll()
     elseif key == 'space' then
         if GAME.playing then
-            GAME.finish()
+            GAME.commit()
         else
             GAME.start()
         end
@@ -63,7 +83,7 @@ local function keyPress(key)
                 end
             end
             if unlocked then
-                SFX.play('notify')
+                SFX.play('supporter')
             end
         end
     elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
@@ -72,10 +92,14 @@ local function keyPress(key)
     end
 end
 
+function scene.mouseMove(x, y, dx, dy)
+    mouseMove(x, y)
+end
+
 local cancelNextClick
 function scene.mouseDown(x, y, k)
     if GAME.mod_EX == 0 then
-        click(x, y, k)
+        mousePress(x, y, k)
         if GAME.mod_EX > 0 then
             cancelNextClick = true
         end
@@ -88,7 +112,7 @@ function scene.mouseClick(x, y, k)
         return
     end
     if GAME.mod_EX > 0 then
-        click(x, y, k)
+        mousePress(x, y, k)
     end
 end
 
@@ -119,9 +143,13 @@ function scene.update(dt)
         Cards[i]:update(dt)
     end
     if love.keyboard.isDown('escape') and GAME.playing then
-        GAME.forfeitTimer = GAME.forfeitTimer + dt
+        GAME.forfeitTimer = GAME.forfeitTimer + dt * MATH.clampInterpolate(0, 6, 26, 1, GAME.time)
+        if TASK.lock('forfeit_sfx', .0872) then
+            SFX.play('detonate1', MATH.clampInterpolate(0, .4, 2, .6, GAME.forfeitTimer))
+        end
         if GAME.forfeitTimer > 2.6 then
-            GAME.finish()
+            SFX.play('detonate2')
+            GAME.finish('forfeit')
         end
     else
         if GAME.forfeitTimer > 0 then
@@ -131,6 +159,7 @@ function scene.update(dt)
 end
 
 local gc = love.graphics
+local Cards = Cards
 
 local shortcut = ('QWERTYUIO'):atomize()
 local shadeColor = { .3, .15, 0 }
@@ -142,6 +171,8 @@ local sloganExp = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 -- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
 function scene.draw()
     gc.clear(GAME.bg, 0, 0)
+
+    -- Cards
     gc.setColor(1, 1, 1)
     if FloatOnCard then
         for i = #Cards, 1, -1 do
@@ -151,41 +182,54 @@ function scene.draw()
     else
         for i = #Cards, 1, -1 do Cards[i]:draw() end
     end
+
+    -- Allspin keyboard hint
     if GAME.mod_AS > 0 then
         FONT.set(60)
         for i = 1, #Cards do
-            local C = Cards[i]
-            GC.strokePrint('full', 4, shadeColor, COLOR.lR, shortcut[i], C.x + 80, C.y + 120)
+            GC.strokePrint('full', 4, shadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
         end
     end
 
-    if GAME.playing then
-        gc.setColor(COLOR.L)
-        FONT.set(40)
-        GC.mStr(("%.1fm"):format(GAME.altitude), 800, 942)
-    else
-        gc.setColor(.7, .5, .3)
-        local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+    -- Current combo
+    gc.setColor(.7, .5, .3)
+    local k = math.min(.9, 760 / GAME.modText:getWidth())
+    GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
 
+    -- Altitude and XP
+    gc.setColor(COLOR.HSL(GAME.rank * 0.21 - .2, 1, .2 + GAME.rank * .08))
+    GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
+    GC.setLineWidth(2)
+    gc.setColor(1, 1, 1, .42)
+    GC.mRect('line', 800, 975, 420, 26)
+    FONT.set(40)
+    GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
+
+    if GAME.playing then
+        -- Target combo
+        gc.setColor(COLOR.L)
+        FONT.set(60)
+        GC.mStr(GAME.quests[1].name, 800, 100)
+    else
+        -- Card info
         if FloatOnCard then
             local C = Cards[FloatOnCard]
             if C.lock then C = DeckData[0] end
             gc.setColor(.3, .1, 0, .62)
             GC.mRect('fill', 800, 910, 1260, 126, 10)
-            gc.setColor(.7, .5, .3)
             FONT.set(60)
             GC.strokePrint('full', 3, shadeColor, textColor, C.fullName, 800, 842, nil, 'center')
             FONT.set(30)
             GC.strokePrint('full', 2, shadeColor, textColor, C.desc, 800, 926, nil, 'center')
         end
 
+        -- Texts
+        gc.setColor(textColor)
         gc.replaceTransform(SCR.xOy_ul)
         gc.draw(title, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
         gc.replaceTransform(SCR.xOy_dl)
         gc.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
         gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-
         gc.replaceTransform(SCR.xOy_dr)
         gc.setColor(.26, .26, .26)
         gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
@@ -211,7 +255,7 @@ scene.widgetList = {
         fontSize = 100, text = "START",
         onClick = function()
             if GAME.playing then
-                GAME.finish()
+                GAME.commit()
             else
                 GAME.start()
             end

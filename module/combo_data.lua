@@ -9,6 +9,7 @@ return {
     { set = '   NH                AS   ', name = "the starving artist",       basic = true },
     { set = 'EX          VL       AS   ', name = "the con artist",            basic = true },
     { set = '                        2P', name = "trained profesionals",      basic = true },
+    { set = 'EX    MS                  ', name = "block rationing",           basic = true },
 
     { set = '      MS          IN      ', name = "scrambled rainbow" },
     { set = 'EX NH                AS   ', name = "positioning master" },

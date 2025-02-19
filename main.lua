@@ -56,30 +56,17 @@ DeckData = {
     { initOrder = 9, nameOrder = 9, id = '2P', lockover = 'lockover-incompatible', name = 'duo',        fullName = "< DUO >",                 desc = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",                        revName = "> BLEEDING HEARTS <", revDesc = "EVEN AS WE BLEED, WE KEEP HOLDING ON..." },
     [0] = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
 }
-local modName = {
-    prio = { ['IN'] = 0, ['MS'] = 1, ['VL'] = 2, ['NH'] = 3, ['DH'] = 4, ['AS'] = 5, ['GV'] = 6, ['EX'] = 7, ['2P'] = 8 },
-    adj = {
-        ['IN'] = "INVISIBLE",
-        ['MS'] = "MESSY",
-        ['VL'] = "VOLATILILE",
-        ['NH'] = "HOLDLESS",
-        ['DH'] = "DOUBLE HOLE",
-        ['AS'] = "ALL-SPIN",
-        ['GV'] = "GRAVITY",
-        ['EX'] = "EXPERT",
-        ['2P'] = "DUO",
-    },
-    noun = {
-        ['IN'] = "INVISIBLITY",
-        ['MS'] = "MESSINESS",
-        ['VL'] = "VOLATILILITY",
-        ['NH'] = "NO HOLD",
-        ['DH'] = "DOUBLE HOLE",
-        ['AS'] = "ALL-SPIN",
-        ['GV'] = "GRAVITY",
-        ['EX'] = "EXPERT",
-        ['2P'] = "DUO",
-    },
+
+ModWeight = {
+    ['EX'] = 13, -- 10 + 3
+    ['NH'] = 12, --  8 + 4
+    ['MS'] = 13, -- 10 + 3
+    ['GV'] = 12, -- 10 + 2
+    ['VL'] = 17, -- 15 + 2
+    ['DH'] = 14, -- 10 + 4
+    ['IN'] = 6,  --  5 + 1
+    ['AS'] = 13, -- 10 + 3
+    ['2P'] = 4,  --  3 + 1
 }
 
 BasicComboCount = 9
@@ -87,7 +74,7 @@ Combos = require "module/combo_data"
 for i = 1, #Combos do
     local cmb = Combos[i]
     cmb.name = '"' .. cmb.name:upper() .. '"'
-    local cmbStr = table.concat(TABLE.sort(cmb.set:trim():split('%s+',true)), ' ')
+    local cmbStr = table.concat(TABLE.sort(cmb.set:trim():split('%s+', true)), ' ')
     Combos[cmbStr] = Combos[cmbStr] or cmb
 end
 
@@ -126,84 +113,12 @@ FatigueRevEx = {
 }
 
 MessyBias = TABLE.new(0, 9)
-function RefreshLayout()
-    local baseDist = (GAME.mod_EX > 0 and 100 or 110) + GAME.mod_VL * 20
-    local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
-    local dodge = GAME.mod_VL == 0 and 260 or 220
-    local baseY = 726 + 15 * GAME.mod_GV
-    if FloatOnCard then
-        local selX = 800 + (FloatOnCard - 5) * baseDist
-        for i, c in next, Cards do
-            if i < FloatOnCard then
-                c.tx = MATH.interpolate(1, baseL, FloatOnCard - 1, selX - dodge, i)
-                if c.tx ~= c.tx then c.tx = baseL end
-            elseif i > FloatOnCard then
-                c.tx = MATH.interpolate(#Cards, baseR, FloatOnCard + 1, selX + dodge, i)
-                if c.tx ~= c.tx then c.tx = baseR end
-            else
-                c.tx = selX
-            end
-            c.ty = baseY - (c.active and 35 or 0) - (i == FloatOnCard and 55 or 0)
-        end
-    else
-        for i, c in next, Cards do
-            c.tx = 800 + (i - 5) * baseDist
-            c.ty = baseY - (c.active and 35 or 0) - (i == FloatOnCard and 55 or 0)
-        end
-    end
-    if GAME.mod_MS > 0 then
-        for i = 1, 9 do
-            Cards[i].ty = Cards[i].ty + MessyBias[i]
-        end
-    end
-end
-
-function MouseOnCard(x, y)
-    if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
-        return FloatOnCard
-    end
-    local cid, dist = 0, 1e99
-    for j = 1, #Cards do
-        if Cards[j]:mouseOn(x, y) then
-            local dist2 = MATH.distance(x, y, Cards[j].x, Cards[j].y)
-            if dist2 < dist then
-                dist = dist2
-                cid = j
-            end
-        end
-    end
-    if cid > 0 then
-        return cid
-    end
-end
-
----@param list? string[]
----@param extend? boolean use extended combo lib from community
-function GetComboName(list, extend)
-    if not list then
-        list = {}
-        for _, C in next, Cards do
-            if C.active then
-                table.insert(list, C.id)
-            end
-        end
-    end
-
-    if #list == 0 then return "" end
-    if #list == 1 then return modName.noun[list[1]] end
-
-    local str = table.concat(TABLE.sort(list), ' ')
-    if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
-
-    str = ""
-    table.sort(list, function(a, b) return modName.prio[a] < modName.prio[b] end)
-    for i = 1, #list - 1 do str = str .. modName.adj[list[i]] .. " " end
-    return str .. modName.noun[list[#list]]
-end
 
 for i = 1, #DeckData do table.insert(Cards, require 'module/card'.new(DeckData[i])) end
-RefreshLayout()
-for i, C in next, Cards do C.x, C.y = C.tx, C.ty + 260 + 26 * 1.6 ^ i end
+GAME.refreshLayout()
+for i, C in ipairs(Cards) do
+    Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
+end
 
 SCN.add('main', require 'module/tower')
 ZENITHA.setFirstScene('main')
@@ -262,7 +177,7 @@ TASK.new(function()
                 for i = 1, 9 do
                     MessyBias[i] = Cards[i].active and math.random(-6, 2) or math.random(-2, 6)
                 end
-                RefreshLayout()
+                GAME.refreshLayout()
             end
         end
         coroutine.yield()
@@ -271,7 +186,7 @@ end)
 
 -- Load data
 DATA.load()
-GAME.freshLockState()
+GAME.refreshLockState()
 
 -- Test
 TASK.new(function()

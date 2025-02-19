@@ -95,7 +95,7 @@ function Card:setActive(auto)
                     end
                     SFX.play('wound')
                 else
-                    self.burn = GAME.mod_AS == 1 and 2 + GAME.floor / 2 or 1e99
+                    self.burn = GAME.mod_AS == 1 and 3 + GAME.floor / 2 or 1e99
                 end
             end
         end
@@ -120,15 +120,15 @@ function Card:setActive(auto)
             W:reset()
         elseif self.id == 'IN' then
             BGM.set('all', 'highgain', self.active and .7 or 1)
-            for _, C in next, Cards do C:flip() end
+            for _, C in ipairs(Cards) do C:flip() end
             noSpin = true
         elseif self.id == 'AS' then
             local W = SCN.scenes.main.widgetList.reset
             W.text = self.active and 'SPIN' or 'RESET'
             W:reset()
         end
-        GAME.freshComboText()
     end
+    GAME.refreshComboText()
     if not auto then -- Sound and animation
         if self.lock then
             SFX.play(self.active and 'boardlock_clink' or 'boardlock_fail')
@@ -142,7 +142,7 @@ function Card:setActive(auto)
             end
         end
     end
-    RefreshLayout()
+    GAME.refreshLayout()
 end
 
 function Card:flip()
