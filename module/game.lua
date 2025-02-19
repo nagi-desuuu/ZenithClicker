@@ -359,12 +359,19 @@ end
 
 function GAME.task_cancelAll(noSpin)
     local spinMode = not noSpin and GAME.mod_AS > 0
+    local list={}
     for i = 1, #Cards do
         local C = Cards[i]
         if spinMode or C.active then
-            C:setActive(true)
-            TASK.yieldT(.026)
+            table.insert(list, C)
         end
+    end
+    for i=1, #list do
+        local C = list[i]
+        if spinMode or C.active then
+            C:setActive(true)
+        end
+        TASK.yieldT(.026)
     end
 end
 
