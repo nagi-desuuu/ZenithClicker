@@ -164,6 +164,18 @@ local Cards = Cards
 local shortcut = ('QWERTYUIO'):atomize()
 local shadeColor = { .3, .15, 0 }
 local textColor = { .7, .5, .3 }
+local rankColor = {
+    [0] = { 0, 0, 0, 0 },
+    { 1,  .1, 0 },
+    { 1,  .7, 0 },
+    { .5, 1,  0 },
+    { 0,  .7, 1 },
+    { 1,  .1, 1 },
+    { 1,  .8, .5 },
+    { .6, 1,  .8 },
+    { .4, .9, 1 },
+    { 1,  .8, 1 },
+}
 local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
 local title = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 local slogan = gc.newText(FONT.get(30), "CROWD THE TOWER!")
@@ -197,7 +209,9 @@ function scene.draw()
     GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
 
     -- Altitude and XP
-    gc.setColor(COLOR.HSL(GAME.rank * 0.21 - .2, 1, .2 + GAME.rank * .08))
+    gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
+    GC.mRect('fill', 800, 975, 420 , 26)
+    gc.setColor(rankColor[GAME.rank] or COLOR.L)
     GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
     GC.setLineWidth(2)
     gc.setColor(1, 1, 1, .42)

@@ -384,7 +384,7 @@ function GAME.addXP(xp)
         GAME.rank = GAME.rank + 1
         GAME.rankupLast = true
         GAME.xpLockTimer = GAME.xpLockLevel
-        GAME.xpLockLevel = GAME.xpLockLevel - 1
+        GAME.xpLockLevel = math.max(GAME.xpLockLevel - 1, 1)
 
         -- Rank skip
         if GAME.xp >= 4 * GAME.rank then
@@ -397,6 +397,12 @@ end
 
 function GAME.update(dt)
     if GAME.playing then
+        -- if love.keyboard.isDown('x') then
+        --     GAME.addHeight(dt * 260)
+        -- elseif love.keyboard.isDown('c') then
+        --     GAME.addXP(dt * 26)
+        -- end
+
         GAME.time = GAME.time + dt
         local curFtgStag = (GAME.mod_EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
         if GAME.time >= curFtgStag.time then
@@ -414,12 +420,6 @@ function GAME.update(dt)
         GAME.altitude =
             GAME.altitude + releaseHeight +
             GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.altitude)
-
-        if love.keyboard.isDown('x') then
-            GAME.addHeight(dt * 260)
-        elseif love.keyboard.isDown('c') then
-            GAME.addXP(dt * 26)
-        end
 
         if GAME.altitude >= Floors[GAME.floor].top then
             GAME.upFloor()
