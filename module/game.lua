@@ -23,6 +23,8 @@ local GAME = {
     modText = GC.newText(FONT.get(30)),
     forfeitTimer = 0,
     exTimer = 0,
+    bgFloor = 1,
+    bgAlpha = 1,
 
     mod_EX = 0,
     mod_NH = 0,

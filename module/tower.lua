@@ -187,7 +187,8 @@ local sloganExp = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 -- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
 function scene.draw()
     gc.replaceTransform(SCR.origin)
-    GC.mDraw(IMG.floorBG[GAME.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+    GC.setColor(1, 1, 1, GAME.bgAlpha * .42)
+    GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
     gc.replaceTransform(SCR.xOy)
 

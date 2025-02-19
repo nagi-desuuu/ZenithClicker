@@ -199,6 +199,22 @@ TASK.new(function()
     end
 end)
 
+-- Background transition deamon
+TASK.new(function()
+    while true do
+        repeat TASK.yieldT(.1) until GAME.bgFloor ~= GAME.floor
+        repeat
+            GAME.bgAlpha = GAME.bgAlpha - coroutine.yield()
+        until GAME.bgAlpha <= 0
+        GAME.bgFloor = GAME.floor
+        GAME.bgAlpha = 0
+        repeat
+            GAME.bgAlpha = GAME.bgAlpha + coroutine.yield()
+        until GAME.bgAlpha >= 1
+        GAME.bgAlpha = 1
+    end
+end)
+
 -- Load data
 DATA.load()
 GAME.refreshLockState()
