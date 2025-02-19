@@ -23,6 +23,7 @@ local GAME = {
     modText = GC.newText(FONT.get(30)),
     forfeitTimer = 0,
     exTimer = 0,
+    textHide = 0,
     bgFloor = 1,
     bgAlpha = 1,
 
@@ -206,6 +207,15 @@ function GAME.clearCardBuff()
     end
 end
 
+function GAME.anim_setMenuHide(t)
+    GAME.textHide = t
+    MSG.setSafeY(75 * (1 - GAME.textHide))
+end
+
+function GAME.anim_setMenuHide_rev(t)
+    GAME.anim_setMenuHide(1 - t)
+end
+
 local function task_startSpin()
     for i = 1, #Cards do
         local C = Cards[i]
@@ -226,12 +236,11 @@ local function task_startSpin()
 end
 function GAME.start()
     SCN.scenes.main.widgetList.hint:setVisible(false)
-    MSG.setSafeY(0)
     MSG.clear()
     MSG('io', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
 
     BGM.set(BgmSets.extra, 'volume', 1)
-    BGM.set('expert', 'volume', 1)
+    BGM.set('expert', 'volume', MATH.sign(GAME.mod_EX))
 
     SFX.play('menuconfirm', .8)
     SFX.play(Cards['2P'].active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod_GV)
@@ -265,8 +274,9 @@ function GAME.start()
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
-    GAME.showHint = true
+    GAME.showHint = GAME.mod_IN < 2
 
+    TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {
         details = GAME.mod_EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
         state = "In Game",
@@ -276,7 +286,7 @@ end
 ---@param reason 'forfeit' | 'wrongAns' | 'killed'
 function GAME.finish(reason)
     SCN.scenes.main.widgetList.hint:setVisible(true)
-    MSG.setSafeY(62)
+    MSG.clear()
 
     BGM.set(BgmSets.extra, 'volume', 0)
     local r1 = math.random(#BgmSets.extra)
@@ -316,6 +326,7 @@ function GAME.finish(reason)
     GAME.clearCardBuff()
     GAME.refreshLockState()
 
+    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {
         details = "QUICK PICK",
         state = "Enjoying Music",
@@ -390,7 +401,7 @@ function GAME.task_cancelAll(noSpin)
         end
         TASK.yieldT(.026)
     end
-    GAME.showHint = true
+    GAME.showHint = GAME.mod_IN < 2
 end
 
 function GAME.cancelAll(noSpin)

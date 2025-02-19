@@ -251,17 +251,21 @@ function scene.draw()
             FONT.set(30)
             GC.strokePrint('full', 2, shadeColor, textColor, C.desc, 800, 926, nil, 'center')
         end
-
-        -- Texts
-        gc.setColor(textColor)
+    end
+    -- Texts
+    if GAME.textHide < 1 then
+        local d = GAME.textHide * 70
         gc.replaceTransform(SCR.xOy_ul)
-        gc.draw(title, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
+        gc.setColor(shadeColor)
+        GC.rectangle('fill', 0, 0, 1600, 70 - d)
+        gc.setColor(textColor)
+        gc.draw(title, GAME.exTimer * 205 - 195, -d, nil, 1, 1.1)
         gc.replaceTransform(SCR.xOy_dl)
-        gc.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-        gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.draw(slogan, 6, 2 + GAME.exTimer * 42 + d, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42 + d, nil, 1, 1.26, 0, origAuth:getHeight())
         gc.replaceTransform(SCR.xOy_dr)
         gc.setColor(.26, .26, .26)
-        gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
+        gc.draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
     end
 end
 

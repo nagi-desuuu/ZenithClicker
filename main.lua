@@ -11,7 +11,7 @@ STRING.install()
 SCR.setSize(1600, 1000)
 
 MSG.addCategory('io', COLOR.lD, COLOR.L)
-MSG.setSafeY(62)
+MSG.setSafeY(75)
 
 BGM.setMaxSources(8)
 BGM.load {
