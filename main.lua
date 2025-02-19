@@ -79,16 +79,16 @@ for i = 1, #Combos do
 end
 
 Floors = {
-    { top = 50,   event = {},                                name = "Hall of Beginnings",   sfx = false },
-    { top = 150,  event = { 'dmgWrong', 1 },                 name = "The Hotel",            sfx = "c" },
-    { top = 300,  event = { 'dmgDelay', -1 },                name = "The Casino",           sfx = "b" },
-    { top = 450,  event = { 'dmgCycle', -1 },                name = "The Arena",            sfx = "a" },
-    { top = 650,  event = { 'dmgDelay', -1 },                name = "The Museum",           sfx = "fsharp" },
-    { top = 850,  event = { 'dmgWrong', 1 },                 name = "Abandoned Offices",    sfx = "e" },
-    { top = 1100, event = { 'dmgDelay', -1 },                name = "The Laboratory",       sfx = "a" },
-    { top = 1350, event = { 'dmgDelay', -1 },                name = "The Core",             sfx = "ahalfsharp" },
-    { top = 1650, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Corruption",           sfx = "e" },
-    { top = 1e99, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Platform of The Gods", sfx = "e" },
+    { top = 50,   event = {},                                name = "Hall of Beginnings" },
+    { top = 150,  event = { 'dmgWrong', 1 },                 name = "The Hotel" },
+    { top = 300,  event = { 'dmgDelay', -1 },                name = "The Casino" },
+    { top = 450,  event = { 'dmgCycle', -1 },                name = "The Arena" },
+    { top = 650,  event = { 'dmgDelay', -1 },                name = "The Museum" },
+    { top = 850,  event = { 'dmgWrong', 1 },                 name = "Abandoned Offices" },
+    { top = 1100, event = { 'dmgDelay', -1 },                name = "The Laboratory" },
+    { top = 1350, event = { 'dmgDelay', -1 },                name = "The Core" },
+    { top = 1650, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Corruption" },
+    { top = 1e99, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Platform of The Gods" },
     -- Initial: Delay=15. Cycle=3, Wrong=1
     -- Total: Delay-7, Cycle-1, Wrong+4
 }
@@ -190,7 +190,7 @@ GAME.refreshLockState()
 
 -- Test
 TASK.new(function()
-    for _, s in next, ([[]]):split('%s+', true) do
+    for _, s in next, ([[ ]]):split('%s+', true) do
         SFX.play(s)
         TASK.yieldT(1)
     end

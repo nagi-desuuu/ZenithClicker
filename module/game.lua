@@ -395,7 +395,7 @@ function GAME.upFloor()
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = 2.6,
     }
-    SFX.play('zenith_levelup_' .. Floors[GAME.floor].sfx, 1, 0, GAME.mod_GV)
+    SFX.play('zenith_levelup_g', 1, 0, GAME.mod_GV)
 end
 
 function GAME.addHeight(h)
