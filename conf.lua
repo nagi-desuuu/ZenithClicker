@@ -47,7 +47,7 @@ function love.conf(t)
     W.minwidth,W.minheight=288,180
     W.title='Zenith Clicker'
 
-    if love._os=='Linux' and fs.getInfo('assets/image/icon.png') then
-        W.icon='assets/image/icon.png'
+    if (love._os=='Windows' or love._os=='Linux') and fs.getInfo('assets/icon.png') then
+        W.icon='assets/icon.png'
     end
 end
