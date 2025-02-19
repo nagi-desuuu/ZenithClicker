@@ -65,6 +65,7 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
+        SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
         if GAME.playing then
@@ -307,6 +308,7 @@ scene.widgetList = {
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
+            Space: Start/Commit   Z: Reset selection   ESC: Forfeit/Quit
         ]],
     }
 }
