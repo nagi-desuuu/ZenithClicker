@@ -224,8 +224,18 @@ function scene.draw()
     if GAME.playing then
         -- Target combo
         gc.setColor(COLOR.L)
-        FONT.set(60)
-        GC.mStr(GAME.quests[1].name, 800, 100)
+        FONT.set(80)
+        GC.mStr(GAME.quests[1].name, 800, 110)
+        if GAME.quests[2] then
+            gc.setColor(COLOR.DL)
+            FONT.set(60)
+            GC.mStr(GAME.quests[2].name, 800, 50)
+            if GAME.quests[3] then
+                gc.setColor(COLOR.LD)
+                FONT.set(50)
+                GC.mStr(GAME.quests[3].name, 800, 0)
+            end
+        end
     else
         -- Card info
         if FloatOnCard then
