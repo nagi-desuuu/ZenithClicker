@@ -3,7 +3,6 @@ local abs = math.abs
 
 ---@class Card
 ---@field burn false | number
----@field hintTimer false | number
 local Card = {}
 Card.__index = Card
 function Card.new(d)
@@ -35,7 +34,7 @@ function Card.new(d)
         ty = 0,
 
         burn = false,
-        hintTimer = false,
+        hintMark = false,
         charge = 0,
     }, Card)
     return obj
@@ -198,12 +197,15 @@ function Card:update(dt)
     if self.charge > 0 then
         self.charge = math.max(self.charge - dt, 0)
     end
-    if self.hintTimer then
-        self.hintTimer = self.hintTimer + dt
-    end
 end
 
 local gc = love.graphics
+local outlineShader = gc.newShader [[
+vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
+    vec4 fragColor = texture2D(tex, texCoord);
+    return vec4(color.rgb, color.a * fragColor.a);
+}
+]]
 function Card:draw()
     local img, img2
     if self.lock and self.lockfull then
@@ -243,8 +245,36 @@ function Card:draw()
     if img2 then
         GC.draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
+
+    local r, g, b = 1, .26, 0
+    local a = 0
+
     if self.active then
+        a = 1
+        if GAME.playing and not self.hintMark then
+            r, g, b = .4 + .2 * math.sin(GAME.time * 42), 0, 0
+        end
+    else
+        if self.hintMark then
+            r, g, b = 1, 1, 1
+            local qt = GAME.questTime
+            if GAME.mod_IN == 0 then
+                if GAME.mod_EX > 0 then qt = qt - 1.5 end
+                a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
+                    MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
+            elseif GAME.mod_IN == 1 then
+                if GAME.mod_EX > 0 then qt = qt * .626 end
+                a = -.1 + .4 * math.sin(3.1416 + qt * 3)
+            else
+                a = 0
+            end
+        end
+    end
+    if a > 0 then
+        GC.setShader(outlineShader)
+        GC.setColor(r, g, b, a)
         GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+        GC.setShader()
     end
 
     -- GC.mRect('line',0,0,260*2,350*2)

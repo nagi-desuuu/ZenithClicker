@@ -10,6 +10,7 @@
 ---@field queueLen number
 ---
 ---@field time number
+---@field questTime number
 ---@field rank number
 ---@field xp number
 ---@field rankupLast boolean
@@ -187,10 +188,11 @@ end
 
 function GAME.questReady()
     GAME.dmgTimer = GAME.dmgDelay
+    GAME.questTime = 0
     GAME.clearCardBuff()
     local Q = GAME.quests[1].combo
     for i = 1, #Q do
-        Cards[Q[i]].hintTimer = 0
+        Cards[Q[i]].hintMark = true
     end
 end
 
@@ -199,7 +201,7 @@ function GAME.clearCardBuff()
         if GAME.mod_AS then
             C.burn = false
         end
-        C.hintTimer = false
+        C.hintMark = false
     end
 end
 
@@ -432,6 +434,7 @@ function GAME.update(dt)
         -- end
 
         GAME.time = GAME.time + dt
+        GAME.questTime = GAME.questTime + dt
         local curFtgStag = (GAME.mod_EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
         if GAME.time >= curFtgStag.time then
             local e = curFtgStag.event
