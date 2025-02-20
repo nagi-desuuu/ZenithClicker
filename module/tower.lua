@@ -40,7 +40,7 @@ local function mousePress(x, y, k)
     local C = Cards[FloatOnCard]
     if C then
         if GAME.playing or not C.lock then
-            C:setActive()
+            C:setActive(false, k)
         else
             C:flick()
             SFX.play('no')
@@ -271,8 +271,11 @@ function scene.overDraw()
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 942)
 
     -- Current combo
-    if GAME.mod_IN < 2 then
+    if GAME.mod_IN < 2 or not GAME.playing then
         gc.setColor(TextColor)
+        if GAME.mod_IN == 2 then
+            GC.setAlpha(.42)
+        end
         local k = math.min(.9, 760 / GAME.modText:getWidth())
         GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
     end
@@ -331,18 +334,22 @@ function scene.overDraw()
     -- Card info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
-        if C.lock then C = DeckData[0] end
+        if C.lock then C = DeckData[C.id=='2P' and -1 or 0] end
         gc.replaceTransform(SCR.xOy_d)
-        gc.setColor(.3, .1, 0, .7023)
+        gc.setColor(ShadeColor)
+        GC.setAlpha(.872)
         gc.rectangle('fill', -935 / 2, -140, 935, 110, 10)
-        FONT.set(60)
-        GC.strokePrint('full', 3, ShadeColor, TextColor,
-            GAME.anyRev and C.revName or C.fullName,
-            195, -145, 2600, 'center', nil, 0.85, 1)
-        FONT.set(30)
-        GC.strokePrint('full', 2, ShadeColor, TextColor,
-            GAME.anyRev and C.revDesc or C.desc,
-            195, -75, 2600, 'center', nil, 0.85, 1)
+        if GAME.anyRev and C.id and GAME['mod_' .. C.id] == 2 then
+            FONT.set(60)
+            GC.strokePrint('full', 3, ShadeColor, TextColor, C.revName, 195, -145, 2600, 'center', nil, 0.85, 1)
+            FONT.set(30)
+            GC.strokePrint('full', 2, ShadeColor, TextColor, C.revDesc, 195, -75, 2600, 'center', nil, 0.85, 1)
+        else
+            FONT.set(60)
+            GC.strokePrint('full', 3, ShadeColor, TextColor, C.fullName, 195, -145, 2600, 'center', nil, 0.85, 1)
+            FONT.set(30)
+            GC.strokePrint('full', 2, ShadeColor, TextColor, C.desc, 195, -75, 2600, 'center', nil, 0.85, 1)
+        end
     end
 
     -- Forfeit panel

@@ -45,8 +45,8 @@ end
 
 function Card:mouseOn(x, y)
     return
-        abs(x - self.x) <= self.size * 260 and
-        abs(y - self.y) <= self.size * 350
+        abs(x - self.tx) <= self.size * 260 and
+        abs(y - self.ty) <= self.size * 350
 end
 
 function Card:clearBuff()
@@ -54,7 +54,7 @@ function Card:clearBuff()
     self.charge = 0
 end
 
-function Card:setActive(auto)
+function Card:setActive(auto, key)
     if GAME.mod_VL == 1 then
         if not self.active and not auto then
             self.charge = self.charge + 1
@@ -123,7 +123,7 @@ function Card:setActive(auto)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and love.keyboard.isDown('lctrl', 'rctrl')
+        revOn = self.active and (love.keyboard.isDown('lctrl', 'rctrl') or key == 2)
         if revOn then
             local completed = (DATA.highScore[self.id] or 0) >= 1650
             if not completed then
@@ -146,6 +146,9 @@ function Card:setActive(auto)
             end
         end
         local wasRev = GAME['mod_' .. self.id] == 2
+        if wasRev and not revOn then
+            self:spin()
+        end
         GAME['mod_' .. self.id] = self.active and (revOn and 2 or 1) or 0
         -- if revOn then
         --     for _, C in ipairs(Cards) do
@@ -154,9 +157,6 @@ function Card:setActive(auto)
         --         end
         --     end
         -- end
-        if wasRev and not revOn then
-            self:spin()
-        end
         self.upright = not (self.active and revOn)
         if self.id == 'EX' then
             if not self.active then BGM.set('expert', 'volume', 0) end
@@ -174,7 +174,7 @@ function Card:setActive(auto)
         elseif self.id == 'IN' then
             BGM.set('all', 'highgain', self.active and (GAME.mod_IN == 2 and .65 or .8) or 1)
             for _, C in ipairs(Cards) do C:flip() end
-            noSpin = true
+            noSpin = GAME.mod_IN == 1
         elseif self.id == 'AS' then
             local W = SCN.scenes.main.widgetList.reset
             W.text = self.active and 'SPIN' or 'RESET'
@@ -192,15 +192,20 @@ function Card:setActive(auto)
                 SFX.play('card_select_reverse', 1, 0, GAME.mod_GV)
                 SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, GAME.mod_GV)
                 TASK.new(function()
-                    TASK.yieldT(0.3)
-                    SFX.play('card_reverse_impact', 1, 0, GAME.mod_GV)
+                    TASK.yieldT(0.62)
+                    local currentState = GAME['mod_' .. self.id]
+                    if currentState == 2 then
+                        SFX.play('card_reverse_impact', 1, 0, GAME.mod_GV)
+                    else
+                        SFX.play('spin')
+                    end
                 end)
-                if not noSpin then self:spin() end
             else
                 SFX.play('card_select')
                 SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
-                if not noSpin then self:spin() end
             end
+            if not noSpin then self:spin() end
+            if revOn then self:bounce() end
         else
             SFX.play('card_slide_' .. math.random(4))
         end
@@ -218,7 +223,7 @@ end
 
 function Card:spin()
     TWEEN.new(function(t)
-        if GAME.mod_IN == 0 then
+        if GAME.mod_IN ~= 1 then
             self.ky = .9 + .1 * math.cos(t * 6.2831853)
             self.r = t * 6.2831853
             self.kx = math.cos((GAME.mod_AS + 1) * t * 6.2831853)
@@ -234,8 +239,14 @@ function Card:spin()
             self.r = 0
             -- self.kx = self.front and 1 or -1
         end)
-        :setEase(GAME.mod_IN > 0 and 'OutInQuart' or 'OutQuart')
+        :setEase(GAME.mod_IN == 1 and 'OutInQuart' or 'OutQuart')
         :setDuration(0.42):run()
+end
+
+function Card:bounce()
+    TWEEN.new(function(t)
+        self.y = self.ty + t * (t - 1) * 1200
+    end):setUnique('bounce_' .. self.id):setEase({ 'linear', 'inQuad' }):setDuration(.62):run()
 end
 
 function Card:shake()
