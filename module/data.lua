@@ -2,8 +2,7 @@ local flushCHN, dataCHN = love.thread.getChannel('save_flush'), love.thread.getC
 
 ---@class Techmino.Data: Techmino._Data
 local _DATA = {
-    maxAltitude = 0,
-    maxAltitude_ex = 0,
+    highScore = {},
     maxFloor = 1,
 }
 
@@ -74,6 +73,7 @@ end)
 ---@type Techmino.Data
 return setmetatable({}, {
     __newindex = function(_, k, v)
+        -- print("SET", k, "TO", v)
         _DATA[k] = v
         dataCHN:push(TABLE.dumpDeflate(_DATA))
     end,

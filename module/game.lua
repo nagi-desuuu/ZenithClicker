@@ -150,21 +150,38 @@ function GAME.refreshLockState()
     Cards['2P'].lock = true -- Not really locked forever! Try to find the way to play it
 end
 
--- for floor = 1, 10 do
---     local stat = { 0, 0, 0, 0, 0 }
---     local sum = 0
---     for _ = 1, 620 do
---         local base = .626 + floor ^ .5 / 5
---         local var = floor / 4.2
+function GAME.refreshPBText()
+    local setStr = table.concat(TABLE.sort(GAME.getHand()))
+    local h = DATA.highScore[setStr] or 0
+    local f
+    for i = 1, #Floors do
+        if h < Floors[i].top then
+            f = i
+            break
+        end
+    end
+    if h==0 then
+        PBText:set("No Score Yet")
+    else
+        PBText:set(("Personal Best: %.1fm   <F%d>"):format(h, f))
+    end
+end
 
---         local r = base + var * math.abs(MATH.randNorm())
---         r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
---         r = MATH.clamp(r, 1, 5)
---         stat[r] = stat[r] + 1
---         sum = sum + r
---     end
---     print(("Floor %2d : %s"):format(floor, table.concat(stat, ', ')), "E(x)=" .. sum / MATH.sum(stat))
--- end
+for floor = 1, 10 do
+    local stat = { 0, 0, 0, 0, 0 }
+    local sum = 0
+    for _ = 1, 620 do
+        local base = .626 + floor ^ .5 / 5
+        local var = floor / 4.2
+
+        local r = base + var * math.abs(MATH.randNorm())
+        r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
+        r = MATH.clamp(r, 1, 5)
+        stat[r] = stat[r] + 1
+        sum = sum + r
+    end
+    print(("Floor %2d : %s"):format(floor, table.concat(stat, ', ')), "E(x)=" .. sum / MATH.sum(stat))
+end
 
 function GAME.genQuest()
     local combo = {}
@@ -307,32 +324,33 @@ function GAME.finish(reason)
 
     GAME.playing = false
 
-    local newPB
-    if GAME.floor > DATA.maxFloor then
-        DATA.maxFloor = GAME.floor
-        newPB = true
-    end
-    if GAME.altitude > DATA.maxAltitude then
-        DATA.maxAltitude = GAME.altitude
-        newPB = true
-    end
-    if GAME.mod_EX > 0 and GAME.altitude > DATA.maxAltitude_ex then
-        DATA.maxAltitude_ex = GAME.altitude
-        newPB = true
-    end
-    if newPB then
-        TEXT:add {
-            text = "PERSOANL BEST",
-            x = 800, y = 450, k = 3, fontSize = 60,
-            style = 'beat', inPoint = .26, outPoint = .62,
-            color = 'lY', duration = 6.2,
-        }
-        SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+    if GAME.questCount > 2.6 then
+        local newPB
+        if GAME.floor > DATA.maxFloor then
+            DATA.maxFloor = GAME.floor
+            newPB = true
+        end
+        local setStr = table.concat(TABLE.sort(GAME.getHand()))
+        if GAME.altitude > (DATA.highScore[setStr] or 0) then
+            DATA.highScore[setStr] = MATH.roundUnit(GAME.altitude, .1)
+            DATA.maxFloor = DATA.maxFloor
+            newPB = true
+        end
+        if newPB then
+            TEXT:add {
+                text = "PERSOANL BEST",
+                x = 800, y = 450, k = 3, fontSize = 60,
+                style = 'beat', inPoint = .26, outPoint = .62,
+                color = 'lY', duration = 6.2,
+            }
+            SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+        end
     end
 
     TASK.removeTask_code(task_startSpin)
     for _, C in ipairs(Cards) do C:clearBuff() end
     GAME.refreshLockState()
+    GAME.refreshPBText()
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {

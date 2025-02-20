@@ -126,9 +126,9 @@ function scene.mouseClick(x, y, k)
     end
 end
 
-scene.touchDown=mouseMove
-scene.touchMove=mouseMove
-scene.touchClick=scene.mouseClick
+scene.touchDown = mouseMove
+scene.touchMove = mouseMove
+scene.touchClick = scene.mouseClick
 
 local cancelNextPress
 function scene.keyDown(key)
@@ -192,8 +192,10 @@ local rankColor = {
     { 1,  .8, 1 },
 }
 local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
-local slogan = gc.newText(FONT.get(30), "CROWD THE TOWER!")
-local sloganExp = gc.newText(FONT.get(30), "THRONG THE TOWER!")
+local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
+PBText = gc.newText(FONT.get(50))
+local sloganText = gc.newText(FONT.get(30), "CROWD THE TOWER!")
+local sloganText_EX = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 -- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
 function scene.draw()
     gc.replaceTransform(SCR.origin)
@@ -244,16 +246,16 @@ function scene.draw()
     if GAME.playing then
         -- Target combo
         gc.setColor(COLOR.L)
-        FONT.set(80)
-        GC.mStr(GAME.quests[1].name, 800, 110)
+        FONT.set(75)
+        GC.mStr(GAME.quests[1].name, 800, 120)
         if GAME.quests[2] then
             gc.setColor(COLOR.DL)
-            FONT.set(60)
-            GC.mStr(GAME.quests[2].name, 800, 50)
+            FONT.set(50)
+            GC.mStr(GAME.quests[2].name, 800, 65)
             if GAME.quests[3] then
                 gc.setColor(COLOR.LD)
                 FONT.set(50)
-                GC.mStr(GAME.quests[3].name, 800, 0)
+                GC.mStr(GAME.quests[3].name, 800, 5)
             end
         end
 
@@ -289,16 +291,16 @@ function scene.draw()
         gc.setColor(shadeColor)
         GC.rectangle('fill', 0, 0, 1600, 70)
         gc.setColor(textColor)
-        FONT.set(50)
-        gc.print("EXPERT QUICK PICK", GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
-        gc.printf(
-            ("Personal Best: %.1fm"):format(GAME.mod_EX > 0 and DATA.maxAltitude_ex or DATA.maxAltitude),
-            0, 0, 1590, 'right', nil, 1, 1.1)
+        gc.draw(titleText, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
+        gc.draw(PBText, 1590, 0, nil, 1, 1.1, PBText:getWidth(), 0)
+        -- gc.printf(
+        --     ("Personal Best: %.1fm"):format(GAME.mod_EX > 0 and DATA.maxAltitude_ex or DATA.maxAltitude),
+        --     0, 0, 1590, 'right', nil, 1, 1.1)
 
         gc.replaceTransform(SCR.xOy_dl)
         gc.translate(0, d)
-        gc.draw(slogan, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-        gc.draw(sloganExp, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.draw(sloganText, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        gc.draw(sloganText_EX, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
         gc.replaceTransform(SCR.xOy_dr)
         gc.setColor(.26, .26, .26)
         gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())

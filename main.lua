@@ -226,7 +226,13 @@ end)
 
 -- Load data
 DATA.load()
+if DATA.maxAltitude then
+    DATA.highScore['']=DATA.maxAltitude
+    DATA.highScore['EX']=DATA.maxAltitude_ex
+    DATA.maxAltitude,DATA.maxAltitude_ex=nil,nil
+end
 GAME.refreshLockState()
+GAME.refreshPBText()
 
 -- Test
 TASK.new(function()

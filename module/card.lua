@@ -140,6 +140,7 @@ function Card:setActive(auto)
             W.text = self.active and 'SPIN' or 'RESET'
             W:reset()
         end
+        GAME.refreshPBText()
     end
     GAME.refreshComboText()
     if not auto then -- Sound and animation
