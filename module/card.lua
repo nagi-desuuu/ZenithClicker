@@ -125,9 +125,9 @@ function Card:setActive(auto)
         TASK.unlock('cannotStart')
         revOn = self.active and love.keyboard.isDown('lctrl', 'rctrl')
         local modHeight = DATA.highScore[self.id] or 0
-        if revOn and (modHeight < 1650 or self.id == 'EX') then
+        if revOn and modHeight < 1650 then
             MSG.clear()
-            MSG('dark', modHeight < 1650 and "Reach F10 with it to Unlock Reversed" or "Working In Progress")
+            MSG('dark', "Reach F10 with it to Unlock Reversed")
             revOn = false
             noSpin = true
             self:shake()

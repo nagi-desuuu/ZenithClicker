@@ -302,7 +302,14 @@ function GAME.start()
         return
     end
     if TABLE.find(GAME.getHand(), '2P') then
+        MSG('dark', "Working in Progress")
         Cards[9]:shake()
+        SFX.play('no')
+        return
+    end
+    if TABLE.find(GAME.getHand(), 'rEX') then
+        MSG('dark', "Working in Progress")
+        Cards[1]:shake()
         SFX.play('no')
         return
     end
