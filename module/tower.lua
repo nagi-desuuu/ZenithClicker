@@ -61,9 +61,15 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
+        local W = scene.widgetList.reset
+        W._pressTime = W._pressTimeMax
+        W._hoverTime = W._hoverTimeMax
         SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
+        local W = scene.widgetList.start
+        W._pressTime = W._pressTimeMax
+        W._hoverTime = W._hoverTimeMax
         if GAME.playing then
             GAME.commit()
         else
@@ -143,6 +149,7 @@ end
 
 function scene.update(dt)
     GAME.update(dt)
+    GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 6.26)
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -255,8 +262,8 @@ function scene.draw()
         gc.rectangle('line', 390, 390, -360, 40)
 
         -- Health Bar
-        gc.setColor(1,1,1)
-        GC.mRect('fill', 800, 440, 1540 * GAME.live / 20, 10)
+        gc.setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)
+        GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
     else
         -- Card info
         if FloatOnCard then

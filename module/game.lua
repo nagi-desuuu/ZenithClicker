@@ -16,7 +16,6 @@
 ---@field xpLockLevel number
 ---@field xpLockTimer number
 ---@field fatigue number
----@field live number
 ---@field dmgTimer number
 ---@field chain number
 local GAME = {
@@ -40,6 +39,8 @@ local GAME = {
     playing = false,
     quests = {}, --- @type Question[]
 
+    life = 0,
+    lifeShow = 0,
     time = 0,
     floor = 1,
     rank = 1,
@@ -259,7 +260,7 @@ function GAME.start()
     GAME.fatigue = 1
     GAME.altitude = 0
     GAME.heightBuffer = 0
-    GAME.live = 20
+    GAME.life = 20
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
 
@@ -341,15 +342,15 @@ function GAME.finish(reason)
 end
 
 function GAME.takeDamage(dmg, killReason)
-    GAME.live = math.max(GAME.live - dmg, 0)
+    GAME.life = math.max(GAME.life - dmg, 0)
     SFX.play(
         dmg <= 1 and 'damage_small' or
         dmg <= 4 and 'damage_medium' or
         'damage_large')
-    if GAME.live <= 0 then
+    if GAME.life <= 0 then
         GAME.finish(killReason)
         return true
-    elseif GAME.live <= GAME.dmgWrong and GAME.live + dmg > GAME.dmgWrong then
+    elseif GAME.life <= GAME.dmgWrong and GAME.life + dmg > GAME.dmgWrong then
         SFX.play('hyperalert')
     end
 end
@@ -364,7 +365,7 @@ function GAME.commit()
     local result = TABLE.equal(TABLE.sort(hand), TABLE.sort(target))
 
     if result then
-        GAME.live = math.min(GAME.live + math.max(GAME.dmgHeal, 0), 20)
+        GAME.life = math.min(GAME.life + math.max(GAME.dmgHeal, 0), 20)
 
         local attack = TABLE.find(hand, '2P') and 6 or 4
         local xp = 0
@@ -383,9 +384,9 @@ function GAME.commit()
                 if GAME.chain >= 8 then
                     SFX.play('thunder' .. math.random(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
                 end
-                while GAME.chain > 0 and GAME.live < 20 do
+                while GAME.chain > 0 and GAME.life < 20 do
                     GAME.chain = math.max(GAME.chain - 2, 0)
-                    GAME.live = math.min(GAME.live + 1, 20)
+                    GAME.life = math.min(GAME.life + 1, 20)
                 end
                 if GAME.chain > 0 then
                     attack = attack + GAME.chain
@@ -438,6 +439,8 @@ function GAME.commit()
         if GAME.mod_EX > 0 then
             GAME.showHint = false
             GAME.cancelAll(true, true)
+        else
+            for _, C in ipairs(Cards) do C:clearBuff() end
         end
     end
 end
