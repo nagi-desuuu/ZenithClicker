@@ -124,14 +124,26 @@ function Card:setActive(auto)
     else
         TASK.unlock('cannotStart')
         revOn = self.active and love.keyboard.isDown('lctrl', 'rctrl')
-        local modHeight = DATA.highScore[self.id] or 0
-        if revOn and modHeight < 1650 then
-            MSG.clear()
-            MSG('dark', "Reach F10 with it to Unlock Reversed")
-            revOn = false
-            noSpin = true
-            self:shake()
-            SFX.play('no')
+        if revOn then
+            local completed = (DATA.highScore[self.id] or 0) >= 1650
+            if not completed then
+                for k, v in next, DATA.highScore do
+                    if v >= 1650 and (k:gsub('r', ''):find(self.id) or 0) % 2 == 1 then
+                        completed = true
+                        break
+                    end
+                end
+            end
+            if not completed then
+                revOn = false
+                noSpin = true
+                self.active = false
+                self:shake()
+                SFX.play('no')
+                MSG.clear()
+                MSG('dark', "Reach F10 with this mod to Unlock Reversed Mod")
+                return
+            end
         end
         local wasRev = GAME['mod_' .. self.id] == 2
         GAME['mod_' .. self.id] = self.active and (revOn and 2 or 1) or 0
