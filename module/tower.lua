@@ -228,6 +228,7 @@ function scene.draw()
     -- Altitude
     FONT.set(40)
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
+    GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 370, 942)
 
     if GAME.playing then
         -- Target combo
@@ -248,10 +249,14 @@ function scene.draw()
         -- Damage Timer
         gc.setColor(GAME.dmgTimer > GAME.dmgCycle and COLOR.DL or COLOR.lR)
         gc.rectangle('fill', 390, 390, -360 * (GAME.dmgTimer / GAME.dmgDelay), 40)
-        gc.setLineWidth(4)
+        gc.setLineWidth(3)
         gc.setColor(COLOR.LD)
         gc.rectangle('line', 390, 390, -360 * (GAME.dmgCycle / GAME.dmgDelay), 40)
         gc.rectangle('line', 390, 390, -360, 40)
+
+        -- Health Bar
+        gc.setColor(1,1,1)
+        GC.mRect('fill', 800, 440, 1540 * GAME.live / 20, 10)
     else
         -- Card info
         if FloatOnCard then
@@ -275,8 +280,9 @@ function scene.draw()
         gc.setColor(textColor)
         FONT.set(50)
         gc.print("EXPERT QUICK PICK", GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
-        gc.printf("Personal Best: " .. (GAME.mod_EX and DATA.maxAltitude_ex or DATA.maxAltitude) .. "m", 0, 0, 1590,
-            'right', nil, 1, 1.1)
+        gc.printf(
+            ("Personal Best: %.1fm"):format(GAME.mod_EX > 0 and DATA.maxAltitude_ex or DATA.maxAltitude),
+            0, 0, 1590, 'right', nil, 1, 1.1)
 
         gc.replaceTransform(SCR.xOy_dl)
         gc.translate(0, d)

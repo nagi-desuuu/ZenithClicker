@@ -9,7 +9,6 @@
 ---@field dmgCycle number
 ---@field queueLen number
 ---
----@field time number
 ---@field questTime number
 ---@field questCount number
 ---@field rankupLast boolean
@@ -40,6 +39,7 @@ local GAME = {
     playing = false,
     quests = {}, --- @type Question[]
 
+    time = 0,
     floor = 1,
     rank = 1,
     xp = 0,
@@ -313,7 +313,7 @@ function GAME.finish(reason)
         DATA.maxAltitude = GAME.altitude
         newPB = true
     end
-    if GAME.mod_EX>0 and GAME.altitude > DATA.maxAltitude_ex then
+    if GAME.mod_EX > 0 and GAME.altitude > DATA.maxAltitude_ex then
         DATA.maxAltitude_ex = GAME.altitude
         newPB = true
     end
@@ -473,7 +473,7 @@ end
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     if GAME.mod_MS == 1 and (GAME.floor % 2 == 1 or GAME.floor == 10) then GAME.shuffleCards() end
-    local F=Floors[GAME.floor]
+    local F = Floors[GAME.floor]
     local e = F.event
     for i = 1, #e, 2 do
         GAME[e[i]] = GAME[e[i]] + e[i + 1]
