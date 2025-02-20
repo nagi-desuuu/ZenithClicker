@@ -39,7 +39,7 @@ IMG.init {
         'assets/8fa.jpg',
         'assets/9fa.jpg',
         'assets/10fa.jpg',
-    }
+    },
 }
 
 DATA = require 'module/data'
@@ -73,9 +73,9 @@ DeckData = {
 }
 
 ModWeight = {
-    ['EX'] = 13, -- 10 + 3
+    ['EX'] = 13, --  8 + 5
     ['NH'] = 12, --  8 + 4
-    ['MS'] = 13, -- 10 + 3
+    ['MS'] = 14, -- 10 + 4
     ['GV'] = 12, -- 10 + 2
     ['VL'] = 17, -- 15 + 2
     ['DH'] = 14, -- 10 + 4

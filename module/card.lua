@@ -59,7 +59,7 @@ function Card:setActive(auto)
             SFX.play('clearline', .42)
             if self.charge < 1.2 then
                 self:shake()
-                SFX.play('combo_3', .626, 0, -2 + GAME.mod_GV)
+                SFX.play('combo_' .. math.random(2, 3), .626, 0, -2 + GAME.mod_GV)
                 return
             end
             SFX.play('combo_4', .626, 0, GAME.mod_GV)
@@ -72,8 +72,10 @@ function Card:setActive(auto)
             self:shake()
             if self.charge < 1.2 then
                 SFX.play('combo_1', .626, 0, GAME.mod_GV)
-            else
+            elseif MATH.roll() then
                 SFX.play('combo_2', .626, 0, 1 + GAME.mod_GV)
+            else
+                SFX.play('combo_3', .626, 0, -2 + GAME.mod_GV)
             end
             return
         end
