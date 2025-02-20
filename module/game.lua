@@ -304,28 +304,28 @@ function GAME.finish(reason)
 
     GAME.playing = false
 
-    -- local newPB
-    -- if GAME.floor > DATA.maxFloor then
-    --     DATA.maxFloor = GAME.floor
-    --     newPB = true
-    -- end
-    -- if GAME.altitude > DATA.maxAltitude then
-    --     DATA.maxAltitude = GAME.altitude
-    --     newPB = true
-    -- end
-    -- if GAME.mod_EX>0 and GAME.altitude > DATA.maxAltitude_ex then
-    --     DATA.maxAltitude_ex = GAME.altitude
-    --     newPB = true
-    -- end
-    -- if newPB then
-    --     TEXT:add {
-    --         text = "PERSOANL BEST",
-    --         x = 800, y = 450, k = 3, fontSize = 60,
-    --         style = 'beat', inPoint = .26, outPoint = .62,
-    --         color = 'lY', duration = 6.2,
-    --     }
-    --     SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
-    -- end
+    local newPB
+    if GAME.floor > DATA.maxFloor then
+        DATA.maxFloor = GAME.floor
+        newPB = true
+    end
+    if GAME.altitude > DATA.maxAltitude then
+        DATA.maxAltitude = GAME.altitude
+        newPB = true
+    end
+    if GAME.mod_EX>0 and GAME.altitude > DATA.maxAltitude_ex then
+        DATA.maxAltitude_ex = GAME.altitude
+        newPB = true
+    end
+    if newPB then
+        TEXT:add {
+            text = "PERSOANL BEST",
+            x = 800, y = 450, k = 3, fontSize = 60,
+            style = 'beat', inPoint = .26, outPoint = .62,
+            color = 'lY', duration = 6.2,
+        }
+        SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+    end
 
     TASK.removeTask_code(task_startSpin)
     for _, C in ipairs(Cards) do C:clearBuff() end
