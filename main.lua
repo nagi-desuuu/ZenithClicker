@@ -103,27 +103,27 @@ Floors = {
     { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Laboratory" },
     { top = 1350, event = { 'dmgDelay', -1 },                                  name = "The Core" },
     { top = 1650, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "Corruption" },
-    { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "Platform of The Gods" },
+    { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 2 },  name = "Platform of The Gods" },
     -- Initial: Delay=15. Cycle=5, Wrong=1
     -- Total: Delay-10, Cycle-3.5, Wrong+4
 }
 
 Fatigue = {
-    { time = 240, event = { 'dmgDelay', -1 }, text = "FATIGUE SETS IN…" },
-    { time = 300, event = { 'dmgCycle', -.5 }, text = "YOUR BODY GROWS WEAK…" },
+    { time = 300, event = { 'dmgDelay', -1 }, text = "FATIGUE SETS IN…" },
+    { time = 330, event = { 'dmgCycle', -.5 }, text = "YOUR BODY GROWS WEAK…" },
     { time = 360, event = { 'dmgDelay', -1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…" },
-    { time = 420, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…" },
-    { time = 480, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, text = "THIS IS THE END" },
+    { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…" },
+    { time = 420, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, text = "THIS IS THE END" },
     { time = 1e99 }, -- Total: Delay-3, Cycle-1, Wrong+2
 }
 FatigueRevEx = {
-    { time = 180, event = { 'dmgDelay', -1 }, text = "YOUR POWER SLIPS…" },
-    { time = 240, event = { 'dmgWrong', 1 }, text = "WHISPERS OF DISCONTENT SPREAD…" },
+    { time = 240, event = { 'dmgDelay', -1 }, text = "YOUR POWER SLIPS…" },
+    { time = 270, event = { 'dmgWrong', 1 }, text = "WHISPERS OF DISCONTENT SPREAD…" },
     { time = 300, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "PROTESTERS LINE THE STREETS…" },
-    { time = 360, event = { 'dmgDelay', -1, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…" },
-    { time = 420, event = { 'dmgCycle', -1, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
-    { time = 480, event = { 'dmgDelay', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…" },
-    { time = 540, event = { 'dmgDelay', -.5 }, text = "THE END OF AN ERA" },
+    { time = 330, event = { 'dmgDelay', -1, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…" },
+    { time = 360, event = { 'dmgCycle', -1, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
+    { time = 390, event = { 'dmgDelay', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…" },
+    { time = 420, event = { 'dmgDelay', -.5 }, text = "THE END OF AN ERA" },
     { time = 1e99 }, -- Total: Delay-3, Cycle-1, Wrong+5
 }
 

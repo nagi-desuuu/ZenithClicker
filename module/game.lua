@@ -5,6 +5,7 @@
 ---@class Game
 ---@field dmgHeal number
 ---@field dmgWrong number
+---@field dmgTime number
 ---@field dmgDelay number
 ---@field dmgCycle number
 ---@field queueLen number
@@ -241,6 +242,7 @@ function GAME.start()
     GAME.playing = true
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
+    GAME.dmgTime = 1
     GAME.dmgDelay = 15
     GAME.dmgCycle = 5
     GAME.queueLen = GAME.mod_NH == 2 and 1 or 3
@@ -472,7 +474,7 @@ end
 
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
-    if GAME.mod_MS == 1 and (GAME.floor % 2 == 1 or GAME.floor == 10) then GAME.shuffleCards() end
+    if GAME.mod_MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
     local F = Floors[GAME.floor]
     local e = F.event
     for i = 1, #e, 2 do
@@ -572,7 +574,7 @@ function GAME.update(dt)
         GAME.dmgTimer = GAME.dmgTimer - dt
         if GAME.dmgTimer <= 0 then
             GAME.dmgTimer = GAME.dmgCycle
-            GAME.takeDamage(1, 'killed')
+            GAME.takeDamage(GAME.dmgTime, 'killed')
         end
     end
 end
