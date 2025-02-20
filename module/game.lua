@@ -506,7 +506,7 @@ function GAME.cancelAll(noSpin, instant)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, noSpin, instant)
-    GAME.firstClickTimer=false
+    GAME.firstClickTimer = false
 end
 
 function GAME.shuffleCards()

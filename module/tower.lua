@@ -232,6 +232,7 @@ function scene.draw()
         gc.setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)
         GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
+        -- Gravity Timer
         if GAME.mod_GV > 0 then
             gc.setColor(COLOR.DL)
             if GAME.firstClickTimer then
@@ -321,11 +322,11 @@ function scene.overDraw()
         if C.lock then C = DeckData[0] end
         gc.replaceTransform(SCR.xOy_d)
         gc.setColor(.3, .1, 0, .7023)
-        gc.rectangle('fill', -1260 / 2, -140, 1260, 110, 10)
+        gc.rectangle('fill', -935 / 2, -140, 935, 110, 10)
         FONT.set(60)
-        GC.strokePrint('full', 4, shadeColor, textColor, C.fullName, 0, -145, nil, 'center')
+        GC.strokePrint('full', 4, shadeColor, textColor, C.fullName, 195, -145, 2600, 'center', nil, 0.85, 1)
         FONT.set(30)
-        GC.strokePrint('full', 3, shadeColor, textColor, C.desc, 0, -75, nil, 'center')
+        GC.strokePrint('full', 3, shadeColor, textColor, C.desc, 195, -75, 2600, 'center', nil, 0.85, 1)
     end
 
     -- Forfeit panel
