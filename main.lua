@@ -98,33 +98,33 @@ Floors = {
     { top = 150,  event = { 'dmgWrong', 1 },                 name = "The Hotel" },
     { top = 300,  event = { 'dmgDelay', -1 },                name = "The Casino" },
     { top = 450,  event = { 'dmgCycle', -1 },                name = "The Arena" },
-    { top = 650,  event = { 'dmgDelay', -1 },                name = "The Museum" },
-    { top = 850,  event = { 'dmgWrong', 1 },                 name = "Abandoned Offices" },
-    { top = 1100, event = { 'dmgDelay', -1 },                name = "The Laboratory" },
+    { top = 650,  event = { 'dmgWrong', 1 },                 name = "The Museum" },
+    { top = 850,  event = { 'dmgDelay', -1 },                name = "Abandoned Offices" },
+    { top = 1100, event = { 'dmgCycle', -1 },                name = "The Laboratory" },
     { top = 1350, event = { 'dmgDelay', -1 },                name = "The Core" },
     { top = 1650, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Corruption" },
     { top = 1e99, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, name = "Platform of The Gods" },
-    -- Initial: Delay=15. Cycle=3, Wrong=1
-    -- Total: Delay-7, Cycle-1, Wrong+4
+    -- Initial: Delay=15. Cycle=5, Wrong=1
+    -- Total: Delay-5, Cycle-2, Wrong+4
 }
 
 Fatigue = {
     { time = 360, event = { 'dmgDelay', -1 }, text = "FATIGUE SETS IN…" },
     { time = 420, event = { 'dmgCycle', -1 }, text = "YOUR BODY GROWS WEAK…" },
-    { time = 480, event = { 'dmgDelay', -1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…" },
-    { time = 540, event = { 'dmgDelay', -1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…" },
+    { time = 480, event = { 'dmgDelay', -2, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…" },
+    { time = 540, event = { 'dmgCycle', -1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…" },
     { time = 600, event = { 'dmgDelay', -2, 'dmgWrong', 1 }, text = "THIS IS THE END" },
-    { time = 1e99 }, -- Total: Delay-5, Cycle-1, Wrong+2
+    { time = 1e99 }, -- Total: Delay-5, Cycle-2, Wrong+2
 }
 FatigueRevEx = {
     { time = 300, event = { 'dmgDelay', -2 }, text = "YOUR POWER SLIPS…" },
     { time = 360, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "WHISPERS OF DISCONTENT SPREAD…" },
-    { time = 420, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "PROTESTERS LINE THE STREETS…" },
-    { time = 480, event = { 'dmgCycle', -.5, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…" },
-    { time = 540, event = { 'dmgDelay', -2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
+    { time = 420, event = { 'dmgCycle', -1, 'dmgWrong', 1 }, text = "PROTESTERS LINE THE STREETS…" },
+    { time = 480, event = { 'dmgDelay', -2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…" },
+    { time = 540, event = { 'dmgCycle', -1, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…" },
     { time = 600, event = { 'dmgDelay', -1.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…" },
     { time = 660, event = { 'dmgDelay', -2 }, text = "THE END OF AN ERA" },
-    { time = 1e99 }, -- Total: Delay-7.5, Cycle-1.5, Wrong+5
+    { time = 1e99 }, -- Total: Delay-7.5, Cycle-2.5, Wrong+5
 }
 
 MessyBias = TABLE.new(0, 9)

@@ -19,7 +19,6 @@
 ---@field live number
 ---@field dmgTimer number
 ---@field chain number
----@field chaining boolean
 local GAME = {
     modText = GC.newText(FONT.get(30)),
     forfeitTimer = 0,
@@ -190,7 +189,6 @@ function GAME.genQuest()
 end
 
 function GAME.questReady()
-    GAME.dmgTimer = GAME.dmgDelay
     GAME.questTime = 0
     GAME.fault = false
     for _, C in ipairs(Cards) do
@@ -244,7 +242,7 @@ function GAME.start()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
     GAME.dmgDelay = 15
-    GAME.dmgCycle = 3
+    GAME.dmgCycle = 5
     GAME.queueLen = GAME.mod_NH == 2 and 1 or 3
 
     GAME.time = 0
@@ -260,13 +258,11 @@ function GAME.start()
     GAME.altitude = 0
     GAME.heightBuffer = 0
     GAME.live = 20
-    GAME.dmgTimer = 0
+    GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
-    GAME.chaining = false
 
     TABLE.clear(GAME.quests)
     while #GAME.quests < GAME.queueLen do GAME.genQuest() end
-    GAME.questReady()
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
@@ -430,6 +426,8 @@ function GAME.commit()
 
         GAME.showHint = false
         GAME.cancelAll(true, true)
+
+        GAME.dmgTimer = math.min(GAME.dmgTimer + math.max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
         GAME.questReady()
     else

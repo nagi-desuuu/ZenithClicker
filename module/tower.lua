@@ -244,6 +244,11 @@ function scene.draw()
                 GC.mStr(GAME.quests[3].name, 800, 0)
             end
         end
+
+        gc.setColor(COLOR.dL)
+        gc.rectangle('fill', 390, 390, -360 * (GAME.dmgTimer / GAME.dmgDelay), 40)
+        gc.rectangle('line', 390, 390, -360 * (GAME.dmgCycle / GAME.dmgDelay), 40)
+        gc.rectangle('line', 390, 390, -360, 40)
     else
         -- Card info
         if FloatOnCard then
@@ -267,7 +272,8 @@ function scene.draw()
         gc.setColor(textColor)
         FONT.set(50)
         gc.print("EXPERT QUICK PICK", GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
-        gc.printf("Personal Best: " .. (GAME.mod_EX and DATA.maxAltitude_ex or DATA.maxAltitude) .. "m", 0, 0, 1590,'right',nil,1,1.1)
+        gc.printf("Personal Best: " .. (GAME.mod_EX and DATA.maxAltitude_ex or DATA.maxAltitude) .. "m", 0, 0, 1590,
+            'right', nil, 1, 1.1)
 
         gc.replaceTransform(SCR.xOy_dl)
         gc.translate(0, d)
