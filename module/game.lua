@@ -473,6 +473,12 @@ end
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     if GAME.mod_MS == 1 and (GAME.floor % 2 == 1 or GAME.floor == 10) then GAME.shuffleCards() end
+    local F=Floors[GAME.floor]
+    local e = F.event
+    for i = 1, #e, 2 do
+        GAME[e[i]] = GAME[e[i]] + e[i + 1]
+    end
+
     TEXT:add {
         text = "Floor",
         x = 160, y = 290, k = 1.6, fontSize = 30,

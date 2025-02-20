@@ -245,8 +245,11 @@ function scene.draw()
             end
         end
 
-        gc.setColor(COLOR.dL)
+        -- Damage Timer
+        gc.setColor(GAME.dmgTimer > GAME.dmgCycle and COLOR.DL or COLOR.lR)
         gc.rectangle('fill', 390, 390, -360 * (GAME.dmgTimer / GAME.dmgDelay), 40)
+        gc.setLineWidth(4)
+        gc.setColor(COLOR.LD)
         gc.rectangle('line', 390, 390, -360 * (GAME.dmgCycle / GAME.dmgDelay), 40)
         gc.rectangle('line', 390, 390, -360, 40)
     else
