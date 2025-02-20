@@ -94,16 +94,16 @@ for i = 1, #Combos do
 end
 
 Floors = {
-    { top = 50,   event = {},                                                  name = "Hall of Beginnings" },
-    { top = 150,  event = { 'dmgDelay', -2, 'dmgCycle', -.5, 'dmgWrong', 1 },  name = "The Hotel" },
-    { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                 name = "The Casino" },
-    { top = 450,  event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Arena" },
-    { top = 650,  event = { 'dmgDelay', -1, 'dmgCycle', -.5, 'dmgWrong', 1 },  name = "The Museum" },
-    { top = 850,  event = { 'dmgDelay', -1 },                                  name = "Abandoned Offices" },
-    { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Laboratory" },
-    { top = 1350, event = { 'dmgDelay', -1 },                                  name = "The Core" },
-    { top = 1650, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "Corruption" },
-    { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 2 },  name = "Platform of The Gods" },
+    { top = 50,   event = {},                                                 name = "Hall of Beginnings" },
+    { top = 150,  event = { 'dmgDelay', -2, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "The Hotel" },
+    { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                name = "The Casino" },
+    { top = 450,  event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Arena" },
+    { top = 650,  event = { 'dmgDelay', -1, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "The Museum" },
+    { top = 850,  event = { 'dmgDelay', -1, 'dmgTime', 1 },                   name = "Abandoned Offices" },
+    { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },               name = "The Laboratory" },
+    { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },               name = "The Core" },
+    { top = 1650, event = { 'dmgDelay', -.5, 'dmgWrong', 1 },                 name = "Corruption" },
+    { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 1 }, name = "Platform of The Gods" },
     -- Initial: Delay=15. Cycle=5, Wrong=1
     -- Total: Delay-10, Cycle-3.5, Wrong+4
 }
