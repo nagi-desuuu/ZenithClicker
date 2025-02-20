@@ -126,6 +126,10 @@ function scene.mouseClick(x, y, k)
     end
 end
 
+scene.touchDown=mouseMove
+scene.touchMove=mouseMove
+scene.touchClick=scene.mouseClick
+
 local cancelNextPress
 function scene.keyDown(key)
     if GAME.mod_EX == 0 then
