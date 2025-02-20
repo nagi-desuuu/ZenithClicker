@@ -158,6 +158,52 @@ function ZENITHA.globalEvent.quit()
     love.timer.sleep(.1)
 end
 
+local gc = love.graphics
+function WIDGET._prototype.button:draw()
+    gc.push('transform')
+    gc.translate(self._x, self._y)
+
+    if self._pressTime > 0 then
+        gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)
+    end
+    local w, h = self.w, self.h
+
+    local fillC = self.fillColor
+    local frameC = self.frameColor
+
+    -- Background
+    gc.setColor(fillC[1], fillC[2], fillC[3], fillC[4])
+    GC.mRect('fill', 0, 0, w, h)
+
+    -- Frame
+    gc.setLineWidth(self.lineWidth)
+    gc.setColor(frameC[1] * .2, frameC[2] * .2, frameC[3] * .2)
+    gc.line(-w / 2, h / 2, w / 2, h / 2, w / 2, -h / 2)
+    gc.setColor(.2 + frameC[1] * .8, .2 + frameC[2] * .8, .2 + frameC[3] * .8)
+    gc.line(-w / 2, h / 2, -w / 2, -h / 2, w / 2, -h / 2)
+
+    -- Highlight
+    if self._hoverTime > 0 then
+        gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .16)
+        GC.mRect('fill', 0, 0, w, h)
+    end
+
+    -- Drawable
+    local startX =
+        self.alignX == 'center' and 0 or
+        self.alignX == 'left' and -w * .5 + self.marginX or
+        w * .5 - self.marginX
+    local startY =
+        self.alignY == 'center' and 0 or
+        self.alignY == 'top' and -h * .5 + self.marginY or
+        h * .5 - self.marginY
+    if self._text then
+        gc.setColor(self.textColor)
+        WIDGET._alignDraw(self, self._text, startX, startY, nil, self.textScale)
+    end
+    gc.pop()
+end
+
 BGM.play(BgmSets.all)
 BGM.set('all', 'volume', 0, 0)
 BGM.set('piano', 'volume', 1)
