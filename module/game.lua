@@ -142,7 +142,7 @@ function GAME.refreshLockState()
     Cards['EX'].lock = DATA.maxFloor < 9
     Cards['NH'].lock = DATA.maxFloor < 2
     Cards['MS'].lock = DATA.maxFloor < 3
-    Cards['GV'].lock = DATA.maxFloor < 4
+    Cards['GV'].lock = true -- DATA.maxFloor < 4
     Cards['VL'].lock = DATA.maxFloor < 5
     Cards['DH'].lock = DATA.maxFloor < 6
     Cards['IN'].lock = DATA.maxFloor < 7
