@@ -154,8 +154,12 @@ function Card:setActive(auto)
         --         end
         --     end
         -- end
+        if wasRev and not revOn then
+            self:spin()
+        end
         self.upright = not (self.active and revOn)
         if self.id == 'EX' then
+            if not self.active then BGM.set('expert', 'volume', 0) end
             TWEEN.new(function(t)
                 GAME.exTimer = self.active and t or (1 - t)
             end):setDuration(self.active and .26 or .1):run()

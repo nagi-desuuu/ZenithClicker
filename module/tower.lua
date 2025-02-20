@@ -336,11 +336,11 @@ function scene.overDraw()
         gc.setColor(.3, .1, 0, .7023)
         gc.rectangle('fill', -935 / 2, -140, 935, 110, 10)
         FONT.set(60)
-        GC.strokePrint('full', 4, ShadeColor, TextColor,
+        GC.strokePrint('full', 3, ShadeColor, TextColor,
             GAME.anyRev and C.revName or C.fullName,
             195, -145, 2600, 'center', nil, 0.85, 1)
         FONT.set(30)
-        GC.strokePrint('full', 3, ShadeColor, TextColor,
+        GC.strokePrint('full', 2, ShadeColor, TextColor,
             GAME.anyRev and C.revDesc or C.desc,
             195, -75, 2600, 'center', nil, 0.85, 1)
     end
