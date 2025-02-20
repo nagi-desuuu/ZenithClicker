@@ -13,6 +13,8 @@ function Card.new(d)
         name = d.name,
         fullName = d.fullName,
         desc = d.desc,
+        revName = d.revName,
+        revDesc = d.revDesc,
 
         frontImg = GC.newImage('assets/' .. d.name .. '.png'),
         backImg = GC.newImage('assets/' .. d.name .. '-back.png'),
@@ -87,6 +89,7 @@ function Card:setActive(auto)
     end
     local noSpin
     self.active = not self.active
+    local revOn
     if GAME.playing then
         self.touchCount = self.touchCount + 1
         if self.touchCount == 1 then
@@ -107,7 +110,6 @@ function Card:setActive(auto)
                 if self.burn then
                     self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
-                    GAME.showHint = true
                     local cards = TABLE.copy(Cards, 0)
                     TABLE.delete(cards, self)
                     for _ = 1, GAME.mod_AS == 1 and 2 or 4 do
@@ -120,14 +122,33 @@ function Card:setActive(auto)
             end
         end
     else
-        GAME['mod_' .. self.id] = self.active and 1 or 0
+        TASK.unlock('cannotStart')
+        revOn = self.active and love.keyboard.isDown('lctrl', 'rctrl')
+        local modHeight = DATA.highScore[self.id] or 0
+        if revOn and (modHeight < 1650 or self.id == 'EX') then
+            MSG.clear()
+            MSG('dark', modHeight < 1650 and "Reach F10 with it to Unlock Reversed" or "Working In Progress")
+            revOn = false
+            noSpin = true
+            self:shake()
+            SFX.play('no')
+        end
+        local wasRev = GAME['mod_' .. self.id] == 2
+        GAME['mod_' .. self.id] = self.active and (revOn and 2 or 1) or 0
+        -- if revOn then
+        --     for _, C in ipairs(Cards) do
+        --         if C.active and C ~= self then
+        --             C:setActive(true)
+        --         end
+        --     end
+        -- end
+        self.upright = not (self.active and revOn)
         if self.id == 'EX' then
-            BGM.set('expert', 'volume', self.active and 1 or 0)
             TWEEN.new(function(t)
                 GAME.exTimer = self.active and t or (1 - t)
             end):setDuration(self.active and .26 or .1):run()
         elseif self.id == 'NH' then
-            BGM.set('piano', 'volume', self.active and .2 or 1)
+            BGM.set('piano', 'volume', self.active and (GAME.mod_NH == 2 and 0 or .26) or 1)
         elseif self.id == 'GV' then
             BGM.set('all', 'pitch', self.active and 2 ^ (GAME.mod_GV / 12) or 1, .26)
         elseif self.id == 'DH' then
@@ -135,7 +156,7 @@ function Card:setActive(auto)
             W.text = self.active and 'COMMENCE' or 'START'
             W:reset()
         elseif self.id == 'IN' then
-            BGM.set('all', 'highgain', self.active and .7 or 1)
+            BGM.set('all', 'highgain', self.active and (GAME.mod_IN == 2 and .65 or .8) or 1)
             for _, C in ipairs(Cards) do C:flip() end
             noSpin = true
         elseif self.id == 'AS' then
@@ -144,13 +165,26 @@ function Card:setActive(auto)
             W:reset()
         end
         GAME.refreshPBText()
+        if revOn or wasRev then
+            GAME.refreshRev()
+        end
     end
     GAME.refreshComboText()
     if not auto then -- Sound and animation
         if self.active then
-            SFX.play('card_select')
-            SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
-            if not noSpin then self:spin() end
+            if revOn then
+                SFX.play('card_select_reverse', 1, 0, GAME.mod_GV)
+                SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, GAME.mod_GV)
+                TASK.new(function()
+                    TASK.yieldT(0.3)
+                    SFX.play('card_reverse_impact', 1, 0, GAME.mod_GV)
+                end)
+                if not noSpin then self:spin() end
+            else
+                SFX.play('card_select')
+                SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
+                if not noSpin then self:spin() end
+            end
         else
             SFX.play('card_slide_' .. math.random(4))
         end
@@ -242,6 +276,7 @@ function Card:draw()
     gc.push('transform')
     gc.translate(self.x, self.y)
     gc.rotate(self.r)
+    if not GAME.playing and not self.upright then gc.rotate(3.1416) end
     gc.scale(abs(self.size * self.kx), self.size * self.ky)
 
     -- Fake 3D
@@ -269,34 +304,33 @@ function Card:draw()
     local r, g, b = 1, .26, 0
     local a = 0
 
-    if not GAME.playing or GAME.showHint then
-        if self.active then
-            a = 1
-            if GAME.playing and not self.hintMark then
-                r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
-            end
+    if self.active then
+        -- Active
+        a = 1
+        if GAME.playing and not self.hintMark and GAME.mod_IN < 2 then
+            -- But wrong
+            r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
+        end
+    elseif self.hintMark then
+        -- Inactive but need
+        r, g, b = 1, 1, 1
+        local qt = GAME.questTime
+        if GAME.mod_IN == 0 then
+            if GAME.mod_EX > 0 then qt = qt - 1.5 end
+            a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
+                MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
+        elseif GAME.mod_IN == 1 then
+            if GAME.mod_EX > 0 then qt = qt * .626 end
+            a = -.1 + .4 * math.sin(3.1416 + qt * 3)
         else
-            if self.hintMark then
-                r, g, b = 1, 1, 1
-                local qt = GAME.questTime
-                if GAME.mod_IN == 0 then
-                    if GAME.mod_EX > 0 then qt = qt - 1.5 end
-                    a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
-                        MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
-                elseif GAME.mod_IN == 1 then
-                    if GAME.mod_EX > 0 then qt = qt * .626 end
-                    a = -.1 + .4 * math.sin(3.1416 + qt * 3)
-                else
-                    a = 0
-                end
-            end
+            a = 0
         end
-        if a > 0 then
-            GC.setShader(outlineShader)
-            GC.setColor(r, g, b, a)
-            GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
-            GC.setShader()
-        end
+    end
+    if a > 0 then
+        GC.setShader(outlineShader)
+        GC.setColor(r, g, b, a)
+        GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+        GC.setShader()
     end
 
     -- GC.mRect('line',0,0,260*2,350*2)

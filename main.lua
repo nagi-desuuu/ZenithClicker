@@ -204,7 +204,7 @@ function WIDGET._prototype.button:draw()
         h * .5 - self.marginY
     if self._text then
         gc.setColor(self.textColor)
-        WIDGET._alignDraw(self, self._text, startX, startY, nil, .85, 1)
+        WIDGET._alignDraw(self, self._text, startX, startY, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
     end
     gc.pop()
 end
@@ -242,7 +242,7 @@ TASK.new(function()
             t1 = t1 + step1
             if GAME.mod_MS > 0 then
                 for i = 1, 9 do
-                    MessyBias[i] = Cards[i].active and math.random(-6, 2) or math.random(-2, 6)
+                    MessyBias[i] = GAME.mod_MS * (Cards[i].active and 1 or -1) * math.random(-6, 2)
                 end
                 GAME.refreshLayout()
             end
@@ -251,7 +251,7 @@ TASK.new(function()
         if T > t2 + step2 then
             t2 = t2 + step2
             if not GAME.playing and GAME.mod_EX > 0 then
-                local v = MATH.roll(.626)
+                local v = MATH.roll(GAME.mod_EX == 2 and .626 or .26)
                 BGM.set('expert', 'volume', v and MATH.rand(.42, .626) or 0, v and 0 or .1)
             end
         end

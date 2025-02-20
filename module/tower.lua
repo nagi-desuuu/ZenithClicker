@@ -173,12 +173,9 @@ function scene.update(dt)
     end
 end
 
-local gc = love.graphics
-local Cards = Cards
-
+TextColor = { .7, .5, .3 }
+ShadeColor = { .3, .15, 0 }
 local shortcut = ('QWERTYUIO'):atomize()
-local shadeColor = { .3, .15, 0 }
-local textColor = { .7, .5, .3 }
 local rankColor = {
     [0] = { 0, 0, 0, 0 },
     { 1,  .1, 0 },
@@ -191,17 +188,23 @@ local rankColor = {
     { .4, .9, 1 },
     { 1,  .8, 1 },
 }
+local gc = love.graphics
 local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
 local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 PBText = gc.newText(FONT.get(50))
 local sloganText = gc.newText(FONT.get(30), "CROWD THE TOWER!")
 local sloganText_EX = gc.newText(FONT.get(30), "THRONG THE TOWER!")
--- local sloganRev=GC.newText(FONT.get(30),"OVERFLOW THE TOWER!")
+local sloganText_rev = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!")
+local Cards = Cards
+local TextColor = TextColor
+local ShadeColor = ShadeColor
 function scene.draw()
     gc.replaceTransform(SCR.origin)
     GC.setColor(1, 1, 1, GAME.bgAlpha * .42)
     GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+end
 
+function scene.overDraw()
     gc.replaceTransform(SCR.xOy)
 
     if GAME.playing then
@@ -264,14 +267,14 @@ function scene.draw()
     -- Altitude
     FONT.set(40)
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
-    GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 370, 942)
-end
+    GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 942)
 
-function scene.overDraw()
     -- Current combo
-    gc.setColor(.7, .5, .3)
-    local k = math.min(.9, 760 / GAME.modText:getWidth())
-    GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+    if GAME.mod_IN < 2 then
+        gc.setColor(TextColor)
+        local k = math.min(.9, 760 / GAME.modText:getWidth())
+        GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+    end
 
     -- Cards
     gc.setColor(1, 1, 1)
@@ -288,7 +291,7 @@ function scene.overDraw()
     if GAME.mod_AS > 0 then
         FONT.set(60)
         for i = 1, #Cards do
-            GC.strokePrint('full', 4, shadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
+            GC.strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
         end
     end
 
@@ -296,11 +299,13 @@ function scene.overDraw()
     if GAME.textHide < 1 then
         local d = GAME.textHide * 70
         gc.replaceTransform(SCR.xOy_u)
-        gc.setColor(shadeColor)
+        gc.setColor(ShadeColor)
         GC.rectangle('fill', -1200, -d, 2400, 70)
-        gc.setColor(textColor)
+        gc.setColor(TextColor)
         gc.replaceTransform(SCR.xOy_ul)
-        gc.draw(titleText, GAME.exTimer * 205 - 195, -d, nil, 1, 1.1)
+        gc.draw(titleText,
+            GAME.exTimer * 205 - 195, titleText:getHeight() / 2 - d, nil,
+            1, 1.1 * (1 - 2 * GAME.revTimer), 0, titleText:getHeight() / 2)
         gc.replaceTransform(SCR.xOy_ur)
         gc.draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
         -- gc.printf(
@@ -309,8 +314,14 @@ function scene.overDraw()
 
         gc.replaceTransform(SCR.xOy_dl)
         gc.translate(0, d)
-        gc.draw(sloganText, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-        gc.draw(sloganText_EX, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        if GAME.revTimer > 0 then
+            gc.draw(sloganText, 6, 2 + (GAME.exTimer + GAME.revTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+            gc.draw(sloganText_EX, 6, 2 + (1 - GAME.exTimer + GAME.revTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+            gc.draw(sloganText_rev, 6, 2 + (1 - GAME.revTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        else
+            gc.draw(sloganText, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+            gc.draw(sloganText_EX, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        end
         gc.replaceTransform(SCR.xOy_dr)
         gc.setColor(.26, .26, .26)
         gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
@@ -324,9 +335,13 @@ function scene.overDraw()
         gc.setColor(.3, .1, 0, .7023)
         gc.rectangle('fill', -935 / 2, -140, 935, 110, 10)
         FONT.set(60)
-        GC.strokePrint('full', 4, shadeColor, textColor, C.fullName, 195, -145, 2600, 'center', nil, 0.85, 1)
+        GC.strokePrint('full', 4, ShadeColor, TextColor,
+            GAME.anyRev and C.revName or C.fullName,
+            195, -145, 2600, 'center', nil, 0.85, 1)
         FONT.set(30)
-        GC.strokePrint('full', 3, shadeColor, textColor, C.desc, 195, -75, 2600, 'center', nil, 0.85, 1)
+        GC.strokePrint('full', 3, ShadeColor, TextColor,
+            GAME.anyRev and C.revDesc or C.desc,
+            195, -75, 2600, 'center', nil, 0.85, 1)
     end
 
     -- Forfeit panel
@@ -344,9 +359,9 @@ scene.widgetList = {
         name = 'start', type = 'button',
         pos = { .5, .5 }, y = -170, w = 800, h = 200,
         color = { .35, .12, .05 },
-        textColor = textColor,
+        textColor = TextColor,
         sound_hover = 'menuhover',
-        fontSize = 100, text = "START",
+        fontSize = 80, text = "START",
         onClick = function()
             if GAME.playing then
                 GAME.commit()
@@ -367,7 +382,7 @@ scene.widgetList = {
     WIDGET.new {
         name = 'hint', type = 'hint',
         pos = { .5, .5 }, x = 500, y = -230, w = 80, cornerR = 40,
-        color = textColor,
+        color = TextColor,
         fontSize = 80, text = "?",
         sound_hover = 'menutap',
         labelPos = 'leftTop',

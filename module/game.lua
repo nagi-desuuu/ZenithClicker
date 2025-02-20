@@ -24,6 +24,7 @@ local GAME = {
     modText = GC.newText(FONT.get(30)),
     forfeitTimer = 0,
     exTimer = 0,
+    revTimer = 0,
     textHide = 0,
     bgFloor = 1,
     bgAlpha = 1,
@@ -37,6 +38,8 @@ local GAME = {
     mod_IN = 0,
     mod_AS = 0,
     mod_2P = 0,
+
+    anyRev = false,
 
     playing = false,
     quests = {}, --- @type Question[]
@@ -53,16 +56,25 @@ local GAME = {
 --- Unsorted
 function GAME.getHand()
     local list = {}
-    for _, C in ipairs(Cards) do
-        if C.active then
-            table.insert(list, C.id)
+    if GAME.playing then
+        for _, C in ipairs(Cards) do
+            if C.active then
+                table.insert(list, C.id)
+            end
+        end
+    else
+        for _, C in ipairs(Cards) do
+            local level = GAME['mod_' .. C.id]
+            if level > 0 then
+                table.insert(list, level == 1 and C.id or 'r' .. C.id)
+            end
         end
     end
     return list
 end
 
 local modName = {
-    prio = { ['IN'] = 0, ['MS'] = 1, ['VL'] = 2, ['NH'] = 3, ['DH'] = 4, ['AS'] = 5, ['GV'] = 6, ['EX'] = 7, ['2P'] = 8 },
+    prio = { ['IN'] = 0, ['MS'] = 1, ['VL'] = 2, ['NH'] = 3, ['DH'] = 4, ['AS'] = 5, ['GV'] = 6, ['EX'] = 7, ['2P'] = 8, ['rIN'] = 0, ['rMS'] = 1, ['rVL'] = 2, ['rNH'] = 3, ['rDH'] = 4, ['rAS'] = 5, ['rGV'] = 6, ['rEX'] = 7, ['r2P'] = 8 },
     adj = {
         ['IN'] = "INVISIBLE",
         ['MS'] = "MESSY",
@@ -73,6 +85,15 @@ local modName = {
         ['GV'] = "GRAVITY",
         ['EX'] = "EXPERT",
         ['2P'] = "DUO",
+        ['rIN'] = "BELIEVED",
+        ['rMS'] = "DECEPTIVE",
+        ['rVL'] = "DESPERATE",
+        ['rNH'] = "ASCENDANT",
+        ['rDH'] = "DAMNED",
+        ['rAS'] = "OMNI-SPIN",
+        ['rGV'] = "COLLAPSED",
+        ['rEX'] = "TYRANNICAL",
+        ['r2P'] = "PIERCING",
     },
     noun = {
         ['IN'] = "INVISIBLITY",
@@ -84,6 +105,15 @@ local modName = {
         ['GV'] = "GRAVITY",
         ['EX'] = "EXPERT",
         ['2P'] = "DUO",
+        ['rIN'] = "BELIEF",
+        ['rMS'] = "DECEPTION",
+        ['rVL'] = "DESPERATION",
+        ['rNH'] = "ASCENSION",
+        ['rDH'] = "DAMNATION",
+        ['rAS'] = "OMNI-SPIN",
+        ['rGV'] = "COLLAPSE",
+        ['rEX'] = "TYRANNY",
+        ['r2P'] = "HEARTACHE",
     },
 }
 ---@param list? string[]
@@ -160,6 +190,29 @@ function GAME.refreshPBText()
             PBText:set(("Best: %.1fm   <F%d>"):format(h, f))
             break
         end
+    end
+end
+
+function GAME.refreshRev()
+    local anyRev = false
+    for _, C in ipairs(Cards) do
+        if GAME['mod_' .. C.id] == 2 then
+            anyRev = true
+            break
+        end
+    end
+    if anyRev ~= GAME.anyRev then
+        GAME.anyRev = anyRev
+        TWEEN.new(function(t)
+            if not anyRev then t = 1 - t end
+            GAME.revTimer = t
+            TextColor[1] = MATH.lerp(.7, .62, t)
+            TextColor[2] = MATH.lerp(.5, .1, t)
+            TextColor[3] = MATH.lerp(.3, .1, t)
+            ShadeColor[1] = MATH.lerp(.3, .1, t)
+            ShadeColor[2] = MATH.lerp(.15, 0, t)
+            ShadeColor[3] = MATH.lerp(.0, 0, t)
+        end):setDuration(.26):run()
     end
 end
 
@@ -248,6 +301,11 @@ function GAME.start()
         SFX.play('clutch')
         return
     end
+    if TABLE.find(GAME.getHand(), '2P') then
+        Cards[9]:shake()
+        SFX.play('no')
+        return
+    end
     SCN.scenes.main.widgetList.hint:setVisible(false)
     MSG.clear()
     MSG('dark', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
@@ -289,7 +347,6 @@ function GAME.start()
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
-    GAME.showHint = GAME.mod_IN < 2
 
     TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {
@@ -322,6 +379,7 @@ function GAME.finish(reason)
         end
         C.touchCount = 0
         C.hintMark = false
+        C:clearBuff()
     end
 
     GAME.playing = false
@@ -363,9 +421,9 @@ function GAME.finish(reason)
     end
 
     TASK.removeTask_code(task_startSpin)
-    for _, C in ipairs(Cards) do C:clearBuff() end
     GAME.refreshLockState()
     GAME.refreshPBText()
+    GAME.refreshComboText()
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {
@@ -453,9 +511,8 @@ function GAME.commit()
         GAME.addXP(attack + xp)
 
         if GAME.mod_MS == 2 then
-            local r1 = math.random(#Cards)
-            local r2 = math.random(#Cards - 1)
-            if r2 >= r1 then r2 = r2 + 1 end
+            local r1 = math.random(2, #Cards - 1)
+            local r2 = MATH.clamp(r1 + MATH.coin(-1, 1) * math.random(2), 1, #Cards)
             Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
             GAME.refreshLayout()
         end
@@ -464,7 +521,6 @@ function GAME.commit()
         GAME.questCount = GAME.questCount + 1
         GAME.genQuest()
 
-        GAME.showHint = false
         GAME.cancelAll(true, true)
 
         GAME.dmgTimer = math.min(GAME.dmgTimer + math.max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
@@ -475,7 +531,6 @@ function GAME.commit()
         GAME.fault = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
         if GAME.mod_EX > 0 then
-            GAME.showHint = false
             GAME.cancelAll(true, true)
         else
             for _, C in ipairs(Cards) do C:clearBuff() end
@@ -499,7 +554,6 @@ function GAME.task_cancelAll(noSpin, instant)
         end
         list[i]:clearBuff()
     end
-    GAME.showHint = GAME.mod_IN < 2
 end
 
 function GAME.cancelAll(noSpin, instant)
