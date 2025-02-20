@@ -11,6 +11,8 @@
 ---@field queueLen number
 ---
 ---@field questTime number
+---@field firstClickDelay false | number
+---@field firstClickTimer false | number
 ---@field questCount number
 ---@field rankupLast boolean
 ---@field xpLockLevel number
@@ -142,7 +144,7 @@ function GAME.refreshLockState()
     Cards['EX'].lock = DATA.maxFloor < 9
     Cards['NH'].lock = DATA.maxFloor < 2
     Cards['MS'].lock = DATA.maxFloor < 3
-    Cards['GV'].lock = true -- DATA.maxFloor < 4
+    Cards['GV'].lock = DATA.maxFloor < 4
     Cards['VL'].lock = DATA.maxFloor < 5
     Cards['DH'].lock = DATA.maxFloor < 6
     Cards['IN'].lock = DATA.maxFloor < 7
@@ -151,37 +153,31 @@ function GAME.refreshLockState()
 end
 
 function GAME.refreshPBText()
-    local setStr = table.concat(TABLE.sort(GAME.getHand()))
-    local h = DATA.highScore[setStr] or 0
-    local f
-    for i = 1, #Floors do
-        if h < Floors[i].top then
-            f = i
+    local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand()))] or 0
+    if h == 0 then return PBText:set("No Score Yet") end
+    for f = 1, #Floors do
+        if h < Floors[f].top then
+            PBText:set(("Best: %.1fm   <F%d>"):format(h, f))
             break
         end
     end
-    if h==0 then
-        PBText:set("No Score Yet")
-    else
-        PBText:set(("Personal Best: %.1fm   <F%d>"):format(h, f))
-    end
 end
 
-for floor = 1, 10 do
-    local stat = { 0, 0, 0, 0, 0 }
-    local sum = 0
-    for _ = 1, 620 do
-        local base = .626 + floor ^ .5 / 5
-        local var = floor / 4.2
+-- for floor = 1, 10 do
+--     local stat = { 0, 0, 0, 0, 0 }
+--     local sum = 0
+--     for _ = 1, 620 do
+--         local base = .626 + floor ^ .5 / 5
+--         local var = floor / 4.2
 
-        local r = base + var * math.abs(MATH.randNorm())
-        r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
-        r = MATH.clamp(r, 1, 5)
-        stat[r] = stat[r] + 1
-        sum = sum + r
-    end
-    print(("Floor %2d : %s"):format(floor, table.concat(stat, ', ')), "E(x)=" .. sum / MATH.sum(stat))
-end
+--         local r = base + var * math.abs(MATH.randNorm())
+--         r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
+--         r = MATH.clamp(r, 1, 5)
+--         stat[r] = stat[r] + 1
+--         sum = sum + r
+--     end
+--     print(("Floor %2d : %s"):format(floor, table.concat(stat, ', ')), "E(x)=" .. sum / MATH.sum(stat))
+-- end
 
 function GAME.genQuest()
     local combo = {}
@@ -216,6 +212,7 @@ function GAME.questReady()
     end
     local Q = GAME.quests[1].combo
     for i = 1, #Q do Cards[Q[i]].hintMark = true end
+    GAME.firstClickTimer = false
 end
 
 function GAME.anim_setMenuHide(t)
@@ -247,6 +244,10 @@ local function task_startSpin()
     GAME.questReady()
 end
 function GAME.start()
+    if TASK.getLock('cannotStart') then
+        SFX.play('clutch')
+        return
+    end
     SCN.scenes.main.widgetList.hint:setVisible(false)
     MSG.clear()
     MSG('dark', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
@@ -260,7 +261,7 @@ function GAME.start()
     GAME.playing = true
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
-    GAME.dmgTime = 1
+    GAME.dmgTime = 2
     GAME.dmgDelay = 15
     GAME.dmgCycle = 5
     GAME.queueLen = GAME.mod_NH == 2 and 1 or 3
@@ -273,13 +274,15 @@ function GAME.start()
     GAME.rankupLast = false
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
-    GAME.floor = 1
+    GAME.floor = 0
     GAME.fatigue = 1
     GAME.altitude = 0
     GAME.heightBuffer = 0
     GAME.life = 20
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
+
+    GAME.upFloor()
 
     TABLE.clear(GAME.quests)
     while #GAME.quests < GAME.queueLen do GAME.genQuest() end
@@ -301,11 +304,10 @@ function GAME.finish(reason)
     MSG.clear()
 
     BGM.set(BgmSets.extra, 'volume', 0)
-    local r1 = math.random(#BgmSets.extra)
-    local r2 = math.random(#BgmSets.extra - 1)
-    if r2 >= r1 then r2 = r2 + 1 end
-    BGM.set(BgmSets.extra[r1], 'volume', 1)
-    BGM.set(BgmSets.extra[r2], 'volume', 1)
+    local l = TABLE.copy(BgmSets.extra)
+    for _ = 1, MATH.clamp(GAME.floor - 6, 2, 4) do
+        BGM.set(TABLE.popRandom(l), 'volume', 1)
+    end
 
     SFX.play(
         reason == 'forfeit' and 'detonated' or
@@ -331,19 +333,32 @@ function GAME.finish(reason)
             newPB = true
         end
         local setStr = table.concat(TABLE.sort(GAME.getHand()))
-        if GAME.altitude > (DATA.highScore[setStr] or 0) then
+        local oldPB = DATA.highScore[setStr] or 0
+        if GAME.altitude > oldPB then
             DATA.highScore[setStr] = MATH.roundUnit(GAME.altitude, .1)
             DATA.maxFloor = DATA.maxFloor
             newPB = true
         end
         if newPB then
-            TEXT:add {
-                text = "PERSOANL BEST",
-                x = 800, y = 450, k = 3, fontSize = 60,
-                style = 'beat', inPoint = .26, outPoint = .62,
-                color = 'lY', duration = 6.2,
-            }
-            SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+            local modCount = #GAME.getHand()
+            if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
+                TEXT:add {
+                    text = modCount == 1 and "MOD  MASTERED" or "COMBO  MASTERED",
+                    x = 800, y = 200, k = 2.6, fontSize = 60,
+                    style = 'beat', inPoint = .26, outPoint = .62,
+                    color = 'lC', duration = 6.2,
+                }
+                SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + GAME.mod_GV)
+            else
+                TEXT:add {
+                    text = "PERSOANL BEST",
+                    x = 800, y = 200, k = 3, fontSize = 60,
+                    style = 'beat', inPoint = .26, outPoint = .62,
+                    color = 'lY', duration = 6.2,
+                }
+                SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+            end
+            SFX.play('applause', GAME.floor / 10)
         end
     end
 
@@ -357,6 +372,7 @@ function GAME.finish(reason)
         details = "QUICK PICK",
         state = "Enjoying Music",
     }
+    TASK.lock('cannotStart', 1)
 end
 
 function GAME.takeDamage(dmg, killReason)
@@ -368,8 +384,11 @@ function GAME.takeDamage(dmg, killReason)
     if GAME.life <= 0 then
         GAME.finish(killReason)
         return true
-    elseif GAME.life <= GAME.dmgWrong and GAME.life + dmg > GAME.dmgWrong then
-        SFX.play('hyperalert')
+    else
+        local dangerDmg = math.max(GAME.dmgWrong, GAME.dmgTime)
+        if GAME.life <= dangerDmg and GAME.life + dmg > dangerDmg then
+            SFX.play('hyperalert')
+        end
     end
 end
 
@@ -451,6 +470,7 @@ function GAME.commit()
         GAME.dmgTimer = math.min(GAME.dmgTimer + math.max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
         GAME.questReady()
+        return true
     else
         GAME.fault = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
@@ -486,6 +506,7 @@ function GAME.cancelAll(noSpin, instant)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, noSpin, instant)
+    GAME.firstClickTimer=false
 end
 
 function GAME.shuffleCards()
@@ -496,11 +517,13 @@ end
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     if GAME.mod_MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
+    if GAME.mod_GV > 0 then GAME.firstClickDelay = GravityTimer[GAME.mod_GV][GAME.floor] end
     local F = Floors[GAME.floor]
     local e = F.event
     for i = 1, #e, 2 do
         GAME[e[i]] = GAME[e[i]] + e[i + 1]
     end
+    if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
 
     TEXT:add {
         text = "Floor",
@@ -517,7 +540,7 @@ function GAME.upFloor()
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = 2.6,
     }
-    SFX.play('zenith_levelup_g', 1, 0, GAME.mod_GV)
+    if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod_GV) end
 end
 
 function GAME.addHeight(h)
@@ -596,6 +619,14 @@ function GAME.update(dt)
         if GAME.dmgTimer <= 0 then
             GAME.dmgTimer = GAME.dmgCycle
             GAME.takeDamage(GAME.dmgTime, 'killed')
+        end
+
+        if GAME.firstClickTimer then
+            GAME.firstClickTimer = GAME.firstClickTimer - dt
+            if GAME.firstClickTimer <= 0 then
+                GAME.firstClickTimer = GAME.firstClickDelay
+                GAME.commit()
+            end
         end
     end
 end

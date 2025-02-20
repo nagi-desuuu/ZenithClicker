@@ -63,7 +63,7 @@ DeckData = {
     { initOrder = 1, nameOrder = 8, id = 'EX', lockover = 'lockover-9',            name = 'expert',     fullName = "< EXPERT MODE >",         desc = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE",                      revName = "> THE TYRANT <",      revDesc = "FEAR, OPPRESSION, AND LIMITLESS AMBITION." },
     { initOrder = 2, nameOrder = 4, id = 'NH', lockfull = 'lockfull-2',            name = 'nohold',     fullName = "< NO HOLD >",             desc = "CANCELING IS DISABLED",                                             revName = "> ASCETICISM <",      revDesc = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE." },
     { initOrder = 3, nameOrder = 2, id = 'MS', lockfull = 'lockfull-3',            name = 'messy',      fullName = "< MESSIER GARBAGE  >",    desc = "TAROTS WILL BE SHUFFLED BY FLOOR",                                  revName = "> LOADED DICE <",     revDesc = "IN A RIGGED GAME, YOUR MIND IS THE ONLY FAIR ADVANTAGE." },
-    { initOrder = 4, nameOrder = 7, id = 'GV', lockfull = 'lockfull-4',            name = 'gravity',    fullName = "< GRAVITY >",             desc = "AUTO CLICK AND COMMIT, TIMED BY FLOOR",                             revName = "> FREEFALL <",        revDesc = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE." },
+    { initOrder = 4, nameOrder = 7, id = 'GV', lockfull = 'lockfull-4',            name = 'gravity',    fullName = "< GRAVITY >",             desc = "AUTO COMMITTING, TIMED BY FLOOR",                                   revName = "> FREEFALL <",        revDesc = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE." },
     { initOrder = 5, nameOrder = 3, id = 'VL', lockfull = 'lockfull-5',            name = 'volatile',   fullName = "< VOLATILE GARBAGE >",    desc = "LARGER GAPS BETWEEN TAROTS, BUT MUST CLICK TWICE",                  revName = "> LAST STAND <",      revDesc = "STRENGTH ISN'T NECESSARY FOR THOSE WITH NOTHING TO LOSE." },
     { initOrder = 6, nameOrder = 5, id = 'DH', lockfull = 'lockfull-6',            name = 'doublehole', fullName = "< DOUBLE HOLE GARBAGE >", desc = "COMBOS WILL SPAWN HARDER",                                          revName = "> DAMNATION <",       revDesc = "NO MORE SECOND CHANCES." },
     { initOrder = 7, nameOrder = 1, id = 'IN', lockfull = 'lockfull-7',            name = 'invisible',  fullName = "< INVISIBLE >",           desc = "TAROTS FACE DOWN, AND HINTS FLASH ONCE EVERY TWO SECONDS",          revName = "> THE EXILE <",       revDesc = "NEVER UNDERESTIMATE BLIND FAITH." },
@@ -100,8 +100,8 @@ Floors = {
     { top = 450,  event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Arena" },
     { top = 650,  event = { 'dmgDelay', -1, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "The Museum" },
     { top = 850,  event = { 'dmgDelay', -1, 'dmgTime', 1 },                   name = "Abandoned Offices" },
-    { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },               name = "The Laboratory" },
-    { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },               name = "The Core" },
+    { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Laboratory" },
+    { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Core" },
     { top = 1650, event = { 'dmgDelay', -.5, 'dmgWrong', 1 },                 name = "Corruption" },
     { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 1 }, name = "Platform of The Gods" },
     -- Initial: Delay=15. Cycle=5, Wrong=1
@@ -128,6 +128,11 @@ FatigueRevEx = {
 }
 
 MessyBias = TABLE.new(0, 9)
+
+GravityTimer = {
+    { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
+    { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
+}
 
 for i = 1, #DeckData do table.insert(Cards, require 'module/card'.new(DeckData[i])) end
 GAME.refreshLayout()
@@ -273,9 +278,9 @@ end)
 -- Load data
 DATA.load()
 if DATA.maxAltitude then
-    DATA.highScore['']=DATA.maxAltitude
-    DATA.highScore['EX']=DATA.maxAltitude_ex
-    DATA.maxAltitude,DATA.maxAltitude_ex=nil,nil
+    DATA.highScore[''] = DATA.maxAltitude
+    DATA.highScore['EX'] = DATA.maxAltitude_ex
+    DATA.maxAltitude, DATA.maxAltitude_ex = nil, nil
 end
 GAME.refreshLockState()
 GAME.refreshPBText()

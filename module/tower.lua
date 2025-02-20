@@ -62,13 +62,13 @@ local function keyPress(key)
         end
     elseif key == 'z' then
         local W = scene.widgetList.reset
-        W._pressTime = W._pressTimeMax*2
+        W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
         SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
         local W = scene.widgetList.start
-        W._pressTime = W._pressTimeMax*2
+        W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
         if GAME.playing then
             GAME.commit()
@@ -153,7 +153,7 @@ end
 
 function scene.update(dt)
     GAME.update(dt)
-    GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 6.26)
+    GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -204,45 +204,6 @@ function scene.draw()
 
     gc.replaceTransform(SCR.xOy)
 
-    -- Cards
-    gc.setColor(1, 1, 1)
-    if FloatOnCard then
-        for i = #Cards, 1, -1 do
-            if i ~= FloatOnCard then Cards[i]:draw() end
-        end
-        Cards[FloatOnCard]:draw()
-    else
-        for i = #Cards, 1, -1 do Cards[i]:draw() end
-    end
-
-    -- Allspin keyboard hint
-    if GAME.mod_AS > 0 then
-        FONT.set(60)
-        for i = 1, #Cards do
-            GC.strokePrint('full', 4, shadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
-        end
-    end
-
-    -- Debug
-    -- FONT.set(40) gc.setColor(1, 1, 1)
-    -- for i = 1, #Cards do
-    --     GC.print(Cards[i].touchCount, Cards[i].x, Cards[i].y-260)
-    -- end
-
-    -- Thruster
-    gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
-    GC.mRect('fill', 800, 975, 420, 26)
-    gc.setColor(rankColor[GAME.rank] or COLOR.L)
-    GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
-    GC.setLineWidth(2)
-    gc.setColor(1, 1, 1, .42)
-    GC.mRect('line', 800, 975, 420, 26)
-
-    -- Altitude
-    FONT.set(40)
-    GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
-    GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 370, 942)
-
     if GAME.playing then
         -- Target combo
         gc.setColor(COLOR.L)
@@ -270,29 +231,77 @@ function scene.draw()
         -- Health Bar
         gc.setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)
         GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
-    else
-        -- Card info
-        if FloatOnCard then
-            local C = Cards[FloatOnCard]
-            if C.lock then C = DeckData[0] end
-            gc.setColor(.3, .1, 0, .62)
-            GC.mRect('fill', 800, 910, 1260, 126, 10)
-            FONT.set(60)
-            GC.strokePrint('full', 3, shadeColor, textColor, C.fullName, 800, 842, nil, 'center')
-            FONT.set(30)
-            GC.strokePrint('full', 2, shadeColor, textColor, C.desc, 800, 926, nil, 'center')
+
+        if GAME.mod_GV > 0 then
+            gc.setColor(COLOR.DL)
+            if GAME.firstClickTimer then
+                gc.arc('fill', 'pie', 1300, 270, 40, -1.5708,
+                    -1.5708 + 6.2832 * GAME.firstClickTimer / GAME.firstClickDelay)
+            else
+                gc.circle('fill', 1300, 270, 40)
+            end
+            gc.setColor(COLOR.LD)
+            gc.circle('line', 1300, 270, 40)
         end
     end
+
+    -- Debug
+    -- FONT.set(40) gc.setColor(1, 1, 1)
+    -- for i = 1, #Cards do
+    --     GC.print(Cards[i].touchCount, Cards[i].x, Cards[i].y-260)
+    -- end
+
+    -- Thruster
+    gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
+    GC.mRect('fill', 800, 975, 420, 26)
+    gc.setColor(rankColor[GAME.rank] or COLOR.L)
+    GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
+    GC.setLineWidth(2)
+    gc.setColor(1, 1, 1, .42)
+    GC.mRect('line', 800, 975, 420, 26)
+
+    -- Altitude
+    FONT.set(40)
+    GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
+    GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 370, 942)
+end
+
+function scene.overDraw()
+    -- Current combo
+    gc.setColor(.7, .5, .3)
+    local k = math.min(.9, 760 / GAME.modText:getWidth())
+    GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+
+    -- Cards
+    gc.setColor(1, 1, 1)
+    if FloatOnCard then
+        for i = #Cards, 1, -1 do
+            if i ~= FloatOnCard then Cards[i]:draw() end
+        end
+        Cards[FloatOnCard]:draw()
+    else
+        for i = #Cards, 1, -1 do Cards[i]:draw() end
+    end
+
+    -- Allspin keyboard hint
+    if GAME.mod_AS > 0 then
+        FONT.set(60)
+        for i = 1, #Cards do
+            GC.strokePrint('full', 4, shadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
+        end
+    end
+
     -- Texts
     if GAME.textHide < 1 then
         local d = GAME.textHide * 70
-        gc.replaceTransform(SCR.xOy_ul)
-        gc.translate(0, -d)
+        gc.replaceTransform(SCR.xOy_u)
         gc.setColor(shadeColor)
-        GC.rectangle('fill', 0, 0, 1600, 70)
+        GC.rectangle('fill', -1200, -d, 2400, 70)
         gc.setColor(textColor)
-        gc.draw(titleText, GAME.exTimer * 205 - 195, 0, nil, 1, 1.1)
-        gc.draw(PBText, 1590, 0, nil, 1, 1.1, PBText:getWidth(), 0)
+        gc.replaceTransform(SCR.xOy_ul)
+        gc.draw(titleText, GAME.exTimer * 205 - 195, -d, nil, 1, 1.1)
+        gc.replaceTransform(SCR.xOy_ur)
+        gc.draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
         -- gc.printf(
         --     ("Personal Best: %.1fm"):format(GAME.mod_EX > 0 and DATA.maxAltitude_ex or DATA.maxAltitude),
         --     0, 0, 1590, 'right', nil, 1, 1.1)
@@ -305,14 +314,21 @@ function scene.draw()
         gc.setColor(.26, .26, .26)
         gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
     end
-end
 
-function scene.overDraw()
-    -- Current combo
-    gc.setColor(.7, .5, .3)
-    local k = math.min(.9, 760 / GAME.modText:getWidth())
-    GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+    -- Card info
+    if not GAME.playing and FloatOnCard then
+        local C = Cards[FloatOnCard]
+        if C.lock then C = DeckData[0] end
+        gc.replaceTransform(SCR.xOy_d)
+        gc.setColor(.3, .1, 0, .7023)
+        gc.rectangle('fill', -1260 / 2, -140, 1260, 110, 10)
+        FONT.set(60)
+        GC.strokePrint('full', 4, shadeColor, textColor, C.fullName, 0, -145, nil, 'center')
+        FONT.set(30)
+        GC.strokePrint('full', 3, shadeColor, textColor, C.desc, 0, -75, nil, 'center')
+    end
 
+    -- Forfeit panel
     if GAME.forfeitTimer > 0 then
         gc.replaceTransform(SCR.origin)
         gc.setColor(.872, .26, .26, GAME.forfeitTimer * .6)
@@ -350,10 +366,10 @@ scene.widgetList = {
     WIDGET.new {
         name = 'hint', type = 'hint',
         pos = { .5, .5 }, x = 500, y = -230, w = 80, cornerR = 40,
-        color = 'lF',
-        fontSize = 80, text = "?", textColor = 'dF',
+        color = textColor,
+        fontSize = 80, text = "?",
         sound_hover = 'menutap',
-        labelPos = 'leftBottom',
+        labelPos = 'leftTop',
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!

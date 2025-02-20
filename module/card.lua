@@ -100,6 +100,9 @@ function Card:setActive(auto)
             if GAME.mod_NH > 0 and not self.active then
                 GAME.cancelAll()
             end
+            if GAME.mod_GV > 0 and GAME.firstClickDelay and not GAME.firstClickTimer then
+                GAME.firstClickTimer = GAME.firstClickDelay
+            end
             if GAME.mod_AS > 0 then
                 if self.burn then
                     self.burn = false
