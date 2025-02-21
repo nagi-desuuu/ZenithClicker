@@ -148,8 +148,6 @@ FatigueRevEx = {
     { time = 1e99 }, -- Total: Delay-3, Cycle-1, Wrong+5
 }
 
-MessyBias = TABLE.new(0, 9)
-
 GravityTimer = {
     { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
     { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
@@ -261,12 +259,10 @@ TASK.new(function()
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1
-            if GAME.mod.MS > 0 then
-                for i = 1, 9 do
-                    MessyBias[i] = GAME.mod.MS * (Cards[i].active and 1 or -1) * math.random(-6, 2)
-                end
-                GAME.refreshLayout()
+            for i = 1, 9 do
+                Cards[i].visY = GAME.mod.MS * math.random(-6, 2)
             end
+            GAME.refreshLayout()
         end
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then

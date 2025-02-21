@@ -35,6 +35,7 @@ function Card.new(d)
         r = 0,
         tx = 0,
         ty = 0,
+        visY = 0,
 
         touchCount = 0,
         burn = false,
@@ -286,7 +287,7 @@ local activeFrame = GC.newImage('assets/outline.png')
 
 function Card:update(dt)
     self.x = MATH.expApproach(self.x, self.tx, dt * 16)
-    self.y = MATH.expApproach(self.y, self.ty, dt * 16)
+    self.y = MATH.expApproach(self.y, self.ty + (self.active and 1 or -1) * self.visY, dt * 16)
     if self.burn then
         self.burn = self.burn - dt
         if self.burn <= 0 then
@@ -400,7 +401,7 @@ function Card:draw()
         end
     end
 
-    -- GC.mRect('line',0,0,260*2,350*2)
+    -- GC.mRect('line', 0, 0, 260 * 2, 350 * 2)
     gc.pop()
 end
 

@@ -185,11 +185,6 @@ function GAME.refreshLayout()
             C.ty = baseY - (C.active and 35 or 0) - (i == FloatOnCard and 55 or 0)
         end
     end
-    if GAME.mod.MS > 0 then
-        for i = 1, 9 do
-            Cards[i].ty = Cards[i].ty + MessyBias[i]
-        end
-    end
 end
 
 function GAME.refreshLockState()

@@ -323,7 +323,7 @@ function scene.overDraw()
     -- Debug
     -- FONT.set(40) gc_setColor(1, 1, 1)
     -- for i = 1, #Cards do
-    --     gc.print(Cards[i].touchCount, Cards[i].x, Cards[i].y-260)
+    --     gc.print(Cards[i].ty, Cards[i].x, Cards[i].y-260)
     -- end
 
     -- Thruster
