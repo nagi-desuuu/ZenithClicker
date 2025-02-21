@@ -217,6 +217,7 @@ function scene.draw()
 
     if GAME.uiHide < 1 then
         gc.replaceTransform(SCR.xOy)
+        gc.translate(0, GAME.deckPress * 26)
         local h = 697 + GAME.uiHide * 600
         gc.setColor(ShadeColor)
         GC.setAlpha(.626)
@@ -250,11 +251,10 @@ function scene.overDraw()
         GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
     end
 
-    if GAME.deckPress > 0 then
-        gc.translate(800, 800)
-        gc.scale(1 - GAME.deckPress * .0626)
-        gc.translate(-800, -800)
-    end
+    gc.translate(0, GAME.deckPress * 26)
+    -- gc.translate(800, 800)
+    -- gc.scale(1 - GAME.deckPress * .0626)
+    -- gc.translate(-800, -800)
 
     if GAME.playing then
         -- Target combo

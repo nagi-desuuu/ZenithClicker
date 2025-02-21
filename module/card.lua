@@ -200,6 +200,7 @@ function Card:setActive(auto, key)
                         TWEEN.new(function(t) GAME.deckPress = 1 - t end):setUnique('deckPress'):setDuration(.42):run()
                     else
                         SFX.play('spin')
+                        if currentState == 0 then self:bounce(100, .26) end
                     end
                 end)
             else
@@ -207,7 +208,7 @@ function Card:setActive(auto, key)
                 SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod_GV)
             end
             if not noSpin then self:spin() end
-            if revOn then self:bounce() end
+            if revOn then self:bounce(1200, .62) end
         else
             SFX.play('card_slide_' .. math.random(4))
         end
@@ -245,10 +246,10 @@ function Card:spin()
         :setDuration(0.42):run()
 end
 
-function Card:bounce()
+function Card:bounce(height, duration)
     TWEEN.new(function(t)
-        self.y = self.ty + t * (t - 1) * 1200
-    end):setUnique('bounce_' .. self.id):setEase({ 'linear', 'inQuad' }):setDuration(.62):run()
+        self.y = self.ty + t * (t - 1) * height
+    end):setUnique('bounce_' .. self.id):setEase({ 'linear', 'inQuad' }):setDuration(duration):run()
 end
 
 function Card:shake()
@@ -332,6 +333,9 @@ function Card:draw()
     end
 
     local r, g, b = 1, .26, 0
+    if not GAME.playing and GAME['mod_' .. self.id] == 2 then
+        r, g, b = (1 - r) * .626, (1 - g) * .626, (1 - b) * .626
+    end
     local a = 0
 
     if self.active then
