@@ -54,7 +54,13 @@ local _DATA = {
 DATA = setmetatable({
     load = function() TABLE.update(_DATA, FILE.load('data.luaon', '-luaon -canskip') or NONE) end,
     save = function() love.filesystem.write('data.luaon', TABLE.dumpDeflate(_DATA)) end,
-}, { __index = _DATA })
+}, {
+    __index = _DATA,
+    __newindex = function(_, k, v)
+        _DATA[k] = v
+        DATA.save()
+    end,
+})
 
 GAME = require 'module/game'
 
