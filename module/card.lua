@@ -97,7 +97,7 @@ function Card:setActive(auto, key)
     if GAME.playing then
         self.touchCount = self.touchCount + 1
         if self.touchCount == 1 then
-            if self.hintMark then
+            if self.hintMark and not GAME.hardMode then
                 GAME.addXP(1)
             end
         elseif self.touchCount == 2 then
