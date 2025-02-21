@@ -215,26 +215,24 @@ function scene.draw()
     gc.setColor(1, 1, 1, GAME.bgAlpha * .42)
     GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
-    if GAME.uiHide < 1 then
-        gc.replaceTransform(SCR.xOy)
-        gc.translate(0, GAME.deckPress * 26)
-        local h = 697 + GAME.uiHide * 600
-        gc.setColor(ShadeColor)
-        GC.setAlpha(.626)
-        gc.rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 606)
-        gc.setLineWidth(4)
-        gc.line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
-        gc.setColor(TextColor)
-        gc.line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
-        if not GAME.playing and GAME.anyRev then
-            gc.setColor(1, 1, 1, GAME.revTimer)
-            GC.mDraw(IMG.glass_a, 800, h)
-            GC.mDraw(IMG.glass_b, 800, h)
-            gc.setColor(1, 1, 1, GAME.throbAlpha2)
-            GC.mDraw(IMG.throb_a, 800, h)
-            gc.setColor(1, 1, 1, GAME.throbAlpha3)
-            GC.mDraw(IMG.throb_b, 800, h)
-        end
+    gc.replaceTransform(SCR.xOy)
+    gc.translate(0, GAME.deckPress * 26)
+    local h = 697 + GAME.uiHide * 420
+    gc.setColor(ShadeColor)
+    GC.setAlpha(.626)
+    gc.rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
+    gc.setLineWidth(4)
+    gc.line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
+    gc.setColor(TextColor)
+    gc.line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
+    if not GAME.playing and GAME.anyRev then
+        gc.setColor(1, 1, 1, GAME.revTimer)
+        GC.mDraw(IMG.glass_a, 800, h)
+        GC.mDraw(IMG.glass_b, 800, h)
+        gc.setColor(1, 1, 1, GAME.throbAlpha2)
+        GC.mDraw(IMG.throb_a, 800, h)
+        gc.setColor(1, 1, 1, GAME.throbAlpha3)
+        GC.mDraw(IMG.throb_b, 800, h)
     end
 end
 
@@ -248,13 +246,10 @@ function scene.overDraw()
             GC.setAlpha(.42)
         end
         local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+        GC.mDraw(GAME.modText, 800, 396 + GAME.deckPress * 26, nil, k, k * 1.1)
     end
 
     gc.translate(0, GAME.deckPress * 26)
-    -- gc.translate(800, 800)
-    -- gc.scale(1 - GAME.deckPress * .0626)
-    -- gc.translate(-800, -800)
 
     if GAME.playing then
         -- Target combo
@@ -357,6 +352,7 @@ function scene.overDraw()
         --     0, 0, 1590, 'right', nil, 1, 1.1)
 
         gc.replaceTransform(SCR.xOy_dl)
+        gc.translate(0, GAME.deckPress * 26)
         gc.translate(0, d)
         if revT > 0 then
             gc.draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
@@ -367,7 +363,7 @@ function scene.overDraw()
             gc.draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
         end
         gc.replaceTransform(SCR.xOy_dr)
-        gc.setColor(.26, .26, .26)
+        gc.translate(0, GAME.deckPress * 26)
         gc.draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
     end
 
@@ -429,11 +425,11 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'hint', type = 'hint',
-        pos = { .5, .5 }, x = 500, y = -230, w = 80, cornerR = 40,
+        pos = { 1, 0 }, x = -50, y = 120, w = 80, cornerR = 40,
         color = TextColor,
         fontSize = 80, text = "?",
         sound_hover = 'menutap',
-        labelPos = 'leftTop',
+        labelPos = 'leftBottom',
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!
