@@ -25,9 +25,13 @@ local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
     revTimer = 0,
-    textHide = 0,
+    uiHide = 0,
     bgFloor = 1,
     bgAlpha = 1,
+    throbAlpha1 = 0,
+    throbAlpha2 = 0,
+    throbAlpha3 = 0,
+    deckPress = 0,
 
     mod_EX = 0,
     mod_NH = 0,
@@ -269,8 +273,8 @@ function GAME.questReady()
 end
 
 function GAME.anim_setMenuHide(t)
-    GAME.textHide = t
-    MSG.setSafeY(75 * (1 - GAME.textHide))
+    GAME.uiHide = t
+    MSG.setSafeY(75 * (1 - GAME.uiHide))
 end
 
 function GAME.anim_setMenuHide_rev(t)
@@ -316,8 +320,6 @@ function GAME.start()
         return
     end
     SCN.scenes.main.widgetList.hint:setVisible(false)
-    MSG.clear()
-    MSG('dark', "The game is still working in progress.\nScore will NOT be saved!!!", 4.2)
 
     BGM.set(BgmSets.extra, 'volume', 1)
     BGM.set('expert', 'volume', MATH.sign(GAME.mod_EX))
@@ -530,7 +532,7 @@ function GAME.commit()
         GAME.questCount = GAME.questCount + 1
         GAME.genQuest()
 
-        GAME.cancelAll(true, true)
+        GAME.cancelAll(true)
 
         GAME.dmgTimer = math.min(GAME.dmgTimer + math.max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
@@ -540,15 +542,15 @@ function GAME.commit()
         GAME.fault = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
         if GAME.mod_EX > 0 then
-            GAME.cancelAll(true, true)
+            GAME.cancelAll(true)
         else
             for _, C in ipairs(Cards) do C:clearBuff() end
         end
     end
 end
 
-function GAME.task_cancelAll(noSpin, instant)
-    local spinMode = not noSpin and GAME.mod_AS > 0
+function GAME.task_cancelAll(instant)
+    local spinMode = not instant and GAME.mod_AS > 0
     local list = TABLE.copy(Cards, 0)
     local needFlip = {}
     for i = 1, #Cards do
@@ -565,10 +567,10 @@ function GAME.task_cancelAll(noSpin, instant)
     end
 end
 
-function GAME.cancelAll(noSpin, instant)
+function GAME.cancelAll(instant)
     if GAME.mod_NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
-    TASK.new(GAME.task_cancelAll, noSpin, instant)
+    TASK.new(GAME.task_cancelAll, instant)
     GAME.firstClickTimer = false
 end
 

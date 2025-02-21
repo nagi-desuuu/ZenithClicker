@@ -28,6 +28,10 @@ SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
 SFX.setVol(.6)
 
 IMG.init {
+    glass_a = 'assets/glass-a.png',
+    glass_b = 'assets/glass-b.png',
+    throb_a = 'assets/throb-a.png',
+    throb_b = 'assets/throb-b.png',
     floorBG = {
         'assets/1fa.jpg',
         'assets/2fa.jpg',
@@ -231,13 +235,18 @@ TASK.new(function()
     end
 end)
 
+-- Throb tranpaency daemon
 -- Messy position daemon
 -- Expert guitar randomization daemon
 TASK.new(function()
+    local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184
     local t2, step2 = 0, 2 * 60 / 184 / 4
     while true do
         local T = BGM.tell()
+        GAME.throbAlpha1 = math.max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
+        GAME.throbAlpha2 = .626 - 2 * T / bar % 1
+        GAME.throbAlpha3 = .626 - 2 * (T / bar - 1 / 32) % 1
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1

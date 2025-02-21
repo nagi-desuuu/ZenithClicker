@@ -62,12 +62,20 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
+        if GAME.mod_NH == 2 then
+            SFX.play('no')
+            return true
+        end
         local W = scene.widgetList.reset
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
         SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
+        if GAME.mod_NH == 2 then
+            SFX.play('no')
+            return true
+        end
         local W = scene.widgetList.start
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
@@ -155,6 +163,9 @@ end
 function scene.update(dt)
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
+    if GAME.deckPress > 0 then
+        GAME.deckPress = GAME.deckPress - dt
+    end
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -201,12 +212,49 @@ local TextColor = TextColor
 local ShadeColor = ShadeColor
 function scene.draw()
     gc.replaceTransform(SCR.origin)
-    GC.setColor(1, 1, 1, GAME.bgAlpha * .42)
+    gc.setColor(1, 1, 1, GAME.bgAlpha * .42)
     GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+
+    if GAME.uiHide < 1 then
+        gc.replaceTransform(SCR.xOy)
+        local h = 697 + GAME.uiHide * 600
+        gc.setColor(ShadeColor)
+        GC.setAlpha(.626)
+        gc.rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 606)
+        gc.setLineWidth(4)
+        gc.line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
+        gc.setColor(TextColor)
+        gc.line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
+        if not GAME.playing and GAME.anyRev then
+            gc.setColor(1, 1, 1, GAME.revTimer)
+            GC.mDraw(IMG.glass_a, 800, h)
+            GC.mDraw(IMG.glass_b, 800, h)
+            gc.setColor(1, 1, 1, GAME.throbAlpha2)
+            GC.mDraw(IMG.throb_a, 800, h)
+            gc.setColor(1, 1, 1, GAME.throbAlpha3)
+            GC.mDraw(IMG.throb_b, 800, h)
+        end
+    end
 end
 
 function scene.overDraw()
     gc.replaceTransform(SCR.xOy)
+
+    -- Current combo
+    if GAME.mod_IN < 2 or not GAME.playing then
+        gc.setColor(TextColor)
+        if GAME.mod_IN == 2 then
+            GC.setAlpha(.42)
+        end
+        local k = math.min(.9, 760 / GAME.modText:getWidth())
+        GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
+    end
+
+    if GAME.deckPress > 0 then
+        gc.translate(800, 800)
+        gc.scale(1 - GAME.deckPress * .0626)
+        gc.translate(-800, -800)
+    end
 
     if GAME.playing then
         -- Target combo
@@ -270,16 +318,6 @@ function scene.overDraw()
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 942)
 
-    -- Current combo
-    if GAME.mod_IN < 2 or not GAME.playing then
-        gc.setColor(TextColor)
-        if GAME.mod_IN == 2 then
-            GC.setAlpha(.42)
-        end
-        local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 396, nil, k, k * 1.1)
-    end
-
     -- Cards
     gc.setColor(1, 1, 1)
     if FloatOnCard then
@@ -300,16 +338,18 @@ function scene.overDraw()
     end
 
     -- Texts
-    if GAME.textHide < 1 then
-        local d = GAME.textHide * 70
+    if GAME.uiHide < 1 then
+        local exT = GAME.exTimer
+        local revT = GAME.revTimer
+        local d = GAME.uiHide * 70
         gc.replaceTransform(SCR.xOy_u)
         gc.setColor(ShadeColor)
         GC.rectangle('fill', -1200, -d, 2400, 70)
         gc.setColor(TextColor)
         gc.replaceTransform(SCR.xOy_ul)
         gc.draw(titleText,
-            GAME.exTimer * 205 - 195, titleText:getHeight() / 2 - d, nil,
-            1, 1.1 * (1 - 2 * GAME.revTimer), 0, titleText:getHeight() / 2)
+            exT * 205 - 195, titleText:getHeight() / 2 - d, nil,
+            1, 1.1 * (1 - 2 * revT), 0, titleText:getHeight() / 2)
         gc.replaceTransform(SCR.xOy_ur)
         gc.draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
         -- gc.printf(
@@ -318,23 +358,23 @@ function scene.overDraw()
 
         gc.replaceTransform(SCR.xOy_dl)
         gc.translate(0, d)
-        if GAME.revTimer > 0 then
-            gc.draw(sloganText, 6, 2 + (GAME.exTimer + GAME.revTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-            gc.draw(sloganText_EX, 6, 2 + (1 - GAME.exTimer + GAME.revTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-            gc.draw(sloganText_rev, 6, 2 + (1 - GAME.revTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+        if revT > 0 then
+            gc.draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
+            gc.draw(sloganText_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
+            gc.draw(sloganText_rev, 6, 2 + (1 - revT) * 42, nil, 1, 1.26, 0, sloganText_rev:getHeight())
         else
-            gc.draw(sloganText, 6, 2 + GAME.exTimer * 42, nil, 1, 1.26, 0, origAuth:getHeight())
-            gc.draw(sloganText_EX, 6, 2 + (1 - GAME.exTimer) * 42, nil, 1, 1.26, 0, origAuth:getHeight())
+            gc.draw(sloganText, 6, 2 + exT * 42, nil, 1, 1.26, 0, sloganText:getHeight())
+            gc.draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
         end
         gc.replaceTransform(SCR.xOy_dr)
         gc.setColor(.26, .26, .26)
-        gc.draw(origAuth, -5, 0, nil, 1, 1, origAuth:getDimensions())
+        gc.draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
     end
 
     -- Card info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
-        if C.lock then C = DeckData[C.id=='2P' and -1 or 0] end
+        if C.lock then C = DeckData[C.id == '2P' and -1 or 0] end
         gc.replaceTransform(SCR.xOy_d)
         gc.setColor(ShadeColor)
         GC.setAlpha(.872)

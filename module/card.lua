@@ -18,6 +18,7 @@ function Card.new(d)
 
         frontImg = GC.newImage('assets/' .. d.name .. '.png'),
         backImg = GC.newImage('assets/' .. d.name .. '-back.png'),
+        throbImg = GC.newImage('assets/' .. d.name .. '-throb.png'),
         lockfull = d.lockfull and GC.newImage('assets/' .. d.lockfull .. '.png'),
         lockover = d.lockover and GC.newImage('assets/' .. d.lockover .. '.png'),
 
@@ -196,6 +197,7 @@ function Card:setActive(auto, key)
                     local currentState = GAME['mod_' .. self.id]
                     if currentState == 2 then
                         SFX.play('card_reverse_impact', 1, 0, GAME.mod_GV)
+                        TWEEN.new(function(t) GAME.deckPress = 1 - t end):setUnique('deckPress'):setDuration(.42):run()
                     else
                         SFX.play('spin')
                     end
@@ -280,6 +282,7 @@ function Card:update(dt)
     end
 end
 
+local GAME = GAME
 local gc = love.graphics
 local outlineShader = gc.newShader [[
 vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
@@ -317,15 +320,15 @@ function Card:draw()
     end
 
     -- Draw card
-    GC.setColor(
+    gc.setColor(
         self.burn and (
             GAME.time % .16 < .08 and COLOR.LF
             or COLOR.lY
         ) or COLOR.LL
     )
-    GC.draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
+    gc.draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
     if img2 then
-        GC.draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
+        gc.draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
 
     local r, g, b = 1, .26, 0
@@ -354,10 +357,15 @@ function Card:draw()
         end
     end
     if a > 0 then
-        GC.setShader(outlineShader)
-        GC.setColor(r, g, b, a)
-        GC.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
-        GC.setShader()
+        gc.setShader(outlineShader)
+        gc.setColor(r, g, b, a)
+        gc.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+        gc.setShader()
+    end
+
+    if not GAME.playing and img == self.frontImg and GAME['mod_' .. self.id] == 2 then
+        gc.setColor(1, 1, 1, GAME.throbAlpha1)
+        gc.draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
     end
 
     -- GC.mRect('line',0,0,260*2,350*2)
