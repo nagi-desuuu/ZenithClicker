@@ -120,15 +120,15 @@ ModWeight = {
 }
 
 ModColor = {
-    EX = { COLOR.HEX "" },
-    NH = { COLOR.HEX "" },
-    MS = { COLOR.HEX "" },
-    GV = { COLOR.HEX "" },
-    VL = { COLOR.HEX "" },
-    DH = { COLOR.HEX "" },
-    IN = { COLOR.HEX "" },
-    AS = { COLOR.HEX "" },
-    DP = { COLOR.HEX "" },
+    EX = { COLOR.HEX "966920" },
+    NH = { COLOR.HEX "FF00D4" },
+    MS = { COLOR.HEX "FFB400" },
+    GV = { COLOR.HEX "FFFF00" },
+    VL = { COLOR.HEX "FF1500" },
+    DH = { COLOR.HEX "47ACFF" },
+    IN = { COLOR.HEX "BD24FF" },
+    AS = { COLOR.HEX "00FED4" },
+    DP = { COLOR.HEX "FF8C9D" },
 }
 
 BasicComboCount = 9

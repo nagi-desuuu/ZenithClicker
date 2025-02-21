@@ -204,7 +204,11 @@ function Card:setActive(auto, key)
                                 C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
                             end
                         end
+                        local color = ModColor[self.id]
                         table.insert(ImpactGlow, {
+                            r = (color[1] - .26) * .8,
+                            g = (color[2] - .26) * .8,
+                            b = (color[3] - .26) * .8,
                             x = self.x,
                             y = self.y,
                             t = 2.6,
@@ -307,6 +311,14 @@ end
 
 local GAME = GAME
 local gc = love.graphics
+local gc_push, gc_pop = gc.push, gc.pop
+local gc_translate, gc_scale = gc.translate, gc.scale
+local gc_rotate, gc_shear = gc.rotate, gc.shear
+local gc_setCanvas, gc_setShader, gc_setBlendMode = gc.setCanvas, gc.setShader, gc.setBlendMode
+local gc_setColor, gc_setLineWidth, gc_setLineJoin = gc.setColor, gc.setLineWidth, gc.setLineJoin
+local gc_draw, gc_line = gc.draw, gc.line
+
+
 local outlineShader = gc.newShader [[
 vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
     vec4 fragColor = texture2D(tex, texCoord);
@@ -327,32 +339,32 @@ function Card:draw()
         img2 = self.lock and self.lockover
     end
 
-    gc.push('transform')
-    gc.translate(self.x, self.y)
-    gc.rotate(self.r)
-    if not playing and not self.upright then gc.rotate(3.1416) end
-    gc.scale(abs(self.size * self.kx), self.size * self.ky)
+    gc_push('transform')
+    gc_translate(self.x, self.y)
+    gc_rotate(self.r)
+    if not playing and not self.upright then gc_rotate(3.1416) end
+    gc_scale(abs(self.size * self.kx), self.size * self.ky)
 
     -- Fake 3D
     if self == Cards[FloatOnCard] then
         local dx, dy = (MX - self.x) / (260 * self.size), (MY - self.y) / (350 * self.size)
         local d = (abs(dx) - abs(dy)) * .026
-        gc.scale(math.min(1, 1 - d), math.min(1, 1 + d))
+        gc_scale(math.min(1, 1 - d), math.min(1, 1 + d))
         local D = -MATH.sign(dx * dy) * abs(dx * dy) ^ .626 * .026
-        gc.shear(D, D)
-        gc.scale(1 - abs(D))
+        gc_shear(D, D)
+        gc_scale(1 - abs(D))
     end
 
     -- Draw card
-    gc.setColor(
+    gc_setColor(
         self.burn and (
             GAME.time % .16 < .08 and COLOR.LF
             or COLOR.lY
         ) or COLOR.LL
     )
-    gc.draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
+    gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
     if img2 then
-        gc.draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
+        gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
 
     local r, g, b = 1, .26, 0
@@ -384,33 +396,37 @@ function Card:draw()
         end
     end
     if a > 0 then
-        gc.setShader(outlineShader)
-        gc.setColor(r, g, b, a)
-        gc.draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
-        gc.setShader()
+        gc_setShader(outlineShader)
+        gc_setColor(r, g, b, a)
+        gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+        gc_setShader()
     end
 
     if not playing then
         if not self.upright and img == self.frontImg then
-            gc.setColor(1, 1, 1, ThrobAlpha.card)
-            gc.draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
+            gc_setColor(1, 1, 1, ThrobAlpha.card)
+            gc_draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
         if self.upright and GAME.revUnlocked[self.id] then
-            gc.setColor(.5, .5, .5)
+            gc_setColor(.5, .5, .5)
             if FloatOnCard == self.initOrder then
                 GC.blurCircle(0, 0, -330, 80)
-                gc.setColor(1, 1, 1)
+                gc_setColor(1, 1, 1)
                 GC.mDraw(IMG.star1, 0, -330, nil, .3)
             else
                 GC.blurCircle(-.2, 155, -370, 42)
-                gc.setColor(1, 1, 1)
+                gc_setColor(1, 1, 1)
                 GC.mDraw(self.active and IMG.star1 or IMG.star0, 155, -370, nil, .16)
             end
         end
     end
 
+    -- gc_setColor(ModColor[self.id])
+    -- gc.rectangle('fill', 260, -350, -60, 60)
+    -- gc_setColor(1, 1, 1)
+    -- gc_setLineWidth(2)
     -- GC.mRect('line', 0, 0, 260 * 2, 350 * 2)
-    gc.pop()
+    gc_pop()
 end
 
 return Card

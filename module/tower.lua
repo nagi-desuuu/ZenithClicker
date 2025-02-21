@@ -254,13 +254,6 @@ function scene.draw()
 end
 
 function scene.overDraw()
-    -- Glow
-    for i = 1, #ImpactGlow do
-        local L = ImpactGlow[i]
-        gc_setColor(.6, .1, .1, L.t - 1)
-        GC.blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
-    end
-
     -- Current combo
     if GAME.mod.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
@@ -272,6 +265,13 @@ function scene.overDraw()
     end
 
     gc_translate(0, DeckPress)
+
+    -- Glow
+    for i = 1, #ImpactGlow do
+        local L = ImpactGlow[i]
+        gc_setColor(L.r, L.g, L.b, L.t - 1.5)
+        GC.blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
+    end
 
     if GAME.playing then
         -- Target combo
