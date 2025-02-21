@@ -12,9 +12,10 @@ SCR.setSize(1600, 1000)
 
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
-BGM.setMaxSources(9)
+BGM.setMaxSources(10)
 BGM.load {
     piano = 'assets/piano.ogg',
+    piano2 = 'assets/piano.ogg',
     expert = 'assets/expert.ogg',
     arp = 'assets/arp.ogg',
     bass = 'assets/bass.ogg',
@@ -26,7 +27,7 @@ BGM.load {
 }
 
 SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
-SFX.setVol(.8)
+SFX.setVol(.872)
 
 IMG.init {
     star0 = 'assets/crystal-dark.png',
@@ -88,7 +89,7 @@ ThrobAlpha = {
 }
 
 BgmSets = {
-    all = { 'piano', 'expert', 'rev', 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
+    all = { 'piano', 'piano2', 'expert', 'rev', 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
     assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
 
@@ -235,8 +236,6 @@ function WIDGET._prototype.button:draw()
     end
     gc.pop()
 end
-
-BGM.play(BgmSets.all)
 
 -- Desync fixing daemon
 TASK.new(function()

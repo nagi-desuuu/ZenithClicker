@@ -260,9 +260,10 @@ function GAME.updateBgm(event)
     elseif event == 'f10' then
         BGM.set('bass', 'volume', 0)
     elseif event == 'init' then
+        BGM.play(BgmSets.all)
         BGM.set('all', 'volume', 0, 0)
         BGM.set('piano', 'volume', 1)
-        -- BGM.set(BgmSets.assist, 'volume', 1, 10)
+        BGM.set('piano2', 'pitch', 2, 0)
         BGM.set(TABLE.getRandom(BgmSets.assist), 'volume', 1, 10)
     end
 end

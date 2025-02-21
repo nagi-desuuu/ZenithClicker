@@ -161,7 +161,9 @@ function Card:setActive(auto, key)
         elseif self.id == 'NH' then
             BGM.set('piano', 'volume', self.active and (GAME.mod.NH == 2 and 0 or .26) or 1)
         elseif self.id == 'GV' then
-            BGM.set('all', 'pitch', self.active and 2 ^ (GAME.mod.GV / 12) or 1, .26)
+            local v = self.active and 2 ^ (GAME.mod.GV / 12) or 1
+            BGM.set('all', 'pitch', v, .26)
+            BGM.set('piano2', 'pitch', 2 * v, .26)
         elseif self.id == 'DH' then
             local W = SCN.scenes.main.widgetList.start
             W.text = self.active and 'COMMENCE' or 'START'
@@ -174,6 +176,8 @@ function Card:setActive(auto, key)
             local W = SCN.scenes.main.widgetList.reset
             W.text = self.active and 'SPIN' or 'RESET'
             W:reset()
+        elseif self.id == 'DP' then
+            BGM.set('piano2', 'volume', self.active and 1 or 0, .26)
         end
         GAME.refreshPBText()
         if revOn or wasRev then
