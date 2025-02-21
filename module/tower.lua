@@ -361,9 +361,6 @@ function scene.overDraw()
             1, 1.1 * (1 - 2 * revT), 0, titleText:getHeight() / 2)
         gc_replaceTransform(SCR.xOy_ur)
         gc_draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
-        -- gc_printf(
-        --     ("Personal Best: %.1fm"):format(GAME.mod_EX > 0 and DATA.maxAltitude_ex or DATA.maxAltitude),
-        --     0, 0, 1590, 'right', nil, 1, 1.1)
 
         gc_replaceTransform(SCR.xOy_dl)
         gc_translate(0, GAME.deckPress)

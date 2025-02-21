@@ -46,7 +46,15 @@ IMG.init {
     },
 }
 
-DATA = require 'module/data'
+local _DATA = {
+    highScore = {},
+    maxFloor = 1,
+}
+
+DATA = setmetatable({
+    load = function() TABLE.update(_DATA, FILE.load('data.luaon', '-luaon -canskip') or NONE) end,
+    save = function() love.filesystem.write('data.luaon', TABLE.dumpDeflate(_DATA)) end,
+}, { __index = _DATA })
 
 GAME = require 'module/game'
 
@@ -161,11 +169,6 @@ function ZENITHA.globalEvent.keyDown(key)
         MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
         return true
     end
-end
-
-function ZENITHA.globalEvent.quit()
-    DATA.flush()
-    love.timer.sleep(.1)
 end
 
 local gc = love.graphics
@@ -291,6 +294,7 @@ if DATA.maxAltitude then
     DATA.highScore[''] = DATA.maxAltitude
     DATA.highScore['EX'] = DATA.maxAltitude_ex
     DATA.maxAltitude, DATA.maxAltitude_ex = nil, nil
+    DATA.save()
 end
 GAME.refreshLockState()
 GAME.refreshPBText()
