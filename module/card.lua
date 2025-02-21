@@ -56,6 +56,7 @@ function Card:clearBuff()
 end
 
 local KBIsDown = love.keyboard.isDown
+local function tween_deckPress(t) GAME.deckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
     if GAME.mod.VL == 1 then
         if not self.active and not auto then
@@ -189,7 +190,7 @@ function Card:setActive(auto, key)
                     local currentState = GAME.mod[self.id]
                     if currentState == 2 then
                         SFX.play('card_reverse_impact', 1, 0, GAME.mod.GV)
-                        TWEEN.new(function(t) GAME.deckPress = 26 * (1 - t) end):setUnique('deckPress')
+                        TWEEN.new(tween_deckPress):setUnique('deckPress')
                             :setEase('OutQuad'):setDuration(.42):run()
                         for _, C in ipairs(Cards) do
                             if C ~= self then
@@ -241,11 +242,11 @@ end
 function Card:spin()
     TWEEN.new(function(t)
         if GAME.mod.IN ~= 1 then
-            self.ky = .9 + .1 * math.cos(t * 6.2831853)
-            self.r = t * 6.2831853
-            self.kx = math.cos((GAME.mod.AS + 1) * t * 6.2831853)
+            self.ky = .9 + .1 * math.cos(t * 6.2832)
+            self.r = t * 6.2832
+            self.kx = math.cos((GAME.mod.AS + 1) * t * 6.2832)
         else
-            self.kx = math.cos(t * 6.2831853)
+            self.kx = math.cos(t * 6.2832)
         end
         if not self.front then
             self.kx = -self.kx
@@ -260,10 +261,11 @@ function Card:spin()
         :setDuration(0.42):run()
 end
 
+local bounceEase = { 'linear', 'inQuad' }
 function Card:bounce(height, duration)
     TWEEN.new(function(t)
         self.y = self.ty + t * (t - 1) * height
-    end):setUnique('bounce_' .. self.id):setEase({ 'linear', 'inQuad' }):setDuration(duration):run()
+    end):setUnique('bounce_' .. self.id):setEase(bounceEase):setDuration(duration):run()
 end
 
 function Card:shake()

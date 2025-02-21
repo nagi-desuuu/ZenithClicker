@@ -32,7 +32,7 @@ local GAME = {
     throbAlpha2 = 0,
     throbAlpha3 = 0,
     deckPress = 0,
-    glow={},
+    glow = {},
 
     mod = {
         EX = 0,
@@ -642,6 +642,7 @@ function GAME.upFloor()
         color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod.GV) end
+    if GAME.floor == 10 then BGM.set('bass', 'volume', 0) end
 end
 
 function GAME.addHeight(h)
