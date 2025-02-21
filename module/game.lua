@@ -136,6 +136,11 @@ function GAME.getComboName(list, extend)
     if #list == 0 then return "" end
     if #list == 1 then return modName.noun[list[1]] end
 
+    if not GAME.anyRev and not TABLE.find(list, 'DP') then
+        if #list == 8 then return [["SWAMP WATER"]] end
+        if #list == 7 then return [["SWAMP WATER LITE"]] end
+    end
+
     local str = table.concat(TABLE.sort(list), ' ')
     if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
 
@@ -406,10 +411,6 @@ function GAME.start()
 
     TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
     GAME.updateBgm('start')
-    DiscordRPC.update {
-        details = GAME.mod.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-        state = "In Game",
-    }
 end
 
 ---@param reason 'forfeit' | 'wrongAns' | 'killed'
@@ -668,6 +669,11 @@ function GAME.upFloor()
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod.GV) end
     if GAME.floor == 10 then GAME.updateBgm('f10') end
+
+    DiscordRPC.update {
+        details = GAME.mod.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
+        state = "In Game: F" .. GAME.floor .. " - " .. GAME.getComboName(nil, GAME.mod.DH == 2),
+    }
 end
 
 function GAME.addHeight(h)
