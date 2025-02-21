@@ -57,7 +57,7 @@ function Card:clearBuff()
 end
 
 local KBIsDown = love.keyboard.isDown
-local function tween_deckPress(t) GAME.deckPress = 26 * (1 - t) end
+local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
     if GAME.mod.VL == 1 then
         if not self.active and not auto then
@@ -154,7 +154,7 @@ function Card:setActive(auto, key)
         -- end
         self.upright = not (self.active and revOn)
         if self.id == 'EX' then
-            if not self.active then BGM.set('expert', 'volume', 0) end
+            GAME.updateBgm('expertSwitched')
             TWEEN.new(function(t)
                 GAME.exTimer = self.active and t or (1 - t)
             end):setDuration(self.active and .26 or .1):run()
@@ -191,7 +191,7 @@ function Card:setActive(auto, key)
                     local currentState = GAME.mod[self.id]
                     if currentState == 2 then
                         SFX.play('card_reverse_impact', 1, 0, GAME.mod.GV)
-                        TWEEN.new(tween_deckPress):setUnique('deckPress')
+                        TWEEN.new(tween_deckPress):setUnique('DeckPress')
                             :setEase('OutQuad'):setDuration(.42):run()
                         for _, C in ipairs(Cards) do
                             if C ~= self then
@@ -200,7 +200,7 @@ function Card:setActive(auto, key)
                                 C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
                             end
                         end
-                        table.insert(GAME.glow, {
+                        table.insert(ImpactGlow, {
                             x = self.x,
                             y = self.y,
                             t = 2.6,
@@ -387,7 +387,7 @@ function Card:draw()
 
     if not playing then
         if not self.upright and img == self.frontImg then
-            gc.setColor(1, 1, 1, GAME.throbAlpha1)
+            gc.setColor(1, 1, 1, ThrobAlpha.card)
             gc.draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
         if self.upright and GAME.revUnlocked[self.id] then

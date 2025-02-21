@@ -26,13 +26,6 @@ local GAME = {
     exTimer = 0,
     revTimer = 0,
     uiHide = 0,
-    bgFloor = 1,
-    bgAlpha = 1,
-    throbAlpha1 = 0,
-    throbAlpha2 = 0,
-    throbAlpha3 = 0,
-    deckPress = 0,
-    glow = {},
 
     mod = {
         EX = 0,
@@ -45,8 +38,8 @@ local GAME = {
         AS = 0,
         DP = 0,
     },
-
     hardMode = false,
+    anyRev = false,
 
     revUnlocked = {
         EX = false,
@@ -59,8 +52,6 @@ local GAME = {
         AS = false,
         DP = false,
     },
-
-    anyRev = false,
 
     playing = false,
     quests = {}, --- @type Question[]
@@ -230,6 +221,49 @@ function GAME.refreshRev()
             ShadeColor[2] = MATH.lerp(.15, 0, t)
             ShadeColor[3] = MATH.lerp(.0, 0, t)
         end):setDuration(.26):run()
+        GAME.updateBgm('revSwitched')
+    end
+end
+
+function GAME.updateBgm(event)
+    if event == 'start' then
+        BGM.set(BgmSets.assist, 'volume', 1)
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', .62)
+            BGM.set('expert', 'volume', 0)
+        else
+            BGM.set('expert', 'volume', GAME.mod.EX / 2)
+        end
+    elseif event == 'finish' then
+        BGM.set(BgmSets.assist, 'volume', 0)
+        local l = TABLE.copy(BgmSets.assist)
+        for _ = 1, MATH.clamp(GAME.floor - 6, 2, 4) do
+            BGM.set(TABLE.popRandom(l), 'volume', 1)
+        end
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', .82)
+        end
+    elseif event == 'expertSwitched' then
+        BGM.set('expert', 'volume', GAME.anyRev and GAME.mod.EX / 2 or 0)
+    elseif event == 'revSwitched' then
+        BGM.set('expert', 'volume', GAME.mod.EX / 2)
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', .82, 4.2)
+            BGM.set(BgmSets.assist, 'volume', 0, 4.2)
+        else
+            BGM.set('rev', 'volume', 0, 2.6)
+            local l = TABLE.copy(BgmSets.assist)
+            for _ = 1, 2 do
+                BGM.set(TABLE.popRandom(l), 'volume', 1, 4.2)
+            end
+        end
+    elseif event == 'f10' then
+        BGM.set('bass', 'volume', 0)
+    elseif event == 'init' then
+        BGM.set('all', 'volume', 0, 0)
+        BGM.set('piano', 'volume', 1)
+        -- BGM.set(BgmSets.assist, 'volume', 1, 10)
+        BGM.set(TABLE.getRandom(BgmSets.assist), 'volume', 1, 10)
     end
 end
 
@@ -334,9 +368,6 @@ function GAME.start()
     end
     SCN.scenes.main.widgetList.hint:setVisible(false)
 
-    BGM.set(BgmSets.extra, 'volume', 1)
-    BGM.set('expert', 'volume', MATH.sign(GAME.mod.EX))
-
     SFX.play('menuconfirm', .8)
     SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod.GV)
 
@@ -373,6 +404,7 @@ function GAME.start()
     TASK.new(task_startSpin)
 
     TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
+    GAME.updateBgm('start')
     DiscordRPC.update {
         details = GAME.mod.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
         state = "In Game",
@@ -383,12 +415,6 @@ end
 function GAME.finish(reason)
     SCN.scenes.main.widgetList.hint:setVisible(true)
     MSG.clear()
-
-    BGM.set(BgmSets.extra, 'volume', 0)
-    local l = TABLE.copy(BgmSets.extra)
-    for _ = 1, MATH.clamp(GAME.floor - 6, 2, 4) do
-        BGM.set(TABLE.popRandom(l), 'volume', 1)
-    end
 
     SFX.play(
         reason == 'forfeit' and 'detonated' or
@@ -438,8 +464,10 @@ function GAME.finish(reason)
         if newPB then
             local modCount = #GAME.getHand()
             if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
+                local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
+                if GAME.anyRev then t = t:gsub(" ", "+ ") end
                 TEXT:add {
-                    text = modCount == 1 and "MOD  MASTERED" or "COMBO  MASTERED",
+                    text = t,
                     x = 800, y = 200, k = 2.6, fontSize = 60,
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lC', duration = 6.2,
@@ -469,6 +497,7 @@ function GAME.finish(reason)
         details = "QUICK PICK",
         state = "Enjoying Music",
     }
+    GAME.updateBgm('finish')
     TASK.lock('cannotStart', 1)
 end
 
@@ -637,7 +666,7 @@ function GAME.upFloor()
         color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod.GV) end
-    if GAME.floor == 10 then BGM.set('bass', 'volume', 0) end
+    if GAME.floor == 10 then GAME.updateBgm('f10') end
 end
 
 function GAME.addHeight(h)

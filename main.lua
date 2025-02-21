@@ -12,7 +12,7 @@ SCR.setSize(1600, 1000)
 
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
-BGM.setMaxSources(8)
+BGM.setMaxSources(9)
 BGM.load {
     piano = 'assets/piano.ogg',
     expert = 'assets/expert.ogg',
@@ -22,10 +22,11 @@ BGM.load {
     pad = 'assets/pad.ogg',
     staccato = 'assets/staccato.ogg',
     violin = 'assets/violin.ogg',
+    rev = 'assets/rev.ogg',
 }
 
 SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
-SFX.setVol(.6)
+SFX.setVol(.8)
 
 IMG.init {
     star0 = 'assets/crystal-dark.png',
@@ -74,9 +75,21 @@ Cards = {}
 ---@type nil|number
 FloatOnCard = nil
 
+Background = {
+    floor = 2,
+    alpha = 0,
+}
+ImpactGlow = {}
+DeckPress = 0
+ThrobAlpha = {
+    card = 0,
+    bg1 = 0,
+    bg2 = 0,
+}
+
 BgmSets = {
-    all = { 'piano', 'expert', 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
-    extra = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
+    all = { 'piano', 'expert', 'rev', 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
+    assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
 
 DeckData = {
@@ -180,7 +193,7 @@ end
 local gc = love.graphics
 function WIDGET._prototype.button:draw()
     gc.push('transform')
-    gc.translate(self._x, self._y + GAME.deckPress)
+    gc.translate(self._x, self._y + DeckPress)
 
     if self._pressTime > 0 then
         gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)
@@ -224,10 +237,6 @@ function WIDGET._prototype.button:draw()
 end
 
 BGM.play(BgmSets.all)
-BGM.set('all', 'volume', 0, 0)
-BGM.set('piano', 'volume', 1)
--- BGM.set(BgmSets.extra, 'volume', 1, 10)
-BGM.set(TABLE.getRandom(BgmSets.extra), 'volume', 1, 10)
 
 -- Desync fixing daemon
 TASK.new(function()
@@ -253,9 +262,9 @@ TASK.new(function()
     local t2, step2 = 0, 2 * 60 / 184 / 4
     while true do
         local T = BGM.tell()
-        GAME.throbAlpha1 = math.max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
-        GAME.throbAlpha2 = .626 - 2 * T / bar % 1
-        GAME.throbAlpha3 = .626 - 2 * (T / bar - 1 / 32) % 1
+        ThrobAlpha.card = math.max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
+        ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
+        ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1
@@ -267,8 +276,8 @@ TASK.new(function()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if not GAME.playing and GAME.hardMode then
-                local v = MATH.roll(GAME.mod.EX == 2 and .626 or .26)
+            if not GAME.playing and GAME.mod.EX > 0 and not GAME.anyRev then
+                local v = MATH.roll(GAME.mod.EX == 1 and .26 or .626)
                 BGM.set('expert', 'volume', v and MATH.rand(.42, .626) or 0, v and 0 or .1)
             end
         end
@@ -278,28 +287,29 @@ end)
 
 -- Background transition deamon
 TASK.new(function()
+    local bg = Background
     while true do
-        repeat TASK.yieldT(.1) until GAME.bgFloor ~= GAME.floor
+        repeat TASK.yieldT(.1) until bg.floor ~= GAME.floor
         repeat
-            GAME.bgAlpha = GAME.bgAlpha - coroutine.yield()
-        until GAME.bgAlpha <= 0
-        GAME.bgFloor = GAME.floor
-        GAME.bgAlpha = 0
+            bg.alpha = bg.alpha - coroutine.yield()
+        until bg.alpha <= 0
+        bg.floor = GAME.floor
+        bg.alpha = 0
         repeat
-            GAME.bgAlpha = GAME.bgAlpha + coroutine.yield()
-        until GAME.bgAlpha >= 1
-        GAME.bgAlpha = 1
+            bg.alpha = bg.alpha + coroutine.yield()
+        until bg.alpha >= 1
+        bg.alpha = 1
     end
 end)
 
 -- Load data
 DATA.load()
 for _, C in ipairs(Cards) do
-    if (DATA.highScore[C.id] or 0) >= 1650 then
+    if (DATA.highScore[C.id] or 0) >= Floors[9].top then
         GAME.revUnlocked[C.id] = true
     else
         for k, v in next, DATA.highScore do
-            if v >= 1650 and (k:gsub('r', ''):find(C.id) or 0) % 2 == 1 then
+            if v >= Floors[9].top and (k:gsub('r', ''):find(C.id) or 0) % 2 == 1 then
                 GAME.revUnlocked[C.id] = true
                 break
             end
@@ -308,6 +318,7 @@ for _, C in ipairs(Cards) do
 end
 GAME.refreshLockState()
 GAME.refreshPBText()
+GAME.updateBgm('init')
 
 -- Test
 TASK.new(function()

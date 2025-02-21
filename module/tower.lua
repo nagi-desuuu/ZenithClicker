@@ -163,14 +163,14 @@ end
 function scene.update(dt)
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
-    if GAME.deckPress > 0 then
-        GAME.deckPress = GAME.deckPress - dt
+    if DeckPress > 0 then
+        DeckPress = DeckPress - dt
     end
-    for i = #GAME.glow, 1, -1 do
-        local L = GAME.glow[i]
+    for i = #ImpactGlow, 1, -1 do
+        local L = ImpactGlow[i]
         L.t = L.t - dt
         if L.t <= 0 then
-            table.remove(GAME.glow, i)
+            table.remove(ImpactGlow, i)
         end
     end
 
@@ -228,12 +228,12 @@ local TextColor = TextColor
 local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
-    gc_setColor(1, 1, 1, GAME.bgAlpha * .42)
-    GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+    gc_setColor(1, 1, 1, Background.alpha * .42)
+    GC.mDraw(IMG.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
     -- Panel
     gc_replaceTransform(SCR.xOy)
-    gc_translate(0, GAME.deckPress)
+    gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
     GC.setAlpha(.872)
@@ -242,21 +242,21 @@ function scene.draw()
     gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
     gc_setColor(TextColor)
     gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
-    if not GAME.playing and GAME.anyRev then
+    if GAME.anyRev then
         gc_setColor(1, 1, 1, GAME.revTimer)
         GC.mDraw(IMG.glass_a, 800, h)
         GC.mDraw(IMG.glass_b, 800, h)
-        gc_setColor(1, 1, 1, GAME.throbAlpha2)
+        gc_setColor(1, 1, 1, ThrobAlpha.bg1)
         GC.mDraw(IMG.throb_a, 800, h)
-        gc_setColor(1, 1, 1, GAME.throbAlpha3)
+        gc_setColor(1, 1, 1, ThrobAlpha.bg2)
         GC.mDraw(IMG.throb_b, 800, h)
     end
 end
 
 function scene.overDraw()
     -- Glow
-    for i = 1, #GAME.glow do
-        local L = GAME.glow[i]
+    for i = 1, #ImpactGlow do
+        local L = ImpactGlow[i]
         gc_setColor(.6, .1, .1, L.t - 1)
         GC.blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
     end
@@ -268,24 +268,24 @@ function scene.overDraw()
             GC.setAlpha(.42)
         end
         local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 396 + GAME.deckPress, nil, k, k * 1.1)
+        GC.mDraw(GAME.modText, 800, 396 + DeckPress, nil, k, k * 1.1)
     end
 
-    gc_translate(0, GAME.deckPress)
+    gc_translate(0, DeckPress)
 
     if GAME.playing then
         -- Target combo
         gc_setColor(COLOR.L)
         FONT.set(75)
-        GC.mStr(GAME.quests[1].name, 800, 120)
+        GC.mStr(GAME.quests[1].name, 800, 120, 2600)
         if GAME.quests[2] then
             gc_setColor(COLOR.DL)
             FONT.set(50)
-            GC.mStr(GAME.quests[2].name, 800, 65)
+            GC.mStr(GAME.quests[2].name, 800, 65, 2600)
             if GAME.quests[3] then
                 gc_setColor(COLOR.LD)
                 FONT.set(50)
-                GC.mStr(GAME.quests[3].name, 800, 5)
+                GC.mStr(GAME.quests[3].name, 800, 5, 2600)
             end
         end
 
@@ -377,7 +377,7 @@ function scene.overDraw()
         gc_draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
 
         gc_replaceTransform(SCR.xOy_dl)
-        gc_translate(0, GAME.deckPress)
+        gc_translate(0, DeckPress)
         gc_translate(0, d)
         if revT > 0 then
             gc_draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
@@ -388,7 +388,7 @@ function scene.overDraw()
             gc_draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
         end
         gc_replaceTransform(SCR.xOy_dr)
-        gc_translate(0, GAME.deckPress)
+        gc_translate(0, DeckPress)
         gc_draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
     end
 
