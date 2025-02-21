@@ -281,15 +281,19 @@ function scene.overDraw()
 
         -- Gravity Timer
         if GAME.mod_GV > 0 then
+            gc.push('transform')
+            gc.translate(1300,270)
+            gc.scale(GAME.uiHide)
             gc.setColor(COLOR.DL)
             if GAME.firstClickTimer then
-                gc.arc('fill', 'pie', 1300, 270, 40, -1.5708,
+                gc.arc('fill', 'pie', 0,0, 40, -1.5708,
                     -1.5708 + 6.2832 * GAME.firstClickTimer / GAME.firstClickDelay)
             else
-                gc.circle('fill', 1300, 270, 40)
+                gc.circle('fill', 0,0, 40)
             end
             gc.setColor(COLOR.LD)
-            gc.circle('line', 1300, 270, 40)
+            gc.circle('line', 0,0, 40)
+            gc.pop()
         end
     end
 
@@ -375,7 +379,7 @@ function scene.overDraw()
         gc.replaceTransform(SCR.xOy_d)
         gc.setColor(ShadeColor)
         GC.setAlpha(.872)
-        gc.rectangle('fill', -935 / 2, -140, 935, 110, 10)
+        gc.rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and C.id and GAME['mod_' .. C.id] == 2 then
             FONT.set(60)
             GC.strokePrint('full', 6, COLOR.DW, nil, C.revName, 195, -145 + 4, 2600, 'center', nil, 0.85, 1)

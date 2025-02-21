@@ -420,7 +420,7 @@ function GAME.finish(reason)
                 SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + GAME.mod_GV)
             else
                 TEXT:add {
-                    text = "PERSOANL BEST",
+                    text = "PERSONAL BEST",
                     x = 800, y = 200, k = 3, fontSize = 60,
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lY', duration = 6.2,
