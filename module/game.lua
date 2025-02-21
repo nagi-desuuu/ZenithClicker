@@ -33,15 +33,17 @@ local GAME = {
     throbAlpha3 = 0,
     deckPress = 0,
 
-    mod_EX = 0,
-    mod_NH = 0,
-    mod_MS = 0,
-    mod_GV = 0,
-    mod_VL = 0,
-    mod_DH = 0,
-    mod_IN = 0,
-    mod_AS = 0,
-    mod_2P = 0,
+    mod = {
+        EX = 0,
+        NH = 0,
+        MS = 0,
+        GV = 0,
+        VL = 0,
+        DH = 0,
+        IN = 0,
+        AS = 0,
+        DP = 0,
+    },
 
     anyRev = false,
 
@@ -68,7 +70,7 @@ function GAME.getHand()
         end
     else
         for _, C in ipairs(Cards) do
-            local level = GAME['mod_' .. C.id]
+            local level = GAME.mod[C.id]
             if level > 0 then
                 table.insert(list, level == 1 and C.id or 'r' .. C.id)
             end
@@ -78,46 +80,46 @@ function GAME.getHand()
 end
 
 local modName = {
-    prio = { ['IN'] = 0, ['MS'] = 1, ['VL'] = 2, ['NH'] = 3, ['DH'] = 4, ['AS'] = 5, ['GV'] = 6, ['EX'] = 7, ['2P'] = 8, ['rIN'] = 0, ['rMS'] = 1, ['rVL'] = 2, ['rNH'] = 3, ['rDH'] = 4, ['rAS'] = 5, ['rGV'] = 6, ['rEX'] = 7, ['r2P'] = 8 },
+    prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
     adj = {
-        ['IN'] = "INVISIBLE",
-        ['MS'] = "MESSY",
-        ['VL'] = "VOLATILE",
-        ['NH'] = "HOLDLESS",
-        ['DH'] = "DOUBLE HOLE",
-        ['AS'] = "ALL-SPIN",
-        ['GV'] = "GRAVITY",
-        ['EX'] = "EXPERT",
-        ['2P'] = "DUO",
-        ['rIN'] = "BELIEVED",
-        ['rMS'] = "DECEPTIVE",
-        ['rVL'] = "DESPERATE",
-        ['rNH'] = "ASCENDANT",
-        ['rDH'] = "DAMNED",
-        ['rAS'] = "OMNI-SPIN",
-        ['rGV'] = "COLLAPSED",
-        ['rEX'] = "TYRANNICAL",
-        ['r2P'] = "PIERCING",
+        IN = "INVISIBLE",
+        MS = "MESSY",
+        VL = "VOLATILE",
+        NH = "HOLDLESS",
+        DH = "DOUBLE HOLE",
+        AS = "ALL-SPIN",
+        GV = "GRAVITY",
+        EX = "EXPERT",
+        DP = "DUO",
+        rIN = "BELIEVED",
+        rMS = "DECEPTIVE",
+        rVL = "DESPERATE",
+        rNH = "ASCENDANT",
+        rDH = "DAMNED",
+        rAS = "OMNI-SPIN",
+        rGV = "COLLAPSED",
+        rEX = "TYRANNICAL",
+        rDP = "PIERCING",
     },
     noun = {
-        ['IN'] = "INVISIBLITY",
-        ['MS'] = "MESSINESS",
-        ['VL'] = "VOLATILITY",
-        ['NH'] = "NO HOLD",
-        ['DH'] = "DOUBLE HOLE",
-        ['AS'] = "ALL-SPIN",
-        ['GV'] = "GRAVITY",
-        ['EX'] = "EXPERT",
-        ['2P'] = "DUO",
-        ['rIN'] = "BELIEF",
-        ['rMS'] = "DECEPTION",
-        ['rVL'] = "DESPERATION",
-        ['rNH'] = "ASCENSION",
-        ['rDH'] = "DAMNATION",
-        ['rAS'] = "OMNI-SPIN",
-        ['rGV'] = "COLLAPSE",
-        ['rEX'] = "TYRANNY",
-        ['r2P'] = "HEARTACHE",
+        IN = "INVISIBLITY",
+        MS = "MESSINESS",
+        VL = "VOLATILITY",
+        NH = "NO HOLD",
+        DH = "DOUBLE HOLE",
+        AS = "ALL-SPIN",
+        GV = "GRAVITY",
+        EX = "EXPERT",
+        DP = "DUO",
+        rIN = "BELIEF",
+        rMS = "DECEPTION",
+        rVL = "DESPERATION",
+        rNH = "ASCENSION",
+        rDH = "DAMNATION",
+        rAS = "OMNI-SPIN",
+        rGV = "COLLAPSE",
+        rEX = "TYRANNY",
+        rDP = "HEARTACHE",
     },
 }
 ---@param list? string[]
@@ -138,14 +140,14 @@ function GAME.getComboName(list, extend)
 end
 
 function GAME.refreshComboText()
-    GAME.modText:set(GAME.getComboName(nil, GAME.mod_DH == 2))
+    GAME.modText:set(GAME.getComboName(nil, GAME.mod.DH == 2))
 end
 
 function GAME.refreshLayout()
-    local baseDist = (GAME.mod_EX > 0 and 100 or 110) + GAME.mod_VL * 20
+    local baseDist = (GAME.mod.EX > 0 and 100 or 110) + GAME.mod.VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
-    local dodge = GAME.mod_VL == 0 and 260 or 220
-    local baseY = 726 + 15 * GAME.mod_GV
+    local dodge = GAME.mod.VL == 0 and 260 or 220
+    local baseY = 726 + 15 * GAME.mod.GV
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
         for i = 1, #Cards do
@@ -167,7 +169,7 @@ function GAME.refreshLayout()
             C.ty = baseY - (C.active and 35 or 0) - (i == FloatOnCard and 55 or 0)
         end
     end
-    if GAME.mod_MS > 0 then
+    if GAME.mod.MS > 0 then
         for i = 1, 9 do
             Cards[i].ty = Cards[i].ty + MessyBias[i]
         end
@@ -175,15 +177,15 @@ function GAME.refreshLayout()
 end
 
 function GAME.refreshLockState()
-    Cards['EX'].lock = DATA.maxFloor < 9
-    Cards['NH'].lock = DATA.maxFloor < 2
-    Cards['MS'].lock = DATA.maxFloor < 3
-    Cards['GV'].lock = DATA.maxFloor < 4
-    Cards['VL'].lock = DATA.maxFloor < 5
-    Cards['DH'].lock = DATA.maxFloor < 6
-    Cards['IN'].lock = DATA.maxFloor < 7
-    Cards['AS'].lock = DATA.maxFloor < 8
-    Cards['2P'].lock = true -- Not really locked forever! Try to find the way to play it
+    Cards.EX.lock = DATA.maxFloor < 9
+    Cards.NH.lock = DATA.maxFloor < 2
+    Cards.MS.lock = DATA.maxFloor < 3
+    Cards.GV.lock = DATA.maxFloor < 4
+    Cards.VL.lock = DATA.maxFloor < 5
+    Cards.DH.lock = DATA.maxFloor < 6
+    Cards.IN.lock = DATA.maxFloor < 7
+    Cards.AS.lock = DATA.maxFloor < 8
+    Cards.DP.lock = true -- Not really locked forever! Try to find the way to play it
 end
 
 function GAME.refreshPBText()
@@ -200,7 +202,7 @@ end
 function GAME.refreshRev()
     local anyRev = false
     for _, C in ipairs(Cards) do
-        if GAME['mod_' .. C.id] == 2 then
+        if GAME.mod[C.id] == 2 then
             anyRev = true
             break
         end
@@ -240,7 +242,7 @@ function GAME.genQuest()
     local combo = {}
     local base = .626 + GAME.floor ^ .5 / 5
     local var = GAME.floor / 4.2
-    if GAME.mod_DH then base = base + .626 end
+    if GAME.mod.DH then base = base + .626 end
 
     local r = base + var * math.abs(MATH.randNorm())
     r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
@@ -256,7 +258,7 @@ function GAME.genQuest()
 
     table.insert(GAME.quests, {
         combo = combo,
-        name = GAME.getComboName(combo, GAME.mod_DH == 2),
+        name = GAME.getComboName(combo, GAME.mod.DH == 2),
     })
 end
 
@@ -295,7 +297,7 @@ local function task_startSpin()
         end
         TASK.yieldT(.01)
     end
-    if GAME.mod_MS > 0 then
+    if GAME.mod.MS > 0 then
         GAME.shuffleCards()
     end
     GAME.questReady()
@@ -305,27 +307,27 @@ function GAME.start()
         SFX.play('clutch')
         return
     end
-    if TABLE.find(GAME.getHand(), '2P') then
+    if GAME.mod.DP > 0 then
         MSG.clear()
         MSG('dark', "Working in Progress")
-        Cards[9]:shake()
+        Cards.DP:shake()
         SFX.play('no')
         return
     end
-    if TABLE.find(GAME.getHand(), 'rEX') then
+    if GAME.mod.EX == 2 then
         MSG.clear()
         MSG('dark', "Working in Progress")
-        Cards[1]:shake()
+        Cards.EX:shake()
         SFX.play('no')
         return
     end
     SCN.scenes.main.widgetList.hint:setVisible(false)
 
     BGM.set(BgmSets.extra, 'volume', 1)
-    BGM.set('expert', 'volume', MATH.sign(GAME.mod_EX))
+    BGM.set('expert', 'volume', MATH.sign(GAME.mod.EX))
 
     SFX.play('menuconfirm', .8)
-    SFX.play(Cards['2P'].active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod_GV)
+    SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod.GV)
 
     GAME.playing = true
     GAME.dmgHeal = 2
@@ -333,7 +335,7 @@ function GAME.start()
     GAME.dmgTime = 2
     GAME.dmgDelay = 15
     GAME.dmgCycle = 5
-    GAME.queueLen = GAME.mod_NH == 2 and 1 or 3
+    GAME.queueLen = GAME.mod.NH == 2 and 1 or 3
 
     GAME.time = 0
     GAME.questTime = 0
@@ -351,6 +353,9 @@ function GAME.start()
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
 
+    GAME.hardMode = GAME.mod.EX > 0 or GAME.mod.NH == 2 or GAME.mod.MS > 0 or GAME.mod.VL > 0 or GAME.mod.DH > 0 or
+        GAME.mod.AS > 0 or GAME.mod.DP > 0
+
     GAME.upFloor()
 
     TABLE.clear(GAME.quests)
@@ -361,7 +366,7 @@ function GAME.start()
 
     TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {
-        details = GAME.mod_EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
+        details = GAME.mod.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
         state = "In Game",
     }
 end
@@ -385,7 +390,7 @@ function GAME.finish(reason)
 
     table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
     for _, C in ipairs(Cards) do
-        if (GAME['mod_' .. C.id] > 0) ~= C.active then
+        if (GAME.mod[C.id] > 0) ~= C.active then
             C:setActive(true)
         end
         C.touchCount = 0
@@ -417,7 +422,7 @@ function GAME.finish(reason)
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lC', duration = 6.2,
                 }
-                SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + GAME.mod_GV)
+                SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + GAME.mod.GV)
             else
                 TEXT:add {
                     text = "PERSONAL BEST",
@@ -425,7 +430,7 @@ function GAME.finish(reason)
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lY', duration = 6.2,
                 }
-                SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
+                SFX.play('personalbest', 1, 0, -.1 + GAME.mod.GV)
             end
             SFX.play('applause', GAME.floor / 10)
             DATA.save()
@@ -476,7 +481,7 @@ function GAME.commit()
 
         local attack = 3
         local xp = 0
-        if TABLE.find(hand, '2P') then attack = attack + 2 end
+        if TABLE.find(hand, 'DP') then attack = attack + 2 end
         if GAME.fault then
             attack = attack + 1
             xp = xp + 2
@@ -520,12 +525,12 @@ function GAME.commit()
             end
         end
 
-        SFX.play(TABLE.find(hand, '2P') and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod_GV)
+        SFX.play(TABLE.find(hand, 'DP') and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod.GV)
 
         GAME.addHeight(attack)
         GAME.addXP(attack + xp)
 
-        if GAME.mod_MS == 2 then
+        if GAME.mod.MS == 2 then
             local r1 = math.random(2, #Cards - 1)
             local r2 = MATH.clamp(r1 + MATH.coin(-1, 1) * math.random(2), 1, #Cards)
             Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
@@ -545,7 +550,7 @@ function GAME.commit()
     else
         GAME.fault = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
-        if GAME.mod_EX > 0 then
+        if GAME.mod.EX > 0 then
             GAME.cancelAll(true)
         else
             for _, C in ipairs(Cards) do C:clearBuff() end
@@ -554,7 +559,7 @@ function GAME.commit()
 end
 
 function GAME.task_cancelAll(instant)
-    local spinMode = not instant and GAME.mod_AS > 0
+    local spinMode = not instant and GAME.mod.AS > 0
     local list = TABLE.copy(Cards, 0)
     local needFlip = {}
     for i = 1, #Cards do
@@ -572,7 +577,7 @@ function GAME.task_cancelAll(instant)
 end
 
 function GAME.cancelAll(instant)
-    if GAME.mod_NH == 2 then return end
+    if GAME.mod.NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
     GAME.firstClickTimer = false
@@ -585,8 +590,8 @@ end
 
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
-    if GAME.mod_MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
-    if GAME.mod_GV > 0 then GAME.firstClickDelay = GravityTimer[GAME.mod_GV][GAME.floor] end
+    if GAME.mod.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
+    if GAME.mod.GV > 0 then GAME.firstClickDelay = GravityTimer[GAME.mod.GV][GAME.floor] end
     local F = Floors[GAME.floor]
     local e = F.event
     for i = 1, #e, 2 do
@@ -609,7 +614,7 @@ function GAME.upFloor()
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = 4.2,
     }
-    if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod_GV) end
+    if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod.GV) end
 end
 
 function GAME.addHeight(h)
@@ -647,7 +652,7 @@ function GAME.update(dt)
 
         GAME.time = GAME.time + dt
         GAME.questTime = GAME.questTime + dt
-        local curFtgStag = (GAME.mod_EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
+        local curFtgStag = (GAME.mod.EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
         if GAME.time >= curFtgStag.time then
             local e = curFtgStag.event
             for i = 1, #e, 2 do
@@ -672,7 +677,7 @@ function GAME.update(dt)
         if GAME.xpLockTimer > 0 then
             GAME.xpLockTimer = GAME.xpLockTimer - dt
         else
-            GAME.xp = GAME.xp - dt * (GAME.mod_EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+            GAME.xp = GAME.xp - dt * (GAME.mod.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
             if GAME.xp <= 0 then
                 GAME.xp = 0
                 if GAME.rank > 1 then

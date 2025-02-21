@@ -62,7 +62,7 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
-        if GAME.mod_NH == 2 then
+        if GAME.mod.NH == 2 then
             SFX.play('no')
             return true
         end
@@ -72,7 +72,7 @@ local function keyPress(key)
         SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
-        if GAME.mod_NH == 2 then
+        if GAME.mod.NH == 2 then
             SFX.play('no')
             return true
         end
@@ -98,7 +98,7 @@ local function keyPress(key)
                 SFX.play('supporter')
             end
         end
-    elseif GAME.mod_AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
+    elseif GAME.mod.AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then
             if GAME.playing or not C.lock then
@@ -117,9 +117,9 @@ end
 
 local cancelNextClick
 function scene.mouseDown(x, y, k)
-    if GAME.mod_EX == 0 then
+    if GAME.mod.EX == 0 then
         mousePress(x, y, k)
-        if GAME.mod_EX > 0 then
+        if GAME.mod.EX > 0 then
             cancelNextClick = true
         end
     end
@@ -130,7 +130,7 @@ function scene.mouseClick(x, y, k)
         cancelNextClick = false
         return
     end
-    if GAME.mod_EX > 0 then
+    if GAME.mod.EX > 0 then
         mousePress(x, y, k)
     end
 end
@@ -141,9 +141,9 @@ scene.touchClick = scene.mouseClick
 
 local cancelNextPress
 function scene.keyDown(key)
-    if GAME.mod_EX == 0 then
+    if GAME.mod.EX == 0 then
         keyPress(key)
-        if GAME.mod_EX > 0 then
+        if GAME.mod.EX > 0 then
             cancelNextPress = true
         end
     end
@@ -155,7 +155,7 @@ function scene.keyUp(key)
         cancelNextPress = false
         return
     end
-    if GAME.mod_EX > 0 then
+    if GAME.mod.EX > 0 then
         keyPress(key)
     end
 end
@@ -223,11 +223,12 @@ function scene.draw()
     gc_setColor(1, 1, 1, GAME.bgAlpha * .42)
     GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
+    -- Panel
     gc_replaceTransform(SCR.xOy)
     gc_translate(0, GAME.deckPress)
     local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
-    GC.setAlpha(.626)
+    GC.setAlpha(.872)
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     gc_setLineWidth(4)
     gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
@@ -248,9 +249,9 @@ function scene.overDraw()
     gc_replaceTransform(SCR.xOy)
 
     -- Current combo
-    if GAME.mod_IN < 2 or not GAME.playing then
+    if GAME.mod.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
-        if GAME.mod_IN == 2 then
+        if GAME.mod.IN == 2 then
             GC.setAlpha(.42)
         end
         local k = math.min(.9, 760 / GAME.modText:getWidth())
@@ -289,7 +290,7 @@ function scene.overDraw()
         GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
         -- Gravity Timer
-        if GAME.mod_GV > 0 then
+        if GAME.mod.GV > 0 then
             gc_push('transform')
             gc_translate(1300, 270)
             gc_scale(GAME.uiHide)
@@ -338,7 +339,7 @@ function scene.overDraw()
     end
 
     -- Allspin keyboard hint
-    if GAME.mod_AS > 0 then
+    if GAME.mod.AS > 0 then
         FONT.set(60)
         for i = 1, #Cards do
             GC.strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
@@ -381,12 +382,12 @@ function scene.overDraw()
     -- Card info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
-        if C.lock then C = DeckData[C.id == '2P' and -1 or 0] end
+        if C.lock then C = DeckData[C.id == 'DP' and -1 or 0] end
         gc_replaceTransform(SCR.xOy_d)
         gc_setColor(ShadeColor)
         GC.setAlpha(.872)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
-        if GAME.anyRev and C.id and GAME['mod_' .. C.id] == 2 then
+        if GAME.anyRev and C.id and GAME.mod[C.id] == 2 then
             FONT.set(60)
             GC.strokePrint('full', 6, COLOR.DW, nil, C.revName, 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
             GC.strokePrint('full', 4, COLOR.dW, nil, C.revName, 195, -145 + 2, 2600, 'center', nil, 0.85, 1)

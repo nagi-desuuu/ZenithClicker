@@ -60,7 +60,7 @@ GAME = require 'module/game'
 
 MX, MY = 0, 0
 
----@type Card[]
+---@type Map<Card>
 Cards = {}
 
 ---@type nil|number
@@ -80,21 +80,21 @@ DeckData = {
     { initOrder = 6, nameOrder = 5, id = 'DH', lockfull = 'lockfull-6',            name = 'doublehole', fullName = "< DOUBLE HOLE GARBAGE >", desc = "COMBOS WILL SPAWN HARDER",                                revName = "> DAMNATION <",       revDesc = "NO MORE SECOND CHANCES." },
     { initOrder = 7, nameOrder = 1, id = 'IN', lockfull = 'lockfull-7',            name = 'invisible',  fullName = "< INVISIBLE >",           desc = "TAROTS FACE DOWN AND HINTS FLASH ONCE EVERY TWO SECONDS", revName = "> THE EXILE <",       revDesc = "NEVER UNDERESTIMATE BLIND FAITH." },
     { initOrder = 8, nameOrder = 6, id = 'AS', lockfull = 'lockfull-8',            name = 'allspin',    fullName = "< ALL-SPIN >",            desc = "KEYBOARD AVAILABLE, BUT DOUBLE CLICKING IS PENALIZED",    revName = "> THE WARLOCK <",     revDesc = "INTO REALMS BEYOND HEAVEN AND EARTH." },
-    { initOrder = 9, nameOrder = 9, id = '2P', lockover = 'lockover-incompatible', name = 'duo',        fullName = "< DUO >",                 desc = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",              revName = "> BLEEDING HEARTS <", revDesc = "EVEN AS WE BLEED, WE KEEP HOLDING ON..." },
+    { initOrder = 9, nameOrder = 9, id = 'DP', lockover = 'lockover-incompatible', name = 'duo',        fullName = "< DUO >",                 desc = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",              revName = "> BLEEDING HEARTS <", revDesc = "EVEN AS WE BLEED, WE KEEP HOLDING ON..." },
     [0] = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
     [-1] = { fullName = "< LOCKED >", desc = "*CANNOT BE UNLOCKED*" },
 }
 
 ModWeight = {
-    ['EX'] = 13, --  8 + 5
-    ['NH'] = 12, --  8 + 4
-    ['MS'] = 14, -- 10 + 4
-    ['GV'] = 12, -- 10 + 2
-    ['VL'] = 17, -- 15 + 2
-    ['DH'] = 14, -- 10 + 4
-    ['IN'] = 6,  --  5 + 1
-    ['AS'] = 13, -- 10 + 3
-    ['2P'] = 4,  --  3 + 1
+    EX = 13, --  8 + 5
+    NH = 12, --  8 + 4
+    MS = 14, -- 10 + 4
+    GV = 12, -- 10 + 2
+    VL = 17, -- 15 + 2
+    DH = 14, -- 10 + 4
+    IN = 6,  --  5 + 1
+    AS = 13, -- 10 + 3
+    DP = 4,  --  3 + 1
 }
 
 BasicComboCount = 9
@@ -253,9 +253,9 @@ TASK.new(function()
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1
-            if GAME.mod_MS > 0 then
+            if GAME.mod.MS > 0 then
                 for i = 1, 9 do
-                    MessyBias[i] = GAME.mod_MS * (Cards[i].active and 1 or -1) * math.random(-6, 2)
+                    MessyBias[i] = GAME.mod.MS * (Cards[i].active and 1 or -1) * math.random(-6, 2)
                 end
                 GAME.refreshLayout()
             end
@@ -263,8 +263,8 @@ TASK.new(function()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if not GAME.playing and GAME.mod_EX > 0 then
-                local v = MATH.roll(GAME.mod_EX == 2 and .626 or .26)
+            if not GAME.playing and GAME.mod.EX > 0 then
+                local v = MATH.roll(GAME.mod.EX == 2 and .626 or .26)
                 BGM.set('expert', 'volume', v and MATH.rand(.42, .626) or 0, v and 0 or .1)
             end
         end

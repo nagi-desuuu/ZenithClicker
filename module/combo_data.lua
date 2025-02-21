@@ -1,5 +1,5 @@
 return {
-    -------- EX NH MS GV VL DH IN AS 2P --------
+    -------- EX NH MS GV VL DH IN AS DP --------
     { set = '   NH    GV               ', name = "a modern classic",          basic = true },
     { set = '   NH MS       DH         ', name = "deadlock",                  basic = true },
     { set = '      MS       DH    AS   ', name = "the escape artist",         basic = true },
@@ -8,7 +8,7 @@ return {
     { set = 'EX    MS    VL DH         ', name = "divine mastery",            basic = true },
     { set = '   NH                AS   ', name = "the starving artist",       basic = true },
     { set = 'EX          VL       AS   ', name = "the con artist",            basic = true },
-    { set = 'EX                      2P', name = "trained profesionals",      basic = true },
+    { set = 'EX                      DP', name = "trained profesionals",      basic = true },
     { set = 'EX    MS                  ', name = "block rationing",           basic = true },
 
     { set = '      MS          IN      ', name = "scrambled rainbow" },
