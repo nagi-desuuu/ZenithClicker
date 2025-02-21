@@ -428,6 +428,7 @@ function GAME.finish(reason)
                 SFX.play('personalbest', 1, 0, -.1 + GAME.mod_GV)
             end
             SFX.play('applause', GAME.floor / 10)
+            DATA.save()
         end
     end
 
@@ -473,9 +474,11 @@ function GAME.commit()
     if result then
         GAME.life = math.min(GAME.life + math.max(GAME.dmgHeal, 0), 20)
 
-        local attack = TABLE.find(hand, '2P') and 6 or 4
+        local attack = 3
         local xp = 0
+        if TABLE.find(hand, '2P') then attack = attack + 2 end
         if GAME.fault then
+            attack = attack + 1
             xp = xp + 2
             if GAME.chain < 4 then
                 SFX.play('clearline', .62)
@@ -501,11 +504,12 @@ function GAME.commit()
             GAME.chain = 0
         else
             SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
+            attack = attack + 2
             xp = xp + 3
             GAME.chain = GAME.chain + 1
             if GAME.chain < 4 then
             elseif GAME.chain < 8 then
-                if GAME.chain == 4 then SFX.play('b2bcharge_start') end
+                if GAME.chain == 4 then SFX.play('b2bcharge_start', .8) end
                 SFX.play('b2bcharge_1', .8)
             elseif GAME.chain < 12 then
                 SFX.play('b2bcharge_2', .8)
