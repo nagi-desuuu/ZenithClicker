@@ -240,11 +240,13 @@ end
 -- Desync fixing daemon
 TASK.new(function()
     local lib = BGM._srcLib
+    local length = BGM.getDuration()
     while true do
         TASK.yieldT(1)
         local t0 = lib[BgmSets.all[1]].source:tell()
-        for i = 2, #BgmSets.all do
+        for i = #BgmSets.all, 2, -1 do
             local obj = lib[BgmSets.all[i]]
+            if i == 2 then t0 = t0 * 2 % length end
             if math.abs(obj.source:tell() - t0) > 0.026 then
                 obj.source:seek(t0)
             end
