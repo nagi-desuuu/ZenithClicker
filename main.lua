@@ -119,6 +119,18 @@ ModWeight = {
     DP = 4,  --  3 + 1
 }
 
+ModColor = {
+    EX = { COLOR.HEX "" },
+    NH = { COLOR.HEX "" },
+    MS = { COLOR.HEX "" },
+    GV = { COLOR.HEX "" },
+    VL = { COLOR.HEX "" },
+    DH = { COLOR.HEX "" },
+    IN = { COLOR.HEX "" },
+    AS = { COLOR.HEX "" },
+    DP = { COLOR.HEX "" },
+}
+
 BasicComboCount = 9
 Combos = require "module/combo_data"
 for i = 1, #Combos do
@@ -222,18 +234,9 @@ function WIDGET._prototype.button:draw()
     end
 
     -- Drawable
-    local startX =
-        self.alignX == 'center' and 0 or
-        self.alignX == 'left' and -w * .5 + self.marginX or
-        w * .5 - self.marginX
-    local startY =
-        self.alignY == 'center' and 0 or
-        self.alignY == 'top' and -h * .5 + self.marginY or
-        h * .5 - self.marginY
-    if self._text then
-        gc.setColor(self.textColor)
-        WIDGET._alignDraw(self, self._text, startX, startY, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
-    end
+    gc.setColor(self.textColor)
+    WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
+
     gc.pop()
 end
 

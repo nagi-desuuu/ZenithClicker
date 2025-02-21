@@ -231,7 +231,7 @@ function scene.draw()
     gc_setColor(1, 1, 1, Background.alpha * .42)
     GC.mDraw(IMG.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
-    -- Panel
+    -- Card Panel
     gc_replaceTransform(SCR.xOy)
     gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
@@ -242,7 +242,7 @@ function scene.draw()
     gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
     gc_setColor(TextColor)
     gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
-    if GAME.anyRev then
+    if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
         GC.mDraw(IMG.glass_a, 800, h)
         GC.mDraw(IMG.glass_b, 800, h)
@@ -415,7 +415,7 @@ function scene.overDraw()
         end
     end
 
-    -- Forfeit panel
+    -- Forfeit Roll
     if GAME.forfeitTimer > 0 then
         gc_replaceTransform(SCR.origin)
         gc_setColor(.872, .26, .26, GAME.forfeitTimer * .6)

@@ -25,6 +25,7 @@ local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
     revTimer = 0,
+    revDeckSkin = false,
     uiHide = 0,
 
     mod = {
@@ -215,6 +216,9 @@ function GAME.refreshRev()
     end
     if anyRev ~= GAME.anyRev then
         GAME.anyRev = anyRev
+        if not GAME.anyRev then
+            GAME.revDeckSkin = false
+        end
         TWEEN.new(function(t)
             if not anyRev then t = 1 - t end
             GAME.revTimer = t

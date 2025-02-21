@@ -209,6 +209,7 @@ function Card:setActive(auto, key)
                             y = self.y,
                             t = 2.6,
                         })
+                        GAME.revDeckSkin = true
                     else
                         SFX.play('spin')
                         if currentState == 0 then
