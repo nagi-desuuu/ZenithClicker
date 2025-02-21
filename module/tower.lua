@@ -201,6 +201,14 @@ local rankColor = {
     { 1,  .8, 1 },
 }
 local gc = love.graphics
+local gc_push, gc_pop = gc.push, gc.pop
+local gc_replaceTransform = gc.replaceTransform
+local gc_translate, gc_scale = gc.translate, gc.scale
+local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
+local gc_draw, gc_line = gc.draw, gc.line
+local gc_rectangle, gc_circle = gc.rectangle, gc.circle
+local gc_arc = gc.arc
+
 local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
 local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 PBText = gc.newText(FONT.get(50))
@@ -211,37 +219,37 @@ local Cards = Cards
 local TextColor = TextColor
 local ShadeColor = ShadeColor
 function scene.draw()
-    gc.replaceTransform(SCR.origin)
-    gc.setColor(1, 1, 1, GAME.bgAlpha * .42)
+    gc_replaceTransform(SCR.origin)
+    gc_setColor(1, 1, 1, GAME.bgAlpha * .42)
     GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
-    gc.replaceTransform(SCR.xOy)
-    gc.translate(0, GAME.deckPress)
+    gc_replaceTransform(SCR.xOy)
+    gc_translate(0, GAME.deckPress)
     local h = 697 + GAME.uiHide * 420
-    gc.setColor(ShadeColor)
+    gc_setColor(ShadeColor)
     GC.setAlpha(.626)
-    gc.rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
-    gc.setLineWidth(4)
-    gc.line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
-    gc.setColor(TextColor)
-    gc.line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
+    gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
+    gc_setLineWidth(4)
+    gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
+    gc_setColor(TextColor)
+    gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
     if not GAME.playing and GAME.anyRev then
-        gc.setColor(1, 1, 1, GAME.revTimer)
+        gc_setColor(1, 1, 1, GAME.revTimer)
         GC.mDraw(IMG.glass_a, 800, h)
         GC.mDraw(IMG.glass_b, 800, h)
-        gc.setColor(1, 1, 1, GAME.throbAlpha2)
+        gc_setColor(1, 1, 1, GAME.throbAlpha2)
         GC.mDraw(IMG.throb_a, 800, h)
-        gc.setColor(1, 1, 1, GAME.throbAlpha3)
+        gc_setColor(1, 1, 1, GAME.throbAlpha3)
         GC.mDraw(IMG.throb_b, 800, h)
     end
 end
 
 function scene.overDraw()
-    gc.replaceTransform(SCR.xOy)
+    gc_replaceTransform(SCR.xOy)
 
     -- Current combo
     if GAME.mod_IN < 2 or not GAME.playing then
-        gc.setColor(TextColor)
+        gc_setColor(TextColor)
         if GAME.mod_IN == 2 then
             GC.setAlpha(.42)
         end
@@ -249,67 +257,68 @@ function scene.overDraw()
         GC.mDraw(GAME.modText, 800, 396 + GAME.deckPress, nil, k, k * 1.1)
     end
 
-    gc.translate(0, GAME.deckPress)
+    gc_translate(0, GAME.deckPress)
 
     if GAME.playing then
         -- Target combo
-        gc.setColor(COLOR.L)
+        gc_setColor(COLOR.L)
         FONT.set(75)
         GC.mStr(GAME.quests[1].name, 800, 120)
         if GAME.quests[2] then
-            gc.setColor(COLOR.DL)
+            gc_setColor(COLOR.DL)
             FONT.set(50)
             GC.mStr(GAME.quests[2].name, 800, 65)
             if GAME.quests[3] then
-                gc.setColor(COLOR.LD)
+                gc_setColor(COLOR.LD)
                 FONT.set(50)
                 GC.mStr(GAME.quests[3].name, 800, 5)
             end
         end
 
         -- Damage Timer
-        gc.setColor(GAME.dmgTimer > GAME.dmgCycle and COLOR.DL or COLOR.lR)
-        gc.rectangle('fill', 390, 390, -360 * (GAME.dmgTimer / GAME.dmgDelay), 40)
-        gc.setLineWidth(3)
-        gc.setColor(COLOR.LD)
-        gc.rectangle('line', 390, 390, -360 * (GAME.dmgCycle / GAME.dmgDelay), 40)
-        gc.rectangle('line', 390, 390, -360, 40)
+        local delay=GAME.dmgDelay
+        gc_setColor(GAME.dmgTimer > GAME.dmgCycle and COLOR.DL or COLOR.lR)
+        gc_rectangle('fill', 390, 430, -360 * (GAME.dmgTimer / delay), -20-2*delay)
+        gc_setLineWidth(3)
+        gc_setColor(COLOR.LD)
+        gc_rectangle('line', 390, 430, -360 * (GAME.dmgCycle / delay), -20-2*delay)
+        gc_rectangle('line', 390, 430, -360, -20-2*delay)
 
         -- Health Bar
-        gc.setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)
+        gc_setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)
         GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
         -- Gravity Timer
         if GAME.mod_GV > 0 then
-            gc.push('transform')
-            gc.translate(1300,270)
-            gc.scale(GAME.uiHide)
-            gc.setColor(COLOR.DL)
+            gc_push('transform')
+            gc_translate(1300, 270)
+            gc_scale(GAME.uiHide)
+            gc_setColor(COLOR.DL)
             if GAME.firstClickTimer then
-                gc.arc('fill', 'pie', 0,0, 40, -1.5708,
+                gc_arc('fill', 'pie', 0, 0, 40, -1.5708,
                     -1.5708 + 6.2832 * GAME.firstClickTimer / GAME.firstClickDelay)
             else
-                gc.circle('fill', 0,0, 40)
+                gc_circle('fill', 0, 0, 40)
             end
-            gc.setColor(COLOR.LD)
-            gc.circle('line', 0,0, 40)
-            gc.pop()
+            gc_setColor(COLOR.LD)
+            gc_circle('line', 0, 0, 40)
+            gc_pop()
         end
     end
 
     -- Debug
-    -- FONT.set(40) gc.setColor(1, 1, 1)
+    -- FONT.set(40) gc_setColor(1, 1, 1)
     -- for i = 1, #Cards do
-    --     GC.print(Cards[i].touchCount, Cards[i].x, Cards[i].y-260)
+    --     gc.print(Cards[i].touchCount, Cards[i].x, Cards[i].y-260)
     -- end
 
     -- Thruster
-    gc.setColor(rankColor[GAME.rank - 1] or COLOR.L)
+    gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
     GC.mRect('fill', 800, 975, 420, 26)
-    gc.setColor(rankColor[GAME.rank] or COLOR.L)
+    gc_setColor(rankColor[GAME.rank] or COLOR.L)
     GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
-    GC.setLineWidth(2)
-    gc.setColor(1, 1, 1, .42)
+    gc.setLineWidth(2)
+    gc_setColor(1, 1, 1, .42)
     GC.mRect('line', 800, 975, 420, 26)
 
     -- Altitude
@@ -318,7 +327,7 @@ function scene.overDraw()
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 942)
 
     -- Cards
-    gc.setColor(1, 1, 1)
+    gc_setColor(1, 1, 1)
     if FloatOnCard then
         for i = #Cards, 1, -1 do
             if i ~= FloatOnCard then Cards[i]:draw() end
@@ -341,45 +350,45 @@ function scene.overDraw()
         local exT = GAME.exTimer
         local revT = GAME.revTimer
         local d = GAME.uiHide * 70
-        gc.replaceTransform(SCR.xOy_u)
-        gc.setColor(ShadeColor)
-        GC.rectangle('fill', -1300, -d, 2600, 70)
-        gc.setColor(TextColor)
-        GC.rectangle('fill', -1300, 70 - d, 2600, 4)
-        gc.replaceTransform(SCR.xOy_ul)
-        gc.draw(titleText,
+        gc_replaceTransform(SCR.xOy_u)
+        gc_setColor(ShadeColor)
+        gc.rectangle('fill', -1300, -d, 2600, 70)
+        gc_setColor(TextColor)
+        gc.rectangle('fill', -1300, 70 - d, 2600, 4)
+        gc_replaceTransform(SCR.xOy_ul)
+        gc_draw(titleText,
             exT * 205 - 195, titleText:getHeight() / 2 - d, nil,
             1, 1.1 * (1 - 2 * revT), 0, titleText:getHeight() / 2)
-        gc.replaceTransform(SCR.xOy_ur)
-        gc.draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
-        -- gc.printf(
+        gc_replaceTransform(SCR.xOy_ur)
+        gc_draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
+        -- gc_printf(
         --     ("Personal Best: %.1fm"):format(GAME.mod_EX > 0 and DATA.maxAltitude_ex or DATA.maxAltitude),
         --     0, 0, 1590, 'right', nil, 1, 1.1)
 
-        gc.replaceTransform(SCR.xOy_dl)
-        gc.translate(0, GAME.deckPress)
-        gc.translate(0, d)
+        gc_replaceTransform(SCR.xOy_dl)
+        gc_translate(0, GAME.deckPress)
+        gc_translate(0, d)
         if revT > 0 then
-            gc.draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
-            gc.draw(sloganText_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
-            gc.draw(sloganText_rev, 6, 2 + (1 - revT) * 42, nil, 1, 1.26, 0, sloganText_rev:getHeight())
+            gc_draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
+            gc_draw(sloganText_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
+            gc_draw(sloganText_rev, 6, 2 + (1 - revT) * 42, nil, 1, 1.26, 0, sloganText_rev:getHeight())
         else
-            gc.draw(sloganText, 6, 2 + exT * 42, nil, 1, 1.26, 0, sloganText:getHeight())
-            gc.draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
+            gc_draw(sloganText, 6, 2 + exT * 42, nil, 1, 1.26, 0, sloganText:getHeight())
+            gc_draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
         end
-        gc.replaceTransform(SCR.xOy_dr)
-        gc.translate(0, GAME.deckPress)
-        gc.draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
+        gc_replaceTransform(SCR.xOy_dr)
+        gc_translate(0, GAME.deckPress)
+        gc_draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
     end
 
     -- Card info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
         if C.lock then C = DeckData[C.id == '2P' and -1 or 0] end
-        gc.replaceTransform(SCR.xOy_d)
-        gc.setColor(ShadeColor)
+        gc_replaceTransform(SCR.xOy_d)
+        gc_setColor(ShadeColor)
         GC.setAlpha(.872)
-        gc.rectangle('fill', -840 / 2, -140, 840, 110, 10)
+        gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and C.id and GAME['mod_' .. C.id] == 2 then
             FONT.set(60)
             GC.strokePrint('full', 6, COLOR.DW, nil, C.revName, 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
@@ -397,11 +406,11 @@ function scene.overDraw()
 
     -- Forfeit panel
     if GAME.forfeitTimer > 0 then
-        gc.replaceTransform(SCR.origin)
-        gc.setColor(.872, .26, .26, GAME.forfeitTimer * .6)
-        gc.rectangle('fill', 0, SCR.h, SCR.w, -SCR.h * GAME.forfeitTimer / 2.6 * .5)
-        gc.setColor(.626, 0, 0, GAME.forfeitTimer * .6)
-        gc.rectangle('fill', 0, SCR.h * (1 - GAME.forfeitTimer / 2.6 * .5), SCR.w, -5)
+        gc_replaceTransform(SCR.origin)
+        gc_setColor(.872, .26, .26, GAME.forfeitTimer * .6)
+        gc_rectangle('fill', 0, SCR.h, SCR.w, -SCR.h * GAME.forfeitTimer / 2.6 * .5)
+        gc_setColor(.626, 0, 0, GAME.forfeitTimer * .6)
+        gc_rectangle('fill', 0, SCR.h * (1 - GAME.forfeitTimer / 2.6 * .5), SCR.w, -5)
     end
 end
 

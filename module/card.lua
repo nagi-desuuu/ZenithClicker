@@ -202,7 +202,8 @@ function Card:setActive(auto, key)
                         for _, C in ipairs(Cards) do
                             if C ~= self then
                                 local r = math.random()
-                                C:bounce(MATH.lerp(120, 420, r), MATH.lerp(.42, .62, r))
+                                if self.id == 'EX' then r = r * 2.6 end
+                                C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
                             end
                         end
                     else
