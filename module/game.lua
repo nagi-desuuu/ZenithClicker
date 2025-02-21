@@ -45,6 +45,20 @@ local GAME = {
         DP = 0,
     },
 
+    hardMode = false,
+
+    revUnlocked = {
+        EX = false,
+        NH = false,
+        MS = false,
+        GV = false,
+        VL = false,
+        DH = false,
+        IN = false,
+        AS = false,
+        DP = false,
+    },
+
     anyRev = false,
 
     playing = false,
@@ -139,8 +153,9 @@ function GAME.getComboName(list, extend)
     return str .. modName.noun[list[#list]]
 end
 
-function GAME.refreshComboText()
+function GAME.refreshCurrentCombo()
     GAME.modText:set(GAME.getComboName(nil, GAME.mod.DH == 2))
+    GAME.hardMode = GAME.mod.EX > 0 or not not TABLE.findAll(GAME.mod, 2)
 end
 
 function GAME.refreshLayout()
@@ -353,9 +368,6 @@ function GAME.start()
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
 
-    GAME.hardMode = GAME.mod.EX > 0 or GAME.mod.NH == 2 or GAME.mod.MS > 0 or GAME.mod.VL > 0 or GAME.mod.DH > 0 or
-        GAME.mod.AS > 0 or GAME.mod.DP > 0
-
     GAME.upFloor()
 
     TABLE.clear(GAME.quests)
@@ -401,6 +413,20 @@ function GAME.finish(reason)
     GAME.playing = false
 
     if GAME.questCount > 2.6 then
+        if GAME.floor >= 10 then
+            local anyNewRev
+            for k, v in next, GAME.mod do
+                if v > 0 and not GAME.revUnlocked[k] then
+                    GAME.revUnlocked[k] = true
+                    anyNewRev = true
+                end
+            end
+            if anyNewRev then
+                MSG.clear()
+                MSG('dark', "New reversed mod unlocked!!!\nActivate with right click")
+                SFX.play('notify')
+            end
+        end
         local newPB
         if GAME.floor > DATA.maxFloor then
             DATA.maxFloor = GAME.floor
@@ -440,7 +466,7 @@ function GAME.finish(reason)
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
     GAME.refreshPBText()
-    GAME.refreshComboText()
+    GAME.refreshCurrentCombo()
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {

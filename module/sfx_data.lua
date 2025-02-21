@@ -244,7 +244,7 @@ return {
     -- mission=                     {10,  6},
     -- mmstart=                     {17,  2.5},
     no = { 429, 0.188 },
-    -- notify =                     {250, 0.2},
+    notify = { 250, 0.2 },
     -- party_ready=                 {639, 1.6},
     -- pause_continue=              {133, 1},
     -- pause_exit=                  {515, 1.16},

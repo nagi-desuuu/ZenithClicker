@@ -28,6 +28,8 @@ SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
 SFX.setVol(.6)
 
 IMG.init {
+    star0 = 'assets/crystal-dark.png',
+    star1 = 'assets/crystal.png',
     glass_a = 'assets/glass-a.png',
     glass_b = 'assets/glass-b.png',
     throb_a = 'assets/throb-a.png',
@@ -269,7 +271,7 @@ TASK.new(function()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if not GAME.playing and GAME.mod.EX > 0 then
+            if not GAME.playing and GAME.hardMode then
                 local v = MATH.roll(GAME.mod.EX == 2 and .626 or .26)
                 BGM.set('expert', 'volume', v and MATH.rand(.42, .626) or 0, v and 0 or .1)
             end
@@ -296,11 +298,17 @@ end)
 
 -- Load data
 DATA.load()
-if DATA.maxAltitude then
-    DATA.highScore[''] = DATA.maxAltitude
-    DATA.highScore['EX'] = DATA.maxAltitude_ex
-    DATA.maxAltitude, DATA.maxAltitude_ex = nil, nil
-    DATA.save()
+for _, C in ipairs(Cards) do
+    if (DATA.highScore[C.id] or 0) >= 1650 then
+        GAME.revUnlocked[C.id] = true
+    else
+        for k, v in next, DATA.highScore do
+            if v >= 1650 and (k:gsub('r', ''):find(C.id) or 0) % 2 == 1 then
+                GAME.revUnlocked[C.id] = true
+                break
+            end
+        end
+    end
 end
 GAME.refreshLockState()
 GAME.refreshPBText()

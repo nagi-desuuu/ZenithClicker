@@ -55,6 +55,7 @@ function Card:clearBuff()
     self.charge = 0
 end
 
+local KBIsDown = love.keyboard.isDown
 function Card:setActive(auto, key)
     if GAME.mod.VL == 1 then
         if not self.active and not auto then
@@ -124,18 +125,9 @@ function Card:setActive(auto, key)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and (love.keyboard.isDown('lctrl', 'rctrl') or key == 2)
+        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.findAll(GAME.revUnlocked, true)
         if revOn then
-            local completed = (DATA.highScore[self.id] or 0) >= 1650
-            if not completed then
-                for k, v in next, DATA.highScore do
-                    if v >= 1650 and (k:gsub('r', ''):find(self.id) or 0) % 2 == 1 then
-                        completed = true
-                        break
-                    end
-                end
-            end
-            if not completed then
+            if not GAME.revUnlocked[self.id] then
                 revOn = false
                 noSpin = true
                 self.active = false
@@ -186,7 +178,7 @@ function Card:setActive(auto, key)
             GAME.refreshRev()
         end
     end
-    GAME.refreshComboText()
+    GAME.refreshCurrentCombo()
     if not auto then -- Sound and animation
         if self.active then
             if revOn then
@@ -309,6 +301,7 @@ vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
 }
 ]]
 function Card:draw()
+    local playing = GAME.playing
     local img, img2
     if self.lock and self.lockfull then
         img = self.lockfull
@@ -324,7 +317,7 @@ function Card:draw()
     gc.push('transform')
     gc.translate(self.x, self.y)
     gc.rotate(self.r)
-    if not GAME.playing and not self.upright then gc.rotate(3.1416) end
+    if not playing and not self.upright then gc.rotate(3.1416) end
     gc.scale(abs(self.size * self.kx), self.size * self.ky)
 
     -- Fake 3D
@@ -350,7 +343,7 @@ function Card:draw()
     end
 
     local r, g, b = 1, .26, 0
-    if not GAME.playing and GAME.mod[self.id] == 2 then
+    if not playing and not self.upright then
         r, g, b = (1 - r) * .626, (1 - g) * .626, (1 - b) * .626
     end
     local a = 0
@@ -358,7 +351,7 @@ function Card:draw()
     if self.active then
         -- Active
         a = 1
-        if GAME.playing and not self.hintMark and GAME.mod.IN < 2 then
+        if playing and not self.hintMark and GAME.mod.IN < 2 then
             -- But wrong
             r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
         end
@@ -367,11 +360,11 @@ function Card:draw()
         r, g, b = 1, 1, 1
         local qt = GAME.questTime
         if GAME.mod.IN == 0 then
-            if GAME.mod.EX > 0 then qt = qt - 1.5 end
+            if GAME.hardMode then qt = qt - 1.5 end
             a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
                 MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
         elseif GAME.mod.IN == 1 then
-            if GAME.mod.EX > 0 then qt = qt * .626 end
+            if GAME.hardMode then qt = qt * .626 end
             a = -.1 + .4 * math.sin(3.1416 + qt * 3)
         else
             a = 0
@@ -384,9 +377,20 @@ function Card:draw()
         gc.setShader()
     end
 
-    if not GAME.playing and img == self.frontImg and GAME.mod[self.id] == 2 then
-        gc.setColor(1, 1, 1, GAME.throbAlpha1)
-        gc.draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
+    if not playing then
+        if not self.upright and img == self.frontImg then
+            gc.setColor(1, 1, 1, GAME.throbAlpha1)
+            gc.draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
+        end
+        if self.upright and GAME.revUnlocked[self.id] then
+            gc.setColor(1, 1, 1)
+            if FloatOnCard == self.initOrder then
+                GC.blurCircle(-.26,0,-330,100)
+                GC.mDraw(IMG.star1, 0, -330, nil, .3)
+            else
+                GC.mDraw(self.active and IMG.star1 or IMG.star0, 155, -370, nil, .15)
+            end
+        end
     end
 
     -- GC.mRect('line',0,0,260*2,350*2)
