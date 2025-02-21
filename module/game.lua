@@ -633,10 +633,13 @@ function GAME.task_cancelAll(instant)
 end
 
 function GAME.cancelAll(instant)
-    if GAME.mod.NH == 2 then return end
+    if GAME.mod.NH == 2 then
+        for _, C in ipairs(Cards) do C:clearBuff() end
+        return
+    end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
-    GAME.firstClickTimer = false
+    if GAME.firstClickTimer then GAME.firstClickTimer = GAME.firstClickDelay end
 end
 
 function GAME.shuffleCards()
