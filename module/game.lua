@@ -563,9 +563,9 @@ function GAME.commit()
             GAME.refreshLayout()
         end
 
+        GAME.genQuest()
         table.remove(GAME.quests, 1)
         GAME.questCount = GAME.questCount + 1
-        GAME.genQuest()
 
         GAME.cancelAll(true)
 
