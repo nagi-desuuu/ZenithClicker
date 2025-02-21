@@ -704,6 +704,9 @@ function GAME.update(dt)
 
         GAME.time = GAME.time + dt
         GAME.questTime = GAME.questTime + dt
+        if GAME.mod.GV > 0 and not GAME.firstClickTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
+            GAME.firstClickTimer = GAME.firstClickDelay
+        end
         local curFtgStag = (GAME.mod.EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
         if GAME.time >= curFtgStag.time then
             local e = curFtgStag.event

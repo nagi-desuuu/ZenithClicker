@@ -107,7 +107,7 @@ function Card:setActive(auto, key)
             if GAME.mod.NH > 0 and not self.active then
                 GAME.cancelAll()
             end
-            if GAME.mod.GV > 0 and GAME.firstClickDelay and not GAME.firstClickTimer then
+            if GAME.mod.GV > 0 and not GAME.firstClickTimer then
                 GAME.firstClickTimer = GAME.firstClickDelay
             end
             if GAME.mod.AS > 0 then
