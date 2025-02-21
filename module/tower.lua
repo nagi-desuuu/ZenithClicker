@@ -339,8 +339,9 @@ function scene.overDraw()
         local d = GAME.uiHide * 70
         gc.replaceTransform(SCR.xOy_u)
         gc.setColor(ShadeColor)
-        GC.rectangle('fill', -1200, -d, 2400, 70)
+        GC.rectangle('fill', -1300, -d, 2600, 70)
         gc.setColor(TextColor)
+        GC.rectangle('fill', -1300, 70 - d, 2600, 4)
         gc.replaceTransform(SCR.xOy_ul)
         gc.draw(titleText,
             exT * 205 - 195, titleText:getHeight() / 2 - d, nil,
@@ -377,14 +378,16 @@ function scene.overDraw()
         gc.rectangle('fill', -935 / 2, -140, 935, 110, 10)
         if GAME.anyRev and C.id and GAME['mod_' .. C.id] == 2 then
             FONT.set(60)
-            GC.strokePrint('full', 3, ShadeColor, TextColor, C.revName, 195, -145, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 6, COLOR.DW, nil, C.revName, 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 4, COLOR.dW, nil, C.revName, 195, -145 + 2, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 2, COLOR.W, COLOR.L, C.revName, 195, -145, 2600, 'center', nil, 0.85, 1)
             FONT.set(30)
-            GC.strokePrint('full', 2, ShadeColor, TextColor, C.revDesc, 195, -75, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, C.revDesc, 2600 * 0.15, -75, 2600, 'center', nil, 0.7, 1)
         else
             FONT.set(60)
             GC.strokePrint('full', 3, ShadeColor, TextColor, C.fullName, 195, -145, 2600, 'center', nil, 0.85, 1)
             FONT.set(30)
-            GC.strokePrint('full', 2, ShadeColor, TextColor, C.desc, 195, -75, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 2, ShadeColor, TextColor, C.desc, 2600 * 0.15, -75, 2600, 'center', nil, 0.7, 1)
         end
     end
 
