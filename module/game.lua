@@ -66,19 +66,20 @@ local GAME = {
 }
 
 --- Unsorted
-function GAME.getHand()
+function GAME.getHand(showRev)
     local list = {}
-    if GAME.playing then
-        for _, C in ipairs(Cards) do
-            if C.active then
-                table.insert(list, C.id)
+    if showRev then
+        for i = 1, 9 do
+            local D = DeckData[i]
+            local level = GAME.mod[D.id]
+            if level > 0 then
+                table.insert(list, level == 2 and 'r' .. D.id or D.id)
             end
         end
     else
         for _, C in ipairs(Cards) do
-            local level = GAME.mod[C.id]
-            if level > 0 then
-                table.insert(list, level == 1 and C.id or 'r' .. C.id)
+            if C.active then
+                table.insert(list, C.id)
             end
         end
     end
@@ -128,11 +129,9 @@ local modName = {
         rDP = "HEARTACHE",
     },
 }
----@param list? string[]
+---@param list string[] OVERWRITE!!!
 ---@param extend? boolean use extended combo lib from community
 function GAME.getComboName(list, extend)
-    list = list and TABLE.copy(list) or GAME.getHand()
-
     if #list == 0 then return "" end
     if #list == 1 then return modName.noun[list[1]] end
 
@@ -151,7 +150,7 @@ function GAME.getComboName(list, extend)
 end
 
 function GAME.refreshCurrentCombo()
-    GAME.modText:set(GAME.getComboName(nil, GAME.mod.DH == 2))
+    GAME.modText:set(GAME.getComboName(GAME.getHand(not GAME.playing), GAME.mod.DH == 2))
     GAME.hardMode = GAME.mod.EX > 0 or not not TABLE.findAll(GAME.mod, 2)
 end
 
@@ -196,7 +195,7 @@ function GAME.refreshLockState()
 end
 
 function GAME.refreshPBText()
-    local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand()))] or 0
+    local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand(true)))] or 0
     if h == 0 then return PBText:set("No Score Yet") end
     for f = 1, #Floors do
         if h < Floors[f].top then
@@ -309,7 +308,7 @@ function GAME.genQuest()
 
     table.insert(GAME.quests, {
         combo = combo,
-        name = GAME.getComboName(combo, GAME.mod.DH == 2),
+        name = GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2),
     })
 end
 
@@ -456,7 +455,7 @@ function GAME.finish(reason)
             DATA.maxFloor = GAME.floor
             newPB = true
         end
-        local setStr = table.concat(TABLE.sort(GAME.getHand()))
+        local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
         local oldPB = DATA.highScore[setStr] or 0
         if GAME.altitude > oldPB then
             DATA.highScore[setStr] = MATH.roundUnit(GAME.altitude, .1)
@@ -464,7 +463,7 @@ function GAME.finish(reason)
             newPB = true
         end
         if newPB then
-            local modCount = #GAME.getHand()
+            local modCount = #GAME.getHand(true)
             if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
                 if GAME.anyRev then t = t:gsub(" ", "+ ") end
@@ -525,7 +524,7 @@ function GAME.commit()
 
     local Q = GAME.quests[1]
 
-    local hand = GAME.getHand()
+    local hand = GAME.getHand(false)
     local target = Q.combo
     local result = TABLE.equal(TABLE.sort(hand), TABLE.sort(target))
 
@@ -672,7 +671,7 @@ function GAME.upFloor()
 
     DiscordRPC.update {
         details = GAME.mod.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-        state = "In Game: F" .. GAME.floor .. " - " .. GAME.getComboName(nil, GAME.mod.DH == 2),
+        state = "In Game: F" .. GAME.floor .. " - " .. GAME.getComboName(GAME.getHand(true), GAME.mod.DH == 2),
     }
 end
 
