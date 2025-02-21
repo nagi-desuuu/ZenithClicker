@@ -395,12 +395,15 @@ function Card:draw()
             gc.draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
         if self.upright and GAME.revUnlocked[self.id] then
-            gc.setColor(1, 1, 1)
+            gc.setColor(.5, .5, .5)
             if FloatOnCard == self.initOrder then
-                GC.blurCircle(-.26, 0, -330, 100)
+                GC.blurCircle(0, 0, -330, 80)
+                gc.setColor(1, 1, 1)
                 GC.mDraw(IMG.star1, 0, -330, nil, .3)
             else
-                GC.mDraw(self.active and IMG.star1 or IMG.star0, 155, -370, nil, .15)
+                GC.blurCircle(-.2, 155, -370, 42)
+                gc.setColor(1, 1, 1)
+                GC.mDraw(self.active and IMG.star1 or IMG.star0, 155, -370, nil, .16)
             end
         end
     end
