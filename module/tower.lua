@@ -276,13 +276,13 @@ function scene.overDraw()
         end
 
         -- Damage Timer
-        local delay=GAME.dmgDelay
+        local delay = GAME.dmgDelay
         gc_setColor(GAME.dmgTimer > GAME.dmgCycle and COLOR.DL or COLOR.lR)
-        gc_rectangle('fill', 390, 430, -360 * (GAME.dmgTimer / delay), -20-2*delay)
+        gc_rectangle('fill', 390, 430, -360 * (GAME.dmgTimer / delay), -20 - 2 * delay)
         gc_setLineWidth(3)
         gc_setColor(COLOR.LD)
-        gc_rectangle('line', 390, 430, -360 * (GAME.dmgCycle / delay), -20-2*delay)
-        gc_rectangle('line', 390, 430, -360, -20-2*delay)
+        gc_rectangle('line', 390, 430, -360 * (GAME.dmgCycle / delay), -20 - 2 * delay)
+        gc_rectangle('line', 390, 430, -360, -20 - 2 * delay)
 
         -- Health Bar
         gc_setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)

@@ -593,17 +593,17 @@ function GAME.upFloor()
     TEXT:add {
         text = "Floor",
         x = 160, y = 290, k = 1.6, fontSize = 30,
-        color = 'LY', duration = 2.6,
+        color = 'LY', duration = 4.2,
     }
     TEXT:add {
         text = tostring(GAME.floor),
         x = 240, y = 280, k = 2.6, fontSize = 30,
-        color = 'LY', duration = 2.6, align = 'left',
+        color = 'LY', duration = 4.2, align = 'left',
     }
     TEXT:add {
         text = Floors[GAME.floor].name,
         x = 200, y = 350, k = 1.2, fontSize = 30,
-        color = 'LY', duration = 2.6,
+        color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod_GV) end
 end
