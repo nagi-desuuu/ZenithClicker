@@ -198,6 +198,11 @@ function Card:setActive(auto, key)
                                 C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
                             end
                         end
+                        table.insert(GAME.glow, {
+                            x = self.x,
+                            y = self.y,
+                            t = 2.6,
+                        })
                     else
                         SFX.play('spin')
                         if currentState == 0 then
@@ -385,7 +390,7 @@ function Card:draw()
         if self.upright and GAME.revUnlocked[self.id] then
             gc.setColor(1, 1, 1)
             if FloatOnCard == self.initOrder then
-                GC.blurCircle(-.26,0,-330,100)
+                GC.blurCircle(-.26, 0, -330, 100)
                 GC.mDraw(IMG.star1, 0, -330, nil, .3)
             else
                 GC.mDraw(self.active and IMG.star1 or IMG.star0, 155, -370, nil, .15)

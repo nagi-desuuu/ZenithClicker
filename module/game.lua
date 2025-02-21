@@ -32,6 +32,7 @@ local GAME = {
     throbAlpha2 = 0,
     throbAlpha3 = 0,
     deckPress = 0,
+    glow={},
 
     mod = {
         EX = 0,

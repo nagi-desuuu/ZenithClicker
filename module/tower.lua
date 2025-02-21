@@ -166,6 +166,14 @@ function scene.update(dt)
     if GAME.deckPress > 0 then
         GAME.deckPress = GAME.deckPress - dt
     end
+    for i = #GAME.glow, 1, -1 do
+        local L = GAME.glow[i]
+        L.t = L.t - dt
+        if L.t <= 0 then
+            table.remove(GAME.glow, i)
+        end
+    end
+
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -246,7 +254,12 @@ function scene.draw()
 end
 
 function scene.overDraw()
-    gc_replaceTransform(SCR.xOy)
+    -- Glow
+    for i = 1, #GAME.glow do
+        local L = GAME.glow[i]
+        gc_setColor(.6, .1, .1, L.t - 1)
+        GC.blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
+    end
 
     -- Current combo
     if GAME.mod.IN < 2 or not GAME.playing then
