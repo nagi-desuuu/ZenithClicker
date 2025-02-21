@@ -216,7 +216,7 @@ function scene.draw()
     GC.mDraw(IMG.floorBG[GAME.bgFloor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
     gc.replaceTransform(SCR.xOy)
-    gc.translate(0, GAME.deckPress * 26)
+    gc.translate(0, GAME.deckPress)
     local h = 697 + GAME.uiHide * 420
     gc.setColor(ShadeColor)
     GC.setAlpha(.626)
@@ -246,10 +246,10 @@ function scene.overDraw()
             GC.setAlpha(.42)
         end
         local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 396 + GAME.deckPress * 26, nil, k, k * 1.1)
+        GC.mDraw(GAME.modText, 800, 396 + GAME.deckPress, nil, k, k * 1.1)
     end
 
-    gc.translate(0, GAME.deckPress * 26)
+    gc.translate(0, GAME.deckPress)
 
     if GAME.playing then
         -- Target combo
@@ -352,7 +352,7 @@ function scene.overDraw()
         --     0, 0, 1590, 'right', nil, 1, 1.1)
 
         gc.replaceTransform(SCR.xOy_dl)
-        gc.translate(0, GAME.deckPress * 26)
+        gc.translate(0, GAME.deckPress)
         gc.translate(0, d)
         if revT > 0 then
             gc.draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
@@ -363,7 +363,7 @@ function scene.overDraw()
             gc.draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
         end
         gc.replaceTransform(SCR.xOy_dr)
-        gc.translate(0, GAME.deckPress * 26)
+        gc.translate(0, GAME.deckPress)
         gc.draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
     end
 

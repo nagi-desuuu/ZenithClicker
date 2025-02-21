@@ -171,7 +171,7 @@ end
 local gc = love.graphics
 function WIDGET._prototype.button:draw()
     gc.push('transform')
-    gc.translate(self._x, self._y + GAME.deckPress * 26)
+    gc.translate(self._x, self._y + GAME.deckPress)
 
     if self._pressTime > 0 then
         gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)

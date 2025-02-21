@@ -197,10 +197,26 @@ function Card:setActive(auto, key)
                     local currentState = GAME['mod_' .. self.id]
                     if currentState == 2 then
                         SFX.play('card_reverse_impact', 1, 0, GAME.mod_GV)
-                        TWEEN.new(function(t) GAME.deckPress = 1 - t end):setUnique('deckPress'):setDuration(.42):run()
+                        TWEEN.new(function(t) GAME.deckPress = 26 * (1 - t) end):setUnique('deckPress')
+                            :setEase('OutQuad'):setDuration(.42):run()
+                        for _, C in ipairs(Cards) do
+                            if C ~= self then
+                                local r = math.random()
+                                C:bounce(MATH.lerp(120, 420, r), MATH.lerp(.42, .62, r))
+                            end
+                        end
                     else
                         SFX.play('spin')
-                        if currentState == 0 then self:bounce(100, .26) end
+                        if currentState == 0 then
+                            self:bounce(100, .26)
+                        else
+                            for _, C in ipairs(Cards) do
+                                if C ~= self then
+                                    local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
+                                    C:bounce(MATH.lerp(120, 420, r), MATH.lerp(.42, .62, r))
+                                end
+                            end
+                        end
                     end
                 end)
             else
