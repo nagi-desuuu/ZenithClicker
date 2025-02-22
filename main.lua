@@ -53,7 +53,7 @@ IMG.init {
 }
 
 local _DATA = {
-    highScore = {},
+    highScore = setmetatable({}, { __index = function() return 0 end }),
     maxFloor = 1,
 }
 
@@ -140,11 +140,11 @@ Mod = {
         EX = { COLOR.HEX "937545" },
         NH = { COLOR.HEX "FF73E8" },
         MS = { COLOR.HEX "FFCA4E" },
-        GV = { COLOR.HEX "FFFF76" },
+        GV = { COLOR.HEX "F6FF7F" },
         VL = { COLOR.HEX "FF7468" },
         DH = { COLOR.HEX "7CC4FF" },
         IN = { COLOR.HEX "D87CFF" },
-        AS = { COLOR.HEX "80FFEA" },
+        AS = { COLOR.HEX "7AFFD9" },
         DP = { COLOR.HEX "FFCCD4" },
     },
     prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
@@ -372,14 +372,29 @@ end)
 
 -- Load data
 DATA.load()
-for _, C in ipairs(Cards) do
-    if (DATA.highScore[C.id] or 0) >= Floors[9].top then
-        GAME.revUnlocked[C.id] = true
+for i = 1, #Cards do
+    local f10 = Floors[9].top
+    local id = Cards[i].id
+    local rid = 'r' .. id
+    if DATA.highScore[rid] >= f10 then
+        GAME.completion[id] = 2
     else
-        for k, v in next, DATA.highScore do
-            if v >= Floors[9].top and (k:gsub('r', ''):find(C.id) or 0) % 2 == 1 then
-                GAME.revUnlocked[C.id] = true
+        for cmb, h in next, DATA.highScore do
+            if h >= f10 and cmb:find(rid) then
+                GAME.completion[id] = 2
                 break
+            end
+        end
+    end
+    if GAME.completion[id] ~= 2 then
+        if DATA.highScore[id] >= f10 then
+            GAME.completion[id] = 1
+        else
+            for cmb, h in next, DATA.highScore do
+                if h >= f10 and (cmb:gsub('r', ''):find(id) or 0) % 2 == 1 then
+                    GAME.completion[id] = 1
+                    break
+                end
             end
         end
     end

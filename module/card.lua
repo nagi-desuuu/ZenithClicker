@@ -37,6 +37,8 @@ function Card.new(d)
         ty = 0,
         visY = 0,
 
+        float = 0,
+
         touchCount = 0,
         burn = false,
         hintMark = false,
@@ -128,9 +130,9 @@ function Card:setActive(auto, key)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.findAll(GAME.revUnlocked, true)
+        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.findAll(GAME.completion, 1)
         if revOn then
-            if not GAME.revUnlocked[self.id] then
+            if GAME.completion[self.id] == 0 then
                 revOn = false
                 noSpin = true
                 self.active = false
@@ -299,6 +301,7 @@ local activeFrame = GC.newImage('assets/outline.png')
 function Card:update(dt)
     self.x = MATH.expApproach(self.x, self.tx, dt * 16)
     self.y = MATH.expApproach(self.y, self.ty + (self.active and 1 or -1) * self.visY, dt * 16)
+    self.float = MATH.expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 16)
     if self.burn then
         self.burn = self.burn - dt
         if self.burn <= 0 then
@@ -409,17 +412,30 @@ function Card:draw()
             gc_setColor(1, 1, 1, ThrobAlpha.card)
             gc_draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
-        if self.upright and GAME.revUnlocked[self.id] then
-            gc_setColor(.5, .5, .5)
-            if FloatOnCard == self.initOrder then
-                GC.blurCircle(0, 0, -330, 80)
-                gc_setColor(1, 1, 1)
-                GC.mDraw(IMG.star1, 0, -330, nil, .3)
+        if GAME.completion[self.id] > 0 then
+            local blur, x, y, cr
+            img = self.active and IMG.star1 or IMG.star0
+            local t = self.upright and self.float or 1
+            if FloatOnCard == self.initOrder or not self.upright then
+                blur, cr = 0, 90
+                img = IMG.star1
             else
-                GC.blurCircle(-.2, 155, -370, 42)
-                gc_setColor(1, 1, 1)
-                GC.mDraw(self.active and IMG.star1 or IMG.star0, 155, -370, nil, .16)
+                blur, cr = -.2, 42
             end
+            x = MATH.lerp(155, 0, t)
+            y = MATH.lerp(-370, -330, t)
+            gc_scale(math.abs(1 / self.kx), 1)
+            if self.upright then
+                gc_setColor(.5, .5, .5)
+                GC.blurCircle(blur, x, y, cr)
+                gc_setColor(1, 1, 1)
+            else
+                gc_rotate(3.1416)
+                gc_setColor(1, 0, 0)
+                GC.blurCircle(blur, x, y, cr)
+                gc_setColor(1, .7, .4)
+            end
+            GC.mDraw(img, x, y, t * 6.2832, MATH.lerp(.16, .42, t))
         end
     end
 

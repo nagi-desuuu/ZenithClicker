@@ -307,7 +307,7 @@ function scene.overDraw()
         gc_rectangle('line', 390, 430, -360, -20 - 2 * delay)
 
         -- Health Bar
-        gc_setColor(GAME.life > GAME.dmgWrong and COLOR.L or COLOR.R)
+        gc_setColor(GAME.life > math.max(GAME.dmgWrong, GAME.dmgTime) and COLOR.L or COLOR.R)
         GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
         -- Gravity Timer

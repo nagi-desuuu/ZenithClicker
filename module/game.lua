@@ -44,16 +44,16 @@ local GAME = {
     hardMode = false,
     anyRev = false,
 
-    revUnlocked = {
-        EX = false,
-        NH = false,
-        MS = false,
-        GV = false,
-        VL = false,
-        DH = false,
-        IN = false,
-        AS = false,
-        DP = false,
+    completion = { -- 0=locked, 1=unlocked, 2=mastered
+        EX = 0,
+        NH = 0,
+        MS = 0,
+        GV = 0,
+        VL = 0,
+        DH = 0,
+        IN = 0,
+        AS = 0,
+        DP = 0,
     },
 
     playing = false,
@@ -257,12 +257,11 @@ end
 --     local stat = { 0, 0, 0, 0, 0 }
 --     local sum = 0
 --     for _ = 1, 1000 do
---         local base = .7023 + floor ^ .5 / 6 + .626
---         local var = floor / 3.55 - .626
+--         local base = .872 + floor ^ .5 / 6 + .626
+--         local var = floor * .26 * .791
 
 --         local r = base + var * math.abs(MATH.randNorm())
---         r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
---         r = MATH.clamp(r, 1, 5)
+--         r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
 --         stat[r] = stat[r] + 1
 --         sum = sum + r
 --     end
@@ -273,9 +272,9 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .626 + GAME.floor ^ .5 / 6
-    local var = GAME.floor / 3.55
-    if GAME.mod.DH then base, var = base + .626, var - .626 end
+    local base = .872 + GAME.floor ^ .5 / 6
+    local var = GAME.floor * .26
+    if GAME.mod.DH > 0 then base, var = base + .626, var * .626 end
 
     local r = base + var * math.abs(MATH.randNorm())
     r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
@@ -420,17 +419,13 @@ function GAME.finish(reason)
 
     if GAME.questCount > 2.6 then
         if GAME.floor >= 10 then
-            local anyNewRev
-            for k, v in next, GAME.mod do
-                if v > 0 and not GAME.revUnlocked[k] then
-                    GAME.revUnlocked[k] = true
-                    anyNewRev = true
-                end
-            end
-            if anyNewRev then
+            if TABLE.count(GAME.completion, 0) == 9 then
                 MSG.clear()
-                MSG('dark', "New reversed mod unlocked!!!\nActivate with right click")
+                MSG('dark', "REVERSED MOD unlocked!!!\nActivate with right click")
                 SFX.play('notify')
+            end
+            for k, v in next, GAME.mod do
+                GAME.completion[k] = math.max(GAME.completion[k], v)
             end
         end
         local newPB
@@ -439,7 +434,7 @@ function GAME.finish(reason)
             newPB = true
         end
         local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
-        local oldPB = DATA.highScore[setStr] or 0
+        local oldPB = DATA.highScore[setStr]
         if GAME.altitude > oldPB then
             DATA.highScore[setStr] = MATH.roundUnit(GAME.altitude, .1)
             DATA.maxFloor = DATA.maxFloor
