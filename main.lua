@@ -12,10 +12,9 @@ SCR.setSize(1600, 1000)
 
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
-BGM.setMaxSources(10)
+BGM.setMaxSources(11)
 BGM.load {
     piano = 'assets/piano.ogg',
-    piano2 = 'assets/piano.ogg',
     expert = 'assets/expert.ogg',
     arp = 'assets/arp.ogg',
     bass = 'assets/bass.ogg',
@@ -24,6 +23,9 @@ BGM.load {
     staccato = 'assets/staccato.ogg',
     violin = 'assets/violin.ogg',
     rev = 'assets/rev.ogg',
+
+    piano2 = 'assets/piano.ogg',
+    violin2 = 'assets/violin.ogg',
 }
 
 SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
@@ -89,7 +91,12 @@ ThrobAlpha = {
 }
 
 BgmSets = {
-    all = { 'piano', 'piano2', 'expert', 'rev', 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
+    all = {
+        'piano',
+        'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin',
+        'expert', 'rev',
+        'piano2', 'violin2',
+    },
     assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
 
@@ -240,20 +247,25 @@ function WIDGET._prototype.button:draw()
     gc.pop()
 end
 
--- Desync fixing daemon
+-- Muisc syncing daemon
 TASK.new(function()
     local lib = BGM._srcLib
+    local set = BgmSets.all
+    coroutine.yield()
     local length = BGM.getDuration()
     while true do
-        TASK.yieldT(1)
-        local t0 = lib[BgmSets.all[1]].source:tell()
-        for i = #BgmSets.all, 2, -1 do
-            local obj = lib[BgmSets.all[i]]
-            if i == 2 then t0 = t0 * 2 % length end
-            if math.abs(obj.source:tell() - t0) > 0.026 then
-                obj.source:seek(t0)
+        local t0 = lib[set[1]].source:tell()
+        for i = #set, 2, -1 do
+            local obj = lib[set[i]]
+            local T = t0
+            if set[i] == 'piano2' then T = T * 2 % length end
+            if set[i] == 'violin2' then T = (T - 4 * 60 / 184) % length end
+            if math.abs(obj.source:tell() - T) > 0.026 then
+                -- print('Desync', set[i])
+                obj.source:seek(T)
             end
         end
+        TASK.yieldT(1)
     end
 end)
 

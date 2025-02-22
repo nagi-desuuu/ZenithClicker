@@ -59,35 +59,36 @@ end
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
-    if GAME.mod.VL == 1 then
+    local M = GAME.mod
+    if M.VL == 1 then
         if not self.active and not auto then
             self.charge = self.charge + 1
             SFX.play('clearline', .42)
             if self.charge < 1.2 then
                 self:shake()
-                SFX.play('combo_' .. math.random(2, 3), .626, 0, -2 + GAME.mod.GV)
+                SFX.play('combo_' .. math.random(2, 3), .626, 0, -2 + M.GV)
                 return
             end
-            SFX.play('combo_4', .626, 0, GAME.mod.GV)
+            SFX.play('combo_4', .626, 0, M.GV)
             self.charge = 0
         end
-    elseif GAME.mod.VL == 2 then
+    elseif M.VL == 2 then
         self.charge = self.charge + (auto and 2.6 or 1)
         if self.charge < 2.1 then
             SFX.play('clearline', .3)
             self:shake()
             if self.charge < 1.2 then
-                SFX.play('combo_1', .626, 0, GAME.mod.GV)
+                SFX.play('combo_1', .626, 0, M.GV)
             elseif MATH.roll() then
-                SFX.play('combo_2', .626, 0, 1 + GAME.mod.GV)
+                SFX.play('combo_2', .626, 0, 1 + M.GV)
             else
-                SFX.play('combo_3', .626, 0, -2 + GAME.mod.GV)
+                SFX.play('combo_3', .626, 0, -2 + M.GV)
             end
             return
         end
         if not auto then
             SFX.play('clearquad', .3)
-            SFX.play('combo_4', .626, 0, GAME.mod.GV)
+            SFX.play('combo_4', .626, 0, M.GV)
         end
         self.charge = 0
     end
@@ -104,24 +105,24 @@ function Card:setActive(auto, key)
             GAME.fault = true
         end
         if not auto then
-            if GAME.mod.NH > 0 and not self.active then
+            if M.NH > 0 and not self.active then
                 GAME.cancelAll()
             end
-            if GAME.mod.GV > 0 and not GAME.firstClickTimer then
+            if M.GV > 0 and not GAME.firstClickTimer then
                 GAME.firstClickTimer = GAME.firstClickDelay
             end
-            if GAME.mod.AS > 0 then
+            if M.AS > 0 then
                 if self.burn then
                     self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
                     local cards = TABLE.copy(Cards, 0)
                     TABLE.delete(cards, self)
-                    for _ = 1, GAME.mod.AS == 1 and 2 or 4 do
+                    for _ = 1, M.AS == 1 and 2 or 4 do
                         TABLE.popRandom(cards):setActive(true)
                     end
                     SFX.play('wound')
                 else
-                    self.burn = GAME.mod.AS == 1 and 3 + GAME.floor / 2 or 1e99
+                    self.burn = M.AS == 1 and 3 + GAME.floor / 2 or 1e99
                 end
             end
         end
@@ -140,11 +141,11 @@ function Card:setActive(auto, key)
                 return
             end
         end
-        local wasRev = GAME.mod[self.id] == 2
+        local wasRev = M[self.id] == 2
         if wasRev and not revOn then
             self:spin()
         end
-        GAME.mod[self.id] = self.active and (revOn and 2 or 1) or 0
+        M[self.id] = self.active and (revOn and 2 or 1) or 0
         -- if revOn then
         --     for _, C in ipairs(Cards) do
         --         if C.active and C ~= self then
@@ -156,28 +157,29 @@ function Card:setActive(auto, key)
         if self.id == 'EX' then
             GAME.updateBgm('expertSwitched')
             TWEEN.new(function(t)
-                GAME.exTimer = self.active and t or (1 - t)
-            end):setDuration(self.active and .26 or .1):run()
+                GAME.exTimer = M.EX > 0 and t or (1 - t)
+            end):setDuration(M.EX > 0 and .26 or .1):run()
         elseif self.id == 'NH' then
-            BGM.set('piano', 'volume', self.active and (GAME.mod.NH == 2 and 0 or .26) or 1)
+            BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
         elseif self.id == 'GV' then
-            local v = self.active and 2 ^ (GAME.mod.GV / 12) or 1
+            local v = M.GV > 0 and 2 ^ (M.GV / 12) or 1
             BGM.set('all', 'pitch', v, .26)
             BGM.set('piano2', 'pitch', 2 * v, .26)
         elseif self.id == 'DH' then
             local W = SCN.scenes.main.widgetList.start
-            W.text = self.active and 'COMMENCE' or 'START'
+            W.text = M.DH > 0 and 'COMMENCE' or 'START'
             W:reset()
         elseif self.id == 'IN' then
-            BGM.set('all', 'highgain', self.active and (GAME.mod.IN == 2 and .65 or .8) or 1)
+            BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or .65)
             for _, C in ipairs(Cards) do C:flip() end
-            noSpin = GAME.mod.IN == 1
+            noSpin = M.IN == 1
         elseif self.id == 'AS' then
             local W = SCN.scenes.main.widgetList.reset
-            W.text = self.active and 'SPIN' or 'RESET'
+            W.text = M.AS > 0 and 'SPIN' or 'RESET'
             W:reset()
         elseif self.id == 'DP' then
-            BGM.set('piano2', 'volume', self.active and 1 or 0, .26)
+            BGM.set('violin2', 'volume', M.DP > 0 and 1 or 0, .26)
+            BGM.set('piano2', 'volume', M.DP == 2 and 1 or 0, .26)
         end
         GAME.refreshPBText()
         if revOn or wasRev then
@@ -188,13 +190,13 @@ function Card:setActive(auto, key)
     if not auto then -- Sound and animation
         if self.active then
             if revOn then
-                SFX.play('card_select_reverse', 1, 0, GAME.mod.GV)
-                SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, GAME.mod.GV)
+                SFX.play('card_select_reverse', 1, 0, M.GV)
+                SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, M.GV)
                 TASK.new(function()
                     TASK.yieldT(0.62)
-                    local currentState = GAME.mod[self.id]
+                    local currentState = M[self.id]
                     if currentState == 2 then
-                        SFX.play('card_reverse_impact', 1, 0, GAME.mod.GV)
+                        SFX.play('card_reverse_impact', 1, 0, M.GV)
                         TWEEN.new(tween_deckPress):setUnique('DeckPress')
                             :setEase('OutQuad'):setDuration(.42):run()
                         for _, C in ipairs(Cards) do
@@ -230,7 +232,7 @@ function Card:setActive(auto, key)
                 end)
             else
                 SFX.play('card_select')
-                SFX.play('card_tone_' .. self.name, 1, 0, GAME.mod.GV)
+                SFX.play('card_tone_' .. self.name, 1, 0, M.GV)
             end
             if not noSpin then self:spin() end
             if revOn then self:bounce(1200, .62) end
