@@ -2,7 +2,7 @@ local ins, rem = table.insert, table.remove
 
 ---@class Question
 ---@field combo string[]
----@field name string
+---@field name love.Text
 
 ---@class Game
 ---@field dmgHeal number
@@ -105,6 +105,13 @@ function GAME.getComboName(list, extend, colored)
         end
         ins(fstr, Mod.textColor[list[len]])
         ins(fstr, Mod.noun[list[len]])
+        if GAME.mod.IN > 0 then
+            local r = 0
+            for i = 1, #fstr, 2 do
+                r = (r + math.random(0, 3)) % 4
+                fstr[i] = { 1, 1, 1, .55 + .15 * r }
+            end
+        end
 
         return fstr
     else
@@ -290,7 +297,7 @@ function GAME.genQuest()
 
     ins(GAME.quests, {
         combo = combo,
-        name = GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, true),
+        name = GC.newText(FONT.get(60),GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, true)),
     })
 end
 

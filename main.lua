@@ -126,7 +126,7 @@ Mod = {
         DP = 4,  --  3 + 1
     },
     color = {
-        EX = { COLOR.HEX "966920" },
+        EX = { COLOR.HEX "89590B" },
         NH = { COLOR.HEX "FF00D4" },
         MS = { COLOR.HEX "FFB400" },
         GV = { COLOR.HEX "FFFF00" },
@@ -137,15 +137,15 @@ Mod = {
         DP = { COLOR.HEX "FF8C9D" },
     },
     textColor = {
-        EX = { COLOR.HEX "937545" },
-        NH = { COLOR.HEX "FF73E8" },
-        MS = { COLOR.HEX "FFCA4E" },
-        GV = { COLOR.HEX "F6FF7F" },
-        VL = { COLOR.HEX "FF7468" },
-        DH = { COLOR.HEX "7CC4FF" },
-        IN = { COLOR.HEX "D87CFF" },
-        AS = { COLOR.HEX "7AFFD9" },
-        DP = { COLOR.HEX "FFCCD4" },
+        EX = { COLOR.HEX "C29F68" },
+        NH = { COLOR.HEX "FF8BEC" },
+        MS = { COLOR.HEX "FFD572" },
+        GV = { COLOR.HEX "F7FF8A" },
+        VL = { COLOR.HEX "FF978D" },
+        DH = { COLOR.HEX "A6D5FF" },
+        IN = { COLOR.HEX "E8B3FF" },
+        AS = { COLOR.HEX "93FFE0" },
+        DP = { COLOR.HEX "FFC0C9" },
     },
     prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
     adj = {

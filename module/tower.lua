@@ -254,6 +254,11 @@ function scene.draw()
     gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
 end
 
+local questStyle = {
+    { k = 1.6, y = 175 },
+    { k = 1.0, y = 100 },
+    { k = 0.9, y = 40 },
+}
 function scene.overDraw()
     -- Current combo
     if GAME.mod.IN < 2 or not GAME.playing then
@@ -276,25 +281,14 @@ function scene.overDraw()
 
     if GAME.playing then
         -- Target combo
-        local d = 4
-        FONT.set(75)
-        gc_setColor(.2, .2, .2)
-        GC.mStr(GAME.quests[1].name, 800 - d, 120 - d, 2600)
-        gc_setColor(1., 1., 1.)
-        GC.mStr(GAME.quests[1].name, 800, 120, 2600)
-        if GAME.quests[2] then
-            FONT.set(50)
+        for i = 1, #GAME.quests do
+            local t = GAME.quests[i].name
+            local kx = math.min(questStyle[i].k, 1550 / t:getWidth())
+            local ky = math.max(kx, questStyle[i].k * .8)
             gc_setColor(.2, .2, .2)
-            GC.mStr(GAME.quests[2].name, 800 - d, 65 - d, 2600)
+            GC.mDraw(t, 800, questStyle[i].y + 5, 0, kx, ky)
             gc_setColor(1., 1., 1.)
-            GC.mStr(GAME.quests[2].name, 800, 65, 2600)
-            if GAME.quests[3] then
-                FONT.set(50)
-                gc_setColor(.2, .2, .2)
-                GC.mStr(GAME.quests[3].name, 800 - d, 5 - d, 2600)
-                gc_setColor(1., 1., 1.)
-                GC.mStr(GAME.quests[3].name, 800, 5, 2600)
-            end
+            GC.mDraw(t, 800, questStyle[i].y, 0, kx, ky)
         end
 
         -- Damage Timer
