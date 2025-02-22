@@ -148,7 +148,7 @@ function Card:setActive(auto, key)
             self:spin()
         end
         M[self.id] = self.active and (revOn and 2 or 1) or 0
-        -- if revOn then
+        -- if revOn then -- Limit only one Rev mod can be selected
         --     for _, C in ipairs(Cards) do
         --         if C.active and C ~= self then
         --             C:setActive(true)
@@ -168,7 +168,7 @@ function Card:setActive(auto, key)
             BGM.set('all', 'pitch', v, .26)
             BGM.set('piano2', 'pitch', 2 * v, .26)
         elseif self.id == 'DH' then
-            local W = SCN.scenes.main.widgetList.start
+            local W = SCN.scenes.tower.widgetList.start
             W.text = M.DH > 0 and 'COMMENCE' or 'START'
             W:reset()
         elseif self.id == 'IN' then
@@ -176,12 +176,12 @@ function Card:setActive(auto, key)
             for _, C in ipairs(Cards) do C:flip() end
             noSpin = M.IN == 1
         elseif self.id == 'AS' then
-            local W = SCN.scenes.main.widgetList.reset
+            local W = SCN.scenes.tower.widgetList.reset
             W.text = M.AS > 0 and 'SPIN' or 'RESET'
             W:reset()
         elseif self.id == 'DP' then
-            BGM.set('violin2', 'volume', M.DP > 0 and 1 or 0, .26)
-            BGM.set('piano2', 'volume', M.DP == 2 and 1 or 0, .26)
+            BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
+            BGM.set('piano2', 'volume', M.DP > 0 and 1 or 0, .26)
         end
         GAME.refreshPBText()
         if revOn or wasRev then

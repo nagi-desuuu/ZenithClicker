@@ -370,7 +370,7 @@ function GAME.start()
         SFX.play('no')
         return
     end
-    SCN.scenes.main.widgetList.hint:setVisible(false)
+    SCN.scenes.tower.widgetList.hint:setVisible(false)
 
     SFX.play('menuconfirm', .8)
     SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod.GV)
@@ -413,7 +413,7 @@ end
 
 ---@param reason 'forfeit' | 'wrongAns' | 'killed'
 function GAME.finish(reason)
-    SCN.scenes.main.widgetList.hint:setVisible(true)
+    SCN.scenes.tower.widgetList.hint:setVisible(true)
     MSG.clear()
 
     SFX.play(

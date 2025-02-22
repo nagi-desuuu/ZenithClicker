@@ -1,9 +1,5 @@
 local scene = {}
 
-function scene.load()
-    love.keyboard.setKeyRepeat(false)
-end
-
 local function MouseOnCard(x, y)
     if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
         return FloatOnCard

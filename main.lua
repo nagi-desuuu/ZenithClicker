@@ -244,8 +244,9 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
-SCN.add('main', require 'module/tower')
-ZENITHA.setFirstScene('main')
+SCN.add('tower', require 'module/tower')
+SCN.add('joining', require 'module/joining')
+ZENITHA.setFirstScene('joining')
 
 ZENITHA.globalEvent.drawCursor = NULL
 ZENITHA.globalEvent.clickFX = NULL
@@ -300,7 +301,7 @@ function WIDGET._prototype.button:draw()
 end
 
 -- Muisc syncing daemon
-TASK.new(function()
+function Daemon_Sync()
     local lib = BGM._srcLib
     local set = BgmSets.all
     coroutine.yield()
@@ -319,12 +320,12 @@ TASK.new(function()
         end
         TASK.yieldT(1)
     end
-end)
+end
 
 -- Throb tranpaency daemon
 -- Messy position daemon
 -- Expert guitar randomization daemon
-TASK.new(function()
+function Daemon_Beat()
     local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184
     local t2, step2 = 0, 2 * 60 / 184 / 4
@@ -351,10 +352,10 @@ TASK.new(function()
         end
         coroutine.yield()
     end
-end)
+end
 
 -- Background transition deamon
-TASK.new(function()
+function Daemon_Floor()
     local bg = Background
     while true do
         repeat TASK.yieldT(.1) until bg.floor ~= GAME.floor
@@ -368,7 +369,7 @@ TASK.new(function()
         until bg.alpha >= 1
         bg.alpha = 1
     end
-end)
+end
 
 -- Load data
 DATA.load()
@@ -401,7 +402,6 @@ for i = 1, #Cards do
 end
 GAME.refreshLockState()
 GAME.refreshPBText()
-GAME.updateBgm('init')
 
 -- Test
 TASK.new(function()
