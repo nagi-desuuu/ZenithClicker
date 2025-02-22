@@ -99,6 +99,26 @@ function GAME.getComboName(list, extend, colored)
 
         local fstr = {}
 
+        local comboText
+        if not GAME.anyRev and not TABLE.find(list, 'DP') then
+            comboText = len == 8 and [["SWAMP WATER"]] or len == 7 and [["SWAMP WATER LITE"]]
+        end
+
+        if not comboText then
+            local str = table.concat(TABLE.sort(list), ' ')
+            if Combos[str] and (Combos[str].basic or extend) then comboText = Combos[str].name end
+        end
+
+        if comboText then
+            fstr = comboText:atomize()
+            for i = #fstr, 1, -1 do
+                ins(fstr, i, i % #fstr <= 1 and COLOR.dL or COLOR.random(5))
+            end
+            return fstr
+        end
+
+        table.sort(list, function(a, b) return Mod.prio[a] < Mod.prio[b] end)
+
         for i = 1, len - 1 do
             ins(fstr, Mod.textColor[list[i]])
             ins(fstr, Mod.adj[list[i]] .. " ")
