@@ -373,9 +373,9 @@ function Card:draw()
 
     if self.active then
         -- Active
-        a = 1
         if playing and not self.hintMark and GAME.mod.IN < 2 then
             -- But wrong
+            a = 1
             r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
         else
             a = .6 + .4 * self.float

@@ -217,7 +217,7 @@ local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle = gc.rectangle, gc.circle
 local gc_arc = gc.arc
 
-local origAuth = gc.newText(FONT.get(30), "All Arts & Sounds from TETR.IO by osk")
+local origAuth = gc.newText(FONT.get(30), "All assets from TETR.IO, see the help page")
 local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 PBText = gc.newText(FONT.get(50))
 local sloganText = gc.newText(FONT.get(30), "CROWD THE TOWER!")
@@ -391,7 +391,7 @@ function scene.overDraw()
         end
         gc_replaceTransform(SCR.xOy_dr)
         gc_translate(0, DeckPress)
-        gc_draw(origAuth, -5, d, nil, 1, 1, origAuth:getDimensions())
+        gc_draw(origAuth, -5, d, 0, .872, .872, origAuth:getDimensions())
     end
 
     -- Card info
@@ -464,6 +464,10 @@ scene.widgetList = {
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
             Space: Start/Commit   Z: Reset selection   ESC: Forfeit/Quit
+
+            All assets from TETR.IO, by osk team:
+            Musics & Sounds by Dr.Ocelot
+            Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
         ]],
     }
 }
