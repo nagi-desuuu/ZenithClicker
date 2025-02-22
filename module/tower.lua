@@ -238,10 +238,6 @@ function scene.draw()
     gc_setColor(ShadeColor)
     GC.setAlpha(.872)
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
-    gc_setLineWidth(4)
-    gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
-    gc_setColor(TextColor)
-    gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
         GC.mDraw(IMG.glass_a, 800, h)
@@ -251,6 +247,11 @@ function scene.draw()
         gc_setColor(1, 1, 1, ThrobAlpha.bg2)
         GC.mDraw(IMG.throb_b, 800, h)
     end
+    gc_setColor(ShadeColor)
+    gc_setLineWidth(4)
+    gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
+    gc_setColor(TextColor)
+    gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
 end
 
 function scene.overDraw()

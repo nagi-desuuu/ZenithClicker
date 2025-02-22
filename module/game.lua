@@ -279,9 +279,9 @@ end
 -- for floor = 1, 10 do
 --     local stat = { 0, 0, 0, 0, 0 }
 --     local sum = 0
---     for _ = 1, 620 do
---         local base = .626 + floor ^ .5 / 5
---         local var = floor / 4.2
+--     for _ = 1, 1000 do
+--         local base = .7023 + floor ^ .5 / 6 + .626
+--         local var = floor / 3.55 - .626
 
 --         local r = base + var * math.abs(MATH.randNorm())
 --         r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
@@ -289,14 +289,16 @@ end
 --         stat[r] = stat[r] + 1
 --         sum = sum + r
 --     end
---     print(("Floor %2d : %s"):format(floor, table.concat(stat, ', ')), "E(x)=" .. sum / MATH.sum(stat))
+--     print(("Floor %2d : %3d %3d %3d %3d %3d  E(x)=%.2f"):format(
+--         floor, stat[1], stat[2], stat[3], stat[4], stat[5],
+--         sum / MATH.sum(stat)))
 -- end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .626 + GAME.floor ^ .5 / 5
-    local var = GAME.floor / 4.2
-    if GAME.mod.DH then base = base + .626 end
+    local base = .626 + GAME.floor ^ .5 / 6
+    local var = GAME.floor / 3.55
+    if GAME.mod.DH then base, var = base + .626, var - .626 end
 
     local r = base + var * math.abs(MATH.randNorm())
     r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
@@ -478,7 +480,7 @@ function GAME.finish(reason)
                     color = 'lC', duration = 6.2,
                 }
                 SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + GAME.mod.GV)
-            else
+            elseif GAME.floor >= 2 then
                 TEXT:add {
                     text = "PERSONAL BEST",
                     x = 800, y = 200, k = 3, fontSize = 60,
@@ -535,9 +537,10 @@ function GAME.commit()
     if result then
         GAME.life = math.min(GAME.life + math.max(GAME.dmgHeal, 0), 20)
 
+        local dp = TABLE.find(hand, 'DP')
         local attack = 3
         local xp = 0
-        if TABLE.find(hand, 'DP') then attack = attack + 2 end
+        if dp then attack = attack + 2 end
         if GAME.fault then
             attack = attack + 1
             xp = xp + 2
@@ -581,7 +584,7 @@ function GAME.commit()
             end
         end
 
-        SFX.play(TABLE.find(hand, 'DP') and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod.GV)
+        SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod.GV)
 
         GAME.addHeight(attack)
         GAME.addXP(attack + xp)
