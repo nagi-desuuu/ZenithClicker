@@ -206,7 +206,7 @@ function Card:setActive(auto, key)
                                 C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
                             end
                         end
-                        local color = ModColor[self.id]
+                        local color = Mod.color[self.id]
                         table.insert(ImpactGlow, {
                             r = (color[1] - .26) * .8,
                             g = (color[2] - .26) * .8,

@@ -113,29 +113,81 @@ DeckData = {
     [0] = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
     [-1] = { fullName = "< LOCKED >", desc = "*CANNOT BE UNLOCKED*" },
 }
-
-ModWeight = {
-    EX = 13, --  8 + 5
-    NH = 12, --  8 + 4
-    MS = 14, -- 10 + 4
-    GV = 12, -- 10 + 2
-    VL = 17, -- 15 + 2
-    DH = 12, --  8 + 4
-    IN = 7,  --  6 + 1
-    AS = 13, -- 10 + 3
-    DP = 4,  --  3 + 1
-}
-
-ModColor = {
-    EX = { COLOR.HEX "966920" },
-    NH = { COLOR.HEX "FF00D4" },
-    MS = { COLOR.HEX "FFB400" },
-    GV = { COLOR.HEX "FFFF00" },
-    VL = { COLOR.HEX "FF1500" },
-    DH = { COLOR.HEX "47ACFF" },
-    IN = { COLOR.HEX "BD24FF" },
-    AS = { COLOR.HEX "00FED4" },
-    DP = { COLOR.HEX "FF8C9D" },
+Mod = {
+    weight = {
+        EX = 13, --  8 + 5
+        NH = 12, --  8 + 4
+        MS = 14, -- 10 + 4
+        GV = 12, -- 10 + 2
+        VL = 17, -- 15 + 2
+        DH = 12, --  8 + 4
+        IN = 7,  --  6 + 1
+        AS = 13, -- 10 + 3
+        DP = 4,  --  3 + 1
+    },
+    color = {
+        EX = { COLOR.HEX "966920" },
+        NH = { COLOR.HEX "FF00D4" },
+        MS = { COLOR.HEX "FFB400" },
+        GV = { COLOR.HEX "FFFF00" },
+        VL = { COLOR.HEX "FF1500" },
+        DH = { COLOR.HEX "47ACFF" },
+        IN = { COLOR.HEX "BD24FF" },
+        AS = { COLOR.HEX "00FED4" },
+        DP = { COLOR.HEX "FF8C9D" },
+    },
+    textColor = {
+        EX = { COLOR.HEX "937545" },
+        NH = { COLOR.HEX "FF73E8" },
+        MS = { COLOR.HEX "FFCA4E" },
+        GV = { COLOR.HEX "FFFF76" },
+        VL = { COLOR.HEX "FF7468" },
+        DH = { COLOR.HEX "7CC4FF" },
+        IN = { COLOR.HEX "D87CFF" },
+        AS = { COLOR.HEX "80FFEA" },
+        DP = { COLOR.HEX "FFCCD4" },
+    },
+    prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
+    adj = {
+        IN = "INVISIBLE",
+        MS = "MESSY",
+        VL = "VOLATILE",
+        NH = "HOLDLESS",
+        DH = "DOUBLE HOLE",
+        AS = "ALL-SPIN",
+        GV = "GRAVITY",
+        EX = "EXPERT",
+        DP = "DUO",
+        rIN = "BELIEVED",
+        rMS = "DECEPTIVE",
+        rVL = "DESPERATE",
+        rNH = "ASCENDANT",
+        rDH = "DAMNED",
+        rAS = "OMNI-SPIN",
+        rGV = "COLLAPSED",
+        rEX = "TYRANNICAL",
+        rDP = "PIERCING",
+    },
+    noun = {
+        IN = "INVISIBLITY",
+        MS = "MESSINESS",
+        VL = "VOLATILITY",
+        NH = "NO HOLD",
+        DH = "DOUBLE HOLE",
+        AS = "ALL-SPIN",
+        GV = "GRAVITY",
+        EX = "EXPERT",
+        DP = "DUO",
+        rIN = "BELIEF",
+        rMS = "DECEPTION",
+        rVL = "DESPERATION",
+        rNH = "ASCENSION",
+        rDH = "DAMNATION",
+        rAS = "OMNI-SPIN",
+        rGV = "COLLAPSE",
+        rEX = "TYRANNY",
+        rDP = "HEARTACHE",
+    },
 }
 
 BasicComboCount = 9

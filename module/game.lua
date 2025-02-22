@@ -1,3 +1,5 @@
+local ins, rem = table.insert, table.remove
+
 ---@class Question
 ---@field combo string[]
 ---@field name string
@@ -74,80 +76,55 @@ function GAME.getHand(showRev)
             local D = DeckData[i]
             local level = GAME.mod[D.id]
             if level > 0 then
-                table.insert(list, level == 2 and 'r' .. D.id or D.id)
+                ins(list, level == 2 and 'r' .. D.id or D.id)
             end
         end
     else
         for _, C in ipairs(Cards) do
             if C.active then
-                table.insert(list, C.id)
+                ins(list, C.id)
             end
         end
     end
     return list
 end
 
-local modName = {
-    prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
-    adj = {
-        IN = "INVISIBLE",
-        MS = "MESSY",
-        VL = "VOLATILE",
-        NH = "HOLDLESS",
-        DH = "DOUBLE HOLE",
-        AS = "ALL-SPIN",
-        GV = "GRAVITY",
-        EX = "EXPERT",
-        DP = "DUO",
-        rIN = "BELIEVED",
-        rMS = "DECEPTIVE",
-        rVL = "DESPERATE",
-        rNH = "ASCENDANT",
-        rDH = "DAMNED",
-        rAS = "OMNI-SPIN",
-        rGV = "COLLAPSED",
-        rEX = "TYRANNICAL",
-        rDP = "PIERCING",
-    },
-    noun = {
-        IN = "INVISIBLITY",
-        MS = "MESSINESS",
-        VL = "VOLATILITY",
-        NH = "NO HOLD",
-        DH = "DOUBLE HOLE",
-        AS = "ALL-SPIN",
-        GV = "GRAVITY",
-        EX = "EXPERT",
-        DP = "DUO",
-        rIN = "BELIEF",
-        rMS = "DECEPTION",
-        rVL = "DESPERATION",
-        rNH = "ASCENSION",
-        rDH = "DAMNATION",
-        rAS = "OMNI-SPIN",
-        rGV = "COLLAPSE",
-        rEX = "TYRANNY",
-        rDP = "HEARTACHE",
-    },
-}
 ---@param list string[] OVERWRITE!!!
 ---@param extend? boolean use extended combo lib from community
-function GAME.getComboName(list, extend)
-    if #list == 0 then return "" end
-    if #list == 1 then return modName.noun[list[1]] end
+---@param colored? boolean return a color-string table instead
+function GAME.getComboName(list, extend, colored)
+    local len = #list
+    if colored then
+        if len == 0 then return {} end
 
-    if not GAME.anyRev and not TABLE.find(list, 'DP') then
-        if #list == 8 then return [["SWAMP WATER"]] end
-        if #list == 7 then return [["SWAMP WATER LITE"]] end
+        local fstr = {}
+
+        for i = 1, len - 1 do
+            ins(fstr, Mod.textColor[list[i]])
+            ins(fstr, Mod.adj[list[i]] .. " ")
+        end
+        ins(fstr, Mod.textColor[list[len]])
+        ins(fstr, Mod.noun[list[len]])
+
+        return fstr
+    else
+        if len == 0 then return "" end
+        if len == 1 then return Mod.noun[list[1]] end
+
+        if not GAME.anyRev and not TABLE.find(list, 'DP') then
+            if len == 8 then return [["SWAMP WATER"]] end
+            if len == 7 then return [["SWAMP WATER LITE"]] end
+        end
+
+        local str = table.concat(TABLE.sort(list), ' ')
+        if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
+
+        table.sort(list, function(a, b) return Mod.prio[a] < Mod.prio[b] end)
+
+        str = ""
+        for i = 1, len - 1 do str = str .. Mod.adj[list[i]] .. " " end
+        return str .. Mod.noun[list[len]]
     end
-
-    local str = table.concat(TABLE.sort(list), ' ')
-    if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
-
-    str = ""
-    table.sort(list, function(a, b) return modName.prio[a] < modName.prio[b] end)
-    for i = 1, #list - 1 do str = str .. modName.adj[list[i]] .. " " end
-    return str .. modName.noun[list[#list]]
 end
 
 function GAME.refreshCurrentCombo()
@@ -301,20 +278,20 @@ function GAME.genQuest()
     if GAME.mod.DH then base, var = base + .626, var - .626 end
 
     local r = base + var * math.abs(MATH.randNorm())
-    r = MATH.roll(r % 1) and math.ceil(r) or math.floor(r)
+    r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
 
-    local pool = TABLE.copyAll(ModWeight)
+    local pool = TABLE.copyAll(Mod.weight)
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then pool[lastQ.combo[1]] = nil end
-    for _ = 1, math.min(r, 5) do
+    for _ = 1, r do
         local mod = MATH.randFreqAll(pool)
         pool[mod] = nil
-        table.insert(combo, mod)
+        ins(combo, mod)
     end
 
-    table.insert(GAME.quests, {
+    ins(GAME.quests, {
         combo = combo,
-        name = GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2),
+        name = GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, true),
     })
 end
 
@@ -409,7 +386,7 @@ function GAME.start()
     GAME.upFloor()
 
     TABLE.clear(GAME.quests)
-    while #GAME.quests < GAME.queueLen do GAME.genQuest() end
+    for _ = 1, GAME.queueLen do GAME.genQuest() end
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
@@ -597,7 +574,7 @@ function GAME.commit()
         end
 
         GAME.genQuest()
-        table.remove(GAME.quests, 1)
+        rem(GAME.quests, 1)
         GAME.questCount = GAME.questCount + 1
 
         GAME.cancelAll(true)

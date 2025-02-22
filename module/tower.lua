@@ -276,16 +276,23 @@ function scene.overDraw()
 
     if GAME.playing then
         -- Target combo
-        gc_setColor(COLOR.L)
+        local d = 4
         FONT.set(75)
+        gc_setColor(.2, .2, .2)
+        GC.mStr(GAME.quests[1].name, 800 - d, 120 - d, 2600)
+        gc_setColor(1., 1., 1.)
         GC.mStr(GAME.quests[1].name, 800, 120, 2600)
         if GAME.quests[2] then
-            gc_setColor(COLOR.DL)
             FONT.set(50)
+            gc_setColor(.2, .2, .2)
+            GC.mStr(GAME.quests[2].name, 800 - d, 65 - d, 2600)
+            gc_setColor(1., 1., 1.)
             GC.mStr(GAME.quests[2].name, 800, 65, 2600)
             if GAME.quests[3] then
-                gc_setColor(COLOR.LD)
                 FONT.set(50)
+                gc_setColor(.2, .2, .2)
+                GC.mStr(GAME.quests[3].name, 800 - d, 5 - d, 2600)
+                gc_setColor(1., 1., 1.)
                 GC.mStr(GAME.quests[3].name, 800, 5, 2600)
             end
         end
