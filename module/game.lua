@@ -297,7 +297,7 @@ function GAME.genQuest()
 
     ins(GAME.quests, {
         combo = combo,
-        name = GC.newText(FONT.get(60),GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, true)),
+        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, true)),
     })
 end
 
@@ -521,7 +521,6 @@ function GAME.commit()
         local xp = 0
         if dp then attack = attack + 2 end
         if GAME.fault then
-            attack = attack + 1
             xp = xp + 2
             if GAME.chain < 4 then
                 SFX.play('clearline', .62)
@@ -547,7 +546,7 @@ function GAME.commit()
             GAME.chain = 0
         else
             SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
-            attack = attack + 2
+            attack = attack + 1
             xp = xp + 3
             GAME.chain = GAME.chain + 1
             if GAME.chain < 4 then
