@@ -54,7 +54,7 @@ function Card:mouseOn(x, y)
 end
 
 function Card:clearBuff()
-    if GAME.mod.AS then self.burn = false end
+    self.burn = false
     self.charge = 0
 end
 
@@ -107,7 +107,7 @@ function Card:setActive(auto, key)
             GAME.fault = true
         end
         if not auto then
-            if M.NH > 0 and not self.active then
+            if M.NH == 1 and not self.active then
                 GAME.cancelAll()
             end
             if M.GV > 0 and not GAME.firstClickTimer then
@@ -431,9 +431,9 @@ function Card:draw()
                 gc_setColor(1, 1, 1)
             else
                 gc_rotate(3.1416)
-                gc_setColor(1, 0, 0)
+                gc_setColor(.2, .2, .2)
                 GC.blurCircle(blur, x, y, cr)
-                gc_setColor(1, .7, .4)
+                gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
             end
             GC.mDraw(img, x, y, t * 6.2832, MATH.lerp(.16, .42, t))
         end

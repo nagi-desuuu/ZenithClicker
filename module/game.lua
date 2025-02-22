@@ -102,20 +102,17 @@ function GAME.getComboName(list, extend, colored)
         local comboText
         if not GAME.anyRev and not TABLE.find(list, 'DP') then
             comboText = len == 8 and [["SWAMP WATER"]] or len == 7 and [["SWAMP WATER LITE"]]
-        end
-
-        if not comboText then
-            local str = table.concat(TABLE.sort(list), ' ')
-            if Combos[str] and (Combos[str].basic or extend) then comboText = Combos[str].name end
-        end
-
-        if comboText then
-            fstr = comboText:atomize()
-            for i = #fstr, 1, -1 do
-                ins(fstr, i, i % #fstr <= 1 and COLOR.dL or COLOR.random(5))
+            if comboText then
+                fstr = comboText:atomize()
+                for i = #fstr, 1, -1 do
+                    ins(fstr, i, i % #fstr <= 1 and COLOR.dL or COLOR.random(5))
+                end
+                return fstr
             end
-            return fstr
         end
+
+        local str = table.concat(TABLE.sort(list), ' ')
+        if Combos[str] and (Combos[str].basic or extend) then return { COLOR.dL, Combos[str].name } end
 
         table.sort(list, function(a, b) return Mod.prio[a] < Mod.prio[b] end)
 
@@ -610,7 +607,7 @@ function GAME.commit()
         if GAME.mod.EX > 0 then
             GAME.cancelAll(true)
         else
-            for _, C in ipairs(Cards) do C:clearBuff() end
+            for _, C in ipairs(Cards) do C.burn = false end
         end
     end
 end
@@ -629,13 +626,13 @@ function GAME.task_cancelAll(instant)
                 TASK.yieldT(.026)
             end
         end
-        list[i]:clearBuff()
+        list[i].burn = false
     end
 end
 
 function GAME.cancelAll(instant)
     if GAME.mod.NH == 2 then
-        for _, C in ipairs(Cards) do C:clearBuff() end
+        for _, C in ipairs(Cards) do C.burn = false end
         return
     end
     TASK.removeTask_code(GAME.task_cancelAll)
