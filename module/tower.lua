@@ -337,9 +337,9 @@ function scene.overDraw()
     gc_setColor(1, 1, 1, .42)
     GC.mRect('line', 800, 975, 420, 26)
 
-    -- Altitude
+    -- Height
     FONT.set(40)
-    GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.altitude), 800, 942, nil, 'center')
+    GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.height), 800, 942, nil, 'center')
     GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 942)
 
     -- Cards

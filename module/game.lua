@@ -65,7 +65,7 @@ local GAME = {
     floor = 1,
     rank = 1,
     xp = 0,
-    altitude = 0,
+    height = 0,
 }
 
 --- Unsorted
@@ -370,13 +370,6 @@ function GAME.start()
         SFX.play('no')
         return
     end
-    if GAME.mod.EX == 2 then
-        MSG.clear()
-        MSG('dark', "Working in Progress")
-        Cards.EX:shake()
-        SFX.play('no')
-        return
-    end
     SCN.scenes.main.widgetList.hint:setVisible(false)
 
     SFX.play('menuconfirm', .8)
@@ -400,7 +393,7 @@ function GAME.start()
     GAME.xpLockTimer = 0
     GAME.floor = 0
     GAME.fatigue = 1
-    GAME.altitude = 0
+    GAME.height = 0
     GAME.heightBuffer = 0
     GAME.life = 20
     GAME.dmgTimer = GAME.dmgDelay
@@ -459,8 +452,8 @@ function GAME.finish(reason)
         end
         local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
         local oldPB = DATA.highScore[setStr]
-        if GAME.altitude > oldPB then
-            DATA.highScore[setStr] = MATH.roundUnit(GAME.altitude, .1)
+        if GAME.height > oldPB then
+            DATA.highScore[setStr] = MATH.roundUnit(GAME.height, .1)
             DATA.maxFloor = DATA.maxFloor
             newPB = true
         end
@@ -732,11 +725,17 @@ function GAME.update(dt)
         GAME.heightBuffer = math.max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
         releaseHeight = releaseHeight - GAME.heightBuffer
 
-        GAME.altitude =
-            GAME.altitude + releaseHeight +
-            GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.altitude)
+        GAME.height = GAME.height + releaseHeight
+        if GAME.mod.EX < 2 then
+            GAME.height = GAME.height + GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
+        else
+            GAME.height = math.max(
+                GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
+                GAME.floor == 1 and 0 or Floors[GAME.floor - 1].top
+            )
+        end
 
-        if GAME.altitude >= Floors[GAME.floor].top then
+        if GAME.height >= Floors[GAME.floor].top then
             GAME.upFloor()
         end
 

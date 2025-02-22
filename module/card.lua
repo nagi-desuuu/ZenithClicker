@@ -301,7 +301,7 @@ local activeFrame = GC.newImage('assets/outline.png')
 function Card:update(dt)
     self.x = MATH.expApproach(self.x, self.tx, dt * 16)
     self.y = MATH.expApproach(self.y, self.ty + (self.active and 1 or -1) * self.visY, dt * 16)
-    self.float = MATH.expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 16)
+    self.float = MATH.expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 12)
     if self.burn then
         self.burn = self.burn - dt
         if self.burn <= 0 then
@@ -319,17 +319,10 @@ local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
-local gc_setCanvas, gc_setShader, gc_setBlendMode = gc.setCanvas, gc.setShader, gc.setBlendMode
-local gc_setColor, gc_setLineWidth, gc_setLineJoin = gc.setColor, gc.setLineWidth, gc.setLineJoin
-local gc_draw, gc_line = gc.draw, gc.line
+local gc_draw = gc.draw
+local gc_setColor, gc_setShader = gc.setColor, gc.setShader
 
-
-local outlineShader = gc.newShader [[
-vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
-    vec4 fragColor = texture2D(tex, texCoord);
-    return vec4(color.rgb, color.a * fragColor.a);
-}
-]]
+local outlineShader = gc.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
 function Card:draw()
     local playing = GAME.playing
     local img, img2
@@ -384,6 +377,8 @@ function Card:draw()
         if playing and not self.hintMark and GAME.mod.IN < 2 then
             -- But wrong
             r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
+        else
+            a = .6 + .4 * self.float
         end
     elseif self.hintMark then
         -- Inactive but need
@@ -413,29 +408,29 @@ function Card:draw()
             gc_draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
         if GAME.completion[self.id] > 0 then
-            local blur, x, y, cr
             img = self.active and IMG.star1 or IMG.star0
             local t = self.upright and self.float or 1
-            if FloatOnCard == self.initOrder or not self.upright then
-                blur, cr = 0, 90
-                img = IMG.star1
-            else
-                blur, cr = -.2, 42
-            end
-            x = MATH.lerp(155, 0, t)
-            y = MATH.lerp(-370, -330, t)
+            local blur = (FloatOnCard == self.initOrder or not self.upright) and 0 or -.2
+            local x = MATH.lerp(155, 0, t)
+            local y = MATH.lerp(-370, -330, t)
+            local cr = MATH.lerp(.16, .42, t)
             gc_scale(math.abs(1 / self.kx), 1)
             if self.upright then
                 gc_setColor(.5, .5, .5)
-                GC.blurCircle(blur, x, y, cr)
+                GC.blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, 1, 1)
+                GC.mDraw(img, x, y, -t * 6.2832, MATH.lerp(.16, .42, t))
             else
                 gc_rotate(3.1416)
                 gc_setColor(.2, .2, .2)
-                GC.blurCircle(blur, x, y, cr)
+                GC.blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
+                GC.mDraw(img, x, y, -t * 6.2832, MATH.lerp(.16, .42, t))
             end
-            GC.mDraw(img, x, y, t * 6.2832, MATH.lerp(.16, .42, t))
+            if not self.active then
+                gc_setColor(1, 1, 1, t)
+                GC.mDraw(IMG.star1, x, y, -t * 6.2832, MATH.lerp(.16, .42, t))
+            end
         end
     end
 
