@@ -529,7 +529,7 @@ function GAME.commit()
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
         local xp = 0
-        if dp then attack = attack + 2 end
+        if dp and GAME.mod.EX <= 2 then attack = attack + 2 end
         if GAME.fault then
             xp = xp + 2
             if GAME.chain < 4 then
