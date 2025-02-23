@@ -317,8 +317,8 @@ function scene.overDraw()
             local a = 1
             if M.IN == 2 and i == 1 then
                 a = 1 - GAME.questTime * GAME.floor * .26
-                if GAME.fault then
-                    a = math.max(a, .26)
+                if GAME.faultWrong then
+                    a = math.max(a, .355)
                 end
             end
             gc_setColor(.2, .2, .2, a)

@@ -271,6 +271,7 @@ end
 function GAME.questReady()
     GAME.questTime = 0
     GAME.fault = false
+    GAME.faultWrong = false
     for _, C in ipairs(Cards) do
         C.touchCount = 0
         C.hintMark = false
@@ -577,6 +578,7 @@ function GAME.commit()
         return true
     else
         GAME.fault = true
+        GAME.faultWrong=true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
         if M.EX > 0 then
             GAME.cancelAll(true)
