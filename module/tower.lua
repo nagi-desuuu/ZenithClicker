@@ -284,6 +284,9 @@ function scene.overDraw()
             local a = 1
             if i == 1 and GAME.mod.IN == 2 then
                 a = 1 - GAME.questTime * GAME.floor * .26
+                if GAME.fault then
+                    a = math.max(a, .26)
+                end
             end
             gc_setColor(.2, .2, .2, a)
             GC.mDraw(t, 800, questStyle[i].y + 5, 0, kx, ky)
