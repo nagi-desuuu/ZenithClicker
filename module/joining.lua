@@ -22,7 +22,7 @@ function scene.update(dt)
     elseif t2 > 0 then
         t2 = t2 - dt
         if t2 <= 0 then
-            SCN.go('tower')
+            SCN.swapTo('tower')
         end
     end
 end
