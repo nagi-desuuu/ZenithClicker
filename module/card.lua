@@ -75,16 +75,16 @@ function Card:setActive(auto, key)
             self.charge = 0
         end
     elseif M.VL == 2 then
-        self.charge = self.charge + (auto and 2.6 or 1)
-        if self.charge < 2.1 then
+        self.charge = self.charge + (auto and 3.55 or 1)
+        if self.charge < 3.1 then
             SFX.play('clearline', .3)
             self:shake()
-            if self.charge < 1.2 then
+            if self.charge < 1.3 then
                 SFX.play('combo_1', .626, 0, M.GV)
-            elseif MATH.roll() then
-                SFX.play('combo_2', .626, 0, 1 + M.GV)
-            else
+            elseif self.charge < 2.2 then
                 SFX.play('combo_3', .626, 0, -2 + M.GV)
+            else
+                SFX.play('combo_2', .626, 0, 1 + M.GV)
             end
             return
         end
