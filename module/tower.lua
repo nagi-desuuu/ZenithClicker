@@ -208,22 +208,25 @@ local gc_replaceTransform = gc.replaceTransform
 local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
-local gc_rectangle, gc_circle = gc.rectangle, gc.circle
-local gc_arc = gc.arc
+local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
+local gc_mDraw = GC.mDraw
 
-local origAuth = gc.newText(FONT.get(30), "All assets from TETR.IO, see the help page")
 local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 PBText = gc.newText(FONT.get(50))
+HeightText = gc.newText(FONT.get(50))
+TimeText = gc.newText(FONT.get(30))
 local sloganText = gc.newText(FONT.get(30), "CROWD THE TOWER!")
 local sloganText_EX = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 local sloganText_rev = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!")
+local creditText = gc.newText(FONT.get(30), "All assets from TETR.IO, see the help page")
+
 local Cards = Cards
 local TextColor = TextColor
 local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     gc_setColor(1, 1, 1, Background.alpha * .42)
-    GC.mDraw(IMG.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+    gc_mDraw(IMG.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
     -- Card Panel
     gc_replaceTransform(SCR.xOy)
@@ -234,12 +237,12 @@ function scene.draw()
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
-        GC.mDraw(IMG.glass_a, 800, h)
-        GC.mDraw(IMG.glass_b, 800, h)
+        gc_mDraw(IMG.glass_a, 800, h)
+        gc_mDraw(IMG.glass_b, 800, h)
         gc_setColor(1, 1, 1, ThrobAlpha.bg1)
-        GC.mDraw(IMG.throb_a, 800, h)
+        gc_mDraw(IMG.throb_a, 800, h)
         gc_setColor(1, 1, 1, ThrobAlpha.bg2)
-        GC.mDraw(IMG.throb_b, 800, h)
+        gc_mDraw(IMG.throb_b, 800, h)
     end
     gc_setColor(ShadeColor)
     gc_setLineWidth(4)
@@ -257,11 +260,9 @@ function scene.overDraw()
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
-        if M.IN == 2 then
-            GC.setAlpha(.42)
-        end
+        if M.IN == 2 then GC.setAlpha(.42) end
         local k = math.min(.9, 760 / GAME.modText:getWidth())
-        GC.mDraw(GAME.modText, 800, 396 + DeckPress, nil, k, k * 1.1)
+        gc_mDraw(GAME.modText, 800, 396 + DeckPress, nil, k, k * 1.1)
     end
 
     gc_translate(0, DeckPress)
@@ -274,22 +275,22 @@ function scene.overDraw()
     end
 
     if GAME.playing then
-        -- Target combo
+        -- Quests
         for i = 1, #GAME.quests do
             local t = GAME.quests[i].name
             local kx = math.min(questStyle[i].k, 1550 / t:getWidth())
             local ky = math.max(kx, questStyle[i].k * .8)
             local a = 1
-            if i == 1 and M.IN == 2 then
+            if M.IN == 2 and i == 1 then
                 a = 1 - GAME.questTime * GAME.floor * .26
                 if GAME.fault then
                     a = math.max(a, .26)
                 end
             end
             gc_setColor(.2, .2, .2, a)
-            GC.mDraw(t, 800, questStyle[i].y + 5, 0, kx, ky)
+            gc_mDraw(t, 800, questStyle[i].y + 5, 0, kx, ky)
             gc_setColor(1, 1, 1, a)
-            GC.mDraw(t, 800, questStyle[i].y, 0, kx, ky)
+            gc_mDraw(t, 800, questStyle[i].y, 0, kx, ky)
         end
 
         -- Damage Timer
@@ -329,19 +330,25 @@ function scene.overDraw()
     --     gc.print(Cards[i].ty, Cards[i].x, Cards[i].y-260)
     -- end
 
-    -- Thruster
-    gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
-    GC.mRect('fill', 800, 975, 420, 26)
-    gc_setColor(rankColor[GAME.rank] or COLOR.L)
-    GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
-    gc.setLineWidth(2)
-    gc_setColor(1, 1, 1, .42)
-    GC.mRect('line', 800, 975, 420, 26)
+    -- Bottom In-game UI
+    if GAME.uiHide > 0 then
+        local h = 100 - GAME.uiHide * 100
+        gc_translate(0, h)
+        -- Thruster
+        gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
+        GC.mRect('fill', 800, 975, 420, 26)
+        gc_setColor(rankColor[GAME.rank] or COLOR.L)
+        GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
+        gc.setLineWidth(2)
+        gc_setColor(1, 1, 1, .42)
+        GC.mRect('line', 800, 975, 420, 26)
 
-    -- Height
-    FONT.set(40)
-    GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.height), 800, 942, nil, 'center')
-    GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 942)
+        -- Height & Timer
+        FONT.set(40)
+        GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.height), 800, 942, nil, 'center')
+        GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 950)
+        gc_translate(0, -h)
+    end
 
     -- Cards
     gc_setColor(1, 1, 1)
@@ -362,23 +369,32 @@ function scene.overDraw()
         end
     end
 
-    -- Texts
+    -- UI
     if GAME.uiHide < 1 then
         local exT = GAME.exTimer
         local revT = GAME.revTimer
         local d = GAME.uiHide * 70
+
+        -- Last height
         gc_replaceTransform(SCR.xOy_u)
+        gc_setColor(COLOR.D)
+        gc_mDraw(HeightText, 0, 140 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TimeText, 0, 204 - 3.2 * d)
+        gc_setColor(COLOR.L)
+        gc_mDraw(HeightText, 0, 135 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TimeText, 0, 201 - 3.2 * d)
+
+        -- Top bar & texts
         gc_setColor(ShadeColor)
-        gc.rectangle('fill', -1300, -d, 2600, 70)
+        gc_rectangle('fill', -1300, -d, 2600, 70)
         gc_setColor(TextColor)
-        gc.rectangle('fill', -1300, 70 - d, 2600, 4)
+        gc_rectangle('fill', -1300, 70 - d, 2600, 4)
         gc_replaceTransform(SCR.xOy_ul)
         gc_draw(titleText,
             exT * 205 - 195, titleText:getHeight() / 2 - d, nil,
             1, 1.1 * (1 - 2 * revT), 0, titleText:getHeight() / 2)
         gc_replaceTransform(SCR.xOy_ur)
         gc_draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
-
         gc_replaceTransform(SCR.xOy_dl)
         gc_translate(0, DeckPress)
         gc_translate(0, d)
@@ -392,7 +408,7 @@ function scene.overDraw()
         end
         gc_replaceTransform(SCR.xOy_dr)
         gc_translate(0, DeckPress)
-        gc_draw(origAuth, -5, d, 0, .872, .872, origAuth:getDimensions())
+        gc_draw(creditText, -5, d, 0, .872, .872, creditText:getDimensions())
     end
 
     -- Card info
