@@ -198,18 +198,18 @@ Floors = {
 Fatigue = {
     { time = 300, event = { 'dmgTimeMul', -.2 }, text = "FATIGUE SETS IN…", desc = "DmgDelay--" },
     { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
-    { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "DmgDelay--   Heal--" },
+    { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "DmgDelay--   Heal--" },
     { time = 390, event = { 'dmgTimeMul', -.1, 'dmgCycle', -.5 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "DmgDelay--   DmgCycle--" },
     { time = 420, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "THIS IS THE END", desc = "DmgDelay--   Damage++" },
-    { time = 1e99 }, -- Total: dmgTimeMul-60%, Cycle-1, Wrong+2
+    { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
 }
 FatigueRevEX = {
     { time = 240, event = { 'dmgTimeMul', -.2 }, text = "YOUR POWER SLIPS…", desc = "DmgDelay--" },
     { time = 270, event = { 'dmgWrong', 2 }, text = "WHISPERS OF DISCONTENT SPREAD…", desc = "Damage++" },
-    { time = 300, event = { 'dmgCycle', -.5 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
+    { time = 300, event = { 'dmgCycle', -1 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
     { time = 330, event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…", desc = "DmgDelay--   Damage++" },
-    { time = 360, event = { 'dmgCycle', -1, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "DmgCycle--   Heal--" },
-    { time = 390, event = { 'dmgTimeMul', -.2, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgDelay--   Damage++" },
+    { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "DmgCycle--   Heal--" },
+    { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgDelay--   Damage++" },
     { time = 420, event = { 'dmgTimeMul', -.3 }, text = "THE END OF AN ERA", desc = "DmgDelay--" },
     { time = 1e99 }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
 }
