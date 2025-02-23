@@ -451,7 +451,7 @@ function scene.overDraw()
         if C.lock then C = DeckData[C.id == 'DP' and -1 or 0] end
         gc_replaceTransform(SCR.xOy_d)
         gc_setColor(ShadeColor)
-        GC.setAlpha(.872)
+        GC.setAlpha(.7023)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and C.id and M[C.id] == 2 then
             FONT.set(60)

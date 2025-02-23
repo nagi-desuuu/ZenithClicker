@@ -1,5 +1,5 @@
 local abs = math.abs
-
+local lerp = MATH.lerp
 
 ---@class Card
 ---@field burn false | number
@@ -53,6 +53,7 @@ function Card:mouseOn(x, y)
         abs(y - self.ty) <= self.size * 350
 end
 
+local completion = GAME.completion
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
@@ -135,9 +136,9 @@ function Card:setActive(auto, key)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.findAll(GAME.completion, 1)
+        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.findAll(completion, 1)
         if revOn then
-            if GAME.completion[self.id] == 0 then
+            if completion[self.id] == 0 then
                 revOn = false
                 noSpin = true
                 self.active = false
@@ -218,7 +219,7 @@ function Card:setActive(auto, key)
                     if C ~= self then
                         local r = math.random()
                         if self.id == 'EX' then r = r * 2.6 end
-                        C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
+                        C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
                     end
                 end
                 local color = Mod.color[self.id]
@@ -239,7 +240,7 @@ function Card:setActive(auto, key)
                     for _, C in ipairs(Cards) do
                         if C ~= self then
                             local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
-                            C:bounce(MATH.lerp(120, 420, r), MATH.lerp(.42, .62, r))
+                            C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
                         end
                     end
                 end
@@ -257,7 +258,7 @@ function Card:flip()
     self.front = not self.front
     local s, e = self.kx, self.front and 1 or -1
     TWEEN.new(function(t)
-        self.kx = MATH.lerp(s, e, t)
+        self.kx = lerp(s, e, t)
     end):setUnique('spin_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
 end
 
@@ -294,13 +295,13 @@ function Card:shake()
     self.r = MATH.coin(-.26, .26)
     local s, e = self.r, 0
     TWEEN.new(function(t)
-        self.r = MATH.lerp(s, e, t)
+        self.r = lerp(s, e, t)
     end):setUnique('shake_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
 end
 
 function Card:flick()
     TWEEN.new(function(t)
-        self.size = MATH.lerp(.56, .62, t)
+        self.size = lerp(.56, .62, t)
     end):setUnique('flick_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
 end
 
@@ -329,6 +330,7 @@ local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_draw = gc.draw
 local gc_setColor, gc_setShader = gc.setColor, gc.setShader
+local gc_mDraw = GC.mDraw
 
 local outlineShader = gc.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
 function Card:draw()
@@ -415,29 +417,52 @@ function Card:draw()
             gc_setColor(1, 1, 1, ThrobAlpha.card)
             gc_draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
-        if GAME.completion[self.id] > 0 then
+        if completion[self.id] > 0 then
             img = self.active and IMG.star1 or IMG.star0
             local t = self.upright and self.float or 1
             local blur = (FloatOnCard == self.initOrder or not self.upright) and 0 or -.2
-            local x = MATH.lerp(155, 0, t)
-            local y = MATH.lerp(-370, -330, t)
-            local cr = MATH.lerp(.16, .42, t)
+            local x = lerp(155, 0, t)
+            local y = lerp(-370, -330, t)
+            local cr = lerp(.16, .42, t)
             gc_scale(math.abs(1 / self.kx), 1)
+            local comp = completion[self.id] == 2
+            -- Base star
             if self.upright then
+                if comp then
+                    gc_setColor(.5, .5, .5)
+                    GC.blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    gc_setColor(1, 1, 1)
+                    gc_mDraw(img, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
+                end
                 gc_setColor(.5, .5, .5)
                 GC.blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, 1, 1)
-                GC.mDraw(img, x, y, -t * 6.2832, MATH.lerp(.16, .42, t))
+                gc_mDraw(img, x, y, -t * 6.2832, lerp(.16, .42, t))
             else
                 gc_rotate(3.1416)
+                if comp then
+                    gc_setColor(.2, .2, .2)
+                    GC.blurCircle(blur, -x, -y, cr * 260)
+                    gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
+                    gc_mDraw(img, -x, -y, -t * 6.2832, lerp(.16, .42, t))
+                end
                 gc_setColor(.2, .2, .2)
                 GC.blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
-                GC.mDraw(img, x, y, -t * 6.2832, MATH.lerp(.16, .42, t))
+                gc_mDraw(img, x, y, -t * 6.2832, lerp(.16, .42, t))
             end
+            -- Float star
             if not self.active then
-                gc_setColor(1, 1, 1, t)
-                GC.mDraw(IMG.star1, x, y, -t * 6.2832, MATH.lerp(.16, .42, t))
+                if comp then
+                    gc_setColor(.5, .5, .5, t)
+                    GC.blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    gc_setColor(1, 1, 1, t)
+                    gc_mDraw(IMG.star1, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(IMG.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
+                else
+                    gc_setColor(1, 1, 1, t)
+                    gc_mDraw(IMG.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
+                end
             end
         end
     end
