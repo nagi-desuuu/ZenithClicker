@@ -579,8 +579,14 @@ function GAME.commit()
 
         if GAME.mod.MS == 2 then
             local r1 = math.random(2, #Cards - 1)
-            local r2 = MATH.clamp(r1 + MATH.coin(-1, 1) * math.random(2), 1, #Cards)
+            local r2, r3
+            repeat r2 = math.random(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #Cards)
+            repeat r3 = math.random(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #Cards)
+            if GAME.floor <= 8 then
             Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
+            else
+                Cards[r1], Cards[r2], Cards[r3] = Cards[r2], Cards[r3], Cards[r1]
+            end
             GAME.refreshLayout()
         end
 
@@ -640,7 +646,7 @@ end
 
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
-    if GAME.mod.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
+    if GAME.mod.MS == 2 or GAME.mod.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
     if GAME.mod.GV > 0 then GAME.firstClickDelay = GravityTimer[GAME.mod.GV][GAME.floor] end
     local F = Floors[GAME.floor]
     local e = F.event
