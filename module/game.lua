@@ -306,9 +306,11 @@ function GAME.addXP(xp)
     if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
         GAME.xpLockLevel = 5
     end
-    if GAME.xp >= 4 * GAME.rank then
+    local rankup
+    while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
+        rankup = true
         GAME.rankupLast = true
         GAME.xpLockTimer = GAME.xpLockLevel
         GAME.xpLockLevel = math.max(GAME.xpLockLevel - 1, 1)
@@ -323,8 +325,9 @@ function GAME.addXP(xp)
             end
             GAME.xpLockLevel = 5
         end
-
-        SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4), .4 + GAME.xpLockLevel / 10)
+    end
+    if rankup then
+        SFX.play('speed_up_' .. MATH.clamp(2 + math.floor(GAME.rank / 2), 1, 4), .4 + GAME.xpLockLevel / 10)
     end
 end
 
