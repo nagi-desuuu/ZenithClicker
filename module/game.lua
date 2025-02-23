@@ -19,6 +19,7 @@ local ins, rem = table.insert, table.remove
 ---@field rankupLast boolean
 ---@field xpLockLevel number
 ---@field xpLockTimer number
+---@field fatigueSet {time:number, event:table, text:string, desc:string}[]
 ---@field fatigue number
 ---@field dmgTimer number
 ---@field chain number
@@ -204,40 +205,16 @@ function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
 
+function GAME.task_warning()
+    SFX.play('warning', 1, 0, M.GV)
+    TASK.yieldT(1)
+    SFX.play('warning', 1, 0, M.GV)
+    TASK.yieldT(1)
+    SFX.play('warning', 1, 0, M.GV)
+end
+
 function GAME.cancelBurn()
     for i = 1, #Cards do Cards[i].burn = false end
-end
-
-function GAME.cancelAll(instant)
-    if M.NH == 2 then
-        if M.AS == 1 then
-            GAME.cancelBurn()
-            return
-        end
-    end
-    TASK.removeTask_code(GAME.task_cancelAll)
-    TASK.new(GAME.task_cancelAll, instant)
-    if GAME.firstClickTimer then GAME.firstClickTimer = GAME.firstClickDelay end
-end
-
-function GAME.task_cancelAll(instant)
-    local spinMode = not instant and GAME.mod.AS > 0
-    local list = TABLE.copy(Cards, 0)
-    local needFlip = {}
-    for i = 1, #Cards do
-        needFlip[i] = spinMode or Cards[i].active
-    end
-    for i = 1, #list do
-        if needFlip[i] then
-            list[i]:setActive(true)
-            if M.AS == 1 then
-                list[i].burn = false
-            end
-            if not instant then
-                TASK.yieldT(.026)
-            end
-        end
-    end
 end
 
 function GAME.shuffleCards()
@@ -460,6 +437,38 @@ function GAME.refreshRev()
     end
 end
 
+function GAME.cancelAll(instant)
+    if M.NH == 2 then
+        if M.AS == 1 then
+            GAME.cancelBurn()
+            return
+        end
+    end
+    TASK.removeTask_code(GAME.task_cancelAll)
+    TASK.new(GAME.task_cancelAll, instant)
+    if GAME.firstClickTimer then GAME.firstClickTimer = GAME.firstClickDelay end
+end
+
+function GAME.task_cancelAll(instant)
+    local spinMode = not instant and GAME.mod.AS > 0
+    local list = TABLE.copy(Cards, 0)
+    local needFlip = {}
+    for i = 1, #Cards do
+        needFlip[i] = spinMode or Cards[i].active
+    end
+    for i = 1, #list do
+        if needFlip[i] then
+            list[i]:setActive(true)
+            if M.AS == 1 then
+                list[i].burn = false
+            end
+            if not instant then
+                TASK.yieldT(.026)
+            end
+        end
+    end
+end
+
 function GAME.commit()
     if #GAME.quests == 0 then return end
 
@@ -610,6 +619,7 @@ function GAME.start()
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
     GAME.floor = 0
+    GAME.fatigueSet = M.EX == 2 and FatigueRevEX or M.EX == 2 and FatigueRevDP or Fatigue
     GAME.fatigue = 1
     GAME.height = 0
     GAME.heightBuffer = 0
@@ -732,14 +742,29 @@ function GAME.update(dt)
         if M.GV > 0 and not GAME.firstClickTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
             GAME.firstClickTimer = GAME.firstClickDelay
         end
-        local curFtgStag = (M.EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
-        if GAME.time >= curFtgStag.time then
-            local e = curFtgStag.event
+        local stage = GAME.fatigueSet[GAME.fatigue]
+        if GAME.time >= stage.time then
+            local e = stage.event
             for i = 1, #e, 2 do
                 GAME[e[i]] = GAME[e[i]] + e[i + 1]
             end
             GAME.fatigue = GAME.fatigue + 1
-            SFX.play('warning')
+            local duration = GAME.fatigue == #GAME.fatigueSet and 10 or 5
+            TEXT:add {
+                text = stage.text,
+                x = 800, y = 265, fontSize = 30, k = 1.5,
+                style = 'score', duration = duration,
+                inPoint = .1, outPoint = .26,
+                color = 'lR',
+            }
+            TEXT:add {
+                text = stage.desc,
+                x = 800, y = 300, fontSize = 30,
+                style = 'score', duration = duration,
+                inPoint = .26, outPoint = .1,
+                color = 'lR',
+            }
+            TASK.new(GAME.task_warning)
         end
 
         local releaseHeight = GAME.heightBuffer
