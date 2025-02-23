@@ -281,9 +281,13 @@ function scene.overDraw()
             local t = GAME.quests[i].name
             local kx = math.min(questStyle[i].k, 1550 / t:getWidth())
             local ky = math.max(kx, questStyle[i].k * .8)
-            gc_setColor(.2, .2, .2)
+            local a = 1
+            if i == 1 and GAME.mod.IN == 2 then
+                a = 1 - GAME.questTime * GAME.floor * .26
+            end
+            gc_setColor(.2, .2, .2, a)
             GC.mDraw(t, 800, questStyle[i].y + 5, 0, kx, ky)
-            gc_setColor(1., 1., 1.)
+            gc_setColor(1, 1, 1, a)
             GC.mDraw(t, 800, questStyle[i].y, 0, kx, ky)
         end
 
