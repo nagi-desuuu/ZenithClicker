@@ -316,6 +316,12 @@ function GAME.addXP(xp)
         -- Rank skip
         if GAME.xp >= 4 * GAME.rank then
             GAME.rank = GAME.rank + math.floor(GAME.xp / (4 * GAME.rank))
+            -- One more
+            if GAME.xp >= 4 * GAME.rank then
+                GAME.rank = GAME.rank + 1
+                GAME.xp = GAME.xp - 4 * GAME.rank
+            end
+            GAME.xpLockLevel = 5
         end
 
         SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4), .4 + GAME.xpLockLevel / 10)
@@ -703,7 +709,7 @@ function GAME.finish(reason)
                 if GAME.anyRev then t = t:gsub(" ", "+ ") end
                 TEXT:add {
                     text = t,
-                    x = 800, y = 200, k = 2.6, fontSize = 60,
+                    x = 800, y = 226, k = 2.6, fontSize = 60,
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lC', duration = 6.2,
                 }
@@ -711,7 +717,7 @@ function GAME.finish(reason)
             elseif GAME.floor >= 2 then
                 TEXT:add {
                     text = "PERSONAL BEST",
-                    x = 800, y = 200, k = 3, fontSize = 60,
+                    x = 800, y = 226, k = 3, fontSize = 60,
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lY', duration = 6.2,
                 }
@@ -720,6 +726,11 @@ function GAME.finish(reason)
             SFX.play('applause', GAME.floor / 10)
             DATA.save()
         end
+        HeightText:set(("%.1fm"):format(GAME.height))
+        TimeText:set(STRING.time_simp(GAME.time))
+    else
+        HeightText:set("")
+        TimeText:set("")
     end
 
     TASK.removeTask_code(task_startSpin)
