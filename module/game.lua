@@ -13,8 +13,8 @@ local ins, rem = table.insert, table.remove
 ---@field queueLen number
 ---
 ---@field questTime number
----@field firstClickDelay false | number
----@field firstClickTimer false | number
+---@field gravDelay false | number
+---@field gravTimer false | number
 ---@field questCount number
 ---@field rankupLast boolean
 ---@field xpLockLevel number
@@ -277,7 +277,7 @@ function GAME.questReady()
     end
     local Q = GAME.quests[1].combo
     for i = 1, #Q do Cards[Q[i]].hintMark = true end
-    GAME.firstClickTimer = false
+    GAME.gravTimer = false
 end
 
 function GAME.takeDamage(dmg, killReason)
@@ -334,7 +334,7 @@ end
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     if M.MS == 2 or M.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
-    if M.GV > 0 then GAME.firstClickDelay = GravityTimer[M.GV][GAME.floor] end
+    if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
     local F = Floors[GAME.floor]
     local e = F.event
     for i = 1, #e, 2 do
@@ -458,7 +458,7 @@ function GAME.cancelAll(instant)
     end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
-    if GAME.firstClickTimer then GAME.firstClickTimer = GAME.firstClickDelay end
+    if GAME.gravTimer then GAME.gravTimer = GAME.gravDelay end
 end
 
 function GAME.task_cancelAll(instant)
@@ -535,6 +535,9 @@ function GAME.commit()
             else
                 SFX.play('b2bcharge_4', .8)
             end
+        end
+        if GAME.chain >= 4 then
+            ChainText:set(tostring(GAME.chain))
         end
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
@@ -763,8 +766,8 @@ function GAME.update(dt)
 
         GAME.time = GAME.time + dt
         GAME.questTime = GAME.questTime + dt
-        if M.GV > 0 and not GAME.firstClickTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
-            GAME.firstClickTimer = GAME.firstClickDelay
+        if M.GV > 0 and not GAME.gravTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
+            GAME.gravTimer = GAME.gravDelay
         end
         local stage = GAME.fatigueSet[GAME.fatigue]
         if GAME.time >= stage.time then
@@ -830,10 +833,10 @@ function GAME.update(dt)
             GAME.takeDamage(GAME.dmgTime, 'killed')
         end
 
-        if GAME.firstClickTimer then
-            GAME.firstClickTimer = GAME.firstClickTimer - dt
-            if GAME.firstClickTimer <= 0 then
-                GAME.firstClickTimer = GAME.firstClickDelay
+        if GAME.gravTimer then
+            GAME.gravTimer = GAME.gravTimer - dt
+            if GAME.gravTimer <= 0 then
+                GAME.gravTimer = GAME.gravDelay
                 GAME.commit()
             end
         end

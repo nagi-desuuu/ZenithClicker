@@ -205,7 +205,7 @@ local rankColor = {
 local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_replaceTransform = gc.replaceTransform
-local gc_translate, gc_scale = gc.translate, gc.scale
+local gc_translate, gc_rotate, gc_scale = gc.translate, gc.rotate, gc.scale
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
@@ -215,10 +215,21 @@ local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 PBText = gc.newText(FONT.get(50))
 HeightText = gc.newText(FONT.get(50))
 TimeText = gc.newText(FONT.get(30))
+ChainText = gc.newText(FONT.get(50))
+ChainPrefix = gc.newText(FONT.get(30), "B2B x")
 local sloganText = gc.newText(FONT.get(30), "CROWD THE TOWER!")
 local sloganText_EX = gc.newText(FONT.get(30), "THRONG THE TOWER!")
 local sloganText_rev = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!")
 local creditText = gc.newText(FONT.get(30), "All assets from TETR.IO, see the help page")
+local chargeIcon = GC.load {
+    w = 256, h = 256,
+    { 'move',   128,  128 },
+    { 'fCirc',  0,    0,  90, 4 },
+    { 'rotate', .5236 },
+    { 'fCirc',  0,    0,  90, 4 },
+    { 'rotate', .5236 },
+    { 'fCirc',  0,    0,  90, 4 },
+}
 
 local Cards = Cards
 local TextColor = TextColor
@@ -249,6 +260,29 @@ function scene.draw()
     gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
     gc_setColor(TextColor)
     gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
+
+    -- Chain Counter
+    if GAME.playing and GAME.chain >= 4 then
+        local bounce = .26 / (26 * GAME.questTime + 1)
+        local k = MATH.clampInterpolate(6, .7023, 26, 2, GAME.chain)
+        local x = 255 - 100 * (.5 * k + bounce)
+        gc_setColor(COLOR.D)
+        gc_draw(ChainPrefix, x, 212, 0, 1, 1.1)
+        gc_setColor(COLOR.HSL(
+            26 / (GAME.chain + 22) + 1.3, 1,
+            MATH.icLerp(-260, 420, GAME.chain),
+            GAME.chain < 8 and .26 or 1
+        ))
+        GC.blurCircle(-.26, 326, 270, 100 * k)
+        gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
+        GC.setAlpha(1)
+        gc_draw(ChainPrefix, x, 210, 0, 1, 1.1)
+        gc_setColor(COLOR.L)
+        GC.strokeDraw('full', k * 2, ChainText, 326, 270, 0, k, 1.1 * k,
+            ChainText:getWidth() / 2, ChainText:getHeight() / 2)
+        gc_setColor(COLOR.D)
+        gc_mDraw(ChainText, 326, 270, 0, k, 1.1 * k)
+    end
 end
 
 local questStyle = {
@@ -312,9 +346,9 @@ function scene.overDraw()
             gc_translate(1300, 270)
             gc_scale(GAME.uiHide)
             gc_setColor(COLOR.DL)
-            if GAME.firstClickTimer then
+            if GAME.gravTimer then
                 gc_arc('fill', 'pie', 0, 0, 40, -1.5708,
-                    -1.5708 + 6.2832 * GAME.firstClickTimer / GAME.firstClickDelay)
+                    -1.5708 + 6.2832 * GAME.gravTimer / GAME.gravDelay)
             else
                 gc_circle('fill', 0, 0, 40)
             end

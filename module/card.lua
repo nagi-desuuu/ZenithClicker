@@ -106,8 +106,8 @@ function Card:setActive(auto, key)
             GAME.fault = true
         end
         if not auto then
-            if M.GV > 0 and not GAME.firstClickTimer then
-                GAME.firstClickTimer = GAME.firstClickDelay
+            if M.GV > 0 and not GAME.gravTimer then
+                GAME.gravTimer = GAME.gravDelay
             end
             local ignite
             if M.AS > 0 then
