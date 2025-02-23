@@ -379,6 +379,7 @@ function GAME.start()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
     GAME.dmgTime = 2
+    GAME.dmgTimeMul = 1
     GAME.dmgDelay = 15
     GAME.dmgCycle = 5
     GAME.queueLen = GAME.mod.NH == 2 and 1 or 3
@@ -762,7 +763,7 @@ function GAME.update(dt)
             end
         end
 
-        GAME.dmgTimer = GAME.dmgTimer - dt
+        GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimeMul
         if GAME.dmgTimer <= 0 then
             GAME.dmgTimer = GAME.dmgCycle
             GAME.takeDamage(GAME.dmgTime, 'killed')
