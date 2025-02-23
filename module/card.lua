@@ -403,7 +403,7 @@ function Card:draw()
     end
 
     if not playing then
-        if not self.upright and img == self.frontImg then
+        if not self.upright and GAME.revDeckSkin and img == self.frontImg then
             gc_setColor(1, 1, 1, ThrobAlpha.card)
             gc_draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
         end
