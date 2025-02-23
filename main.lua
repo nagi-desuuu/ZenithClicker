@@ -373,6 +373,18 @@ end
 
 -- Load data
 DATA.load()
+local oldVer = DATA.version
+if DATA.version == nil then
+    for k in next, DATA.highScore do
+        if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
+            DATA.highScore[k] = nil
+        end
+    end
+    DATA.version = 162
+end
+if DATA.version ~= oldVer then DATA.save() end
+
+-- Some Initialization
 for i = 1, #Cards do
     local f10 = Floors[9].top
     local id = Cards[i].id

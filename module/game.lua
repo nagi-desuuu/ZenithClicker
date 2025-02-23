@@ -67,6 +67,7 @@ local GAME = {
     xp = 0,
     height = 0,
 }
+local M = GAME.mod
 
 --- Unsorted
 function GAME.getHand(showRev)
@@ -74,7 +75,7 @@ function GAME.getHand(showRev)
     if showRev then
         for i = 1, 9 do
             local D = DeckData[i]
-            local level = GAME.mod[D.id]
+            local level = M[D.id]
             if level > 0 then
                 ins(list, level == 2 and 'r' .. D.id or D.id)
             end
@@ -122,7 +123,7 @@ function GAME.getComboName(list, extend, colored)
         end
         ins(fstr, Mod.textColor[list[len]])
         ins(fstr, Mod.noun[list[len]])
-        if GAME.mod.IN > 0 then
+        if M.IN > 0 then
             local r = 0
             for i = 1, #fstr, 2 do
                 r = (r + math.random(0, 3)) % 4
@@ -151,16 +152,241 @@ function GAME.getComboName(list, extend, colored)
     end
 end
 
+function GAME.updateBgm(event)
+    if event == 'start' then
+        BGM.set(BgmSets.assist, 'volume', 1)
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', .62)
+            BGM.set('expert', 'volume', 0)
+        else
+            BGM.set('expert', 'volume', M.EX / 2)
+        end
+    elseif event == 'finish' then
+        BGM.set(BgmSets.assist, 'volume', 0)
+        local l = TABLE.copy(BgmSets.assist)
+        for _ = 1, MATH.clamp(GAME.floor - 6, 2, 4) do
+            BGM.set(TABLE.popRandom(l), 'volume', 1)
+        end
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', .82)
+        end
+    elseif event == 'expertSwitched' then
+        BGM.set('expert', 'volume', GAME.anyRev and M.EX / 2 or 0)
+    elseif event == 'revSwitched' then
+        BGM.set('expert', 'volume', M.EX / 2)
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', .82, 4.2)
+            BGM.set(BgmSets.assist, 'volume', 0, 4.2)
+        else
+            BGM.set('rev', 'volume', 0, 2.6)
+            local l = TABLE.copy(BgmSets.assist)
+            for _ = 1, 2 do
+                BGM.set(TABLE.popRandom(l), 'volume', 1, 4.2)
+            end
+        end
+    elseif event == 'f10' then
+        BGM.set('bass', 'volume', 0)
+    elseif event == 'init' then
+        BGM.play(BgmSets.all)
+        BGM.set('all', 'volume', 0, 0)
+        BGM.set('piano', 'volume', 1)
+        BGM.set('piano2', 'pitch', 2, 0)
+        BGM.set(TABLE.getRandom(BgmSets.assist), 'volume', 1, 10)
+    end
+end
+
+function GAME.anim_setMenuHide(t)
+    GAME.uiHide = t
+    MSG.setSafeY(75 * (1 - GAME.uiHide))
+end
+
+function GAME.anim_setMenuHide_rev(t)
+    GAME.anim_setMenuHide(1 - t)
+end
+
+function GAME.cancelBurn()
+    for i = 1, #Cards do Cards[i].burn = false end
+end
+
+function GAME.cancelAll(instant)
+    if M.NH == 2 then
+        if M.AS == 1 then
+            GAME.cancelBurn()
+            return
+        end
+    end
+    TASK.removeTask_code(GAME.task_cancelAll)
+    TASK.new(GAME.task_cancelAll, instant)
+    if GAME.firstClickTimer then GAME.firstClickTimer = GAME.firstClickDelay end
+end
+
+function GAME.task_cancelAll(instant)
+    local spinMode = not instant and GAME.mod.AS > 0
+    local list = TABLE.copy(Cards, 0)
+    local needFlip = {}
+    for i = 1, #Cards do
+        needFlip[i] = spinMode or Cards[i].active
+    end
+    for i = 1, #list do
+        if needFlip[i] then
+            list[i]:setActive(true)
+            if M.AS == 1 then
+                list[i].burn = false
+            end
+            if not instant then
+                TASK.yieldT(.026)
+            end
+        end
+    end
+end
+
+function GAME.shuffleCards()
+    TABLE.shuffle(Cards)
+    GAME.refreshLayout()
+end
+
+-- for floor = 1, 10 do
+--     local stat = { 0, 0, 0, 0, 0 }
+--     local sum = 0
+--     for _ = 1, 1000 do
+--         local base = .872 + floor ^ .5 / 6 + .626
+--         local var = floor * .26 * .791
+
+--         local r = base + var * math.abs(MATH.randNorm())
+--         r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
+--         stat[r] = stat[r] + 1
+--         sum = sum + r
+--     end
+--     print(("Floor %2d : %3d %3d %3d %3d %3d  E(x)=%.2f"):format(
+--         floor, stat[1], stat[2], stat[3], stat[4], stat[5],
+--         sum / MATH.sum(stat)))
+-- end
+
+function GAME.genQuest()
+    local combo = {}
+    local base = .872 + GAME.floor ^ .5 / 6
+    local var = GAME.floor * .26
+    if M.DH > 0 then base, var = base + .626, var * .626 end
+
+    local r = base + var * math.abs(MATH.randNorm())
+    r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
+
+    local pool = TABLE.copyAll(Mod.weight)
+    local lastQ = GAME.quests[#GAME.quests]
+    if lastQ then pool[lastQ.combo[1]] = nil end
+    for _ = 1, r do
+        local mod = MATH.randFreqAll(pool)
+        pool[mod] = nil
+        ins(combo, mod)
+    end
+
+    ins(GAME.quests, {
+        combo = combo,
+        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), M.DH == 2, M.NH < 2)),
+    })
+end
+
+function GAME.questReady()
+    GAME.questTime = 0
+    GAME.fault = false
+    for _, C in ipairs(Cards) do
+        C.touchCount = 0
+        C.hintMark = false
+    end
+    local Q = GAME.quests[1].combo
+    for i = 1, #Q do Cards[Q[i]].hintMark = true end
+    GAME.firstClickTimer = false
+end
+
+function GAME.takeDamage(dmg, killReason)
+    GAME.life = math.max(GAME.life - dmg, 0)
+    SFX.play(
+        dmg <= 1 and 'damage_small' or
+        dmg <= 4 and 'damage_medium' or
+        'damage_large', .872)
+    if GAME.life <= 0 then
+        GAME.finish(killReason)
+        return true
+    else
+        local dangerDmg = math.max(GAME.dmgWrong, GAME.dmgTime)
+        if GAME.life <= dangerDmg and GAME.life + dmg > dangerDmg then
+            SFX.play('hyperalert')
+        end
+    end
+end
+
+function GAME.addHeight(h)
+    GAME.heightBuffer = GAME.heightBuffer + h * GAME.rank / 4
+end
+
+function GAME.addXP(xp)
+    GAME.xp = GAME.xp + xp
+    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
+        GAME.xpLockLevel = 5
+    end
+    if GAME.xp >= 4 * GAME.rank then
+        GAME.xp = GAME.xp - 4 * GAME.rank
+        GAME.rank = GAME.rank + 1
+        GAME.rankupLast = true
+        GAME.xpLockTimer = GAME.xpLockLevel
+        GAME.xpLockLevel = math.max(GAME.xpLockLevel - 1, 1)
+
+        -- Rank skip
+        if GAME.xp >= 4 * GAME.rank then
+            GAME.rank = GAME.rank + math.floor(GAME.xp / (4 * GAME.rank))
+        end
+
+        SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4), .4 + GAME.xpLockLevel / 10)
+    end
+end
+
+function GAME.upFloor()
+    GAME.floor = GAME.floor + 1
+    if M.MS == 2 or M.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
+    if M.GV > 0 then GAME.firstClickDelay = GravityTimer[M.GV][GAME.floor] end
+    local F = Floors[GAME.floor]
+    local e = F.event
+    for i = 1, #e, 2 do
+        GAME[e[i]] = GAME[e[i]] + e[i + 1]
+    end
+    if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
+
+    TEXT:add {
+        text = "Floor",
+        x = 160, y = 290, k = 1.6, fontSize = 30,
+        color = 'LY', duration = 4.2,
+    }
+    TEXT:add {
+        text = tostring(GAME.floor),
+        x = 240, y = 280, k = 2.6, fontSize = 30,
+        color = 'LY', duration = 4.2, align = 'left',
+    }
+    TEXT:add {
+        text = Floors[GAME.floor].name,
+        x = 200, y = 350, k = 1.2, fontSize = 30,
+        color = 'LY', duration = 4.2,
+    }
+    if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
+    if GAME.floor == 10 then GAME.updateBgm('f10') end
+
+    DiscordRPC.update {
+        details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
+        state = "In Game: F" .. GAME.floor .. " - " .. GAME.getComboName(GAME.getHand(true), M.DH == 2),
+    }
+end
+
+--------------------------------------------------------------
+
 function GAME.refreshCurrentCombo()
-    GAME.modText:set(GAME.getComboName(GAME.getHand(not GAME.playing), GAME.mod.DH == 2))
-    GAME.hardMode = GAME.mod.EX > 0 or not not TABLE.findAll(GAME.mod, 2)
+    GAME.modText:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
+    GAME.hardMode = M.EX > 0 or not not TABLE.findAll(M, 2)
 end
 
 function GAME.refreshLayout()
-    local baseDist = (GAME.mod.EX > 0 and 100 or 110) + GAME.mod.VL * 20
+    local baseDist = (M.EX > 0 and 100 or 110) + M.VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
-    local dodge = GAME.mod.VL == 0 and 260 or 220
-    local baseY = 726 + 15 * GAME.mod.GV
+    local dodge = M.VL == 0 and 260 or 220
+    local baseY = 726 + 15 * M.GV
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
         for i = 1, #Cards do
@@ -210,7 +436,7 @@ end
 function GAME.refreshRev()
     local anyRev = false
     for _, C in ipairs(Cards) do
-        if GAME.mod[C.id] == 2 then
+        if M[C.id] == 2 then
             anyRev = true
             break
         end
@@ -234,305 +460,20 @@ function GAME.refreshRev()
     end
 end
 
-function GAME.updateBgm(event)
-    if event == 'start' then
-        BGM.set(BgmSets.assist, 'volume', 1)
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', .62)
-            BGM.set('expert', 'volume', 0)
-        else
-            BGM.set('expert', 'volume', GAME.mod.EX / 2)
-        end
-    elseif event == 'finish' then
-        BGM.set(BgmSets.assist, 'volume', 0)
-        local l = TABLE.copy(BgmSets.assist)
-        for _ = 1, MATH.clamp(GAME.floor - 6, 2, 4) do
-            BGM.set(TABLE.popRandom(l), 'volume', 1)
-        end
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', .82)
-        end
-    elseif event == 'expertSwitched' then
-        BGM.set('expert', 'volume', GAME.anyRev and GAME.mod.EX / 2 or 0)
-    elseif event == 'revSwitched' then
-        BGM.set('expert', 'volume', GAME.mod.EX / 2)
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', .82, 4.2)
-            BGM.set(BgmSets.assist, 'volume', 0, 4.2)
-        else
-            BGM.set('rev', 'volume', 0, 2.6)
-            local l = TABLE.copy(BgmSets.assist)
-            for _ = 1, 2 do
-                BGM.set(TABLE.popRandom(l), 'volume', 1, 4.2)
-            end
-        end
-    elseif event == 'f10' then
-        BGM.set('bass', 'volume', 0)
-    elseif event == 'init' then
-        BGM.play(BgmSets.all)
-        BGM.set('all', 'volume', 0, 0)
-        BGM.set('piano', 'volume', 1)
-        BGM.set('piano2', 'pitch', 2, 0)
-        BGM.set(TABLE.getRandom(BgmSets.assist), 'volume', 1, 10)
-    end
-end
-
--- for floor = 1, 10 do
---     local stat = { 0, 0, 0, 0, 0 }
---     local sum = 0
---     for _ = 1, 1000 do
---         local base = .872 + floor ^ .5 / 6 + .626
---         local var = floor * .26 * .791
-
---         local r = base + var * math.abs(MATH.randNorm())
---         r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
---         stat[r] = stat[r] + 1
---         sum = sum + r
---     end
---     print(("Floor %2d : %3d %3d %3d %3d %3d  E(x)=%.2f"):format(
---         floor, stat[1], stat[2], stat[3], stat[4], stat[5],
---         sum / MATH.sum(stat)))
--- end
-
-function GAME.genQuest()
-    local combo = {}
-    local base = .872 + GAME.floor ^ .5 / 6
-    local var = GAME.floor * .26
-    if GAME.mod.DH > 0 then base, var = base + .626, var * .626 end
-
-    local r = base + var * math.abs(MATH.randNorm())
-    r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
-
-    local pool = TABLE.copyAll(Mod.weight)
-    local lastQ = GAME.quests[#GAME.quests]
-    if lastQ then pool[lastQ.combo[1]] = nil end
-    for _ = 1, r do
-        local mod = MATH.randFreqAll(pool)
-        pool[mod] = nil
-        ins(combo, mod)
-    end
-
-    ins(GAME.quests, {
-        combo = combo,
-        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, GAME.mod.NH < 2)),
-    })
-end
-
-function GAME.questReady()
-    GAME.questTime = 0
-    GAME.fault = false
-    for _, C in ipairs(Cards) do
-        C.touchCount = 0
-        C.hintMark = false
-    end
-    local Q = GAME.quests[1].combo
-    for i = 1, #Q do Cards[Q[i]].hintMark = true end
-    GAME.firstClickTimer = false
-end
-
-function GAME.anim_setMenuHide(t)
-    GAME.uiHide = t
-    MSG.setSafeY(75 * (1 - GAME.uiHide))
-end
-
-function GAME.anim_setMenuHide_rev(t)
-    GAME.anim_setMenuHide(1 - t)
-end
-
-local function task_startSpin()
-    for i = 1, #Cards do
-        local C = Cards[i]
-        if C.lock then
-            C.lock = false
-            C:flick()
-        else
-            C:spin()
-        end
-        if C.active then
-            C:setActive(true)
-        end
-        TASK.yieldT(.01)
-    end
-    if GAME.mod.MS > 0 then
-        GAME.shuffleCards()
-    end
-    GAME.questReady()
-end
-function GAME.start()
-    if TASK.getLock('cannotStart') then
-        SFX.play('clutch')
-        return
-    end
-    if GAME.mod.DP > 0 then
-        MSG.clear()
-        MSG('dark', "Working in Progress")
-        Cards.DP:shake()
-        SFX.play('no')
-        return
-    end
-    SCN.scenes.tower.widgetList.hint:setVisible(false)
-
-    SFX.play('menuconfirm', .8)
-    SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, GAME.mod.GV)
-
-    GAME.playing = true
-    GAME.dmgHeal = 2
-    GAME.dmgWrong = 1
-    GAME.dmgTime = 2
-    GAME.dmgTimeMul = 1
-    GAME.dmgDelay = 15
-    GAME.dmgCycle = 5
-    GAME.queueLen = GAME.mod.NH == 2 and 1 or 3
-
-    GAME.time = 0
-    GAME.questTime = 0
-    GAME.questCount = 0
-    GAME.rank = 1
-    GAME.xp = 0
-    GAME.rankupLast = false
-    GAME.xpLockLevel = 5
-    GAME.xpLockTimer = 0
-    GAME.floor = 0
-    GAME.fatigue = 1
-    GAME.height = 0
-    GAME.heightBuffer = 0
-    GAME.life = 20
-    GAME.dmgTimer = GAME.dmgDelay
-    GAME.chain = 0
-
-    GAME.upFloor()
-
-    TABLE.clear(GAME.quests)
-    for _ = 1, GAME.queueLen do GAME.genQuest() end
-
-    TASK.removeTask_code(task_startSpin)
-    TASK.new(task_startSpin)
-
-    TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
-    GAME.updateBgm('start')
-end
-
----@param reason 'forfeit' | 'wrongAns' | 'killed'
-function GAME.finish(reason)
-    SCN.scenes.tower.widgetList.hint:setVisible(true)
-    MSG.clear()
-
-    SFX.play(
-        reason == 'forfeit' and 'detonated' or
-        reason == 'wrongAns' and 'topout' or
-        reason == 'killed' and 'losestock' or
-        'shatter', .8)
-
-    table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
-    for _, C in ipairs(Cards) do
-        if (GAME.mod[C.id] > 0) ~= C.active then
-            C:setActive(true)
-        end
-        C.touchCount = 0
-        C.hintMark = false
-        C:clearBuff()
-    end
-
-    GAME.playing = false
-
-    if GAME.questCount > 2.6 then
-        if GAME.floor >= 10 then
-            if TABLE.count(GAME.completion, 0) == 9 then
-                MSG.clear()
-                MSG('dark', "REVERSED MOD unlocked!!!\nActivate with right click")
-                SFX.play('notify')
-            end
-            for k, v in next, GAME.mod do
-                GAME.completion[k] = math.max(GAME.completion[k], v)
-            end
-        end
-        local newPB
-        if GAME.floor > DATA.maxFloor then
-            DATA.maxFloor = GAME.floor
-            newPB = true
-        end
-        local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
-        local oldPB = DATA.highScore[setStr]
-        if GAME.height > oldPB then
-            DATA.highScore[setStr] = MATH.roundUnit(GAME.height, .1)
-            DATA.maxFloor = DATA.maxFloor
-            newPB = true
-        end
-        if newPB then
-            local modCount = #GAME.getHand(true)
-            if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
-                local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                if GAME.anyRev then t = t:gsub(" ", "+ ") end
-                TEXT:add {
-                    text = t,
-                    x = 800, y = 200, k = 2.6, fontSize = 60,
-                    style = 'beat', inPoint = .26, outPoint = .62,
-                    color = 'lC', duration = 6.2,
-                }
-                SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + GAME.mod.GV)
-            elseif GAME.floor >= 2 then
-                TEXT:add {
-                    text = "PERSONAL BEST",
-                    x = 800, y = 200, k = 3, fontSize = 60,
-                    style = 'beat', inPoint = .26, outPoint = .62,
-                    color = 'lY', duration = 6.2,
-                }
-                SFX.play('personalbest', 1, 0, -.1 + GAME.mod.GV)
-            end
-            SFX.play('applause', GAME.floor / 10)
-            DATA.save()
-        end
-    end
-
-    TASK.removeTask_code(task_startSpin)
-    GAME.refreshLockState()
-    GAME.refreshPBText()
-    GAME.refreshCurrentCombo()
-
-    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
-    DiscordRPC.update {
-        details = "QUICK PICK",
-        state = "Enjoying Music",
-    }
-    GAME.updateBgm('finish')
-    if reason ~= 'forfeit' then
-        TASK.lock('cannotStart', 1)
-    end
-end
-
-function GAME.takeDamage(dmg, killReason)
-    GAME.life = math.max(GAME.life - dmg, 0)
-    SFX.play(
-        dmg <= 1 and 'damage_small' or
-        dmg <= 4 and 'damage_medium' or
-        'damage_large')
-    if GAME.life <= 0 then
-        GAME.finish(killReason)
-        return true
-    else
-        local dangerDmg = math.max(GAME.dmgWrong, GAME.dmgTime)
-        if GAME.life <= dangerDmg and GAME.life + dmg > dangerDmg then
-            SFX.play('hyperalert')
-        end
-    end
-end
-
 function GAME.commit()
     if #GAME.quests == 0 then return end
 
     local Q = GAME.quests[1]
 
     local hand = GAME.getHand(false)
-    local target = Q.combo
-    local result = TABLE.equal(TABLE.sort(hand), TABLE.sort(target))
 
-    if result then
+    if TABLE.equal(TABLE.sort(hand), TABLE.sort(Q.combo)) then
         GAME.life = math.min(GAME.life + math.max(GAME.dmgHeal, 0), 20)
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
         local xp = 0
-        if dp and GAME.mod.EX <= 2 then attack = attack + 2 end
+        if dp and M.EX <= 2 then attack = attack + 2 end
         if GAME.fault then
             xp = xp + 2
             if GAME.chain < 4 then
@@ -575,12 +516,12 @@ function GAME.commit()
             end
         end
 
-        SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + GAME.mod.GV)
+        SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
 
         GAME.addHeight(attack)
         GAME.addXP(attack + xp)
 
-        if GAME.mod.MS == 2 then
+        if M.MS == 2 then
             local r1 = math.random(2, #Cards - 1)
             local r2, r3
             repeat r2 = math.random(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #Cards)
@@ -598,6 +539,7 @@ function GAME.commit()
         GAME.questCount = GAME.questCount + 1
 
         GAME.cancelAll(true)
+        GAME.cancelBurn()
 
         GAME.dmgTimer = math.min(GAME.dmgTimer + math.max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
@@ -606,104 +548,174 @@ function GAME.commit()
     else
         GAME.fault = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
-        if GAME.mod.EX > 0 then
+        if M.EX > 0 then
             GAME.cancelAll(true)
-        else
-            for _, C in ipairs(Cards) do C.burn = false end
+        elseif M.AS == 1 then
+            GAME.cancelBurn()
         end
     end
 end
 
-function GAME.task_cancelAll(instant)
-    local spinMode = not instant and GAME.mod.AS > 0
-    local list = TABLE.copy(Cards, 0)
-    local needFlip = {}
+local function task_startSpin()
     for i = 1, #Cards do
-        needFlip[i] = spinMode or Cards[i].active
-    end
-    for i = 1, #list do
-        if needFlip[i] then
-            list[i]:setActive(true)
-            if not instant then
-                TASK.yieldT(.026)
-            end
+        local C = Cards[i]
+        if C.lock then
+            C.lock = false
+            C:flick()
+        else
+            C:spin()
         end
-        list[i].burn = false
+        if C.active then
+            C:setActive(true)
+        end
+        TASK.yieldT(.01)
     end
+    if M.MS > 0 then
+        GAME.shuffleCards()
+    end
+    GAME.questReady()
 end
-
-function GAME.cancelAll(instant)
-    if GAME.mod.NH == 2 then
-        for _, C in ipairs(Cards) do C.burn = false end
+function GAME.start()
+    if TASK.getLock('cannotStart') then
+        SFX.play('clutch')
         return
     end
-    TASK.removeTask_code(GAME.task_cancelAll)
-    TASK.new(GAME.task_cancelAll, instant)
-    if GAME.firstClickTimer then GAME.firstClickTimer = GAME.firstClickDelay end
-end
-
-function GAME.shuffleCards()
-    TABLE.shuffle(Cards)
-    GAME.refreshLayout()
-end
-
-function GAME.upFloor()
-    GAME.floor = GAME.floor + 1
-    if GAME.mod.MS == 2 or GAME.mod.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
-    if GAME.mod.GV > 0 then GAME.firstClickDelay = GravityTimer[GAME.mod.GV][GAME.floor] end
-    local F = Floors[GAME.floor]
-    local e = F.event
-    for i = 1, #e, 2 do
-        GAME[e[i]] = GAME[e[i]] + e[i + 1]
+    if M.DP > 0 then
+        MSG.clear()
+        MSG('dark', "Working in Progress")
+        Cards.DP:shake()
+        SFX.play('no')
+        return
     end
-    if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
+    SCN.scenes.tower.widgetList.hint:setVisible(false)
 
-    TEXT:add {
-        text = "Floor",
-        x = 160, y = 290, k = 1.6, fontSize = 30,
-        color = 'LY', duration = 4.2,
-    }
-    TEXT:add {
-        text = tostring(GAME.floor),
-        x = 240, y = 280, k = 2.6, fontSize = 30,
-        color = 'LY', duration = 4.2, align = 'left',
-    }
-    TEXT:add {
-        text = Floors[GAME.floor].name,
-        x = 200, y = 350, k = 1.2, fontSize = 30,
-        color = 'LY', duration = 4.2,
-    }
-    if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, GAME.mod.GV) end
-    if GAME.floor == 10 then GAME.updateBgm('f10') end
+    SFX.play('menuconfirm', .8)
+    SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
 
-    DiscordRPC.update {
-        details = GAME.mod.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-        state = "In Game: F" .. GAME.floor .. " - " .. GAME.getComboName(GAME.getHand(true), GAME.mod.DH == 2),
-    }
+    GAME.playing = true
+    GAME.dmgHeal = 2
+    GAME.dmgWrong = 1
+    GAME.dmgTime = 2
+    GAME.dmgTimeMul = 1
+    GAME.dmgDelay = 15
+    GAME.dmgCycle = 5
+    GAME.queueLen = M.NH == 2 and 1 or 3
+
+    GAME.time = 0
+    GAME.questTime = 0
+    GAME.questCount = 0
+    GAME.rank = 1
+    GAME.xp = 0
+    GAME.rankupLast = false
+    GAME.xpLockLevel = 5
+    GAME.xpLockTimer = 0
+    GAME.floor = 0
+    GAME.fatigue = 1
+    GAME.height = 0
+    GAME.heightBuffer = 0
+    GAME.life = 20
+    GAME.dmgTimer = GAME.dmgDelay
+    GAME.chain = 0
+
+    GAME.upFloor()
+
+    TABLE.clear(GAME.quests)
+    for _ = 1, GAME.queueLen do GAME.genQuest() end
+
+    TASK.removeTask_code(task_startSpin)
+    TASK.new(task_startSpin)
+
+    TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
+    GAME.updateBgm('start')
 end
 
-function GAME.addHeight(h)
-    GAME.heightBuffer = GAME.heightBuffer + h * GAME.rank / 4
-end
+---@param reason 'forfeit' | 'wrongAns' | 'killed'
+function GAME.finish(reason)
+    SCN.scenes.tower.widgetList.hint:setVisible(true)
+    MSG.clear()
 
-function GAME.addXP(xp)
-    GAME.xp = GAME.xp + xp
-    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
-        GAME.xpLockLevel = 5
-    end
-    if GAME.xp >= 4 * GAME.rank then
-        GAME.xp = GAME.xp - 4 * GAME.rank
-        GAME.rank = GAME.rank + 1
-        GAME.rankupLast = true
-        GAME.xpLockTimer = GAME.xpLockLevel
-        GAME.xpLockLevel = math.max(GAME.xpLockLevel - 1, 1)
+    SFX.play(
+        reason == 'forfeit' and 'detonated' or
+        reason == 'wrongAns' and 'topout' or
+        reason == 'killed' and 'losestock' or
+        'shatter', .8)
 
-        -- Rank skip
-        if GAME.xp >= 4 * GAME.rank then
-            GAME.rank = GAME.rank + math.floor(GAME.xp / (4 * GAME.rank))
+    table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
+    for _, C in ipairs(Cards) do
+        if (M[C.id] > 0) ~= C.active then
+            C:setActive(true)
         end
+        C.touchCount = 0
+        C.hintMark = false
+        C.burn = false
+        C.charge = 0
+    end
 
-        SFX.play('speed_up_' .. MATH.clamp(GAME.rank - 1, 1, 4), .4 + GAME.xpLockLevel / 10)
+    GAME.playing = false
+
+    if GAME.questCount > 2.6 then
+        if GAME.floor >= 10 then
+            if TABLE.count(GAME.completion, 0) == 9 then
+                MSG.clear()
+                MSG('dark', "REVERSED MOD unlocked!!!\nActivate with right click")
+                SFX.play('notify')
+            end
+            for k, v in next, M do
+                GAME.completion[k] = math.max(GAME.completion[k], v)
+            end
+        end
+        local newPB
+        if GAME.floor > DATA.maxFloor then
+            DATA.maxFloor = GAME.floor
+            newPB = true
+        end
+        local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+        local oldPB = DATA.highScore[setStr]
+        if GAME.height > oldPB then
+            DATA.highScore[setStr] = MATH.roundUnit(GAME.height, .1)
+            DATA.maxFloor = DATA.maxFloor
+            newPB = true
+        end
+        if newPB then
+            local modCount = #GAME.getHand(true)
+            if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
+                local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
+                if GAME.anyRev then t = t:gsub(" ", "+ ") end
+                TEXT:add {
+                    text = t,
+                    x = 800, y = 200, k = 2.6, fontSize = 60,
+                    style = 'beat', inPoint = .26, outPoint = .62,
+                    color = 'lC', duration = 6.2,
+                }
+                SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + M.GV)
+            elseif GAME.floor >= 2 then
+                TEXT:add {
+                    text = "PERSONAL BEST",
+                    x = 800, y = 200, k = 3, fontSize = 60,
+                    style = 'beat', inPoint = .26, outPoint = .62,
+                    color = 'lY', duration = 6.2,
+                }
+                SFX.play('personalbest', 1, 0, -.1 + M.GV)
+            end
+            SFX.play('applause', GAME.floor / 10)
+            DATA.save()
+        end
+    end
+
+    TASK.removeTask_code(task_startSpin)
+    GAME.refreshLockState()
+    GAME.refreshPBText()
+    GAME.refreshCurrentCombo()
+
+    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
+    DiscordRPC.update {
+        details = "QUICK PICK",
+        state = "Enjoying Music",
+    }
+    GAME.updateBgm('finish')
+    if reason ~= 'forfeit' then
+        TASK.lock('cannotStart', 1)
+        TASK.lock('cannotFlip', .626)
     end
 end
 
@@ -717,10 +729,10 @@ function GAME.update(dt)
 
         GAME.time = GAME.time + dt
         GAME.questTime = GAME.questTime + dt
-        if GAME.mod.GV > 0 and not GAME.firstClickTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
+        if M.GV > 0 and not GAME.firstClickTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
             GAME.firstClickTimer = GAME.firstClickDelay
         end
-        local curFtgStag = (GAME.mod.EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
+        local curFtgStag = (M.EX == 2 and FatigueRevEx or Fatigue)[GAME.fatigue]
         if GAME.time >= curFtgStag.time then
             local e = curFtgStag.event
             for i = 1, #e, 2 do
@@ -735,7 +747,7 @@ function GAME.update(dt)
         releaseHeight = releaseHeight - GAME.heightBuffer
 
         GAME.height = GAME.height + releaseHeight
-        if GAME.mod.EX < 2 then
+        if M.EX < 2 then
             GAME.height = GAME.height + GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
         else
             GAME.height = math.max(
@@ -751,7 +763,7 @@ function GAME.update(dt)
         if GAME.xpLockTimer > 0 then
             GAME.xpLockTimer = GAME.xpLockTimer - dt
         else
-            GAME.xp = GAME.xp - dt * (GAME.mod.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+            GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
             if GAME.xp <= 0 then
                 GAME.xp = 0
                 if GAME.rank > 1 then

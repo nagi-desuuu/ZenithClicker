@@ -53,14 +53,13 @@ function Card:mouseOn(x, y)
         abs(y - self.ty) <= self.size * 350
 end
 
-function Card:clearBuff()
-    self.burn = false
-    self.charge = 0
-end
-
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
+    if TASK.getLock('cannotFlip') then
+        SFX.play('no')
+        return
+    end
     local M = GAME.mod
     if M.VL == 1 then
         if not self.active and not auto then
@@ -107,14 +106,13 @@ function Card:setActive(auto, key)
             GAME.fault = true
         end
         if not auto then
-            if M.NH == 1 and not self.active then
-                GAME.cancelAll()
-            end
             if M.GV > 0 and not GAME.firstClickTimer then
                 GAME.firstClickTimer = GAME.firstClickDelay
             end
+            local ignite
             if M.AS > 0 then
                 if self.burn then
+                    ignite = true
                     self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
                     local cards = TABLE.copy(Cards, 0)
@@ -126,6 +124,13 @@ function Card:setActive(auto, key)
                 else
                     self.burn = M.AS == 1 and 3 + GAME.floor / 2 or 1e99
                 end
+            end
+            if not ignite and M.NH == 1 and not self.active then
+                if M.AS > 0 then
+                    auto = true
+                    self.active = not self.active
+                end
+                GAME.cancelAll()
             end
         end
     else
@@ -189,60 +194,61 @@ function Card:setActive(auto, key)
         end
     end
     GAME.refreshCurrentCombo()
-    if not auto then -- Sound and animation
-        if self.active then
-            if revOn then
-                SFX.play('card_select_reverse', 1, 0, M.GV)
-                SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, M.GV)
-                TASK.new(function()
-                    TASK.yieldT(0.62)
-                    local currentState = M[self.id]
-                    if currentState == 2 then
-                        SFX.play('card_reverse_impact', 1, 0, M.GV)
-                        TWEEN.new(tween_deckPress):setUnique('DeckPress')
-                            :setEase('OutQuad'):setDuration(.42):run()
-                        for _, C in ipairs(Cards) do
-                            if C ~= self then
-                                local r = math.random()
-                                if self.id == 'EX' then r = r * 2.6 end
-                                C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
-                            end
-                        end
-                        local color = Mod.color[self.id]
-                        table.insert(ImpactGlow, {
-                            r = (color[1] - .26) * .8,
-                            g = (color[2] - .26) * .8,
-                            b = (color[3] - .26) * .8,
-                            x = self.x,
-                            y = self.y,
-                            t = 2.6,
-                        })
-                        GAME.revDeckSkin = true
-                    else
-                        SFX.play('spin')
-                        if currentState == 0 then
-                            self:bounce(100, .26)
-                        else
-                            for _, C in ipairs(Cards) do
-                                if C ~= self then
-                                    local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
-                                    C:bounce(MATH.lerp(120, 420, r), MATH.lerp(.42, .62, r))
-                                end
-                            end
+    GAME.refreshLayout()
+    if auto then return end
+
+    -- Sound and animation
+    if not self.active then
+        SFX.play('card_slide_' .. math.random(4))
+        return
+    end
+    if revOn then
+        SFX.play('card_select_reverse', 1, 0, M.GV)
+        SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, M.GV)
+        TASK.new(function()
+            TASK.yieldT(0.62)
+            local currentState = M[self.id]
+            if currentState == 2 then
+                SFX.play('card_reverse_impact', 1, 0, M.GV)
+                TWEEN.new(tween_deckPress):setUnique('DeckPress')
+                    :setEase('OutQuad'):setDuration(.42):run()
+                for _, C in ipairs(Cards) do
+                    if C ~= self then
+                        local r = math.random()
+                        if self.id == 'EX' then r = r * 2.6 end
+                        C:bounce(MATH.lerp(62, 420, r), MATH.lerp(.42, .62, r))
+                    end
+                end
+                local color = Mod.color[self.id]
+                table.insert(ImpactGlow, {
+                    r = (color[1] - .26) * .8,
+                    g = (color[2] - .26) * .8,
+                    b = (color[3] - .26) * .8,
+                    x = self.x,
+                    y = self.y,
+                    t = 2.6,
+                })
+                GAME.revDeckSkin = true
+            else
+                SFX.play('spin')
+                if currentState == 0 then
+                    self:bounce(100, .26)
+                else
+                    for _, C in ipairs(Cards) do
+                        if C ~= self then
+                            local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
+                            C:bounce(MATH.lerp(120, 420, r), MATH.lerp(.42, .62, r))
                         end
                     end
-                end)
-            else
-                SFX.play('card_select')
-                SFX.play('card_tone_' .. self.name, 1, 0, M.GV)
+                end
             end
-            if not noSpin then self:spin() end
-            if revOn then self:bounce(1200, .62) end
-        else
-            SFX.play('card_slide_' .. math.random(4))
-        end
+        end)
+    else
+        SFX.play('card_select')
+        SFX.play('card_tone_' .. self.name, 1, 0, M.GV)
     end
-    GAME.refreshLayout()
+    if not noSpin then self:spin() end
+    if revOn then self:bounce(1200, .62) end
 end
 
 function Card:flip()
