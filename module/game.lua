@@ -205,12 +205,11 @@ function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
 
-function GAME.task_warning()
-    SFX.play('warning', 1, 0, M.GV)
-    TASK.yieldT(1)
-    SFX.play('warning', 1, 0, M.GV)
-    TASK.yieldT(1)
-    SFX.play('warning', 1, 0, M.GV)
+function GAME.task_fatigueWarn()
+    for _ = 1, 3 do
+        for _ = 1, 3 do SFX.play('warning', 1, 0, M.GV) end
+        TASK.yieldT(1)
+    end
 end
 
 function GAME.cancelBurn()
@@ -226,8 +225,9 @@ end
 --     local stat = { 0, 0, 0, 0, 0 }
 --     local sum = 0
 --     for _ = 1, 1000 do
---         local base = .872 + floor ^ .5 / 6 + .626
---         local var = floor * .26 * .791
+--         local base = .872 + floor ^ .5 / 6
+--         local var = floor * .26
+--         if false then base, var = base + .626, var * .626 end
 
 --         local r = base + var * math.abs(MATH.randNorm())
 --         r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
@@ -245,13 +245,18 @@ function GAME.genQuest()
     local var = GAME.floor * .26
     if M.DH > 0 then base, var = base + .626, var * .626 end
 
-    local r = base + var * math.abs(MATH.randNorm())
-    r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
+    local r = MATH.clamp(base + var * math.abs(MATH.randNorm()), 1, 5)
+    GAME.atkBuffer = GAME.atkBuffer + r
+    if GAME.atkBuffer > 8 then
+        r = r - (GAME.atkBuffer - 8)
+        GAME.atkBuffer = 8
+    end
+    GAME.atkBuffer = math.max(GAME.atkBuffer - math.max(GAME.floor / 3, 2), 0)
 
     local pool = TABLE.copyAll(Mod.weight)
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then pool[lastQ.combo[1]] = nil end
-    for _ = 1, r do
+    for _ = 1, MATH.clamp(MATH.roundRnd(r), 1, 5) do
         local mod = MATH.randFreqAll(pool)
         pool[mod] = nil
         ins(combo, mod)
@@ -545,6 +550,12 @@ function GAME.commit()
         rem(GAME.quests, 1)
         GAME.questCount = GAME.questCount + 1
 
+        local combo = GAME.quests[1] and GAME.quests[1].combo or NONE
+        local hasDH = TABLE.find(combo, 'DH') and 1 or 0
+        if #combo >= 4 then
+            SFX.play('garbagewindup_' .. MATH.clamp(#combo * 2 - 7 + hasDH, 1, 4))
+        end
+
         GAME.cancelAll(true)
         GAME.cancelBurn()
 
@@ -624,6 +635,7 @@ function GAME.start()
     GAME.life = 20
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
+    GAME.atkBuffer = 0
 
     GAME.upFloor()
 
@@ -762,7 +774,7 @@ function GAME.update(dt)
                 inPoint = .26, outPoint = .1,
                 color = 'lM',
             }
-            TASK.new(GAME.task_warning)
+            TASK.new(GAME.task_fatigueWarn)
         end
 
         local releaseHeight = GAME.heightBuffer
