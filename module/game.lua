@@ -494,7 +494,9 @@ function GAME.finish(reason)
         state = "Enjoying Music",
     }
     GAME.updateBgm('finish')
-    TASK.lock('cannotStart', 1)
+    if reason ~= 'forfeit' then
+        TASK.lock('cannotStart', 1)
+    end
 end
 
 function GAME.takeDamage(dmg, killReason)
@@ -583,7 +585,7 @@ function GAME.commit()
             repeat r2 = math.random(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #Cards)
             repeat r3 = math.random(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #Cards)
             if GAME.floor <= 8 then
-            Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
+                Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
             else
                 Cards[r1], Cards[r2], Cards[r3] = Cards[r2], Cards[r3], Cards[r1]
             end
