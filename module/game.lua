@@ -314,7 +314,7 @@ function GAME.genQuest()
 
     ins(GAME.quests, {
         combo = combo,
-        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, true)),
+        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), GAME.mod.DH == 2, GAME.mod.NH < 2)),
     })
 end
 

@@ -58,7 +58,7 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
-        if GAME.mod.NH == 2 then
+        if GAME.mod.NH == 2 and GAME.mod.AS < 2 then
             SFX.play('no')
             return true
         end
@@ -68,7 +68,7 @@ local function keyPress(key)
         SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
-        if GAME.mod.NH == 2 then
+        if GAME.mod.NH == 2 and GAME.mod.AS < 2 then
             SFX.play('no')
             return true
         end
