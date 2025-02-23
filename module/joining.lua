@@ -1,7 +1,7 @@
 ---@type Zenitha.Scene
 local scene = {}
 
-local t1, t2 = .626, .42
+local t1, t2 = .26, .42
 local text = GC.newText(FONT.get(60), "JOINING ROOM...")
 
 function scene.load()
@@ -10,10 +10,15 @@ end
 
 function scene.update(dt)
     dt = math.min(dt, 1 / 30)
-    if t1 > 0 then
+    if TASK.lock('init') then
+    elseif t1 > 0 then
         t1 = t1 - dt
         if t1 <= 0 then
             text:set("GETTING READY TO SPECTATE...")
+            BGM.setMaxSources(11)
+            BGM.load(FILE.load('module/bgm_data.lua', '-luaon'))
+            SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
+            SFX.setVol(.872)
             GAME.updateBgm('init')
             TASK.new(Daemon_Sync)
             TASK.new(Daemon_Beat)

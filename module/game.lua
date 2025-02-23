@@ -753,14 +753,14 @@ function GAME.update(dt)
                 x = 800, y = 265, fontSize = 30, k = 1.5,
                 style = 'score', duration = duration,
                 inPoint = .1, outPoint = .26,
-                color = 'lR',
+                color = 'lM',
             }
             TEXT:add {
                 text = stage.desc,
                 x = 800, y = 300, fontSize = 30,
                 style = 'score', duration = duration,
                 inPoint = .26, outPoint = .1,
-                color = 'lR',
+                color = 'lM',
             }
             TASK.new(GAME.task_warning)
         end

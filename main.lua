@@ -12,25 +12,6 @@ SCR.setSize(1600, 1000)
 
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
-BGM.setMaxSources(11)
-BGM.load {
-    piano = 'assets/piano.ogg',
-    expert = 'assets/expert.ogg',
-    arp = 'assets/arp.ogg',
-    bass = 'assets/bass.ogg',
-    guitar = 'assets/guitar.ogg',
-    pad = 'assets/pad.ogg',
-    staccato = 'assets/staccato.ogg',
-    violin = 'assets/violin.ogg',
-    rev = 'assets/rev.ogg',
-
-    piano2 = 'assets/piano.ogg',
-    violin2 = 'assets/violin.ogg',
-}
-
-SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
-SFX.setVol(.872)
-
 IMG.init {
     star0 = 'assets/crystal-dark.png',
     star1 = 'assets/crystal.png',
@@ -440,8 +421,8 @@ GAME.refreshPBText()
 -- Test
 TASK.new(function()
     for _, s in next, ([[ ]]):split('%s+', true) do
-        SFX.play(s)
         TASK.yieldT(1)
+        SFX.play(s)
         love.window.setIcon(love.image.newImageData('assets/icon.png'))
     end
 end)
