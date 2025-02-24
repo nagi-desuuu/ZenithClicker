@@ -411,7 +411,7 @@ function GAME.refreshLockState()
     Cards.DH.lock = DATA.maxFloor < 6
     Cards.IN.lock = DATA.maxFloor < 7
     Cards.AS.lock = DATA.maxFloor < 8
-    Cards.DP.lock = true -- Not really locked forever! Try to find the way to play it
+    Cards.DP.lock = GAME.completion.DP == 0 -- Possible, try to find the way to play it
 end
 
 function GAME.refreshPBText()

@@ -448,7 +448,7 @@ function scene.overDraw()
     -- Card info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
-        if C.lock then C = DeckData[C.id == 'DP' and -1 or 0] end
+        if C.lock then C = DeckData[C.id == 'DP' and 'lockDP' or 'lock'] end
         gc_replaceTransform(SCR.xOy_d)
         gc_setColor(ShadeColor)
         GC.setAlpha(.7023)

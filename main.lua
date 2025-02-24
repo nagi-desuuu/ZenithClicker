@@ -3,7 +3,7 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText(require'version'.appVer)
+ZENITHA.setVersionText(require 'version'.appVer)
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -91,8 +91,8 @@ DeckData = {
     { initOrder = 7, nameOrder = 1, id = 'IN', lockfull = 'lockfull-7',            name = 'invisible',  fullName = "< INVISIBLE >",           desc = "TAROTS FACE DOWN AND HINTS FLASH ONCE EVERY TWO SECONDS", revName = "> THE EXILE <",       revDesc = "NEVER UNDERESTIMATE BLIND FAITH." },
     { initOrder = 8, nameOrder = 6, id = 'AS', lockfull = 'lockfull-8',            name = 'allspin',    fullName = "< ALL-SPIN >",            desc = "KEYBOARD AVAILABLE, BUT DOUBLE CLICKING IS PENALIZED",    revName = "> THE WARLOCK <",     revDesc = "INTO REALMS BEYOND HEAVEN AND EARTH." },
     { initOrder = 9, nameOrder = 9, id = 'DP', lockover = 'lockover-incompatible', name = 'duo',        fullName = "< DUO >",                 desc = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",              revName = "> BLEEDING HEARTS <", revDesc = "EVEN AS WE BLEED, WE KEEP HOLDING ON..." },
-    [0] = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
-    [-1] = { fullName = "< LOCKED >", desc = "*CANNOT BE UNLOCKED*" },
+    lock = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
+    lockDP = { fullName = "< LOCKED >", desc = "MASTER THIS MOD TO UNLOCK?" },
 }
 Mod = {
     weight = {
