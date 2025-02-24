@@ -247,7 +247,8 @@ function Card:setActive(auto, key)
             end
         end)
     else
-        SFX.play('card_select')
+        SFX.play('card_select', 1, 0,
+            key and MATH.clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
         SFX.play('card_tone_' .. self.name, 1, 0, M.GV)
     end
     if not noSpin then self:spin() end
