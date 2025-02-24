@@ -368,7 +368,15 @@ function GAME.upFloor()
         color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
-    if GAME.floor == 10 then GAME.updateBgm('f10') end
+    if GAME.floor == 10 then
+        local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+        local t = DATA.speedrun[setStr]
+        if GAME.time < t then
+            DATA.speedrun[setStr] = MATH.roundUnit(GAME.time, .001)
+            DATA.save()
+        end
+        GAME.updateBgm('f10')
+    end
 
     DiscordRPC.update {
         details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
@@ -424,7 +432,7 @@ function GAME.refreshLockState()
 end
 
 function GAME.refreshPBText()
-    local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand(true)))] or 0
+    local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand(true)))]
     if h == 0 then return PBText:set("No Score Yet") end
     for f = 1, #Floors do
         if h < Floors[f].top then

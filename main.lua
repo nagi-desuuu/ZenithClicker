@@ -35,6 +35,7 @@ IMG.init {
 
 local _DATA = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
+    speedrun = setmetatable({}, { __index = function() return 1e99 end }),
     maxFloor = 1,
 }
 
