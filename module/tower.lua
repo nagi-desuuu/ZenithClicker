@@ -209,7 +209,8 @@ local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
-local gc_mDraw = GC.mDraw
+local gc_mDraw, gc_mRect = GC.mDraw, GC.mRect
+local setFont = FONT.set
 
 local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
 PBText = gc.newText(FONT.get(50))
@@ -338,7 +339,7 @@ function scene.overDraw()
 
         -- Health Bar
         gc_setColor(GAME.life > math.max(GAME.dmgWrong, GAME.dmgTime) and COLOR.L or COLOR.R)
-        GC.mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
+        gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
         -- Gravity Timer
         if M.GV > 0 then
@@ -359,7 +360,7 @@ function scene.overDraw()
     end
 
     -- Debug
-    -- FONT.set(40) gc_setColor(1, 1, 1)
+    -- setFont(40) gc_setColor(1, 1, 1)
     -- for i = 1, #Cards do
     --     gc.print(Cards[i].ty, Cards[i].x, Cards[i].y-260)
     -- end
@@ -370,15 +371,15 @@ function scene.overDraw()
         gc_translate(0, h)
         -- Thruster
         gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
-        GC.mRect('fill', 800, 975, 420, 26)
+        gc_mRect('fill', 800, 975, 420, 26)
         gc_setColor(rankColor[GAME.rank] or COLOR.L)
-        GC.mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
+        gc_mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
         gc.setLineWidth(2)
         gc_setColor(1, 1, 1, .42)
-        GC.mRect('line', 800, 975, 420, 26)
+        gc_mRect('line', 800, 975, 420, 26)
 
         -- Height & Timer
-        FONT.set(40)
+        setFont(40)
         GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.height), 800, 942, nil, 'center')
         GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 950)
         gc_translate(0, -h)
@@ -397,7 +398,7 @@ function scene.overDraw()
 
     -- Allspin keyboard hint
     if M.AS > 0 then
-        FONT.set(60)
+        setFont(60)
         for i = 1, #Cards do
             GC.strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
         end
@@ -454,16 +455,16 @@ function scene.overDraw()
         GC.setAlpha(.7023)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and C.id and M[C.id] == 2 then
-            FONT.set(60)
+            setFont(60)
             GC.strokePrint('full', 6, COLOR.DW, nil, C.revName, 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
             GC.strokePrint('full', 4, COLOR.dW, nil, C.revName, 195, -145 + 2, 2600, 'center', nil, 0.85, 1)
             GC.strokePrint('full', 2, COLOR.W, COLOR.L, C.revName, 195, -145, 2600, 'center', nil, 0.85, 1)
-            FONT.set(30)
+            setFont(30)
             GC.strokePrint('full', 2, COLOR.dW, COLOR.W, C.revDesc, 2600 * 0.15, -75, 2600, 'center', nil, 0.7, 1)
         else
-            FONT.set(60)
+            setFont(60)
             GC.strokePrint('full', 3, ShadeColor, TextColor, C.fullName, 195, -145, 2600, 'center', nil, 0.85, 1)
-            FONT.set(30)
+            setFont(30)
             GC.strokePrint('full', 2, ShadeColor, TextColor, C.desc, 2600 * 0.15, -75, 2600, 'center', nil, 0.7, 1)
         end
     end
