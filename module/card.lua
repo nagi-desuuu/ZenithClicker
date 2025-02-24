@@ -22,7 +22,7 @@ function Card.new(d)
         lockfull = d.lockfull and GC.newImage('assets/' .. d.lockfull .. '.png'),
         lockover = d.lockover and GC.newImage('assets/' .. d.lockover .. '.png'),
 
-        lock = false,
+        lock = true,
         active = false,
         front = true,
         upright = true,

@@ -254,7 +254,7 @@ return {
     -- protected_large=             {141, 0.92},
     -- protected_medium=            {86,  0.4},
     -- protected_small=             {210, 0.73},
-    -- purchase_start=              {439, 0.82},
+    purchase_start = { 439, 0.82 },
     -- queue_change=                {371, 0.3},
     -- ribbon_off=                  {525, 0.59},
     -- ribbon_on=                   {157, 0.72},

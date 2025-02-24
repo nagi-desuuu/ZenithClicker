@@ -89,7 +89,7 @@ local function keyPress(key)
                 end
             end
             if unlocked then
-                SFX.play('supporter')
+                SFX.play('purchase_start')
             end
         end
     elseif M.AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then

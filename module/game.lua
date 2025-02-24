@@ -221,20 +221,29 @@ function GAME.shuffleCards()
     GAME.refreshLayout()
 end
 
--- for floor = 1, 10 do
+-- for floor = 1, 10 do -- Simulation
 --     local stat = { 0, 0, 0, 0, 0 }
 --     local sum = 0
---     for _ = 1, 1000 do
+--     local buffer = 0
+--     for _ = 1, 10000 do
 --         local base = .872 + floor ^ .5 / 6
 --         local var = floor * .26
 --         if false then base, var = base + .626, var * .626 end
 
---         local r = base + var * math.abs(MATH.randNorm())
---         r = MATH.clamp(MATH.roll(r % 1) and math.ceil(r) or math.floor(r), 1, 5)
+--         local r = MATH.clamp(base + var * math.abs(MATH.randNorm()), 1, 5)
+--         buffer = buffer + r
+--         if buffer > 8 then
+--             r = r - (buffer - 8)
+--             buffer = 8
+--         end
+--         buffer = math.max(buffer - math.max(floor / 3, 2), 0)
+
+--         r = MATH.clamp(MATH.roundRnd(r), 1, 5)
+
 --         stat[r] = stat[r] + 1
 --         sum = sum + r
 --     end
---     print(("Floor %2d : %3d %3d %3d %3d %3d  E(x)=%.2f"):format(
+--     print(("Floor %2d   %4d %4d %4d %4d %4d  E(x)=%.2f"):format(
 --         floor, stat[1], stat[2], stat[3], stat[4], stat[5],
 --         sum / MATH.sum(stat)))
 -- end
@@ -687,6 +696,7 @@ function GAME.finish(reason)
 
     GAME.playing = false
 
+    local unlockDuo
     if GAME.questCount > 2.6 then
         if GAME.floor >= 10 then
             if TABLE.count(GAME.completion, 0) == 9 then
@@ -694,9 +704,9 @@ function GAME.finish(reason)
                 MSG('dark', "REVERSED MOD unlocked!!!\nActivate with right click")
                 SFX.play('notify')
             end
-            for k, v in next, M do
-                GAME.completion[k] = math.max(GAME.completion[k], v)
-            end
+            local duoWasCompleted = GAME.completion.DP
+            for k, v in next, M do GAME.completion[k] = math.max(GAME.completion[k], v) end
+            unlockDuo = duoWasCompleted == 0 and GAME.completion.DP > 0
         end
         local newPB
         if GAME.floor > DATA.maxFloor then
@@ -745,6 +755,17 @@ function GAME.finish(reason)
     GAME.refreshLockState()
     GAME.refreshPBText()
     GAME.refreshCurrentCombo()
+
+    if unlockDuo then
+        Cards.DP.lock = true
+        TASK.new(function()
+            TASK.yieldT(0.42)
+            Cards.DP.lock = false
+            Cards.DP:spin()
+            Cards.DP:bounce(1200, .62)
+            SFX.play('supporter')
+        end)
+    end
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
     DiscordRPC.update {

@@ -422,7 +422,7 @@ GAME.refreshPBText()
 
 -- Test
 TASK.new(function()
-    for _, s in next, ([[ ]]):split('%s+', true) do
+    for _, s in next, ([[ ]]):trim():split('%s+', true) do
         TASK.yieldT(1)
         SFX.play(s)
         love.window.setIcon(love.image.newImageData('assets/icon.png'))
