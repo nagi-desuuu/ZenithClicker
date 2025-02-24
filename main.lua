@@ -3,7 +3,7 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText("")
+ZENITHA.setVersionText(require'version'.appVer)
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -196,44 +196,46 @@ Floors = {
 }
 
 Fatigue = {
-    { time = 300, event = { 'dmgTimeMul', -.2 }, text = "FATIGUE SETS IN…", desc = "DmgDelay--" },
-    { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
-    { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "DmgDelay--   Heal--" },
-    { time = 390, event = { 'dmgTimeMul', -.1, 'dmgCycle', -.5 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "DmgDelay--   DmgCycle--" },
-    { time = 420, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "THIS IS THE END", desc = "DmgDelay--   Damage++" },
-    { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
-}
-FatigueRevEX = {
-    { time = 240, event = { 'dmgTimeMul', -.2 }, text = "YOUR POWER SLIPS…", desc = "DmgDelay--" },
-    { time = 270, event = { 'dmgWrong', 2 }, text = "WHISPERS OF DISCONTENT SPREAD…", desc = "Damage++" },
-    { time = 300, event = { 'dmgCycle', -1 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
-    { time = 330, event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…", desc = "DmgDelay--   Damage++" },
-    { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "DmgCycle--   Heal--" },
-    { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgDelay--   Damage++" },
-    { time = 420, event = { 'dmgTimeMul', -.3 }, text = "THE END OF AN ERA", desc = "DmgDelay--" },
-    { time = 1e99 }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
-}
-FatigueRevDP = {
-    { time = 030, event = {}, text = [[THE RELATIONSHIP STAGNATES…]] }, -- garbage becomes a bit messier
-    { time = 060, event = {}, text = [[INSECURITIES GROW STRONGER…]] }, -- garbage becomes messier
-    { time = 090, event = {}, text = [[%p2 FEELS NEGLECTED…]] }, -- garbage becomes much messier
-    { time = 120, event = {}, text = [[%p1 SUCCESSFULLY APOLOGIZES…?]] }, -- garbage becomes a bit cleaner
-    { time = 150, event = {}, text = [[THINGS ARE BACK TO HOW THEY SHOULD BE…!]] }, -- garbage becomes much cleaner
-    { time = 180, event = {}, text = [[THE WEIGHT OF WORDS UNSPOKEN…]] }, -- garbage becomes messier
-    { time = 210, event = {}, text = [["WHY CAN'T YOU JUST LISTEN TO ME?"]] }, -- garbage becomes much messier
-    { time = 240, event = {}, text = [["THIS IS ALL YOUR FAULT".]] }, -- revive difficulty increased
-    { time = 270, event = {}, text = [[%p2 MAKES THE SAME PROMISE AGAIN…]] }, -- garbage becomes cleaner
-    { time = 300, event = {}, text = [["THIS TIME WILL BE DIFFERENT."]] }, -- +4 PERMANENT GARBAGE
-    { time = 330, event = {}, text = [[SOME HABITS CAN'T BE BROKEN…]] }, -- garbage becomes much messier
-    { time = 360, event = {}, text = [[ALL TRUST HAS WITHERED AWAY…]] }, -- garbage becomes messier
-    { time = 390, event = {}, text = [[%p1 SETS AN ULTIMATUM…]] }, -- garbage becomes messier
-    { time = 420, event = {}, text = [[%p2 CONTEMPLATES THEIR WASTED EFFORT…]] }, -- garbage becomes messier
-    { time = 450, event = {}, text = [[ONE LAST PAINFUL ARGUMENT…]] }, -- receive 25% more garbage
-    { time = 480, event = {}, text = [[GOODBYE.]] }, -- you can no longer revive
-    { time = 510, event = {}, text = [["I MISS YOU"]] }, -- garbage becomes much cleaner
-    { time = 540, event = {}, text = [[WHAT IF…?]] }, -- garbage becomes a bit cleaner
-    { time = 570, event = {}, text = [[…]] }, -- +12 PERMANENT GARBAGE
-    { time = 1e99 },
+    normal = {
+        { time = 300, event = { 'dmgTimeMul', -.2 }, text = "FATIGUE SETS IN…", desc = "DmgDelay--" },
+        { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
+        { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "DmgDelay--   Heal--" },
+        { time = 390, event = { 'dmgTimeMul', -.1, 'dmgCycle', -.5 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "DmgDelay--   DmgCycle--" },
+        { time = 420, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "THIS IS THE END", desc = "DmgDelay--   Damage++" },
+        { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
+    },
+    rEX = {
+        { time = 240, event = { 'dmgTimeMul', -.2 }, text = "YOUR POWER SLIPS…", desc = "DmgDelay--" },
+        { time = 270, event = { 'dmgWrong', 2 }, text = "WHISPERS OF DISCONTENT SPREAD…", desc = "Damage++" },
+        { time = 300, event = { 'dmgCycle', -1 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
+        { time = 330, event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…", desc = "DmgDelay--   Damage++" },
+        { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "DmgCycle--   Heal--" },
+        { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgDelay--   Damage++" },
+        { time = 420, event = { 'dmgTimeMul', -.3 }, text = "THE END OF AN ERA", desc = "DmgDelay--" },
+        { time = 1e99 }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
+    },
+    rDP = {
+        { time = 030, event = {}, text = [[THE RELATIONSHIP STAGNATES…]] }, -- garbage becomes a bit messier
+        { time = 060, event = {}, text = [[INSECURITIES GROW STRONGER…]] }, -- garbage becomes messier
+        { time = 090, event = {}, text = [[%p2 FEELS NEGLECTED…]] }, -- garbage becomes much messier
+        { time = 120, event = {}, text = [[%p1 SUCCESSFULLY APOLOGIZES…?]] }, -- garbage becomes a bit cleaner
+        { time = 150, event = {}, text = [[THINGS ARE BACK TO HOW THEY SHOULD BE…!]] }, -- garbage becomes much cleaner
+        { time = 180, event = {}, text = [[THE WEIGHT OF WORDS UNSPOKEN…]] }, -- garbage becomes messier
+        { time = 210, event = {}, text = [["WHY CAN'T YOU JUST LISTEN TO ME?"]] }, -- garbage becomes much messier
+        { time = 240, event = {}, text = [["THIS IS ALL YOUR FAULT".]] }, -- revive difficulty increased
+        { time = 270, event = {}, text = [[%p2 MAKES THE SAME PROMISE AGAIN…]] }, -- garbage becomes cleaner
+        { time = 300, event = {}, text = [["THIS TIME WILL BE DIFFERENT."]] }, -- +4 PERMANENT GARBAGE
+        { time = 330, event = {}, text = [[SOME HABITS CAN'T BE BROKEN…]] }, -- garbage becomes much messier
+        { time = 360, event = {}, text = [[ALL TRUST HAS WITHERED AWAY…]] }, -- garbage becomes messier
+        { time = 390, event = {}, text = [[%p1 SETS AN ULTIMATUM…]] }, -- garbage becomes messier
+        { time = 420, event = {}, text = [[%p2 CONTEMPLATES THEIR WASTED EFFORT…]] }, -- garbage becomes messier
+        { time = 450, event = {}, text = [[ONE LAST PAINFUL ARGUMENT…]] }, -- receive 25% more garbage
+        { time = 480, event = {}, text = [[GOODBYE.]] }, -- you can no longer revive
+        { time = 510, event = {}, text = [["I MISS YOU"]] }, -- garbage becomes much cleaner
+        { time = 540, event = {}, text = [[WHAT IF…?]] }, -- garbage becomes a bit cleaner
+        { time = 570, event = {}, text = [[…]] }, -- +12 PERMANENT GARBAGE
+        { time = 1e99 },
+    },
 }
 
 GravityTimer = {

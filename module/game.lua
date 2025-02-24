@@ -578,7 +578,7 @@ function GAME.commit()
         return true
     else
         GAME.fault = true
-        GAME.faultWrong=true
+        GAME.faultWrong = true
         if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
         if M.EX > 0 then
             GAME.cancelAll(true)
@@ -642,7 +642,7 @@ function GAME.start()
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
     GAME.floor = 0
-    GAME.fatigueSet = M.EX == 2 and FatigueRevEX or M.EX == 2 and FatigueRevDP or Fatigue
+    GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.EX == 2 and 'rDP' or 'normal']
     GAME.fatigue = 1
     GAME.height = 0
     GAME.heightBuffer = 0
