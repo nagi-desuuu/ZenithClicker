@@ -269,11 +269,15 @@ function scene.draw()
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
         gc_draw(ChainPrefix, x, 212, 0, 1, 1.1)
-        gc_setColor(COLOR.HSL(
-            26 / (GAME.chain + 22) + 1.3, 1,
-            MATH.icLerp(-260, 420, GAME.chain),
-            GAME.chain < 8 and .26 or 1
-        ))
+        if GAME.fault then
+            gc_setColor(.62, .62, .62, GAME.chain < 8 and .26 or 1)
+        else
+            gc_setColor(COLOR.HSL(
+                26 / (GAME.chain + 22) + 1.3, 1,
+                MATH.icLerp(-260, 420, GAME.chain),
+                GAME.chain < 8 and .26 or 1
+            ))
+        end
         GC.blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         GC.setAlpha(1)
