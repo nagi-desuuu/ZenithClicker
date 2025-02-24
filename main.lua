@@ -197,11 +197,11 @@ Floors = {
 
 Fatigue = {
     normal = {
-        { time = 300, event = { 'dmgTimeMul', -.2 }, text = "FATIGUE SETS IN…", desc = "DmgDelay--" },
+        { time = 300, event = { 'dmgTimeMul', -.1 }, text = "FATIGUE SETS IN…", desc = "DmgDelay--" },
         { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
         { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "DmgDelay--   Heal--" },
-        { time = 390, event = { 'dmgTimeMul', -.1, 'dmgCycle', -.5 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "DmgDelay--   DmgCycle--" },
-        { time = 420, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "THIS IS THE END", desc = "DmgDelay--   Damage++" },
+        { time = 390, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "DmgDelay--   DmgCycle--" },
+        { time = 420, event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 }, text = "THIS IS THE END", desc = "DmgDelay--   Damage++" },
         { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
     },
     rEX = {
