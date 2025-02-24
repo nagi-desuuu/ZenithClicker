@@ -187,7 +187,7 @@ function Card:setActive(auto, key)
             W:reset()
         elseif self.id == 'DP' then
             BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
-            BGM.set('piano2', 'volume', M.DP > 0 and 1 or 0, .26)
+            BGM.set('piano2', 'volume', M.DP > 0 and .626 or 0, .26)
         end
         GAME.refreshPBText()
         if revOn or wasRev then
