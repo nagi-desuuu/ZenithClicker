@@ -8,6 +8,8 @@ function scene.load()
     love.keyboard.setKeyRepeat(false)
 end
 
+scene.keyDown=TRUE
+
 function scene.update(dt)
     dt = math.min(dt, 1 / 30)
     if TASK.lock('init') then
