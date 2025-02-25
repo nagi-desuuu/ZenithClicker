@@ -229,10 +229,12 @@ local TextColor = TextColor
 local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
-    gc_setColor(1, 1, 1, Background.alpha * .42)
-    if Background.floor < 10 then
-        Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080)
+    if GAME.playing and Background.floor < 10 then
+        gc_setColor(1, 1, 1, Background.alpha * (GAME.hyperspeed and (.26 + .26 * HyperSpeedAlpha) or .42))
+    else
+        gc_setColor(1, 1, 1, Background.alpha * .42)
     end
+    if Background.floor < 10 then Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080) end
     gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
         SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
@@ -326,6 +328,10 @@ function scene.overDraw()
     end
 
     if GAME.playing then
+        if GAME.floor < 10 and GAME.hyperspeed then
+            gc_setColor(1, 1, 1, .1 * HyperSpeedAlpha)
+            gc_mRect('fill', 800, 115, 1600, 210)
+        end
         -- Quests
         for i = 1, #GAME.quests do
             local t = GAME.quests[i].name

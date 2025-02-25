@@ -40,16 +40,17 @@ TEXTURE = IMG.init(TEXTURE, true)
 
 local notLoaded = MATH.roll(0.42)
 if notLoaded then
-FONT.load {
-    tnr = "assets/Times New Roman.ttf",
-}
-FONT.setDefaultFont('tnr')
+    FONT.load {
+        tnr = "assets/Times New Roman.ttf",
+    }
+    FONT.setDefaultFont('tnr')
 end
 TEXTS = {
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(60), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
+    sr         = GC.newText(FONT.get(50)),
     height     = GC.newText(FONT.get(50)),
     time       = GC.newText(FONT.get(30)),
     chain      = GC.newText(FONT.get(50)),
@@ -60,15 +61,15 @@ TEXTS = {
     credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
 }
 if notLoaded then
-TASK.new(function()
-    TASK.yieldN(26)
+    TASK.new(function()
+        TASK.yieldN(26)
         TASK.yieldT(math.random() ^ 2 * 62)
-    FONT.setDefaultFont('_norm')
-    local scale = 60 / TEXTS.load:getFont():getHeight()
-    for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
-    for _, q in next, GAME.quests do q.name:setFont(FONT.get(60)) end
-    WIDGET._reset()
-end)
+        FONT.setDefaultFont('_norm')
+        local scale = 60 / TEXTS.load:getFont():getHeight()
+        for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
+        for _, q in next, GAME.quests do q.name:setFont(FONT.get(60)) end
+        WIDGET._reset()
+    end)
 end
 
 local _DATA = {
@@ -101,6 +102,7 @@ Background = {
     alpha = 0,
     quad = GC.newQuad(0, 0, 1920, 1080, 1920, 1080)
 }
+HyperSpeed = {}
 ImpactGlow = {}
 DeckPress = 0
 ThrobAlpha = {
@@ -343,6 +345,11 @@ GravityTimer = {
     { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
 }
 
+HyperSpeedReq = {
+    enterLV = { 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 },
+    retainLV = { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 },
+}
+
 GAME = require 'module/game'
 
 for i = 1, #DeckData do table.insert(Cards, require 'module/card'.new(DeckData[i])) end
@@ -441,6 +448,9 @@ function Daemon_Beat()
         ThrobAlpha.card = math.max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
         ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
         ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
+
+        HyperSpeedAlpha = 1 - 4 * T / bar % 1
+
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1
@@ -449,6 +459,7 @@ function Daemon_Beat()
             end
             GAME.refreshLayout()
         end
+
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
@@ -488,6 +499,10 @@ if DATA.version == nil then
         end
     end
     DATA.version = 162
+end
+if DATA.version == 162 then
+    DATA.speedrun = {}
+    DATA.version = 163
 end
 if DATA.version ~= oldVer then DATA.save() end
 

@@ -23,6 +23,8 @@ local ins, rem = table.insert, table.remove
 ---@field fatigue number
 ---@field dmgTimer number
 ---@field chain number
+---@field hyperspeed boolean
+---@field hyperspeedEntered boolean
 local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
@@ -340,6 +342,11 @@ function GAME.addXP(xp)
     end
     if rankup then
         SFX.play('speed_up_' .. MATH.clamp(2 + math.floor(GAME.rank / 2), 1, 4), .4 + GAME.xpLockLevel / 10)
+        if not GAME.hyperspeedEntered and GAME.rank >= HyperSpeedReq.enterLV[GAME.floor] then
+            GAME.hyperspeed = true
+            GAME.hyperspeedEntered = true
+            SFX.play('zenith_speedrun_start')
+        end
     end
 end
 
@@ -370,12 +377,17 @@ function GAME.upFloor()
         color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
+    if GAME.hyperspeed then
+        SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
+    end
     if GAME.floor == 10 then
-        local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
-        local t = DATA.speedrun[setStr]
-        if GAME.time < t then
-            DATA.speedrun[setStr] = MATH.roundUnit(GAME.time, .001)
-            DATA.save()
+        if GAME.hyperspeed then
+            local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+            local t = DATA.speedrun[setStr]
+            if GAME.time < t then
+                DATA.speedrun[setStr] = MATH.roundUnit(GAME.time, .001)
+                DATA.save()
+            end
         end
         GAME.updateBgm('f10')
         Background.quad:setViewport(0, 0, 1920, 1080, 1920, 1080)
@@ -670,6 +682,8 @@ function GAME.start()
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
     GAME.atkBuffer = 0
+    GAME.hyperspeed = false
+    GAME.hyperspeedEntered = false
 
     GAME.upFloor()
 
@@ -856,6 +870,10 @@ function GAME.update(dt)
                     GAME.rank = GAME.rank - 1
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
+                    if GAME.floor < 10 and GAME.hyperspeed and GAME.rank < HyperSpeedReq.retainLV[GAME.floor] then
+                        GAME.hyperspeed = false
+                        SFX.play('zenith_speedrun_end')
+                    end
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                 end
             end
