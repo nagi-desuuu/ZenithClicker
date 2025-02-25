@@ -24,7 +24,6 @@ local ins, rem = table.insert, table.remove
 ---@field dmgTimer number
 ---@field chain number
 local GAME = {
-    modText = GC.newText(FONT.get(30)),
     forfeitTimer = 0,
     exTimer = 0,
     revTimer = 0,
@@ -391,7 +390,7 @@ end
 --------------------------------------------------------------
 
 function GAME.refreshCurrentCombo()
-    GAME.modText:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
+    TEXTS.mod:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
     GAME.hardMode = M.EX > 0 or not not TABLE.findAll(M, 2)
 end
 
@@ -437,10 +436,10 @@ end
 
 function GAME.refreshPBText()
     local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand(true)))]
-    if h == 0 then return PBText:set("No Score Yet") end
+    if h == 0 then return TEXTS.pb:set("No Score Yet") end
     for f = 1, #Floors do
         if h < Floors[f].top then
-            PBText:set(("Best: %.1fm   <F%d>"):format(h, f))
+            TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(h, f))
             break
         end
     end
@@ -559,7 +558,7 @@ function GAME.commit()
             end
         end
         if GAME.chain >= 4 then
-            ChainText:set(tostring(GAME.chain))
+            TEXTS.chain:set(tostring(GAME.chain))
         end
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
@@ -756,11 +755,11 @@ function GAME.finish(reason)
             SFX.play('applause', GAME.floor / 10)
             DATA.save()
         end
-        HeightText:set(("%.1fm"):format(GAME.height))
-        TimeText:set(STRING.time_simp(GAME.time))
+        TEXTS.height:set(("%.1fm"):format(GAME.height))
+        TEXTS.time:set(STRING.time_simp(GAME.time))
     else
-        HeightText:set("")
-        TimeText:set("")
+        TEXTS.height:set("")
+        TEXTS.time:set("")
     end
 
     TASK.removeTask_code(task_startSpin)

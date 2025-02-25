@@ -38,6 +38,34 @@ TEXTURE = {
 }
 TEXTURE = IMG.init(TEXTURE, true)
 
+FONT.load {
+    tnr = "assets/Times New Roman.ttf",
+}
+FONT.setDefaultFont('tnr')
+TEXTS = {
+    mod        = GC.newText(FONT.get(30)),
+    title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
+    load       = GC.newText(FONT.get(60), "JOINING ROOM..."),
+    pb         = GC.newText(FONT.get(50)),
+    height     = GC.newText(FONT.get(50)),
+    time       = GC.newText(FONT.get(30)),
+    chain      = GC.newText(FONT.get(50)),
+    b2b        = GC.newText(FONT.get(30), "B2B x"),
+    slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
+    slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
+    slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
+    credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
+}
+TASK.new(function()
+    TASK.yieldN(26)
+    TASK.yieldT(math.random() ^ 2 * 12.6)
+    FONT.setDefaultFont('_norm')
+    local scale = 60 / TEXTS.load:getFont():getHeight()
+    for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
+    for _, q in next, GAME.quests do q.name:setFont(FONT.get(60)) end
+    WIDGET._reset()
+end)
+
 local _DATA = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
     speedrun = setmetatable({}, { __index = function() return 1e99 end }),

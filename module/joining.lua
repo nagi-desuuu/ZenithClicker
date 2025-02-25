@@ -2,7 +2,6 @@
 local scene = {}
 
 local t1, t2 = .26, .42
-local text = GC.newText(FONT.get(60), "JOINING ROOM...")
 
 function scene.load()
     love.keyboard.setKeyRepeat(false)
@@ -16,7 +15,7 @@ function scene.update(dt)
     elseif t1 > 0 then
         t1 = t1 - dt
         if t1 <= 0 then
-            text:set("GETTING READY TO SPECTATE...")
+            TEXTS.load:set("GETTING READY TO SPECTATE...")
             BGM.setMaxSources(11)
             BGM.load(FILE.load('module/bgm_data.lua', '-luaon'))
             SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
@@ -39,13 +38,13 @@ end
 
 function scene.draw()
     GC.setColor(.2, .2, .2)
-    GC.strokeDraw('full', 7, text, 800, 500, 0, 1.26, 2, text:getWidth() / 2, text:getHeight() / 2)
+    GC.strokeDraw('full', 7, TEXTS.load, 800, 500, 0, 1.26, 2, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
     GC.setColor(.4, .4, .4)
-    GC.strokeDraw('full', 4, text, 800, 500, 0, 1.26, 2, text:getWidth() / 2, text:getHeight() / 2)
+    GC.strokeDraw('full', 4, TEXTS.load, 800, 500, 0, 1.26, 2, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
     GC.setColor(.6, .6, .6)
-    GC.strokeDraw('full', 2, text, 800, 500, 0, 1.26, 2, text:getWidth() / 2, text:getHeight() / 2)
+    GC.strokeDraw('full', 2, TEXTS.load, 800, 500, 0, 1.26, 2, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
     GC.setColor(.9, .9, .9)
-    GC.mDraw(text, 800, 500, 0, 1.26, 2)
+    GC.mDraw(TEXTS.load, 800, 500, 0, 1.26, 2)
 end
 
 return scene

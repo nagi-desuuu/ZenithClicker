@@ -214,16 +214,6 @@ local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
 local gc_mDraw, gc_mDrawQ, gc_mRect = GC.mDraw, GC.mDrawQ, GC.mRect
 local setFont = FONT.set
 
-local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
-PBText = gc.newText(FONT.get(50))
-HeightText = gc.newText(FONT.get(50))
-TimeText = gc.newText(FONT.get(30))
-ChainText = gc.newText(FONT.get(50))
-ChainPrefix = gc.newText(FONT.get(30), "B2B x")
-local sloganText = gc.newText(FONT.get(30), "CROWD THE TOWER!")
-local sloganText_EX = gc.newText(FONT.get(30), "THRONG THE TOWER!")
-local sloganText_rev = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!")
-local creditText = gc.newText(FONT.get(30), "All assets from TETR.IO, see the help page")
 local chargeIcon = GC.load {
     w = 256, h = 256,
     { 'move',   128,  128 },
@@ -260,7 +250,6 @@ function scene.draw()
     gc_setColor(1, 1, 1, GAME.uiHide *
         MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
         MATH.cLerp(.62, 1, math.abs(dh * 26)))
-    print(dh)
     gc_draw(WindBatch)
 
     -- Card Panel
@@ -291,7 +280,7 @@ function scene.draw()
         local k = MATH.clampInterpolate(6, .7023, 26, 2, GAME.chain)
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
-        gc_draw(ChainPrefix, x, 212, 0, 1, 1.1)
+        gc_draw(TEXTS.b2b, x, 212, 0, 1, 1.1)
         if GAME.fault then
             gc_setColor(.62, .62, .62, GAME.chain < 8 and .26 or 1)
         else
@@ -304,12 +293,12 @@ function scene.draw()
         GC.blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         GC.setAlpha(1)
-        gc_draw(ChainPrefix, x, 210, 0, 1, 1.1)
+        gc_draw(TEXTS.b2b, x, 210, 0, 1, 1.1)
         gc_setColor(COLOR.L)
-        GC.strokeDraw('full', k * 2, ChainText, 326, 270, 0, k, 1.1 * k,
-            ChainText:getWidth() / 2, ChainText:getHeight() / 2)
+        GC.strokeDraw('full', k * 2, TEXTS.chain, 326, 270, 0, k, 1.1 * k,
+            TEXTS.chain:getWidth() / 2, TEXTS.chain:getHeight() / 2)
         gc_setColor(COLOR.D)
-        gc_mDraw(ChainText, 326, 270, 0, k, 1.1 * k)
+        gc_mDraw(TEXTS.chain, 326, 270, 0, k, 1.1 * k)
     end
 end
 
@@ -323,8 +312,8 @@ function scene.overDraw()
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
         if M.IN == 2 then GC.setAlpha(.42) end
-        local k = math.min(.9, 760 / GAME.modText:getWidth())
-        gc_mDraw(GAME.modText, 800, 396 + DeckPress, nil, k, k * 1.1)
+        local k = math.min(.9, 760 / TEXTS.mod:getWidth())
+        gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, nil, k, k * 1.1)
     end
 
     gc_translate(0, DeckPress)
@@ -440,11 +429,11 @@ function scene.overDraw()
         -- Last height
         gc_replaceTransform(SCR.xOy_u)
         gc_setColor(COLOR.D)
-        gc_mDraw(HeightText, 0, 140 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TimeText, 0, 204 - 3.2 * d)
+        gc_mDraw(TEXTS.height, 0, 140 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TEXTS.time, 0, 204 - 3.2 * d)
         gc_setColor(COLOR.L)
-        gc_mDraw(HeightText, 0, 135 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TimeText, 0, 201 - 3.2 * d)
+        gc_mDraw(TEXTS.height, 0, 135 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TEXTS.time, 0, 201 - 3.2 * d)
 
         -- Top bar & texts
         gc_setColor(ShadeColor)
@@ -452,25 +441,25 @@ function scene.overDraw()
         gc_setColor(TextColor)
         gc_rectangle('fill', -1300, 70 - d, 2600, 4)
         gc_replaceTransform(SCR.xOy_ul)
-        gc_draw(titleText,
-            exT * 205 - 195, titleText:getHeight() / 2 - d, nil,
-            1, 1.1 * (1 - 2 * revT), 0, titleText:getHeight() / 2)
+        gc_draw(TEXTS.title,
+            exT * 205 - 195, TEXTS.title:getHeight() / 2 - d, nil,
+            1, 1.1 * (1 - 2 * revT), 0, TEXTS.title:getHeight() / 2)
         gc_replaceTransform(SCR.xOy_ur)
-        gc_draw(PBText, -10, -d, nil, 1, 1.1, PBText:getWidth(), 0)
+        gc_draw(TEXTS.pb, -10, -d, nil, 1, 1.1, TEXTS.pb:getWidth(), 0)
         gc_replaceTransform(SCR.xOy_dl)
         gc_translate(0, DeckPress)
         gc_translate(0, d)
         if revT > 0 then
-            gc_draw(sloganText, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, sloganText:getHeight())
-            gc_draw(sloganText_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
-            gc_draw(sloganText_rev, 6, 2 + (1 - revT) * 42, nil, 1, 1.26, 0, sloganText_rev:getHeight())
+            gc_draw(TEXTS.slogan, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan:getHeight())
+            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_EX:getHeight())
+            gc_draw(TEXTS.slogan_rEX, 6, 2 + (1 - revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_rEX:getHeight())
         else
-            gc_draw(sloganText, 6, 2 + exT * 42, nil, 1, 1.26, 0, sloganText:getHeight())
-            gc_draw(sloganText_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, sloganText_EX:getHeight())
+            gc_draw(TEXTS.slogan, 6, 2 + exT * 42, nil, 1, 1.26, 0, TEXTS.slogan:getHeight())
+            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_EX:getHeight())
         end
         gc_replaceTransform(SCR.xOy_dr)
         gc_translate(0, DeckPress)
-        gc_draw(creditText, -5, d, 0, .872, .872, creditText:getDimensions())
+        gc_draw(TEXTS.credit, -5, d, 0, .872, .872, TEXTS.credit:getDimensions())
     end
 
     -- Card info
