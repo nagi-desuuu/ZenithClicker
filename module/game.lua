@@ -358,6 +358,7 @@ function GAME.addXP(xp)
             TASK.removeTask_code(GAME.task_gigaspeed)
             TASK.new(GAME.task_gigaspeed)
             SFX.play('zenith_speedrun_start')
+            GAME.refreshRPC()
         end
     end
 end
@@ -404,10 +405,13 @@ function GAME.upFloor()
         GAME.updateBgm('f10')
         Background.quad:setViewport(0, 0, 1920, 1080, 1920, 1080)
     end
+    GAME.refreshRPC()
+end
 
+function GAME.refreshRPC()
     DiscordRPC.update {
         details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-        state = "In Game: F" .. GAME.floor .. " - " .. GAME.getComboName(GAME.getHand(true), M.DH == 2),
+        state = (GAME.gigaspeed and "Speedrun: F" or "In Game: F") .. GAME.floor .. " - " .. GAME.getComboName(GAME.getHand(true), M.DH == 2),
     }
 end
 
