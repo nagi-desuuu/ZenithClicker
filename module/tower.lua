@@ -234,7 +234,7 @@ local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     if GAME.playing and Background.floor < 10 then
-        gc_setColor(1, 1, 1, Background.alpha * (GAME.gigaspeed and (.26 + .26 * GigaSpeed.alpha) or .42))
+        gc_setColor(1, 1, 1, Background.alpha * (GAME.gigaspeed and (.26 + .26 * GigaSpeed.bgAlpha) or .42))
     else
         gc_setColor(1, 1, 1, Background.alpha * .42)
     end
@@ -261,12 +261,12 @@ function scene.draw()
     gc_replaceTransform(SCR.xOy)
 
     -- GigaSpeed BG
-    if GigaSpeed.showAlpha > 0 then
-        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.showAlpha)
+    if GigaSpeed.alpha > 0 then
+        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha)
         gc_draw(TEXTURE.transition, 0, 10, 0, 626 / 128, 450)
         gc_draw(TEXTURE.transition, 1600, 10, 0, -626 / 128, 450)
         local h = 697 + GAME.uiHide * 420
-        gc_setAlpha(.626 * GigaSpeed.showAlpha)
+        gc_setAlpha(.626 * GigaSpeed.alpha)
         gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     end
 
@@ -343,14 +343,12 @@ function scene.overDraw()
     end
 
     -- GigaSpeed Timer
-    if GigaSpeed.showAlpha > 0 then
-        local str = ("%02d:%02d.%03d"):format(floor(GAME.time / 60), floor(GAME.time % 60), GAME.time % 1 * 1000)
-        TEXTS.gigatime:set(str)
+    if GigaSpeed.alpha > 0 then
         local w, h = TEXTS.gigatime:getDimensions()
-        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .26 * GigaSpeed.showAlpha)
-        gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w / 2, h / 2)
-        gc_setAlpha(GigaSpeed.showAlpha)
-        gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w / 2, h / 2)
+        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .26 * GigaSpeed.alpha)
+        gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+        gc_setAlpha(GigaSpeed.alpha)
+        gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
     end
     -- GigaSpeed Anim
     if GigaSpeed.textTimer then

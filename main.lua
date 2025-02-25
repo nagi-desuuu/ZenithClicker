@@ -123,7 +123,7 @@ GigaSpeed = {
     g = 0,
     b = 0,
     alpha = 0,
-    showAlpha = 0,
+    bgAlpha = 0,
     textTimer = false,
 }
 ImpactGlow = {}
@@ -473,7 +473,7 @@ function Daemon_Beat()
         ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
 
         GigaSpeed.r, GigaSpeed.g, GigaSpeed.b = COLOR.HSV(T / bar % 1, .626, 1)
-        GigaSpeed.alpha = 1 - 4 * T / bar % 1
+        GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
 
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then

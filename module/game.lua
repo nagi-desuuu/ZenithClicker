@@ -351,8 +351,6 @@ function GAME.addXP(xp)
     if rankup then
         SFX.play('speed_up_' .. MATH.clamp(2 + math.floor(GAME.rank / 2), 1, 4), .4 + GAME.xpLockLevel / 10)
         if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq.enterLV[GAME.floor] then
-            GAME.gigaspeed = true
-            GAME.gigaspeedEntered = true
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
@@ -360,14 +358,16 @@ function GAME.addXP(xp)
     end
 end
 
-function GAME.setGigaspeedAnim(bool)
-    local s = GigaSpeed.showAlpha
-    if bool then
-        TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 1, t) end):setUnique('gigaspeed'):run()
+function GAME.setGigaspeedAnim(on)
+    GAME.gigaspeed = on
+    local s = GigaSpeed.alpha
+    if on then
+        GAME.gigaspeedEntered = true
+        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 1, t) end):setUnique('gigaspeed'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
     else
-        TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 0, t) end):setUnique('gigaspeed'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(3.55):setUnique('gigaspeed'):run()
     end
 end
 
@@ -806,8 +806,7 @@ function GAME.finish(reason)
         TEXTS.endTime:set("")
     end
 
-    local s = GigaSpeed.showAlpha
-    TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 0, t) end):setUnique('gigaspeed'):run()
+    GAME.setGigaspeedAnim(false)
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
     GAME.refreshPBText()
@@ -845,6 +844,11 @@ function GAME.update(dt)
         -- end
 
         GAME.time = GAME.time + dt
+        if GAME.gigaspeed then
+            TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
+                math.floor(GAME.time / 60), math.floor(GAME.time % 60), GAME.time % 1 * 1000))
+        end
+
         GAME.questTime = GAME.questTime + dt
         if M.GV > 0 and not GAME.gravTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
             GAME.gravTimer = GAME.gravDelay
@@ -902,9 +906,9 @@ function GAME.update(dt)
                     GAME.rank = GAME.rank - 1
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
-                    if GAME.floor < 10 and GAME.gigaspeed and GAME.rank < GigaSpeedReq.retainLV[GAME.floor] then
-                        GAME.gigaspeed = false
+                    if GAME.gigaspeed and GAME.rank < GigaSpeedReq.retainLV[GAME.floor] then
                         GAME.setGigaspeedAnim(false)
+                        SFX.play('zenith_speedrun_end')
                         SFX.play('zenith_speedrun_end')
                     end
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
