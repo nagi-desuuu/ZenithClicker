@@ -355,7 +355,7 @@ function GAME.addXP(xp)
     if rankup then
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
-        if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq.enterLV[GAME.floor] then
+        if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[GAME.floor] then
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
@@ -806,7 +806,7 @@ function GAME.finish(reason)
             DATA.save()
         end
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
-        TEXTS.endTime:set(STRING.time_simp(GAME.time) .. "     F"..GAME.floor..": " .. Floors[GAME.floor].name)
+        TEXTS.endTime:set(STRING.time_simp(GAME.time) .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
     else
         TEXTS.endHeight:set("")
         TEXTS.endTime:set("")
@@ -912,7 +912,7 @@ function GAME.update(dt)
                     GAME.rank = GAME.rank - 1
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
-                    if GAME.gigaspeed and GAME.rank < GigaSpeedReq.retainLV[GAME.floor] then
+                    if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
                         GAME.setGigaspeedAnim(false)
                         SFX.play('zenith_speedrun_end')
                         SFX.play('zenith_speedrun_end')

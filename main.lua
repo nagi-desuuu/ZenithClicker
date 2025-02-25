@@ -368,10 +368,7 @@ GravityTimer = {
     { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
 }
 
-GigaSpeedReq = {
-    enterLV = { 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 },
-    retainLV = { 7, 7, 7, 8, 8, 8, 8, 8, 8, 8 },
-}
+GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
 
 GAME = require 'module/game'
 
