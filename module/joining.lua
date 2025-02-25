@@ -8,7 +8,7 @@ function scene.load()
     love.keyboard.setKeyRepeat(false)
 end
 
-scene.keyDown=TRUE
+scene.keyDown = TRUE
 
 function scene.update(dt)
     dt = math.min(dt, 1 / 30)
@@ -25,6 +25,8 @@ function scene.update(dt)
             TASK.new(Daemon_Sync)
             TASK.new(Daemon_Beat)
             TASK.new(Daemon_Floor)
+            ---@diagnostic disable-next-line
+            local _ = TEXTURE.glass_a, TEXTURE.glass_b, TEXTURE.throb_a, TEXTURE.throb_b
         end
     elseif t2 > 0 then
         t2 = t2 - dt

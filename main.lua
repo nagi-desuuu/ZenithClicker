@@ -1,3 +1,6 @@
+love.window.setFullscreen(true)
+love.window.setIcon(love.image.newImageData('assets/icon.png'))
+
 require 'Zenitha'
 
 ZENITHA.setMainLoopSpeed(240)
@@ -10,6 +13,7 @@ STRING.install()
 
 SCR.setSize(1600, 1000)
 
+MSG.setSafeY(75)
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
 ---@return love.Texture
@@ -345,16 +349,16 @@ function WIDGET._prototype.button:draw()
     GC.mRect('fill', 0, 0, w, h)
 
     -- Frame
-    gc.setLineWidth(self.lineWidth)
+    gc.setLineWidth(3)
     gc.setColor(frameC[1] * .2, frameC[2] * .2, frameC[3] * .2)
-    gc.line(-w / 2, h / 2, w / 2, h / 2, w / 2, -h / 2)
+    gc.line(-w / 2, h / 2, w / 2, h / 2, w / 2, -h / 2 - 1.5)
     gc.setColor(.2 + frameC[1] * .8, .2 + frameC[2] * .8, .2 + frameC[3] * .8)
-    gc.line(-w / 2, h / 2, -w / 2, -h / 2, w / 2, -h / 2)
+    gc.line(-w / 2, h / 2 + 1.5, -w / 2, -h / 2, w / 2 - 1.5, -h / 2)
 
     -- Highlight
     if self._hoverTime > 0 then
         gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .16)
-        GC.mRect('fill', 0, 0, w, h)
+        GC.mRect('fill', 0, 0, w - 3, h - 3)
     end
 
     -- Drawable
@@ -484,7 +488,6 @@ TASK.new(function()
     for _, s in next, ([[ ]]):trim():split('%s+', true) do
         TASK.yieldT(1)
         SFX.play(s)
-        love.window.setIcon(love.image.newImageData(p 'icon.png'))
     end
 end)
 

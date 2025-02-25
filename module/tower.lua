@@ -106,7 +106,7 @@ local function keyPress(key)
     end
 end
 
-function scene.mouseMove(x, y, dx, dy)
+function scene.mouseMove(x, y)
     mouseMove(x, y)
 end
 
@@ -488,6 +488,15 @@ function scene.overDraw()
 end
 
 scene.widgetList = {
+    WIDGET.new {
+        name = 'reset', type = 'button',
+        pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
+        color = { .15, .15, .15 },
+        sound_hover = 'menutap',
+        sound_release = 'menuclick',
+        fontSize = 30, text = "      BACK", textColor = 'DL',
+        onClick = WIDGET.c_pressKey 'escape',
+    },
     WIDGET.new {
         name = 'start', type = 'button',
         pos = { .5, .5 }, y = -170, w = 800, h = 200,
