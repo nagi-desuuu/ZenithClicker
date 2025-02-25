@@ -489,7 +489,7 @@ end
 
 scene.widgetList = {
     WIDGET.new {
-        name = 'reset', type = 'button',
+        name = 'back', type = 'button',
         pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
         color = { .15, .15, .15 },
         sound_hover = 'menutap',
@@ -528,11 +528,12 @@ scene.widgetList = {
         fontSize = 80, text = "?",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
+        floatFontSize = 25,
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
-            Space: Start/Commit   Z: Reset selection   ESC: Forfeit/Quit
+            Space: Confirm    Z: Reset selection    ESC: Forfeit/Quit    F11: Fullscreen
 
             All assets from TETR.IO, by osk team:
             Musics & Sounds by Dr.Ocelot
