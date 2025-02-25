@@ -799,11 +799,11 @@ function GAME.finish(reason)
             SFX.play('applause', GAME.floor / 10)
             DATA.save()
         end
-        TEXTS.height:set(("%.1fm"):format(GAME.height))
-        TEXTS.time:set(STRING.time_simp(GAME.time))
+        TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
+        TEXTS.endTime:set(STRING.time_simp(GAME.time))
     else
-        TEXTS.height:set("")
-        TEXTS.time:set("")
+        TEXTS.endHeight:set("")
+        TEXTS.endTime:set("")
     end
 
     local s = GigaSpeed.showAlpha

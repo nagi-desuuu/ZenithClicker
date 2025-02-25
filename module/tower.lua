@@ -1,3 +1,6 @@
+local max, min = math.max, math.min
+local floor, abs = math.floor, math.abs
+
 local M = GAME.mod
 local MD = ModData
 
@@ -211,7 +214,8 @@ local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
-local gc_mDraw, gc_mDrawQ, gc_mRect = GC.mDraw, GC.mDrawQ, GC.mRect
+local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
+local gc_setAlpha = GC.setAlpha
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
@@ -236,7 +240,7 @@ function scene.draw()
     end
     if Background.floor < 10 then Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080) end
     gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
-        SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+        SCR.w / 2, SCR.h / 2, nil, max(SCR.w / 1920, SCR.h / 1080))
 
     -- Wind Particles
     local dh = GAME.bgH - GAME.bgLastH
@@ -251,7 +255,7 @@ function scene.draw()
     end
     gc_setColor(1, 1, 1, GAME.uiHide * Background.alpha *
         MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
-        MATH.cLerp(.62, 1, math.abs(dh * 26)))
+        MATH.cLerp(.62, 1, abs(dh * 26)))
     gc_draw(WindBatch)
 
     gc_replaceTransform(SCR.xOy)
@@ -262,7 +266,7 @@ function scene.draw()
         gc_draw(TEXTURE.transition, 0, 10, 0, 626 / 128, 450)
         gc_draw(TEXTURE.transition, 1600, 10, 0, -626 / 128, 450)
         local h = 697 + GAME.uiHide * 420
-        GC.setAlpha(.626 * GigaSpeed.showAlpha)
+        gc_setAlpha(.626 * GigaSpeed.showAlpha)
         gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     end
 
@@ -270,7 +274,7 @@ function scene.draw()
     gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
-    GC.setAlpha(.8)
+    gc_setAlpha(.8)
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
@@ -305,10 +309,10 @@ function scene.draw()
         end
         GC.blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
-        GC.setAlpha(1)
+        gc_setAlpha(1)
         gc_draw(TEXTS.b2b, x, 214, 0, 1, 1.1)
         gc_setColor(COLOR.L)
-        GC.strokeDraw('full', k * 2, TEXTS.chain, 326, 270, 0, k, 1.1 * k,
+        gc_strokeDraw('full', k * 2, TEXTS.chain, 326, 270, 0, k, 1.1 * k,
             TEXTS.chain:getWidth() / 2, TEXTS.chain:getHeight() / 2)
         gc_setColor(COLOR.D)
         gc_mDraw(TEXTS.chain, 326, 270, 0, k, 1.1 * k)
@@ -324,8 +328,8 @@ function scene.overDraw()
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
-        if M.IN == 2 then GC.setAlpha(.42) end
-        local k = math.min(.9, 760 / TEXTS.mod:getWidth())
+        if M.IN == 2 then gc_setAlpha(.42) end
+        local k = min(.9, 760 / TEXTS.mod:getWidth())
         gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, nil, k, k * 1.1)
     end
 
@@ -338,24 +342,36 @@ function scene.overDraw()
         GC.blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
     end
 
-    if GAME.playing then
-        -- GigaSpeed Anim
-        if GigaSpeed.textTimer then
-            gc_setColor(1, 1, 1, .62)
-            for t = -10, 10, 3 do
-                gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + t * .01) ^ 5 * 1800, 250, nil, 1.6)
-            end
+    -- GigaSpeed Timer
+    if GigaSpeed.showAlpha > 0 then
+        local str = ("%02d:%02d.%03d"):format(floor(GAME.time / 60), floor(GAME.time % 60), GAME.time % 1 * 1000)
+        TEXTS.gigatime:set(str)
+        local w, h = TEXTS.gigatime:getDimensions()
+        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .26 * GigaSpeed.showAlpha)
+        gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w / 2, h / 2)
+        gc_setAlpha(GigaSpeed.showAlpha)
+        gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w / 2, h / 2)
+    end
+    -- GigaSpeed Anim
+    if GigaSpeed.textTimer then
+        GC.setBlendMode('add', 'alphamultiply')
+        gc_setColor(.26, .26, .26)
+        for t = -10, 10, 3 do
+            gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + t * .01) ^ 7 * 1800, 395, nil, 1.6)
         end
+        GC.setBlendMode('alpha')
+    end
+    if GAME.playing then
         -- Quests
         for i = 1, #GAME.quests do
             local t = GAME.quests[i].name
-            local kx = math.min(questStyle[i].k, 1550 / t:getWidth())
-            local ky = math.max(kx, questStyle[i].k * .8)
+            local kx = min(questStyle[i].k, 1550 / t:getWidth())
+            local ky = max(kx, questStyle[i].k * .8)
             local a = 1
             if M.IN == 2 and i == 1 then
                 a = 1 - GAME.questTime * GAME.floor * .26
                 if GAME.faultWrong then
-                    a = math.max(a, .355)
+                    a = max(a, .355)
                 end
             end
             gc_setColor(.2, .2, .2, a)
@@ -374,7 +390,7 @@ function scene.overDraw()
         gc_rectangle('line', 390, 430, -360, -20 - 2 * delay)
 
         -- Health Bar
-        gc_setColor(GAME.life > math.max(GAME.dmgWrong, GAME.dmgTime) and COLOR.L or COLOR.R)
+        gc_setColor(GAME.life > max(GAME.dmgWrong, GAME.dmgTime) and COLOR.L or COLOR.R)
         gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
         -- Gravity Timer
@@ -414,10 +430,18 @@ function scene.overDraw()
         gc_setColor(1, 1, 1, .42)
         gc_mRect('line', 800, 975, 420, 26)
 
-        -- Height & Timer
-        setFont(40)
-        GC.strokePrint('full', 3, COLOR.D, COLOR.L, ("%.1fm"):format(GAME.height), 800, 942, nil, 'center')
-        GC.strokePrint('full', 3, COLOR.D, COLOR.L, STRING.time_simp(GAME.time), 375, 950)
+        -- Height & Time
+        TEXTS.height:set(("%.1fm"):format(GAME.height))
+        TEXTS.time:set(STRING.time_simp(GAME.time))
+        gc_setColor(COLOR.D)
+        local wid, hgt = TEXTS.height:getDimensions()
+        gc_strokeDraw('full', 2, TEXTS.height, 800, 970, 0, 1, 1, wid / 2, hgt / 2)
+        wid, hgt = TEXTS.time:getDimensions()
+        gc_strokeDraw('full', 2, TEXTS.time, 375, 978, 0, 1, 1, wid / 2, hgt / 2)
+
+        gc_setColor(COLOR.L)
+        gc_mDraw(TEXTS.height, 800, 970)
+        gc_mDraw(TEXTS.time, 375, 978)
         gc_translate(0, -h)
     end
 
@@ -449,11 +473,11 @@ function scene.overDraw()
         -- Last height
         gc_replaceTransform(SCR.xOy_u)
         gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.height, 0, 140 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TEXTS.time, 0, 204 - 3.2 * d)
+        gc_mDraw(TEXTS.endHeight, 0, 140 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TEXTS.endTime, 0, 204 - 3.2 * d)
         gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.height, 0, 135 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TEXTS.time, 0, 201 - 3.2 * d)
+        gc_mDraw(TEXTS.endHeight, 0, 135 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TEXTS.endTime, 0, 201 - 3.2 * d)
 
         -- Top bar & texts
         gc_setColor(ShadeColor)
@@ -490,7 +514,7 @@ function scene.overDraw()
         local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id
         gc_replaceTransform(SCR.xOy_d)
         gc_setColor(ShadeColor)
-        GC.setAlpha(.7023)
+        gc_setAlpha(.7023)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and M[infoID] == 2 then
             setFont(60)

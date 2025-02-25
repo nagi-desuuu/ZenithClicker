@@ -57,14 +57,17 @@ TEXTS = {
     load       = GC.newText(FONT.get(60), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
     sr         = GC.newText(FONT.get(50)),
-    height     = GC.newText(FONT.get(50)),
-    time       = GC.newText(FONT.get(30)),
+    endHeight  = GC.newText(FONT.get(50)),
+    endTime    = GC.newText(FONT.get(30)),
+    height     = GC.newText(FONT.get(30, '_mono')),
+    time       = GC.newText(FONT.get(30, '_mono')),
     chain      = GC.newText(FONT.get(50)),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
     gigaspeed  = GC.newText(FONT.get(50), {
-        COLOR.lR, "G", COLOR.lO, "I", COLOR.lY, "G",
-        COLOR.lK, "A", COLOR.lG, "S", COLOR.lJ, "P",
-        COLOR.lC, "E", COLOR.lS, "E", COLOR.lB, "D" }),
+        COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
+        COLOR.K, "A", COLOR.G, "S", COLOR.J, "P",
+        COLOR.C, "E", COLOR.S, "E", COLOR.B, "D" }),
+    gigatime   = GC.newText(FONT.get(50, '_mono')),
     slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
@@ -79,6 +82,9 @@ if notLoaded then
         for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
         for _, q in next, GAME.quests do q.name:setFont(FONT.get(60)) end
         WIDGET._reset()
+        TEXTS.height:setFont(FONT.get(30, '_mono'))
+        TEXTS.time:setFont(FONT.get(30, '_mono'))
+        TEXTS.gigatime:setFont(FONT.get(50, '_mono'))
     end)
 end
 
