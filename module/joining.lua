@@ -27,6 +27,7 @@ function scene.update(dt)
             TASK.new(Daemon_Floor)
             ---@diagnostic disable-next-line
             local _ = TEXTURE.glass_a, TEXTURE.glass_b, TEXTURE.throb_a, TEXTURE.throb_b
+            for i=1,10 do TEXTURE.floorBG[i]:setWrap('repeat', 'repeat') end
         end
     elseif t2 > 0 then
         t2 = t2 - dt

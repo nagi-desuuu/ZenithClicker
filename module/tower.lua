@@ -158,6 +158,7 @@ end
 function scene.update(dt)
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
+    GAME.bgH = MATH.expApproach(GAME.bgH, GAME.height, dt * 2.6)
     if DeckPress > 0 then
         DeckPress = DeckPress - dt
     end
@@ -210,7 +211,7 @@ local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
-local gc_mDraw, gc_mRect = GC.mDraw, GC.mRect
+local gc_mDraw, gc_mDrawQ, gc_mRect = GC.mDraw, GC.mDrawQ, GC.mRect
 local setFont = FONT.set
 
 local titleText = gc.newText(FONT.get(50), "EXPERT QUICK PICK")
@@ -239,7 +240,28 @@ local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     gc_setColor(1, 1, 1, Background.alpha * .42)
-    gc_mDraw(TEXTURE.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+    if Background.floor < 10 then
+        Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080)
+    end
+    gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
+        SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+
+    -- Particles
+    local dh = GAME.bgH - GAME.bgLastH
+    GAME.bgLastH = GAME.bgH
+    for i = 1, 62 do
+        local w = Wind[i]
+        w[2] = w[2] + dh / w[3] / 42
+        if w[2] < 0 or w[2] > 1 then
+            w[1], w[2] = math.random(), w[2] % 1
+        end
+        WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, nil, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
+    end
+    gc_setColor(1, 1, 1, GAME.uiHide *
+        MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
+        MATH.cLerp(.62, 1, math.abs(dh * 26)))
+    print(dh)
+    gc_draw(WindBatch)
 
     -- Card Panel
     gc_replaceTransform(SCR.xOy)

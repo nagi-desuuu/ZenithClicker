@@ -67,6 +67,8 @@ local GAME = {
     rank = 1,
     xp = 0,
     height = 0,
+    bgH = 0,
+    bgLastH = 0,
 }
 local M = GAME.mod
 local MD = ModData
@@ -377,6 +379,7 @@ function GAME.upFloor()
             DATA.save()
         end
         GAME.updateBgm('f10')
+        Background.quad:setViewport(0, 0, 1920, 1080, 1920, 1080)
     end
 
     DiscordRPC.update {

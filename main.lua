@@ -66,6 +66,7 @@ FloatOnCard = nil
 Background = {
     floor = 2,
     alpha = 0,
+    quad = GC.newQuad(0, 0, 1920, 1080, 1920, 1080)
 }
 ImpactGlow = {}
 DeckPress = 0
@@ -74,6 +75,12 @@ ThrobAlpha = {
     bg1 = 0,
     bg2 = 0,
 }
+Wind = {}
+WindBatch = GC.newSpriteBatch(GC.load { w = 1, h = 1, { 'clear', 1, 1, 1, 1 } }, 260, 'static')
+for i = 1, 62 do
+    Wind[i] = { math.random(), math.random(), MATH.clampInterpolate(1, 0.5, 260, 2.6, i) }
+    WindBatch:add(0, 0)
+end
 
 BgmSets = {
     all = {
@@ -84,7 +91,6 @@ BgmSets = {
     },
     assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
-
 DeckData = {
     { id = 'EX', initOrder = 1, lockfull = false },
     { id = 'NH', initOrder = 2, lockfull = true },
