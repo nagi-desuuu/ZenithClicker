@@ -806,7 +806,7 @@ function GAME.finish(reason)
             DATA.save()
         end
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
-        TEXTS.endTime:set(STRING.time_simp(GAME.time))
+        TEXTS.endTime:set(STRING.time_simp(GAME.time) .. "     F"..GAME.floor..": " .. Floors[GAME.floor].name)
     else
         TEXTS.endHeight:set("")
         TEXTS.endTime:set("")
