@@ -67,7 +67,7 @@ TEXTS = {
 if notLoaded then
     TASK.new(function()
         TASK.yieldN(26)
-        TASK.yieldT(math.random() ^ 2 * 62)
+        TASK.yieldT(math.random() ^ 2 * 26)
         FONT.setDefaultFont('_norm')
         local scale = 60 / TEXTS.load:getFont():getHeight()
         for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end

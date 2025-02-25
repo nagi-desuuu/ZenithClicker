@@ -457,14 +457,19 @@ function GAME.refreshLockState()
 end
 
 function GAME.refreshPBText()
-    local h = DATA.highScore[table.concat(TABLE.sort(GAME.getHand(true)))]
-    if h == 0 then return TEXTS.pb:set("No Score Yet") end
+    local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    local height = DATA.highScore[setStr]
+    local time = DATA.speedrun[setStr]
+    if height == 0 then return TEXTS.pb:set("No Score Yet") end
+    local floor
     for f = 1, #Floors do
-        if h < Floors[f].top then
-            TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(h, f))
+        if height < Floors[f].top then
+            floor = f
             break
         end
     end
+    TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, floor))
+    TEXTS.sr:set(time<1e99 and STRING.time(time) or "")
 end
 
 function GAME.refreshRev()
