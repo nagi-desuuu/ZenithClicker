@@ -506,7 +506,18 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 30, text = "      BACK", textColor = 'DL',
-        onClick = WIDGET.c_pressKey 'escape',
+        onClick = function()
+            if GAME.playing then
+                if TASK.lock('sure_forfeit', 2.6) then
+                    MSG.clear()
+                    MSG('dark', "PRESS AGAIN TO FORFEIT", 2.6)
+                else
+                    GAME.finish('forfeit')
+                end
+            else
+                love.keypressed('escape')
+            end
+        end,
     },
     WIDGET.new {
         name = 'start', type = 'button',
