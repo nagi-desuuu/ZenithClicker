@@ -38,7 +38,7 @@ TEXTURE = {
 }
 TEXTURE = IMG.init(TEXTURE, true)
 
-local notLoaded = MATH.roll(0.42)
+local notLoaded = MATH.roll(0.26)
 if notLoaded then
     FONT.load {
         tnr = "assets/Times New Roman.ttf",
@@ -55,6 +55,10 @@ TEXTS = {
     time       = GC.newText(FONT.get(30)),
     chain      = GC.newText(FONT.get(50)),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
+    hyperspeed = GC.newText(FONT.get(50), {
+        COLOR.lR, "G", COLOR.lO, "I", COLOR.lY, "G",
+        COLOR.lK, "A", COLOR.lG, "S", COLOR.lJ, "P",
+        COLOR.lC, "E", COLOR.lS, "E", COLOR.lB, "D" }),
     slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
@@ -102,7 +106,13 @@ Background = {
     alpha = 0,
     quad = GC.newQuad(0, 0, 1920, 1080, 1920, 1080)
 }
-HyperSpeed = {}
+HyperSpeed = {
+    r = 0,
+    g = 0,
+    b = 0,
+    alpha = 0,
+    textTimer = false,
+}
 ImpactGlow = {}
 DeckPress = 0
 ThrobAlpha = {
@@ -449,7 +459,8 @@ function Daemon_Beat()
         ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
         ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
 
-        HyperSpeedAlpha = 1 - 4 * T / bar % 1
+        HyperSpeed.r, HyperSpeed.g, HyperSpeed.b = COLOR.HSV(T / bar % 1, .626, 1)
+        HyperSpeed.alpha = 1 - 4 * T / bar % 1
 
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then

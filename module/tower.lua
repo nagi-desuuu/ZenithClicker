@@ -100,7 +100,7 @@ local function keyPress(key)
                 C:setActive()
             else
                 C:flick()
-                SFX.play('boardlock_clink')
+                SFX.play('no')
             end
         end
     end
@@ -230,7 +230,7 @@ local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     if GAME.playing and Background.floor < 10 then
-        gc_setColor(1, 1, 1, Background.alpha * (GAME.hyperspeed and (.26 + .26 * HyperSpeedAlpha) or .42))
+        gc_setColor(1, 1, 1, Background.alpha * (GAME.hyperspeed and (.26 + .26 * HyperSpeed.alpha) or .42))
     else
         gc_setColor(1, 1, 1, Background.alpha * .42)
     end
@@ -254,8 +254,15 @@ function scene.draw()
         MATH.cLerp(.62, 1, math.abs(dh * 26)))
     gc_draw(WindBatch)
 
-    -- Card Panel
     gc_replaceTransform(SCR.xOy)
+
+    -- HyperSpeed Anim
+    if GAME.playing and GAME.floor < 10 and GAME.hyperspeed then
+        gc_setColor(HyperSpeed.r, HyperSpeed.g, HyperSpeed.b, .1)
+        gc_mRect('fill', 800, 115, 1600, 210)
+    end
+
+    -- Card Panel
     gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
@@ -282,7 +289,7 @@ function scene.draw()
         local k = MATH.clampInterpolate(6, .7023, 26, 2, GAME.chain)
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
-        gc_draw(TEXTS.b2b, x, 212, 0, 1, 1.1)
+        gc_draw(TEXTS.b2b, x, 216, 0, 1, 1.1)
         if GAME.fault then
             gc_setColor(.62, .62, .62, GAME.chain < 8 and .26 or 1)
         else
@@ -295,7 +302,7 @@ function scene.draw()
         GC.blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         GC.setAlpha(1)
-        gc_draw(TEXTS.b2b, x, 210, 0, 1, 1.1)
+        gc_draw(TEXTS.b2b, x, 214, 0, 1, 1.1)
         gc_setColor(COLOR.L)
         GC.strokeDraw('full', k * 2, TEXTS.chain, 326, 270, 0, k, 1.1 * k,
             TEXTS.chain:getWidth() / 2, TEXTS.chain:getHeight() / 2)
@@ -328,9 +335,12 @@ function scene.overDraw()
     end
 
     if GAME.playing then
-        if GAME.floor < 10 and GAME.hyperspeed then
-            gc_setColor(1, 1, 1, .1 * HyperSpeedAlpha)
-            gc_mRect('fill', 800, 115, 1600, 210)
+        -- HyperSpeed Anim
+        if HyperSpeed.textTimer then
+            gc_setColor(1, 1, 1, .62)
+            for t = -10, 10, 3 do
+                gc_mDraw(TEXTS.hyperspeed, 800 + (HyperSpeed.textTimer + t * .01) ^ 5 * 1800, 250, nil, 1.6)
+            end
         end
         -- Quests
         for i = 1, #GAME.quests do

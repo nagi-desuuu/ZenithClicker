@@ -209,6 +209,14 @@ function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
 
+function GAME.task_hyperspeed()
+    TWEEN.new(function(t)
+        HyperSpeed.textTimer = 1 - 2 * t
+    end):setEase('Linear'):setDuration(2.6):setOnFinish(function()
+        HyperSpeed.textTimer = false
+    end):run()
+end
+
 function GAME.task_fatigueWarn()
     for _ = 1, 3 do
         for _ = 1, 3 do SFX.play('warning', 1, 0, M.GV) end
@@ -345,6 +353,8 @@ function GAME.addXP(xp)
         if not GAME.hyperspeedEntered and GAME.rank >= HyperSpeedReq.enterLV[GAME.floor] then
             GAME.hyperspeed = true
             GAME.hyperspeedEntered = true
+            TASK.removeTask_code(GAME.task_hyperspeed)
+            TASK.new(GAME.task_hyperspeed)
             SFX.play('zenith_speedrun_start')
         end
     end
