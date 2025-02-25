@@ -230,7 +230,7 @@ local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     if GAME.playing and Background.floor < 10 then
-        gc_setColor(1, 1, 1, Background.alpha * (GAME.hyperspeed and (.26 + .26 * HyperSpeed.alpha) or .42))
+        gc_setColor(1, 1, 1, Background.alpha * (GAME.gigaspeed and (.26 + .26 * GigaSpeed.alpha) or .42))
     else
         gc_setColor(1, 1, 1, Background.alpha * .42)
     end
@@ -238,7 +238,7 @@ function scene.draw()
     gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
         SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
-    -- Particles
+    -- Wind Particles
     local dh = GAME.bgH - GAME.bgLastH
     GAME.bgLastH = GAME.bgH
     for i = 1, 62 do
@@ -249,24 +249,28 @@ function scene.draw()
         end
         WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, nil, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
     end
-    gc_setColor(1, 1, 1, GAME.uiHide *
+    gc_setColor(1, 1, 1, GAME.uiHide * Background.alpha *
         MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
         MATH.cLerp(.62, 1, math.abs(dh * 26)))
     gc_draw(WindBatch)
 
     gc_replaceTransform(SCR.xOy)
 
-    -- HyperSpeed Anim
-    if GAME.playing and GAME.floor < 10 and GAME.hyperspeed then
-        gc_setColor(HyperSpeed.r, HyperSpeed.g, HyperSpeed.b, .1)
-        gc_mRect('fill', 800, 115, 1600, 210)
+    -- GigaSpeed BG
+    if GigaSpeed.showAlpha > 0 then
+        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.showAlpha)
+        gc_draw(TEXTURE.transition, 0, 10, 0, 626 / 128, 450)
+        gc_draw(TEXTURE.transition, 1600, 10, 0, -626 / 128, 450)
+        local h = 697 + GAME.uiHide * 420
+        GC.setAlpha(.626 * GigaSpeed.showAlpha)
+        gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     end
 
     -- Card Panel
     gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
-    GC.setAlpha(.872)
+    GC.setAlpha(.8)
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
@@ -335,11 +339,11 @@ function scene.overDraw()
     end
 
     if GAME.playing then
-        -- HyperSpeed Anim
-        if HyperSpeed.textTimer then
+        -- GigaSpeed Anim
+        if GigaSpeed.textTimer then
             gc_setColor(1, 1, 1, .62)
             for t = -10, 10, 3 do
-                gc_mDraw(TEXTS.hyperspeed, 800 + (HyperSpeed.textTimer + t * .01) ^ 5 * 1800, 250, nil, 1.6)
+                gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + t * .01) ^ 5 * 1800, 250, nil, 1.6)
             end
         end
         -- Quests

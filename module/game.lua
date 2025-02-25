@@ -23,8 +23,8 @@ local ins, rem = table.insert, table.remove
 ---@field fatigue number
 ---@field dmgTimer number
 ---@field chain number
----@field hyperspeed boolean
----@field hyperspeedEntered boolean
+---@field gigaspeed boolean
+---@field gigaspeedEntered boolean
 local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
@@ -209,11 +209,11 @@ function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
 
-function GAME.task_hyperspeed()
+function GAME.task_gigaspeed()
     TWEEN.new(function(t)
-        HyperSpeed.textTimer = 1 - 2 * t
+        GigaSpeed.textTimer = 1 - 2 * t
     end):setEase('Linear'):setDuration(2.6):setOnFinish(function()
-        HyperSpeed.textTimer = false
+        GigaSpeed.textTimer = false
     end):run()
 end
 
@@ -350,11 +350,13 @@ function GAME.addXP(xp)
     end
     if rankup then
         SFX.play('speed_up_' .. MATH.clamp(2 + math.floor(GAME.rank / 2), 1, 4), .4 + GAME.xpLockLevel / 10)
-        if not GAME.hyperspeedEntered and GAME.rank >= HyperSpeedReq.enterLV[GAME.floor] then
-            GAME.hyperspeed = true
-            GAME.hyperspeedEntered = true
-            TASK.removeTask_code(GAME.task_hyperspeed)
-            TASK.new(GAME.task_hyperspeed)
+        if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq.enterLV[GAME.floor] then
+            GAME.gigaspeed = true
+            GAME.gigaspeedEntered = true
+            local s = GigaSpeed.showAlpha
+            TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 1, t) end):setUnique('gigaspeed'):run()
+            TASK.removeTask_code(GAME.task_gigaspeed)
+            TASK.new(GAME.task_gigaspeed)
             SFX.play('zenith_speedrun_start')
         end
     end
@@ -387,11 +389,11 @@ function GAME.upFloor()
         color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
-    if GAME.hyperspeed then
+    if GAME.gigaspeed then
         SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
     end
     if GAME.floor == 10 then
-        if GAME.hyperspeed then
+        if GAME.gigaspeed then
             local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
             local t = DATA.speedrun[setStr]
             if GAME.time < t then
@@ -469,7 +471,7 @@ function GAME.refreshPBText()
         end
     end
     TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, floor))
-    TEXTS.sr:set(time<1e99 and STRING.time(time) or "")
+    TEXTS.sr:set(time < 1e99 and STRING.time(time) or "")
 end
 
 function GAME.refreshRev()
@@ -697,8 +699,8 @@ function GAME.start()
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
     GAME.atkBuffer = 0
-    GAME.hyperspeed = false
-    GAME.hyperspeedEntered = false
+    GAME.gigaspeed = false
+    GAME.gigaspeedEntered = false
 
     GAME.upFloor()
 
@@ -791,6 +793,8 @@ function GAME.finish(reason)
         TEXTS.time:set("")
     end
 
+    local s = GigaSpeed.showAlpha
+    TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 0, t) end):setUnique('gigaspeed'):run()
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
     GAME.refreshPBText()
@@ -885,8 +889,10 @@ function GAME.update(dt)
                     GAME.rank = GAME.rank - 1
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
-                    if GAME.floor < 10 and GAME.hyperspeed and GAME.rank < HyperSpeedReq.retainLV[GAME.floor] then
-                        GAME.hyperspeed = false
+                    if GAME.floor < 10 and GAME.gigaspeed and GAME.rank < GigaSpeedReq.retainLV[GAME.floor] then
+                        GAME.gigaspeed = false
+                        local s = GigaSpeed.showAlpha
+                        TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 0, t) end):setUnique('gigaspeed'):run()
                         SFX.play('zenith_speedrun_end')
                     end
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)

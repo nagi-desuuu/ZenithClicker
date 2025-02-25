@@ -36,6 +36,12 @@ TEXTURE = {
     DP = { lock = p 'lockover-supporter.png', front = p 'duo.png', back = p 'duo-back.png', throb = p 'duo-throb.png', },
     floorBG = { p '1fa.jpg', p '2fa.jpg', p '3fa.jpg', p '4fa.jpg', p '5fa.jpg', p '6fa.jpg', p '7fa.jpg', p '8fa.jpg', p '9fa.jpg', p '10fa.jpg' },
 }
+local transition = { w = 128, h = 1 }
+for x = 0, 127 do
+    table.insert(transition, { 'setCL', 1, 1, 1, 1 - x / 128 })
+    table.insert(transition, { 'fRect', x, 0, 1, 1 })
+end
+TEXTURE.transition = GC.load(transition)
 TEXTURE = IMG.init(TEXTURE, true)
 
 local notLoaded = MATH.roll(0.26)
@@ -55,7 +61,7 @@ TEXTS = {
     time       = GC.newText(FONT.get(30)),
     chain      = GC.newText(FONT.get(50)),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
-    hyperspeed = GC.newText(FONT.get(50), {
+    gigaspeed  = GC.newText(FONT.get(50), {
         COLOR.lR, "G", COLOR.lO, "I", COLOR.lY, "G",
         COLOR.lK, "A", COLOR.lG, "S", COLOR.lJ, "P",
         COLOR.lC, "E", COLOR.lS, "E", COLOR.lB, "D" }),
@@ -106,11 +112,12 @@ Background = {
     alpha = 0,
     quad = GC.newQuad(0, 0, 1920, 1080, 1920, 1080)
 }
-HyperSpeed = {
+GigaSpeed = {
     r = 0,
     g = 0,
     b = 0,
     alpha = 0,
+    showAlpha = 0,
     textTimer = false,
 }
 ImpactGlow = {}
@@ -355,7 +362,7 @@ GravityTimer = {
     { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
 }
 
-HyperSpeedReq = {
+GigaSpeedReq = {
     enterLV = { 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 },
     retainLV = { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 },
 }
@@ -459,8 +466,8 @@ function Daemon_Beat()
         ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
         ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
 
-        HyperSpeed.r, HyperSpeed.g, HyperSpeed.b = COLOR.HSV(T / bar % 1, .626, 1)
-        HyperSpeed.alpha = 1 - 4 * T / bar % 1
+        GigaSpeed.r, GigaSpeed.g, GigaSpeed.b = COLOR.HSV(T / bar % 1, .626, 1)
+        GigaSpeed.alpha = 1 - 4 * T / bar % 1
 
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
