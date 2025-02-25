@@ -10,17 +10,7 @@ function Card.new(d)
     local obj = setmetatable({
         initOrder = d.initOrder,
         id = d.id,
-        name = d.name,
-        fullName = d.fullName,
-        desc = d.desc,
-        revName = d.revName,
-        revDesc = d.revDesc,
-
-        frontImg = GC.newImage('assets/' .. d.name .. '.png'),
-        backImg = GC.newImage('assets/' .. d.name .. '-back.png'),
-        throbImg = GC.newImage('assets/' .. d.name .. '-throb.png'),
-        lockfull = d.lockfull and GC.newImage('assets/' .. d.lockfull .. '.png'),
-        lockover = d.lockover and GC.newImage('assets/' .. d.lockover .. '.png'),
+        lockfull = d.lockfull,
 
         lock = true,
         active = false,
@@ -58,7 +48,7 @@ local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
     local M = GAME.mod
-    if TASK.getLock('cannotFlip') or GAME.playing and M.NH==1 and not auto and self.active then
+    if TASK.getLock('cannotFlip') or GAME.playing and M.NH == 1 and not auto and self.active then
         SFX.play('no')
         return
     end
@@ -207,7 +197,7 @@ function Card:setActive(auto, key)
     end
     if revOn then
         SFX.play('card_select_reverse', 1, 0, M.GV)
-        SFX.play('card_tone_' .. self.name .. '_reverse', 1, 0, M.GV)
+        SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', 1, 0, M.GV)
         TASK.new(function()
             TASK.yieldT(0.62)
             local currentState = M[self.id]
@@ -222,7 +212,7 @@ function Card:setActive(auto, key)
                         C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
                     end
                 end
-                local color = Mod.color[self.id]
+                local color = ModData.color[self.id]
                 table.insert(ImpactGlow, {
                     r = (color[1] - .26) * .8,
                     g = (color[2] - .26) * .8,
@@ -249,7 +239,7 @@ function Card:setActive(auto, key)
     else
         SFX.play('card_select', 1, 0,
             key and MATH.clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
-        SFX.play('card_tone_' .. self.name, 1, 0, M.GV)
+        SFX.play('card_tone_' .. ModData.name[self.id], 1, 0, M.GV)
     end
     if not noSpin then self:spin() end
     if revOn then self:bounce(1200, .62) end
@@ -338,14 +328,16 @@ function Card:draw()
     local playing = GAME.playing
     local img, img2
     if self.lock and self.lockfull then
-        img = self.lockfull
+        img = TEXTURE[self.id].lock
     else
         if GAME.mod.IN == 2 then
-            img = self.backImg
+            img = TEXTURE[self.id].cardBack
         else
-            img = self.kx * self.ky > 0 and self.frontImg or self.backImg
+            img = self.kx * self.ky > 0 and TEXTURE[self.id].cardFront or TEXTURE[self.id].cardBack
         end
-        img2 = self.lock and self.lockover
+        if self.lock then
+            img2 = TEXTURE[self.id].lock
+        end
     end
 
     gc_push('transform')
@@ -414,12 +406,13 @@ function Card:draw()
     end
 
     if not playing then
-        if not self.upright and GAME.revDeckSkin and img == self.frontImg then
+        if not self.upright and GAME.revDeckSkin and img == TEXTURE[self.id].cardFront then
             gc_setColor(1, 1, 1, ThrobAlpha.card)
-            gc_draw(self.throbImg, -self.throbImg:getWidth() / 2, -self.throbImg:getHeight() / 2)
+            local throbImg = TEXTURE[self.id].cardThrob
+            gc_draw(throbImg, -throbImg:getWidth() / 2, -throbImg:getHeight() / 2)
         end
         if completion[self.id] > 0 then
-            img = self.active and IMG.star1 or IMG.star0
+            img = self.active and TEXTURE.star1 or TEXTURE.star0
             local t = self.upright and self.float or 1
             local blur = (FloatOnCard == self.initOrder or not self.upright) and 0 or -.2
             local x = lerp(155, 0, t)
@@ -458,11 +451,11 @@ function Card:draw()
                     gc_setColor(.5, .5, .5, t)
                     GC.blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1, t)
-                    gc_mDraw(IMG.star1, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
-                    gc_mDraw(IMG.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
                 else
                     gc_setColor(1, 1, 1, t)
-                    gc_mDraw(IMG.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
                 end
             end
         end

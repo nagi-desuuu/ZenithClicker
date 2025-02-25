@@ -1,4 +1,5 @@
 local M = GAME.mod
+local MD = ModData
 
 local scene = {}
 
@@ -238,7 +239,7 @@ local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     gc_setColor(1, 1, 1, Background.alpha * .42)
-    gc_mDraw(IMG.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
+    gc_mDraw(TEXTURE.floorBG[Background.floor], SCR.w / 2, SCR.h / 2, nil, math.max(SCR.w / 1920, SCR.h / 1080))
 
     -- Card Panel
     gc_replaceTransform(SCR.xOy)
@@ -249,12 +250,12 @@ function scene.draw()
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
-        gc_mDraw(IMG.glass_a, 800, h)
-        gc_mDraw(IMG.glass_b, 800, h)
+        gc_mDraw(TEXTURE.glass_a, 800, h)
+        gc_mDraw(TEXTURE.glass_b, 800, h)
         gc_setColor(1, 1, 1, ThrobAlpha.bg1)
-        gc_mDraw(IMG.throb_a, 800, h)
+        gc_mDraw(TEXTURE.throb_a, 800, h)
         gc_setColor(1, 1, 1, ThrobAlpha.bg2)
-        gc_mDraw(IMG.throb_b, 800, h)
+        gc_mDraw(TEXTURE.throb_b, 800, h)
     end
     gc_setColor(ShadeColor)
     gc_setLineWidth(4)
@@ -453,23 +454,26 @@ function scene.overDraw()
     -- Card info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
-        if C.lock then C = DeckData[C.id == 'DP' and 'lockDP' or 'lock'] end
+        local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id
         gc_replaceTransform(SCR.xOy_d)
         gc_setColor(ShadeColor)
         GC.setAlpha(.7023)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
-        if GAME.anyRev and C.id and M[C.id] == 2 then
+        if GAME.anyRev and M[infoID] == 2 then
             setFont(60)
-            GC.strokePrint('full', 6, COLOR.DW, nil, C.revName, 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
-            GC.strokePrint('full', 4, COLOR.dW, nil, C.revName, 195, -145 + 2, 2600, 'center', nil, 0.85, 1)
-            GC.strokePrint('full', 2, COLOR.W, COLOR.L, C.revName, 195, -145, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 195, -145 + 2, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 195, -145, 2600, 'center', nil, 0.85, 1)
             setFont(30)
-            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, C.revDesc, 2600 * 0.15, -75, 2600, 'center', nil, 0.7, 1)
+            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 2600 * 0.15, -75, 2600, 'center', nil,
+                0.7, 1)
         else
             setFont(60)
-            GC.strokePrint('full', 3, ShadeColor, TextColor, C.fullName, 195, -145, 2600, 'center', nil, 0.85, 1)
+            GC.strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 195, -145, 2600, 'center', nil,
+                0.85, 1)
             setFont(30)
-            GC.strokePrint('full', 2, ShadeColor, TextColor, C.desc, 2600 * 0.15, -75, 2600, 'center', nil, 0.7, 1)
+            GC.strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 2600 * 0.15, -75, 2600, 'center', nil,
+                0.7, 1)
         end
     end
 

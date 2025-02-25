@@ -69,6 +69,7 @@ local GAME = {
     height = 0,
 }
 local M = GAME.mod
+local MD = ModData
 
 --- Unsorted
 function GAME.getHand(showRev)
@@ -116,14 +117,14 @@ function GAME.getComboName(list, extend, colored)
         local str = table.concat(TABLE.sort(list), ' ')
         if Combos[str] and (Combos[str].basic or extend) then return { COLOR.dL, Combos[str].name } end
 
-        table.sort(list, function(a, b) return Mod.prio[a] < Mod.prio[b] end)
+        table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
 
         for i = 1, len - 1 do
-            ins(fstr, Mod.textColor[list[i]])
-            ins(fstr, Mod.adj[list[i]] .. " ")
+            ins(fstr, MD.textColor[list[i]])
+            ins(fstr, MD.adj[list[i]] .. " ")
         end
-        ins(fstr, Mod.textColor[list[len]])
-        ins(fstr, Mod.noun[list[len]])
+        ins(fstr, MD.textColor[list[len]])
+        ins(fstr, MD.noun[list[len]])
         if M.IN > 0 then
             local r = 0
             for i = 1, #fstr, 2 do
@@ -135,7 +136,7 @@ function GAME.getComboName(list, extend, colored)
         return fstr
     else
         if len == 0 then return "" end
-        if len == 1 then return Mod.noun[list[1]] end
+        if len == 1 then return MD.noun[list[1]] end
 
         if not GAME.anyRev and not TABLE.find(list, 'DP') then
             if len == 8 then return [["SWAMP WATER"]] end
@@ -145,11 +146,11 @@ function GAME.getComboName(list, extend, colored)
         local str = table.concat(TABLE.sort(list), ' ')
         if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
 
-        table.sort(list, function(a, b) return Mod.prio[a] < Mod.prio[b] end)
+        table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
 
         str = ""
-        for i = 1, len - 1 do str = str .. Mod.adj[list[i]] .. " " end
-        return str .. Mod.noun[list[len]]
+        for i = 1, len - 1 do str = str .. MD.adj[list[i]] .. " " end
+        return str .. MD.noun[list[len]]
     end
 end
 
@@ -262,7 +263,7 @@ function GAME.genQuest()
     end
     GAME.atkBuffer = math.max(GAME.atkBuffer - math.max(GAME.floor / 3, 2), 0)
 
-    local pool = TABLE.copyAll(Mod.weight)
+    local pool = TABLE.copyAll(MD.weight)
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then pool[lastQ.combo[1]] = nil end
     for _ = 1, MATH.clamp(MATH.roundRnd(r), 1, 5) do

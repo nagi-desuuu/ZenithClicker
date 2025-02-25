@@ -12,26 +12,27 @@ SCR.setSize(1600, 1000)
 
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
-IMG.init {
-    star0 = 'assets/crystal-dark.png',
-    star1 = 'assets/crystal.png',
-    glass_a = 'assets/glass-a.png',
-    glass_b = 'assets/glass-b.png',
-    throb_a = 'assets/throb-a.png',
-    throb_b = 'assets/throb-b.png',
-    floorBG = {
-        'assets/1fa.jpg',
-        'assets/2fa.jpg',
-        'assets/3fa.jpg',
-        'assets/4fa.jpg',
-        'assets/5fa.jpg',
-        'assets/6fa.jpg',
-        'assets/7fa.jpg',
-        'assets/8fa.jpg',
-        'assets/9fa.jpg',
-        'assets/10fa.jpg',
-    },
+---@return love.Texture
+local function p(path) return 'assets/' .. path end
+TEXTURE = {
+    star0 = p 'crystal-dark.png',
+    star1 = p 'crystal.png',
+    glass_a = p 'glass-a.png',
+    glass_b = p 'glass-b.png',
+    throb_a = p 'throb-a.png',
+    throb_b = p 'throb-b.png',
+    EX = { lock = p 'lockover-9.png', front = p 'expert.png', back = p 'expert-back.png', thorb = p 'expert-throb.png', },
+    NH = { lock = p 'lockfull-2.png', front = p 'nohold.png', back = p 'nohold-back.png', thorb = p 'nohold-throb.png', },
+    MS = { lock = p 'lockfull-3.png', front = p 'messy.png', back = p 'messy-back.png', thorb = p 'messy-throb.png', },
+    GV = { lock = p 'lockfull-4.png', front = p 'gravity.png', back = p 'gravity-back.png', thorb = p 'gravity-throb.png', },
+    VL = { lock = p 'lockfull-5.png', front = p 'volatile.png', back = p 'volatile-back.png', thorb = p 'volatile-throb.png', },
+    DH = { lock = p 'lockfull-6.png', front = p 'doublehole.png', back = p 'doublehole-back.png', thorb = p 'doublehole-throb.png', },
+    IN = { lock = p 'lockfull-7.png', front = p 'invisible.png', back = p 'invisible-back.png', thorb = p 'invisible-throb.png', },
+    AS = { lock = p 'lockfull-8.png', front = p 'allspin.png', back = p 'allspin-back.png', thorb = p 'allspin-throb.png', },
+    DP = { lock = p 'lockover-supporter.png', front = p 'duo.png', back = p 'duo-back.png', thorb = p 'duo-throb.png', },
+    floorBG = { p '1fa.jpg', p '2fa.jpg', p '3fa.jpg', p '4fa.jpg', p '5fa.jpg', p '6fa.jpg', p '7fa.jpg', p '8fa.jpg', p '9fa.jpg', p '10fa.jpg' },
 }
+IMG.init(TEXTURE, true)
 
 local _DATA = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
@@ -83,19 +84,76 @@ BgmSets = {
 }
 
 DeckData = {
-    { initOrder = 1, nameOrder = 8, id = 'EX', lockover = 'lockover-9',         name = 'expert',     fullName = "< EXPERT MODE >",         desc = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE",            revName = "> THE TYRANT <",      revDesc = "FEAR, OPPRESSION, AND LIMITLESS AMBITION." },
-    { initOrder = 2, nameOrder = 4, id = 'NH', lockfull = 'lockfull-2',         name = 'nohold',     fullName = "< NO HOLD >",             desc = "CANCELING IS DISABLED",                                   revName = "> ASCETICISM <",      revDesc = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE." },
-    { initOrder = 3, nameOrder = 2, id = 'MS', lockfull = 'lockfull-3',         name = 'messy',      fullName = "< MESSIER GARBAGE  >",    desc = "TAROTS WILL BE SHUFFLED BY FLOOR",                        revName = "> LOADED DICE <",     revDesc = "IN A RIGGED GAME, YOUR MIND IS THE ONLY FAIR ADVANTAGE." },
-    { initOrder = 4, nameOrder = 7, id = 'GV', lockfull = 'lockfull-4',         name = 'gravity',    fullName = "< GRAVITY >",             desc = "AUTO COMMITTING, TIMED BY FLOOR",                         revName = "> FREEFALL <",        revDesc = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE." },
-    { initOrder = 5, nameOrder = 3, id = 'VL', lockfull = 'lockfull-5',         name = 'volatile',   fullName = "< VOLATILE GARBAGE >",    desc = "LARGER GAPS BETWEEN TAROTS, BUT MUST CLICK TWICE",        revName = "> LAST STAND <",      revDesc = "STRENGTH ISN'T NECESSARY FOR THOSE WITH NOTHING TO LOSE." },
-    { initOrder = 6, nameOrder = 5, id = 'DH', lockfull = 'lockfull-6',         name = 'doublehole', fullName = "< DOUBLE HOLE GARBAGE >", desc = "COMBOS WILL SPAWN HARDER",                                revName = "> DAMNATION <",       revDesc = "NO MORE SECOND CHANCES." },
-    { initOrder = 7, nameOrder = 1, id = 'IN', lockfull = 'lockfull-7',         name = 'invisible',  fullName = "< INVISIBLE >",           desc = "TAROTS FACE DOWN AND HINTS FLASH ONCE EVERY TWO SECONDS", revName = "> THE EXILE <",       revDesc = "NEVER UNDERESTIMATE BLIND FAITH." },
-    { initOrder = 8, nameOrder = 6, id = 'AS', lockfull = 'lockfull-8',         name = 'allspin',    fullName = "< ALL-SPIN >",            desc = "KEYBOARD AVAILABLE, BUT DOUBLE CLICKING IS PENALIZED",    revName = "> THE WARLOCK <",     revDesc = "INTO REALMS BEYOND HEAVEN AND EARTH." },
-    { initOrder = 9, nameOrder = 9, id = 'DP', lockover = 'lockover-supporter', name = 'duo',        fullName = "< DUO >",                 desc = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",              revName = "> BLEEDING HEARTS <", revDesc = "EVEN AS WE BLEED, WE KEEP HOLDING ON..." },
-    lock = { fullName = "< LOCKED >", desc = "REACH HIGHER FLOOR TO UNLOCK" },
-    lockDP = { fullName = "< LOCKED >", desc = "MASTER THIS MOD TO UNLOCK?" },
+    { id = 'EX', initOrder = 1, lockfull = false },
+    { id = 'NH', initOrder = 2, lockfull = true },
+    { id = 'MS', initOrder = 3, lockfull = true },
+    { id = 'GV', initOrder = 4, lockfull = true },
+    { id = 'VL', initOrder = 5, lockfull = true },
+    { id = 'DH', initOrder = 6, lockfull = true },
+    { id = 'IN', initOrder = 7, lockfull = true },
+    { id = 'AS', initOrder = 8, lockfull = true },
+    { id = 'DP', initOrder = 9, lockfull = false },
 }
-Mod = {
+ModData = {
+    name = {
+        EX = 'expert',
+        NH = 'nohold',
+        MS = 'messy',
+        GV = 'gravity',
+        VL = 'volatile',
+        DH = 'doublehole',
+        IN = 'invisible',
+        AS = 'allspin',
+        DP = 'duo',
+    },
+    fullName = {
+        EX = "< EXPERT MODE >",
+        NH = "< NO HOLD >",
+        MS = "< MESSIER GARBAGE  >",
+        GV = "< GRAVITY >",
+        VL = "< VOLATILE GARBAGE >",
+        DH = "< DOUBLE HOLE GARBAGE >",
+        IN = "< INVISIBLE >",
+        AS = "< ALL-SPIN >",
+        DP = "< DUO >",
+        lock = "< LOCKED >",
+        lockDP = "< LOCKED? >",
+    },
+    desc = {
+        EX = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE",
+        NH = "CANCELING IS DISABLED",
+        MS = "TAROTS WILL BE SHUFFLED BY FLOOR",
+        GV = "AUTO COMMITTING, TIMED BY FLOOR",
+        VL = "LARGER GAPS BETWEEN TAROTS, BUT MUST CLICK TWICE",
+        DH = "COMBOS WILL SPAWN HARDER",
+        IN = "TAROTS FACE DOWN AND HINTS FLASH ONCE EVERY TWO SECONDS",
+        AS = "KEYBOARD AVAILABLE, BUT DOUBLE CLICKING IS PENALIZED",
+        DP = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",
+        lock = "REACH HIGHER FLOOR TO UNLOCK",
+        lockDP = "MASTER THIS MOD TO UNLOCK",
+    },
+    revName = {
+        EX = "> THE TYRANT <",
+        NH = "> ASCETICISM <",
+        MS = "> LOADED DICE <",
+        GV = "> FREEFALL <",
+        VL = "> LAST STAND <",
+        DH = "> DAMNATION <",
+        IN = "> THE EXILE <",
+        AS = "> THE WARLOCK <",
+        DP = "> BLEEDING HEARTS <",
+    },
+    revDesc = {
+        EX = "FEAR, OPPRESSION, AND LIMITLESS AMBITION.",
+        NH = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE.",
+        MS = "IN A RIGGED GAME, YOUR MIND IS THE ONLY FAIR ADVANTAGE.",
+        GV = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE.",
+        VL = "STRENGTH ISN'T NECESSARY FOR THOSE WITH NOTHING TO LOSE.",
+        DH = "NO MORE SECOND CHANCES.",
+        IN = "NEVER UNDERESTIMATE BLIND FAITH.",
+        AS = "INTO REALMS BEYOND HEAVEN AND EARTH.",
+        DP = "EVEN AS WE BLEED, WE KEEP HOLDING ON...",
+    },
     weight = {
         EX = 13, --  8 + 5
         NH = 12, --  8 + 4
@@ -426,7 +484,7 @@ TASK.new(function()
     for _, s in next, ([[ ]]):trim():split('%s+', true) do
         TASK.yieldT(1)
         SFX.play(s)
-        love.window.setIcon(love.image.newImageData('assets/icon.png'))
+        love.window.setIcon(love.image.newImageData(p 'icon.png'))
     end
 end)
 
