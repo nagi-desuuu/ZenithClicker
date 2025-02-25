@@ -1,5 +1,5 @@
 local max, min = math.max, math.min
-local floor, abs = math.floor, math.abs
+local abs = math.abs
 
 local M = GAME.mod
 local MD = ModData
@@ -263,8 +263,8 @@ function scene.draw()
     -- GigaSpeed BG
     if GigaSpeed.alpha > 0 then
         gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha)
-        gc_draw(TEXTURE.transition, 0, 10, 0, 626 / 128, 450)
-        gc_draw(TEXTURE.transition, 1600, 10, 0, -626 / 128, 450)
+        gc_draw(TEXTURE.transition, 0, 0, 0, 626 / 128, 470)
+        gc_draw(TEXTURE.transition, 1600, 0, 0, -626 / 128, 470)
         local h = 697 + GAME.uiHide * 420
         gc_setAlpha(.626 * GigaSpeed.alpha)
         gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
@@ -421,12 +421,10 @@ function scene.overDraw()
         gc_translate(0, h)
         -- Thruster
         gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
-        gc_mRect('fill', 800, 975, 420, 26)
-        gc_setColor(rankColor[GAME.rank] or COLOR.L)
-        gc_mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 26)
-        gc.setLineWidth(2)
-        gc_setColor(1, 1, 1, .42)
+        gc.setLineWidth(6)
         gc_mRect('line', 800, 975, 420, 26)
+        gc_setColor(rankColor[GAME.rank] or COLOR.L)
+        gc_mRect('fill', 800, 975, 420 * GAME.xp / (4 * GAME.rank), 8)
 
         -- Height & Time
         TEXTS.height:set(("%.1fm"):format(GAME.height))

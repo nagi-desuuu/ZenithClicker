@@ -1,3 +1,7 @@
+local max, min = math.max, math.min
+local floor, abs = math.floor, math.abs
+local rnd = math.random
+
 local ins, rem = table.insert, table.remove
 
 ---@class Question
@@ -131,7 +135,7 @@ function GAME.getComboName(list, extend, colored)
         if M.IN > 0 then
             local r = 0
             for i = 1, #fstr, 2 do
-                r = (r + math.random(0, 3)) % 4
+                r = (r + rnd(0, 3)) % 4
                 fstr[i] = { 1, 1, 1, .55 + .15 * r }
             end
         end
@@ -242,13 +246,13 @@ end
 --         local var = floor * .26
 --         if false then base, var = base + .626, var * .626 end
 
---         local r = MATH.clamp(base + var * math.abs(MATH.randNorm()), 1, 5)
+--         local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
 --         buffer = buffer + r
 --         if buffer > 8 then
 --             r = r - (buffer - 8)
 --             buffer = 8
 --         end
---         buffer = math.max(buffer - math.max(floor / 3, 2), 0)
+--         buffer = max(buffer - max(floor / 3, 2), 0)
 
 --         r = MATH.clamp(MATH.roundRnd(r), 1, 5)
 
@@ -266,13 +270,13 @@ function GAME.genQuest()
     local var = GAME.floor * .26
     if M.DH > 0 then base, var = base + .626, var * .626 end
 
-    local r = MATH.clamp(base + var * math.abs(MATH.randNorm()), 1, 5)
+    local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
     GAME.atkBuffer = GAME.atkBuffer + r
     if GAME.atkBuffer > 8 then
         r = r - (GAME.atkBuffer - 8)
         GAME.atkBuffer = 8
     end
-    GAME.atkBuffer = math.max(GAME.atkBuffer - math.max(GAME.floor / 3, 2), 0)
+    GAME.atkBuffer = max(GAME.atkBuffer - max(GAME.floor / 3, 2), 0)
 
     local pool = TABLE.copyAll(MD.weight)
     local lastQ = GAME.quests[#GAME.quests]
@@ -303,7 +307,7 @@ function GAME.questReady()
 end
 
 function GAME.takeDamage(dmg, killReason)
-    GAME.life = math.max(GAME.life - dmg, 0)
+    GAME.life = max(GAME.life - dmg, 0)
     SFX.play(
         dmg <= 1 and 'damage_small' or
         dmg <= 4 and 'damage_medium' or
@@ -312,7 +316,7 @@ function GAME.takeDamage(dmg, killReason)
         GAME.finish(killReason)
         return true
     else
-        local dangerDmg = math.max(GAME.dmgWrong, GAME.dmgTime)
+        local dangerDmg = max(GAME.dmgWrong, GAME.dmgTime)
         if GAME.life <= dangerDmg and GAME.life + dmg > dangerDmg then
             SFX.play('hyperalert')
         end
@@ -325,7 +329,7 @@ end
 
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
-    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
+    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2.6 * GAME.rank then
         GAME.xpLockLevel = 5
     end
     local rankup
@@ -335,11 +339,11 @@ function GAME.addXP(xp)
         rankup = true
         GAME.rankupLast = true
         GAME.xpLockTimer = GAME.xpLockLevel
-        GAME.xpLockLevel = math.max(GAME.xpLockLevel - 1, 1)
+        GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
 
         -- Rank skip
         if GAME.xp >= 4 * GAME.rank then
-            GAME.rank = GAME.rank + math.floor(GAME.xp / (4 * GAME.rank))
+            GAME.rank = GAME.rank + floor(GAME.xp / (4 * GAME.rank))
             -- One more
             if GAME.xp >= 4 * GAME.rank then
                 GAME.rank = GAME.rank + 1
@@ -349,7 +353,8 @@ function GAME.addXP(xp)
         end
     end
     if rankup then
-        SFX.play('speed_up_' .. MATH.clamp(2 + math.floor(GAME.rank / 2), 1, 4), .4 + GAME.xpLockLevel / 10)
+        SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
+            .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
         if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq.enterLV[GAME.floor] then
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
@@ -406,6 +411,7 @@ function GAME.upFloor()
             GAME.setGigaspeedAnim(false)
             local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
             local t = DATA.speedrun[setStr]
+            SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .6)
             if GAME.time < t then
                 DATA.speedrun[setStr] = MATH.roundUnit(GAME.time, .001)
                 DATA.save()
@@ -552,7 +558,7 @@ function GAME.commit()
     local hand = GAME.getHand(false)
 
     if TABLE.equal(TABLE.sort(hand), TABLE.sort(Q.combo)) then
-        GAME.life = math.min(GAME.life + math.max(GAME.dmgHeal, 0), 20)
+        GAME.life = min(GAME.life + max(GAME.dmgHeal, 0), 20)
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
@@ -571,11 +577,11 @@ function GAME.commit()
                     'b2bcharge_blast_4'
                 )
                 if GAME.chain >= 8 then
-                    SFX.play('thunder' .. math.random(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
+                    SFX.play('thunder' .. rnd(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
                 end
                 while GAME.chain > 0 and GAME.life < 20 do
-                    GAME.chain = math.max(GAME.chain - 2, 0)
-                    GAME.life = math.min(GAME.life + 1, 20)
+                    GAME.chain = max(GAME.chain - 2, 0)
+                    GAME.life = min(GAME.life + 1, 20)
                 end
                 if GAME.chain > 0 then
                     attack = attack + GAME.chain
@@ -609,10 +615,10 @@ function GAME.commit()
         GAME.addXP(attack + xp)
 
         if M.MS == 2 then
-            local r1 = math.random(2, #Cards - 1)
+            local r1 = rnd(2, #Cards - 1)
             local r2, r3
-            repeat r2 = math.random(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #Cards)
-            repeat r3 = math.random(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #Cards)
+            repeat r2 = rnd(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #Cards)
+            repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #Cards)
             if GAME.floor <= 8 then
                 Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
             else
@@ -634,14 +640,14 @@ function GAME.commit()
         GAME.cancelAll(true)
         GAME.cancelBurn()
 
-        GAME.dmgTimer = math.min(GAME.dmgTimer + math.max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
+        GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
         GAME.questReady()
         return true
     else
         GAME.fault = true
         GAME.faultWrong = true
-        if GAME.takeDamage(math.min(GAME.dmgWrong, 1), 'wrongAns') then return end
+        if GAME.takeDamage(min(GAME.dmgWrong, 1), 'wrongAns') then return end
         if M.EX > 0 then
             GAME.cancelAll(true)
         elseif M.AS == 1 then
@@ -760,7 +766,7 @@ function GAME.finish(reason)
                 SFX.play('notify')
             end
             local duoWasCompleted = GAME.completion.DP
-            for k, v in next, M do GAME.completion[k] = math.max(GAME.completion[k], v) end
+            for k, v in next, M do GAME.completion[k] = max(GAME.completion[k], v) end
             unlockDuo = duoWasCompleted == 0 and GAME.completion.DP > 0
         end
         local newPB
@@ -846,7 +852,7 @@ function GAME.update(dt)
         GAME.time = GAME.time + dt
         if GAME.gigaspeed then
             TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
-                math.floor(GAME.time / 60), math.floor(GAME.time % 60), GAME.time % 1 * 1000))
+                floor(GAME.time / 60), floor(GAME.time % 60), GAME.time % 1 * 1000))
         end
 
         GAME.questTime = GAME.questTime + dt
@@ -879,14 +885,14 @@ function GAME.update(dt)
         end
 
         local releaseHeight = GAME.heightBuffer
-        GAME.heightBuffer = math.max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
+        GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
         releaseHeight = releaseHeight - GAME.heightBuffer
 
         GAME.height = GAME.height + releaseHeight
         if M.EX < 2 then
             GAME.height = GAME.height + GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
         else
-            GAME.height = math.max(
+            GAME.height = max(
                 GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
                 GAME.floor == 1 and 0 or Floors[GAME.floor - 1].top
             )
