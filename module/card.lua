@@ -322,21 +322,23 @@ local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_draw = gc.draw
 local gc_setColor, gc_setShader = gc.setColor, gc.setShader
 local gc_mDraw = GC.mDraw
+local blurCircle = GC.blurCircle
 
 local outlineShader = gc.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
 function Card:draw()
+    local texture = TEXTURE[self.id]
     local playing = GAME.playing
     local img, img2
     if self.lock and self.lockfull then
-        img = TEXTURE[self.id].lock
+        img = texture.lock
     else
         if GAME.mod.IN == 2 then
-            img = TEXTURE[self.id].cardBack
+            img = texture.back
         else
-            img = self.kx * self.ky > 0 and TEXTURE[self.id].cardFront or TEXTURE[self.id].cardBack
+            img = self.kx * self.ky > 0 and texture.front or texture.back
         end
         if self.lock then
-            img2 = TEXTURE[self.id].lock
+            img2 = texture.lock
         end
     end
 
@@ -406,10 +408,9 @@ function Card:draw()
     end
 
     if not playing then
-        if not self.upright and GAME.revDeckSkin and img == TEXTURE[self.id].cardFront then
+        if not self.upright and GAME.revDeckSkin and img == texture.front then
             gc_setColor(1, 1, 1, ThrobAlpha.card)
-            local throbImg = TEXTURE[self.id].cardThrob
-            gc_draw(throbImg, -throbImg:getWidth() / 2, -throbImg:getHeight() / 2)
+            gc_draw(texture.throb, -texture.throb:getWidth() / 2, -texture.throb:getHeight() / 2)
         end
         if completion[self.id] > 0 then
             img = self.active and TEXTURE.star1 or TEXTURE.star0
@@ -424,24 +425,24 @@ function Card:draw()
             if self.upright then
                 if comp then
                     gc_setColor(.5, .5, .5)
-                    GC.blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1)
                     gc_mDraw(img, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
                 end
                 gc_setColor(.5, .5, .5)
-                GC.blurCircle(blur, x, y, cr * 260)
+                blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, 1, 1)
                 gc_mDraw(img, x, y, -t * 6.2832, lerp(.16, .42, t))
             else
                 gc_rotate(3.1416)
                 if comp then
                     gc_setColor(.2, .2, .2)
-                    GC.blurCircle(blur, -x, -y, cr * 260)
+                    blurCircle(blur, -x, -y, cr * 260)
                     gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
                     gc_mDraw(img, -x, -y, -t * 6.2832, lerp(.16, .42, t))
                 end
                 gc_setColor(.2, .2, .2)
-                GC.blurCircle(blur, x, y, cr * 260)
+                blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
                 gc_mDraw(img, x, y, -t * 6.2832, lerp(.16, .42, t))
             end
@@ -449,7 +450,7 @@ function Card:draw()
             if not self.active then
                 if comp then
                     gc_setColor(.5, .5, .5, t)
-                    GC.blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1, t)
                     gc_mDraw(TEXTURE.star1, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
                     gc_mDraw(TEXTURE.star1, x, y, -t * 6.2832, lerp(.16, .42, t))

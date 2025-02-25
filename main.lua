@@ -21,18 +21,18 @@ TEXTURE = {
     glass_b = p 'glass-b.png',
     throb_a = p 'throb-a.png',
     throb_b = p 'throb-b.png',
-    EX = { lock = p 'lockover-9.png', front = p 'expert.png', back = p 'expert-back.png', thorb = p 'expert-throb.png', },
-    NH = { lock = p 'lockfull-2.png', front = p 'nohold.png', back = p 'nohold-back.png', thorb = p 'nohold-throb.png', },
-    MS = { lock = p 'lockfull-3.png', front = p 'messy.png', back = p 'messy-back.png', thorb = p 'messy-throb.png', },
-    GV = { lock = p 'lockfull-4.png', front = p 'gravity.png', back = p 'gravity-back.png', thorb = p 'gravity-throb.png', },
-    VL = { lock = p 'lockfull-5.png', front = p 'volatile.png', back = p 'volatile-back.png', thorb = p 'volatile-throb.png', },
-    DH = { lock = p 'lockfull-6.png', front = p 'doublehole.png', back = p 'doublehole-back.png', thorb = p 'doublehole-throb.png', },
-    IN = { lock = p 'lockfull-7.png', front = p 'invisible.png', back = p 'invisible-back.png', thorb = p 'invisible-throb.png', },
-    AS = { lock = p 'lockfull-8.png', front = p 'allspin.png', back = p 'allspin-back.png', thorb = p 'allspin-throb.png', },
-    DP = { lock = p 'lockover-supporter.png', front = p 'duo.png', back = p 'duo-back.png', thorb = p 'duo-throb.png', },
+    EX = { lock = p 'lockover-9.png', front = p 'expert.png', back = p 'expert-back.png', throb = p 'expert-throb.png', },
+    NH = { lock = p 'lockfull-2.png', front = p 'nohold.png', back = p 'nohold-back.png', throb = p 'nohold-throb.png', },
+    MS = { lock = p 'lockfull-3.png', front = p 'messy.png', back = p 'messy-back.png', throb = p 'messy-throb.png', },
+    GV = { lock = p 'lockfull-4.png', front = p 'gravity.png', back = p 'gravity-back.png', throb = p 'gravity-throb.png', },
+    VL = { lock = p 'lockfull-5.png', front = p 'volatile.png', back = p 'volatile-back.png', throb = p 'volatile-throb.png', },
+    DH = { lock = p 'lockfull-6.png', front = p 'doublehole.png', back = p 'doublehole-back.png', throb = p 'doublehole-throb.png', },
+    IN = { lock = p 'lockfull-7.png', front = p 'invisible.png', back = p 'invisible-back.png', throb = p 'invisible-throb.png', },
+    AS = { lock = p 'lockfull-8.png', front = p 'allspin.png', back = p 'allspin-back.png', throb = p 'allspin-throb.png', },
+    DP = { lock = p 'lockover-supporter.png', front = p 'duo.png', back = p 'duo-back.png', throb = p 'duo-throb.png', },
     floorBG = { p '1fa.jpg', p '2fa.jpg', p '3fa.jpg', p '4fa.jpg', p '5fa.jpg', p '6fa.jpg', p '7fa.jpg', p '8fa.jpg', p '9fa.jpg', p '10fa.jpg' },
 }
-IMG.init(TEXTURE, true)
+TEXTURE = IMG.init(TEXTURE, true)
 
 local _DATA = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
@@ -50,8 +50,6 @@ DATA = setmetatable({
         DATA.save()
     end,
 })
-
-GAME = require 'module/game'
 
 MX, MY = 0, 0
 
@@ -301,6 +299,8 @@ GravityTimer = {
     { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
     { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
 }
+
+GAME = require 'module/game'
 
 for i = 1, #DeckData do table.insert(Cards, require 'module/card'.new(DeckData[i])) end
 GAME.refreshLayout()
