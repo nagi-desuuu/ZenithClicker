@@ -353,13 +353,21 @@ function GAME.addXP(xp)
         if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq.enterLV[GAME.floor] then
             GAME.gigaspeed = true
             GAME.gigaspeedEntered = true
-            local s = GigaSpeed.showAlpha
-            TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 1, t) end):setUnique('gigaspeed'):run()
-            TASK.removeTask_code(GAME.task_gigaspeed)
-            TASK.new(GAME.task_gigaspeed)
+            GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
+    end
+end
+
+function GAME.setGigaspeedAnim(bool)
+    local s = GigaSpeed.showAlpha
+    if bool then
+        TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 1, t) end):setUnique('gigaspeed'):run()
+        TASK.removeTask_code(GAME.task_gigaspeed)
+        TASK.new(GAME.task_gigaspeed)
+    else
+        TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 0, t) end):setUnique('gigaspeed'):run()
     end
 end
 
@@ -395,6 +403,7 @@ function GAME.upFloor()
     end
     if GAME.floor == 10 then
         if GAME.gigaspeed then
+            GAME.setGigaspeedAnim(false)
             local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
             local t = DATA.speedrun[setStr]
             if GAME.time < t then
@@ -895,8 +904,7 @@ function GAME.update(dt)
                     GAME.rankupLast = false
                     if GAME.floor < 10 and GAME.gigaspeed and GAME.rank < GigaSpeedReq.retainLV[GAME.floor] then
                         GAME.gigaspeed = false
-                        local s = GigaSpeed.showAlpha
-                        TWEEN.new(function(t) GigaSpeed.showAlpha = MATH.lerp(s, 0, t) end):setUnique('gigaspeed'):run()
+                        GAME.setGigaspeedAnim(false)
                         SFX.play('zenith_speedrun_end')
                     end
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
