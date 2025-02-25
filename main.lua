@@ -38,10 +38,13 @@ TEXTURE = {
 }
 TEXTURE = IMG.init(TEXTURE, true)
 
+local notLoaded = MATH.roll(0.42)
+if notLoaded then
 FONT.load {
     tnr = "assets/Times New Roman.ttf",
 }
 FONT.setDefaultFont('tnr')
+end
 TEXTS = {
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
@@ -56,15 +59,17 @@ TEXTS = {
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
 }
+if notLoaded then
 TASK.new(function()
     TASK.yieldN(26)
-    TASK.yieldT(math.random() ^ 2 * 12.6)
+        TASK.yieldT(math.random() ^ 2 * 62)
     FONT.setDefaultFont('_norm')
     local scale = 60 / TEXTS.load:getFont():getHeight()
     for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
     for _, q in next, GAME.quests do q.name:setFont(FONT.get(60)) end
     WIDGET._reset()
 end)
+end
 
 local _DATA = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
