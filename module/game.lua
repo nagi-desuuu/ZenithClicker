@@ -18,6 +18,7 @@ local ins, rem = table.insert, table.remove
 ---@field dmgCycle number
 ---@field queueLen number
 ---
+---@field gigaTime false | number
 ---@field questTime number
 ---@field gravDelay false | number
 ---@field gravTimer false | number
@@ -366,7 +367,7 @@ function GAME.addXP(xp)
     end
 end
 
-function GAME.setGigaspeedAnim(on)
+function GAME.setGigaspeedAnim(on,finish)
     GAME.gigaspeed = on
     local s = GigaSpeed.alpha
     if on then
@@ -375,7 +376,7 @@ function GAME.setGigaspeedAnim(on)
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
     else
-        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(3.55):setUnique('gigaspeed'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55):setUnique('gigaspeed'):run()
     end
 end
 
@@ -411,9 +412,10 @@ function GAME.upFloor()
     end
     if GAME.floor == 10 then
         if GAME.gigaspeed then
-            GAME.setGigaspeedAnim(false)
+            GAME.gigaTime = GAME.time
+            GAME.setGigaspeedAnim(false,true)
             local t = DATA.speedrun[GAME.comboStr]
-            SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .6)
+            SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
                 DATA.speedrun[GAME.comboStr] = MATH.roundUnit(GAME.time, .001)
                 DATA.save()
@@ -707,6 +709,7 @@ function GAME.start()
     GAME.queueLen = M.NH == 2 and 1 or 3
 
     GAME.time = 0
+    GAME.gigaTime = false
     GAME.questTime = 0
     GAME.questCount = 0
     GAME.rank = 1
@@ -810,7 +813,10 @@ function GAME.finish(reason)
             DATA.save()
         end
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
-        TEXTS.endTime:set(STRING.time_simp(GAME.time) .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
+        local text = STRING.time_simp(GAME.time)
+        if GAME.gigaTime then text = text .. "(" .. STRING.time_simp(GAME.gigaTime) .. ")" end
+        text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
+        TEXTS.endTime:set(text)
     else
         TEXTS.endHeight:set("")
         TEXTS.endTime:set("")
