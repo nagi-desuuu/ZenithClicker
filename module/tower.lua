@@ -546,14 +546,15 @@ scene.widgetList = {
         pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
         color = { .15, .15, .15 },
         sound_hover = 'menutap',
-        sound_release = 'menuclick',
         fontSize = 30, text = "      BACK", textColor = 'DL',
         onClick = function()
             if GAME.playing then
                 if TASK.lock('sure_forfeit', 2.6) then
+                    SFX.play('menuclick')
                     MSG.clear()
                     MSG('dark', "PRESS AGAIN TO FORFEIT", 2.6)
                 else
+                    SFX.play('menuback')
                     GAME.finish('forfeit')
                 end
             else

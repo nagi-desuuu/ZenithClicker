@@ -44,8 +44,8 @@ end
 TEXTURE.transition = GC.load(transition)
 TEXTURE = IMG.init(TEXTURE, true)
 
-local notLoaded = MATH.roll(0.26)
-if notLoaded then
+local fontNotLoaded = MATH.roll(.62)
+if fontNotLoaded then
     FONT.load {
         tnr = "assets/Times New Roman.ttf",
     }
@@ -73,10 +73,19 @@ TEXTS = {
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
 }
-if notLoaded then
+if fontNotLoaded then
     TASK.new(function()
-        TASK.yieldN(26)
-        TASK.yieldT(math.random() ^ 2 * 26)
+        local t = love.timer.getTime()
+        local delay = MATH.roll(.9626) and MATH.rand(2.6, 6.26) or 26
+        while love.timer.getTime() - t < delay do
+            coroutine.yield()
+            if GAME.anyRev then
+                TASK.yieldT(0.26)
+                SFX.play('staffsilence')
+                MSG('dark', "A DARK FORCE INTERRUPTED THE FONT LOADING")
+                return
+            end
+        end
         FONT.setDefaultFont('_norm')
         local scale = 60 / TEXTS.load:getFont():getHeight()
         for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
