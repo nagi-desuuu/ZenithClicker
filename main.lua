@@ -59,6 +59,7 @@ TEXTS = {
     sr         = GC.newText(FONT.get(50)),
     endHeight  = GC.newText(FONT.get(50)),
     endTime    = GC.newText(FONT.get(30)),
+    prevPB     = GC.newText(FONT.get(50), "PB"),
     height     = GC.newText(FONT.get(30, '_mono')),
     time       = GC.newText(FONT.get(30, '_mono')),
     chain      = GC.newText(FONT.get(50)),
@@ -88,8 +89,8 @@ if fontNotLoaded then
         end
         FONT.setDefaultFont('_norm')
         local scale = 60 / TEXTS.load:getFont():getHeight()
-        for _, t in next, TEXTS do t:setFont(FONT.get(MATH.roundUnit(t:getFont():getHeight() * scale, 10))) end
-        for _, q in next, GAME.quests do q.name:setFont(FONT.get(60)) end
+        for _, text in next, TEXTS do text:setFont(FONT.get(MATH.roundUnit(text:getFont():getHeight() * scale, 10))) end
+        for _, quest in next, GAME.quests do quest.name:setFont(FONT.get(60)) end
         WIDGET._reset()
         TEXTS.height:setFont(FONT.get(30, '_mono'))
         TEXTS.time:setFont(FONT.get(30, '_mono'))

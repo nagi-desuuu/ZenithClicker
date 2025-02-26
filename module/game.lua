@@ -9,6 +9,8 @@ local ins, rem = table.insert, table.remove
 ---@field name love.Text
 
 ---@class Game
+---@field comboStr string
+---
 ---@field dmgHeal number
 ---@field dmgWrong number
 ---@field dmgTime number
@@ -61,6 +63,7 @@ local GAME = {
         AS = 0,
         DP = 0,
     },
+    prevPB = -260,
 
     playing = false,
     quests = {}, --- @type Question[]
@@ -409,11 +412,10 @@ function GAME.upFloor()
     if GAME.floor == 10 then
         if GAME.gigaspeed then
             GAME.setGigaspeedAnim(false)
-            local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
-            local t = DATA.speedrun[setStr]
+            local t = DATA.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .6)
             if GAME.time < t then
-                DATA.speedrun[setStr] = MATH.roundUnit(GAME.time, .001)
+                DATA.speedrun[GAME.comboStr] = MATH.roundUnit(GAME.time, .001)
                 DATA.save()
             end
         end
@@ -482,14 +484,14 @@ function GAME.refreshPBText()
     local height = DATA.highScore[setStr]
     local time = DATA.speedrun[setStr]
     if height == 0 then return TEXTS.pb:set("No Score Yet") end
-    local floor
-    for f = 1, #Floors do
-        if height < Floors[f].top then
-            floor = f
+    local f = 0
+    for i = 1, #Floors do
+        if height < Floors[i].top then
+            f = i
             break
         end
     end
-    TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, floor))
+    TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, f))
     TEXTS.sr:set(time < 1e99 and STRING.time(time) or "")
 end
 
@@ -692,6 +694,9 @@ function GAME.start()
     SFX.play('menuconfirm', .8)
     SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
 
+    GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    GAME.prevPB = DATA.highScore[GAME.comboStr]
+    if GAME.prevPB == 0 then GAME.prevPB = -260 end
     GAME.playing = true
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
@@ -774,10 +779,9 @@ function GAME.finish(reason)
             DATA.maxFloor = GAME.floor
             newPB = true
         end
-        local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
-        local oldPB = DATA.highScore[setStr]
+        local oldPB = DATA.highScore[GAME.comboStr]
         if GAME.height > oldPB then
-            DATA.highScore[setStr] = MATH.roundUnit(GAME.height, .1)
+            DATA.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .1)
             DATA.maxFloor = DATA.maxFloor
             newPB = true
         end
@@ -785,7 +789,7 @@ function GAME.finish(reason)
             local modCount = #GAME.getHand(true)
             if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                if GAME.anyRev then t = t:gsub(" ", "+ ") end
+                if GAME.anyRev then t = t:gsub(" ", "+ ", 1) end
                 TEXT:add {
                     text = t,
                     x = 800, y = 226, k = 2.6, fontSize = 60,

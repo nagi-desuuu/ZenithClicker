@@ -258,6 +258,14 @@ function scene.draw()
         MATH.cLerp(.62, 1, abs(dh * 26)))
     gc_draw(WindBatch)
 
+    -- Previous PB Line
+    gc_replaceTransform(SCR.xOy_r)
+    local over = MATH.clampInterpolate(-15, 0, 5, 1, GAME.height - GAME.prevPB)
+    local y = -26 * (GAME.prevPB - GAME.bgH)
+    gc_setColor(1, .8 + over * .2, over * 1, 1 - over * .626)
+    gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
+    gc_draw(TEXTS.prevPB, 0, y, 0, 1, 1, TEXTS.prevPB:getWidth() + 10, TEXTS.prevPB:getHeight() / 2)
+
     gc_replaceTransform(SCR.xOy)
 
     -- GigaSpeed BG
