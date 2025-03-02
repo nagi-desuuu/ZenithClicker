@@ -697,7 +697,7 @@ function GAME.start()
     end
     if M.DP > 0 then
         MSG.clear()
-        MSG('dark', "Working in Progress")
+        MSG('dark', "Work in Progress")
         Cards.DP:shake()
         SFX.play('no')
         return
