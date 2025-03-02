@@ -272,7 +272,8 @@ end
 
 local gc = love.graphics
 function WIDGET._prototype.button:draw()
-    GC.ucs_move('m', self._x, self.name == 'back' and self._y or self._y + DeckPress)
+    gc.push('transform')
+    gc.translate(self._x, self.name == 'back' and self._y or self._y + DeckPress)
 
     if self._pressTime > 0 then
         gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)
@@ -303,7 +304,7 @@ function WIDGET._prototype.button:draw()
     gc.setColor(self.textColor)
     WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
 
-    GC.ucs_back()
+    gc.pop()
 end
 
 -- Muisc syncing daemon
