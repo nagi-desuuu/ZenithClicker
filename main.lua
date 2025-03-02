@@ -32,6 +32,8 @@ TEXTURE = {
         ingame_rev = p 'icon/ingame_rev.png',
         result = p 'icon/result.png',
         result_rev = p 'icon/result_rev.png',
+            },
+        },
     },
     EX = { lock = p 'card/lockover-9.png', front = p 'card/expert.png', back = p 'card/expert-back.png', throb = p 'card/expert-throb.png', },
     NH = { lock = p 'card/lockfull-2.png', front = p 'card/nohold.png', back = p 'card/nohold-back.png', throb = p 'card/nohold-throb.png', },
@@ -395,7 +397,7 @@ if DATA.version == nil then
     DATA.version = 162
 end
 if DATA.version == 162 then
-    DATA.speedrun = {}
+    TABLE.clear(DATA.speedrun)
     DATA.version = 163
 end
 if DATA.version ~= oldVer then DATA.save() end
