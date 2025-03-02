@@ -21,20 +21,28 @@ local function p(path) return 'assets/' .. path end
 TEXTURE = {
     star0 = p 'crystal-dark.png',
     star1 = p 'crystal.png',
-    glass_a = p 'glass-a.png',
-    glass_b = p 'glass-b.png',
-    throb_a = p 'throb-a.png',
-    throb_b = p 'throb-b.png',
-    EX = { lock = p 'lockover-9.png', front = p 'expert.png', back = p 'expert-back.png', throb = p 'expert-throb.png', },
-    NH = { lock = p 'lockfull-2.png', front = p 'nohold.png', back = p 'nohold-back.png', throb = p 'nohold-throb.png', },
-    MS = { lock = p 'lockfull-3.png', front = p 'messy.png', back = p 'messy-back.png', throb = p 'messy-throb.png', },
-    GV = { lock = p 'lockfull-4.png', front = p 'gravity.png', back = p 'gravity-back.png', throb = p 'gravity-throb.png', },
-    VL = { lock = p 'lockfull-5.png', front = p 'volatile.png', back = p 'volatile-back.png', throb = p 'volatile-throb.png', },
-    DH = { lock = p 'lockfull-6.png', front = p 'doublehole.png', back = p 'doublehole-back.png', throb = p 'doublehole-throb.png', },
-    IN = { lock = p 'lockfull-7.png', front = p 'invisible.png', back = p 'invisible-back.png', throb = p 'invisible-throb.png', },
-    AS = { lock = p 'lockfull-8.png', front = p 'allspin.png', back = p 'allspin-back.png', throb = p 'allspin-throb.png', },
-    DP = { lock = p 'lockover-supporter.png', front = p 'duo.png', back = p 'duo-back.png', throb = p 'duo-throb.png', },
-    floorBG = { p '1fa.jpg', p '2fa.jpg', p '3fa.jpg', p '4fa.jpg', p '5fa.jpg', p '6fa.jpg', p '7fa.jpg', p '8fa.jpg', p '9fa.jpg', p '10fa.jpg' },
+    panel = {
+        glass_a = p 'panel/glass-a.png',
+        glass_b = p 'panel/glass-b.png',
+        throb_a = p 'panel/throb-a.png',
+        throb_b = p 'panel/throb-b.png',
+    },
+    icon = {
+        ingame = p 'icon/ingame.png',
+        ingame_rev = p 'icon/ingame_rev.png',
+        result = p 'icon/result.png',
+        result_rev = p 'icon/result_rev.png',
+    },
+    EX = { lock = p 'card/lockover-9.png', front = p 'card/expert.png', back = p 'card/expert-back.png', throb = p 'card/expert-throb.png', },
+    NH = { lock = p 'card/lockfull-2.png', front = p 'card/nohold.png', back = p 'card/nohold-back.png', throb = p 'card/nohold-throb.png', },
+    MS = { lock = p 'card/lockfull-3.png', front = p 'card/messy.png', back = p 'card/messy-back.png', throb = p 'card/messy-throb.png', },
+    GV = { lock = p 'card/lockfull-4.png', front = p 'card/gravity.png', back = p 'card/gravity-back.png', throb = p 'card/gravity-throb.png', },
+    VL = { lock = p 'card/lockfull-5.png', front = p 'card/volatile.png', back = p 'card/volatile-back.png', throb = p 'card/volatile-throb.png', },
+    DH = { lock = p 'card/lockfull-6.png', front = p 'card/doublehole.png', back = p 'card/doublehole-back.png', throb = p 'card/doublehole-throb.png', },
+    IN = { lock = p 'card/lockfull-7.png', front = p 'card/invisible.png', back = p 'card/invisible-back.png', throb = p 'card/invisible-throb.png', },
+    AS = { lock = p 'card/lockfull-8.png', front = p 'card/allspin.png', back = p 'card/allspin-back.png', throb = p 'card/allspin-throb.png', },
+    DP = { lock = p 'card/lockover-supporter.png', front = p 'card/duo.png', back = p 'card/duo-back.png', throb = p 'card/duo-throb.png', },
+    floorBG = { p 'bg/1fa.jpg', p 'bg/2fa.jpg', p 'bg/3fa.jpg', p 'bg/4fa.jpg', p 'bg/5fa.jpg', p 'bg/6fa.jpg', p 'bg/7fa.jpg', p 'bg/8fa.jpg', p 'bg/9fa.jpg', p 'bg/10fa.jpg' },
 }
 local transition = { w = 128, h = 1 }
 for x = 0, 127 do
@@ -159,152 +167,7 @@ BgmSets = {
     },
     assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
-DeckData = {
-    { id = 'EX', initOrder = 1, lockfull = false },
-    { id = 'NH', initOrder = 2, lockfull = true },
-    { id = 'MS', initOrder = 3, lockfull = true },
-    { id = 'GV', initOrder = 4, lockfull = true },
-    { id = 'VL', initOrder = 5, lockfull = true },
-    { id = 'DH', initOrder = 6, lockfull = true },
-    { id = 'IN', initOrder = 7, lockfull = true },
-    { id = 'AS', initOrder = 8, lockfull = true },
-    { id = 'DP', initOrder = 9, lockfull = false },
-}
-ModData = {
-    name = {
-        EX = 'expert',
-        NH = 'nohold',
-        MS = 'messy',
-        GV = 'gravity',
-        VL = 'volatile',
-        DH = 'doublehole',
-        IN = 'invisible',
-        AS = 'allspin',
-        DP = 'duo',
-    },
-    fullName = {
-        EX = "< EXPERT MODE >",
-        NH = "< NO HOLD >",
-        MS = "< MESSIER GARBAGE  >",
-        GV = "< GRAVITY >",
-        VL = "< VOLATILE GARBAGE >",
-        DH = "< DOUBLE HOLE GARBAGE >",
-        IN = "< INVISIBLE >",
-        AS = "< ALL-SPIN >",
-        DP = "< DUO >",
-        lock = "< LOCKED >",
-        lockDP = "< LOCKED? >",
-    },
-    desc = {
-        EX = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE",
-        NH = "CANCELING IS DISABLED",
-        MS = "TAROTS WILL BE SHUFFLED BY FLOOR",
-        GV = "AUTO COMMITTING, TIMED BY FLOOR",
-        VL = "LARGER GAPS BETWEEN TAROTS, BUT MUST CLICK TWICE",
-        DH = "COMBOS WILL SPAWN HARDER",
-        IN = "TAROTS FACE DOWN AND HINTS FLASH ONCE EVERY TWO SECONDS",
-        AS = "KEYBOARD AVAILABLE, BUT DOUBLE CLICKING IS PENALIZED",
-        DP = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",
-        lock = "REACH HIGHER FLOOR TO UNLOCK",
-        lockDP = "MASTER THIS MOD TO UNLOCK",
-    },
-    revName = {
-        EX = "> THE TYRANT <",
-        NH = "> ASCETICISM <",
-        MS = "> LOADED DICE <",
-        GV = "> FREEFALL <",
-        VL = "> LAST STAND <",
-        DH = "> DAMNATION <",
-        IN = "> THE EXILE <",
-        AS = "> THE WARLOCK <",
-        DP = "> BLEEDING HEARTS <",
-    },
-    revDesc = {
-        EX = "FEAR, OPPRESSION, AND LIMITLESS AMBITION.",
-        NH = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE.",
-        MS = "IN A RIGGED GAME, YOUR MIND IS THE ONLY FAIR ADVANTAGE.",
-        GV = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE.",
-        VL = "STRENGTH ISN'T NECESSARY FOR THOSE WITH NOTHING TO LOSE.",
-        DH = "NO MORE SECOND CHANCES.",
-        IN = "NEVER UNDERESTIMATE BLIND FAITH.",
-        AS = "INTO REALMS BEYOND HEAVEN AND EARTH.",
-        DP = "EVEN AS WE BLEED, WE KEEP HOLDING ON...",
-    },
-    weight = {
-        EX = 13, --  8 + 5
-        NH = 12, --  8 + 4
-        MS = 14, -- 10 + 4
-        GV = 12, -- 10 + 2
-        VL = 17, -- 15 + 2
-        DH = 12, --  8 + 4
-        IN = 7,  --  6 + 1
-        AS = 13, -- 10 + 3
-        DP = 4,  --  3 + 1
-    },
-    color = {
-        EX = { COLOR.HEX "89590B" },
-        NH = { COLOR.HEX "FF00D4" },
-        MS = { COLOR.HEX "FFB400" },
-        GV = { COLOR.HEX "FFFF00" },
-        VL = { COLOR.HEX "FF1500" },
-        DH = { COLOR.HEX "47ACFF" },
-        IN = { COLOR.HEX "BD24FF" },
-        AS = { COLOR.HEX "00FED4" },
-        DP = { COLOR.HEX "FF8C9D" },
-    },
-    textColor = {
-        EX = { COLOR.HEX "C29F68" },
-        NH = { COLOR.HEX "FF8BEC" },
-        MS = { COLOR.HEX "FFD572" },
-        GV = { COLOR.HEX "F7FF8A" },
-        VL = { COLOR.HEX "FF978D" },
-        DH = { COLOR.HEX "A6D5FF" },
-        IN = { COLOR.HEX "E8B3FF" },
-        AS = { COLOR.HEX "93FFE0" },
-        DP = { COLOR.HEX "FFC0C9" },
-    },
-    prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
-    adj = {
-        IN = "INVISIBLE",
-        MS = "MESSY",
-        VL = "VOLATILE",
-        NH = "HOLDLESS",
-        DH = "DOUBLE HOLE",
-        AS = "ALL-SPIN",
-        GV = "GRAVITY",
-        EX = "EXPERT",
-        DP = "DUO",
-        rIN = "BELIEVED",
-        rMS = "DECEPTIVE",
-        rVL = "DESPERATE",
-        rNH = "ASCENDANT",
-        rDH = "DAMNED",
-        rAS = "OMNI-SPIN",
-        rGV = "COLLAPSED",
-        rEX = "TYRANNICAL",
-        rDP = "PIERCING",
-    },
-    noun = {
-        IN = "INVISIBLITY",
-        MS = "MESSINESS",
-        VL = "VOLATILITY",
-        NH = "NO HOLD",
-        DH = "DOUBLE HOLE",
-        AS = "ALL-SPIN",
-        GV = "GRAVITY",
-        EX = "EXPERT",
-        DP = "DUO",
-        rIN = "BELIEF",
-        rMS = "DECEPTION",
-        rVL = "DESPERATION",
-        rNH = "ASCENSION",
-        rDH = "DAMNATION",
-        rAS = "OMNI-SPIN",
-        rGV = "COLLAPSE",
-        rEX = "TYRANNY",
-        rDP = "HEARTACHE",
-    },
-}
+ModData = require "module/mod_data"
 
 BasicComboCount = 9
 Combos = require "module/combo_data"
@@ -382,7 +245,7 @@ GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
 
 GAME = require 'module/game'
 
-for i = 1, #DeckData do table.insert(Cards, require 'module/card'.new(DeckData[i])) end
+for i = 1, #ModData.deck do table.insert(Cards, require 'module/card'.new(ModData.deck[i])) end
 GAME.refreshLayout()
 for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
@@ -409,8 +272,7 @@ end
 
 local gc = love.graphics
 function WIDGET._prototype.button:draw()
-    gc.push('transform')
-    gc.translate(self._x, self._y + DeckPress)
+    GC.ucs_move('m', self._x, self.name == 'back' and self._y or self._y + DeckPress)
 
     if self._pressTime > 0 then
         gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)
@@ -441,7 +303,7 @@ function WIDGET._prototype.button:draw()
     gc.setColor(self.textColor)
     WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
 
-    gc.pop()
+    GC.ucs_back()
 end
 
 -- Muisc syncing daemon

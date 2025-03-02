@@ -229,6 +229,7 @@ local chargeIcon = GC.load {
     { 'fCirc',  0,    0,  90, 4 },
 }
 
+local TEXTURE = TEXTURE
 local Cards = Cards
 local TextColor = TextColor
 local ShadeColor = ShadeColor
@@ -291,12 +292,12 @@ function scene.draw()
     gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
-        gc_mDraw(TEXTURE.glass_a, 800, h)
-        gc_mDraw(TEXTURE.glass_b, 800, h)
+        gc_mDraw(TEXTURE.panel.glass_a, 800, h)
+        gc_mDraw(TEXTURE.panel.glass_b, 800, h)
         gc_setColor(1, 1, 1, ThrobAlpha.bg1)
-        gc_mDraw(TEXTURE.throb_a, 800, h)
+        gc_mDraw(TEXTURE.panel.throb_a, 800, h)
         gc_setColor(1, 1, 1, ThrobAlpha.bg2)
-        gc_mDraw(TEXTURE.throb_b, 800, h)
+        gc_mDraw(TEXTURE.panel.throb_b, 800, h)
     end
     gc_setColor(ShadeColor)
     gc_setLineWidth(4)

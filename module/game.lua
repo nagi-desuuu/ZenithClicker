@@ -88,10 +88,12 @@ function GAME.getHand(showRev)
     local list = {}
     if showRev then
         for i = 1, 9 do
-            local D = DeckData[i]
+            local D = ModData.deck[i]
             local level = M[D.id]
-            if level > 0 then
-                ins(list, level == 2 and 'r' .. D.id or D.id)
+            if level == 1 then
+                ins(list, D.id)
+            elseif level == 2 then
+                ins(list, 'r' .. D.id)
             end
         end
     else

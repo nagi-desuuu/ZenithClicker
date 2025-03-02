@@ -297,7 +297,7 @@ function Card:flick()
     end):setUnique('flick_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
 end
 
-local activeFrame = GC.newImage('assets/outline.png')
+local activeFrame = GC.newImage('assets/card/outline.png')
 
 function Card:update(dt)
     self.x = MATH.expApproach(self.x, self.tx, dt * 16)
