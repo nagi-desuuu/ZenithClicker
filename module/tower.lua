@@ -238,9 +238,13 @@ function scene.draw()
     else
         gc_setColor(1, 1, 1, Background.alpha * .42)
     end
-    if Background.floor < 10 then Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080) end
-    gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
-        SCR.w / 2, SCR.h / 2, nil, max(SCR.w / 1920, SCR.h / 1080))
+    if Background.floor < 10 then
+        Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080)
+        gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
+            SCR.w / 2, SCR.h / 2, nil, max(SCR.w / 1920, SCR.h / 1080))
+    else
+        gc_mDraw(TEXTURE.floorBG[10], SCR.w / 2, SCR.h / 2, nil, max(SCR.w / 1920, SCR.h / 1080))
+    end
 
     -- Wind Particles
     local dh = GAME.bgH - GAME.bgLastH
