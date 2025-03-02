@@ -20,6 +20,7 @@ local ins, rem = table.insert, table.remove
 ---
 ---@field gigaTime false | number
 ---@field questTime number
+---@field floorTime number
 ---@field gravDelay false | number
 ---@field gravTimer false | number
 ---@field questCount number
@@ -367,7 +368,7 @@ function GAME.addXP(xp)
     end
 end
 
-function GAME.setGigaspeedAnim(on,finish)
+function GAME.setGigaspeedAnim(on, finish)
     GAME.gigaspeed = on
     local s = GigaSpeed.alpha
     if on then
@@ -376,12 +377,14 @@ function GAME.setGigaspeedAnim(on,finish)
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
     else
-        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55):setUnique('gigaspeed'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55):setUnique(
+            'gigaspeed'):run()
     end
 end
 
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
+    GAME.floorTime = 0
     if M.MS == 2 or M.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
     if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
     local F = Floors[GAME.floor]
@@ -413,7 +416,7 @@ function GAME.upFloor()
     if GAME.floor == 10 then
         if GAME.gigaspeed then
             GAME.gigaTime = GAME.time
-            GAME.setGigaspeedAnim(false,true)
+            GAME.setGigaspeedAnim(false, true)
             local t = DATA.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
@@ -711,6 +714,7 @@ function GAME.start()
     GAME.time = 0
     GAME.gigaTime = false
     GAME.questTime = 0
+    GAME.floorTime = 0
     GAME.questCount = 0
     GAME.rank = 1
     GAME.xp = 0
@@ -868,6 +872,10 @@ function GAME.update(dt)
         GAME.questTime = GAME.questTime + dt
         if M.GV > 0 and not GAME.gravTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
             GAME.gravTimer = GAME.gravDelay
+        end
+        if M.EX == 2 and GAME.floorTime > 30 then
+            GAME.floorTime = GAME.floorTime + dt
+            GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
         end
         local stage = GAME.fatigueSet[GAME.fatigue]
         if GAME.time >= stage.time then
