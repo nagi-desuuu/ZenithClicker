@@ -39,6 +39,10 @@ local GAME = {
     revTimer = 0,
     revDeckSkin = false,
     uiHide = 0,
+    iconSB = GC.newSpriteBatch(TEXTURE.icon.ingame),
+    iconRevSB = GC.newSpriteBatch(TEXTURE.icon.ingame_rev),
+    resultSB = GC.newSpriteBatch(TEXTURE.icon.result),
+    resultRevSB = GC.newSpriteBatch(TEXTURE.icon.result_rev),
 
     mod = {
         EX = 0,
@@ -739,6 +743,24 @@ function GAME.start()
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
 
+    GAME.iconSB:clear()
+    GAME.iconRevSB:clear()
+    local hand = GAME.getHand(true)
+    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    local r = 30
+    local x, y = -2, -2
+    for i, m in next, hand do
+        local q = TEXTURE.icon.quad
+        if #m == 2 then
+            GAME.iconSB:add(q.ingame[m], x * r, y * r, 0, .42, .42, 128 * .5, 128 * .5)
+            GAME.resultSB:add(q.result[m], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
+        else
+            GAME.iconRevSB:add(q.ingame_rev[m:sub(2)], x * r, y * r, 0, .3, .3, 219 * .5, 219 * .5)
+            GAME.resultRevSB:add(q.result_rev[m:sub(2)], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
+        end
+        if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end
+    end
+
     GAME.upFloor()
 
     TABLE.clear(GAME.quests)
@@ -822,12 +844,15 @@ function GAME.finish(reason)
             SFX.play('applause', GAME.floor / 10)
             DATA.save()
         end
+
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
         local text = STRING.time_simp(GAME.time)
         if GAME.gigaTime then text = text .. "(" .. STRING.time_simp(GAME.gigaTime) .. ")" end
         text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
         TEXTS.endTime:set(text)
     else
+        GAME.resultSB:clear()
+        GAME.resultRevSB:clear()
         TEXTS.endHeight:set("")
         TEXTS.endTime:set("")
     end

@@ -18,6 +18,7 @@ MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
 ---@return love.Texture
 local function p(path) return 'assets/' .. path end
+local function q(x, y, size) return GC.newQuad(x * size, y * size, size, size, size * 5, size * 2) end
 TEXTURE = {
     star0 = p 'crystal-dark.png',
     star1 = p 'crystal.png',
@@ -32,6 +33,50 @@ TEXTURE = {
         ingame_rev = p 'icon/ingame_rev.png',
         result = p 'icon/result.png',
         result_rev = p 'icon/result_rev.png',
+        quad = {
+            ingame = {
+                VL = q(0, 0, 128),
+                NH = q(1, 0, 128),
+                MS = q(2, 0, 128),
+                IN = q(3, 0, 128),
+                GV = q(4, 0, 128),
+                EX = q(0, 1, 128),
+                DP = q(1, 1, 128),
+                DH = q(2, 1, 128),
+                AS = q(3, 1, 128),
+            },
+            ingame_rev = {
+                VL = q(0, 0, 219),
+                NH = q(1, 0, 219),
+                MS = q(2, 0, 219),
+                IN = q(3, 0, 219),
+                GV = q(4, 0, 219),
+                EX = q(0, 1, 219),
+                DP = q(1, 1, 219),
+                DH = q(2, 1, 219),
+                AS = q(3, 1, 219),
+            },
+            result = {
+                VL = q(0, 0, 183),
+                NH = q(1, 0, 183),
+                MS = q(2, 0, 183),
+                IN = q(3, 0, 183),
+                GV = q(4, 0, 183),
+                EX = q(0, 1, 183),
+                DP = q(1, 1, 183),
+                DH = q(2, 1, 183),
+                AS = q(3, 1, 183),
+            },
+            result_rev = {
+                VL = q(0, 0, 183),
+                NH = q(1, 0, 183),
+                MS = q(2, 0, 183),
+                IN = q(3, 0, 183),
+                GV = q(4, 0, 183),
+                EX = q(0, 1, 183),
+                DP = q(1, 1, 183),
+                DH = q(2, 1, 183),
+                AS = q(3, 1, 183),
             },
         },
     },

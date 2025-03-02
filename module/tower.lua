@@ -284,6 +284,13 @@ function scene.draw()
         gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
     end
 
+    -- Mod icons
+    if GAME.uiHide > 0 then
+        gc_setColor(1, 1, 1, GAME.uiHide)
+        gc_draw(GAME.iconRevSB, 1490, 350)
+        gc_draw(GAME.iconSB, 1490, 350)
+    end
+
     -- Card Panel
     gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
@@ -334,15 +341,17 @@ function scene.draw()
 
     --- Result
     if GAME.uiHide < 1 then
-        local d = GAME.uiHide * 70
-        -- Last height
         gc_replaceTransform(SCR.xOy_u)
+        gc_translate(0, -3.2 * GAME.uiHide * 70)
+        gc_setColor(1, 1, 1)
+        gc_draw(GAME.resultRevSB, 380, 167)
+        gc_draw(GAME.resultSB, 380, 167)
         gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.endHeight, 0, 140 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TEXTS.endTime, 0, 204 - 3.2 * d)
+        gc_mDraw(TEXTS.endHeight, 0, 140, 0, 2, 2)
+        gc_mDraw(TEXTS.endTime, 0, 204)
         gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.endHeight, 0, 135 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TEXTS.endTime, 0, 201 - 3.2 * d)
+        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 2, 2)
+        gc_mDraw(TEXTS.endTime, 0, 201)
     end
 end
 

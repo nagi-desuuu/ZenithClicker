@@ -184,8 +184,6 @@ function Card:setActive(auto, key)
         if revOn or wasRev then
             GAME.refreshRev()
         end
-        TEXTS.endHeight:set("")
-        TEXTS.endTime:set("")
     end
     GAME.refreshCurrentCombo()
     GAME.refreshLayout()
