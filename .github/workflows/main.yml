@@ -2,10 +2,11 @@ name: Main
 
 on:
   push:
-    branches: [main, ci*]
-    tags: [pre*, v*]
-  pull_request:
-    branches: [main]
+    tags: [v*]
+    # branches: [main, ci*]
+    # tags: [pre*, v*]
+  # pull_request:
+    # branches: [main]
 env:
   BUILD_ASSETS_FOLDER: ./.github/build
   BUILD_TYPE: ${{ fromJSON('["dev", "release"]')[startsWith(github.ref, 'refs/tags/v')] }}
