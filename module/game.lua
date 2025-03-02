@@ -433,9 +433,15 @@ function GAME.upFloor()
 end
 
 function GAME.refreshRPC()
+    local stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
+    stateStr = stateStr .. "F" .. GAME.floor
+    local hand=GAME.getHand(true)
+    if #hand > 0 then
+        stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2)
+    end
     DiscordRPC.update {
         details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-        state = (GAME.gigaspeed and "Speedrun: F" or "In Game: F") .. GAME.floor .. " - " .. GAME.getComboName(GAME.getHand(true), M.DH == 2),
+        state = stateStr,
     }
 end
 
