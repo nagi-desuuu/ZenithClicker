@@ -521,8 +521,9 @@ function GAME.refreshRev()
         if not GAME.anyRev then
             GAME.revDeckSkin = false
         end
+        local s, e = GAME.revTimer, anyRev and 1 or 0
         TWEEN.new(function(t)
-            if not anyRev then t = 1 - t end
+            t = MATH.lerp(s, e, t)
             GAME.revTimer = t
             TextColor[1] = MATH.lerp(.7, .62, t)
             TextColor[2] = MATH.lerp(.5, .1, t)
@@ -530,7 +531,7 @@ function GAME.refreshRev()
             ShadeColor[1] = MATH.lerp(.3, .1, t)
             ShadeColor[2] = MATH.lerp(.15, 0, t)
             ShadeColor[3] = MATH.lerp(.0, 0, t)
-        end):setDuration(.26):run()
+        end):setUnique('revSwitched'):setDuration(.26):run()
         GAME.updateBgm('revSwitched')
     end
 end
