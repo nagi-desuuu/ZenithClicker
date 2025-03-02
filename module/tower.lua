@@ -216,6 +216,7 @@ local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
 local gc_setAlpha = GC.setAlpha
+local gc_move, gc_back = GC.ucs_move, GC.ucs_back
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
@@ -329,6 +330,19 @@ function scene.draw()
         gc_setColor(COLOR.D)
         gc_mDraw(TEXTS.chain, 326, 270, 0, k, 1.1 * k)
     end
+
+    --- Result
+    if GAME.uiHide < 1 then
+        local d = GAME.uiHide * 70
+        -- Last height
+        gc_replaceTransform(SCR.xOy_u)
+        gc_setColor(COLOR.D)
+        gc_mDraw(TEXTS.endHeight, 0, 140 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TEXTS.endTime, 0, 204 - 3.2 * d)
+        gc_setColor(COLOR.L)
+        gc_mDraw(TEXTS.endHeight, 0, 135 - 3.2 * d, 0, 2, 2)
+        gc_mDraw(TEXTS.endTime, 0, 201 - 3.2 * d)
+    end
 end
 
 local questStyle = {
@@ -430,7 +444,8 @@ function scene.overDraw()
     -- Bottom In-game UI
     if GAME.uiHide > 0 then
         local h = 100 - GAME.uiHide * 100
-        gc_translate(0, h)
+        gc_move('m', 0, h)
+
         -- Thruster
         gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
         gc.setLineWidth(6)
@@ -450,7 +465,8 @@ function scene.overDraw()
         gc_setColor(COLOR.L)
         gc_mDraw(TEXTS.height, 800, 970)
         gc_mDraw(TEXTS.time, 375, 978)
-        gc_translate(0, -h)
+
+        gc_back()
     end
 
     -- Cards
@@ -478,14 +494,7 @@ function scene.overDraw()
         local revT = GAME.revTimer
         local d = GAME.uiHide * 70
 
-        -- Last height
         gc_replaceTransform(SCR.xOy_u)
-        gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.endHeight, 0, 140 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TEXTS.endTime, 0, 204 - 3.2 * d)
-        gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.endHeight, 0, 135 - 3.2 * d, 0, 2, 2)
-        gc_mDraw(TEXTS.endTime, 0, 201 - 3.2 * d)
 
         -- Top bar & texts
         gc_setColor(ShadeColor)
@@ -501,8 +510,7 @@ function scene.overDraw()
         gc_replaceTransform(SCR.xOy_u)
         gc_draw(TEXTS.sr, 0, -d, nil, 1, 1.1, TEXTS.sr:getWidth() / 2, 0)
         gc_replaceTransform(SCR.xOy_dl)
-        gc_translate(0, DeckPress)
-        gc_translate(0, d)
+        gc_translate(0, DeckPress + d)
         if revT > 0 then
             gc_draw(TEXTS.slogan, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan:getHeight())
             gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_EX:getHeight())
