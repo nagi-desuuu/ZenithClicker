@@ -196,7 +196,7 @@ TextColor = { .7, .5, .3 }
 ShadeColor = { .3, .15, 0 }
 local shortcut = ('QWERTYUIO'):atomize()
 local rankColor = {
-    [0] = { 0, 0, 0, 0 },
+    [0] = { 1, 1, 1, .26 },
     { 1,  .1, 0 },
     { 1,  .7, 0 },
     { .5, 1,  0 },
