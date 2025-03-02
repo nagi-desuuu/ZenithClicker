@@ -747,15 +747,15 @@ function GAME.start()
     GAME.iconRevSB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
-    local r = 30
+    local r = 35
     local x, y = -2, -2
     for i, m in next, hand do
         local q = TEXTURE.icon.quad
         if #m == 2 then
-            GAME.iconSB:add(q.ingame[m], x * r, y * r, 0, .42, .42, 128 * .5, 128 * .5)
+            GAME.iconSB:add(q.ingame[m], x * r, y * r, 0, .5, .5, 128 * .5, 128 * .5)
             GAME.resultSB:add(q.result[m], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
         else
-            GAME.iconRevSB:add(q.ingame_rev[m:sub(2)], x * r, y * r, 0, .3, .3, 219 * .5, 219 * .5)
+            GAME.iconRevSB:add(q.ingame_rev[m:sub(2)], x * r, y * r, 0, .42, .42, 219 * .5, 219 * .5)
             GAME.resultRevSB:add(q.result_rev[m:sub(2)], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
         end
         if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end

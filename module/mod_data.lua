@@ -103,7 +103,7 @@ return {
         DP = { COLOR.HEX "FFC0C9" },
     },
     prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
-    prio_icon = { EX = 0, DH = 1, VL = 2, GV = 3, NH = 4, MS = 5, IN = 6, AS = 7, DP = 8, rEX = 0, rDH = 1, rVL = 2, rGV = 3, rNH = 4, rMS = 5, rIN = 6, rAS = 7, rDP = 8 },
+    prio_icon = { EX = 0, DP = 1, DH = 2, VL = 3, GV = 4, NH = 5, MS = 6, IN = 7, AS = 8, rEX = 0, rDP = 1, rDH = 2, rVL = 3, rGV = 4, rNH = 5, rMS = 6, rIN = 7, rAS = 8 },
     adj = {
         IN = "INVISIBLE",
         MS = "MESSY",
