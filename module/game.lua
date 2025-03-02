@@ -171,12 +171,8 @@ end
 function GAME.updateBgm(event)
     if event == 'start' then
         BGM.set(BgmSets.assist, 'volume', 1)
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', .62)
-            BGM.set('expert', 'volume', 0)
-        else
-            BGM.set('expert', 'volume', M.EX / 2)
-        end
+        if GAME.anyRev then BGM.set('rev', 'volume', .62) end
+        BGM.set('expert', 'volume', GAME.anyRev and 0 or MATH.sign(M.EX))
     elseif event == 'finish' then
         BGM.set(BgmSets.assist, 'volume', 0)
         local l = TABLE.copy(BgmSets.assist)
@@ -185,9 +181,10 @@ function GAME.updateBgm(event)
         end
         if GAME.anyRev then
             BGM.set('rev', 'volume', .82)
+            BGM.set('expert', 'volume', M.EX / 2)
         end
     elseif event == 'expertSwitched' then
-        BGM.set('expert', 'volume', GAME.anyRev and M.EX / 2 or 0)
+        if GAME.anyRev then BGM.set('expert', 'volume', M.EX / 2) end
     elseif event == 'revSwitched' then
         BGM.set('expert', 'volume', M.EX / 2)
         if GAME.anyRev then
