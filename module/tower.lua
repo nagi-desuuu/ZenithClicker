@@ -377,6 +377,7 @@ function scene.overDraw()
         gc_setAlpha(GigaSpeed.alpha)
         gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
     end
+
     -- GigaSpeed Anim
     if GigaSpeed.textTimer then
         GC.setBlendMode('add', 'alphamultiply')
@@ -386,6 +387,7 @@ function scene.overDraw()
         end
         GC.setBlendMode('alpha')
     end
+
     if GAME.playing then
         -- Quests
         for i = 1, #GAME.quests do

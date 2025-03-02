@@ -83,10 +83,10 @@ local GAME = {
 local M = GAME.mod
 local MD = ModData
 
---- Unsorted
-function GAME.getHand(showRev)
+--- Unsorted, like {'rEX','NH',...}
+function GAME.getHand(real)
     local list = {}
-    if showRev then
+    if real then
         for i = 1, 9 do
             local D = ModData.deck[i]
             local level = M[D.id]
@@ -435,7 +435,7 @@ end
 function GAME.refreshRPC()
     local stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
     stateStr = stateStr .. "F" .. GAME.floor
-    local hand=GAME.getHand(true)
+    local hand = GAME.getHand(true)
     if #hand > 0 then
         stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2)
     end
