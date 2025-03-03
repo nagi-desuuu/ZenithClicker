@@ -446,6 +446,42 @@ function GAME.refreshRPC()
     }
 end
 
+function GAME.refreshModIcon()
+    GAME.iconSB:clear()
+    GAME.iconRevSB:clear()
+    local hand = GAME.getHand(true)
+    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    local r = 35
+    local x, y = -2, -2
+    for i, m in next, hand do
+        local q = TEXTURE.icon.quad
+        if #m == 2 then
+            GAME.iconSB:add(q.ingame[m], x * r, y * r, 0, .5, .5, 128 * .5, 128 * .5)
+        else
+            GAME.iconRevSB:add(q.ingame_rev[m:sub(2)], x * r, y * r, 0, .42, .42, 219 * .5, 219 * .5)
+        end
+        if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end
+    end
+end
+
+function GAME.refreshResultModIcon()
+    GAME.resultSB:clear()
+    GAME.resultRevSB:clear()
+    local hand = GAME.getHand(true)
+    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    local r = 35
+    local x, y = -2, -2
+    for i, m in next, hand do
+        local q = TEXTURE.icon.quad
+        if #m == 2 then
+            GAME.resultSB:add(q.result[m], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
+        else
+            GAME.resultRevSB:add(q.result_rev[m:sub(2)], x * r, y * r, 0, .33, .33, 183 * .5, 183 * .5)
+        end
+        if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end
+    end
+end
+
 --------------------------------------------------------------
 
 function GAME.refreshCurrentCombo()
@@ -743,23 +779,7 @@ function GAME.start()
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
 
-    GAME.iconSB:clear()
-    GAME.iconRevSB:clear()
-    local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
-    local r = 35
-    local x, y = -2, -2
-    for i, m in next, hand do
-        local q = TEXTURE.icon.quad
-        if #m == 2 then
-            GAME.iconSB:add(q.ingame[m], x * r, y * r, 0, .5, .5, 128 * .5, 128 * .5)
-            GAME.resultSB:add(q.result[m], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
-        else
-            GAME.iconRevSB:add(q.ingame_rev[m:sub(2)], x * r, y * r, 0, .42, .42, 219 * .5, 219 * .5)
-            GAME.resultRevSB:add(q.result_rev[m:sub(2)], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
-        end
-        if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end
-    end
+    GAME.refreshModIcon()
 
     GAME.upFloor()
 
@@ -850,11 +870,10 @@ function GAME.finish(reason)
         if GAME.gigaTime then text = text .. "(" .. STRING.time_simp(GAME.gigaTime) .. ")" end
         text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
         TEXTS.endTime:set(text)
+        GAME.refreshResultModIcon()
     else
         GAME.resultSB:clear()
         GAME.resultRevSB:clear()
-        TEXTS.endHeight:set("")
-        TEXTS.endTime:set("")
     end
 
     GAME.setGigaspeedAnim(false)
@@ -874,7 +893,7 @@ function GAME.finish(reason)
         end)
     end
 
-    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('textHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('uiHide'):run()
     DiscordRPC.update {
         details = "QUICK PICK",
         state = "Enjoying Music",
