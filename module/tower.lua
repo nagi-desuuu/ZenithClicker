@@ -4,6 +4,7 @@ local abs = math.abs
 local M = GAME.mod
 local MD = ModData
 
+---@type Zenitha.Scene
 local scene = {}
 
 local function MouseOnCard(x, y)
@@ -133,9 +134,11 @@ function scene.mouseClick(x, y, k)
     end
 end
 
-scene.touchDown = mouseMove
-scene.touchMove = mouseMove
-scene.touchClick = scene.mouseClick
+function scene.touchMove(x, y) scene.mouseMove(x, y) end
+
+function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
+
+function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 local cancelNextPress
 function scene.keyDown(key)
