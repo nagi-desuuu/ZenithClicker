@@ -213,7 +213,7 @@ local rankColor = {
 local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_replaceTransform = gc.replaceTransform
-local gc_translate, gc_scale = gc.translate, gc.scale
+local gc_translate, gc_scale, gc_shear = gc.translate, gc.scale, gc.shear
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
@@ -549,19 +549,22 @@ function scene.overDraw()
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and M[infoID] == 2 then
             setFont(60)
-            GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 195, -145 + 4, 2600, 'center', nil, 0.85, 1)
-            GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 195, -145 + 2, 2600, 'center', nil, 0.85, 1)
-            GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 195, -145, 2600, 'center', nil, 0.85, 1)
+            gc_push('transform')
+            gc_translate(0, -110)
+            local t = love.timer.getTime()
+            gc_scale(1 + math.sin(t / 2.6) * .026)
+            gc_shear(math.sin(t) * .26, math.cos(t * 1.2) * .026)
+            GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 2600 * .075, -35 + 4, 2600, 'center', 0, 0.85, 1)
+            GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 2600 * .075, -35 + 2, 2600, 'center', 0, 0.85, 1)
+            GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 2600 * .075, -35, 2600, 'center', 0, 0.85, 1)
+            gc_pop()
             setFont(30)
-            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 2600 * 0.15, -75, 2600, 'center', nil,
-                0.7, 1)
+            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 2600 * 0.15, -75, 2600, 'center', 0, 0.7, 1)
         else
             setFont(60)
-            GC.strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 195, -145, 2600, 'center', nil,
-                0.85, 1)
+            GC.strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 195, -145, 2600, 'center', 0, 0.85, 1)
             setFont(30)
-            GC.strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 2600 * 0.15, -75, 2600, 'center', nil,
-                0.7, 1)
+            GC.strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 2600 * 0.15, -75, 2600, 'center', 0, 0.7, 1)
         end
     end
 
