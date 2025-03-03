@@ -825,7 +825,7 @@ function GAME.finish(reason)
         if GAME.floor >= 10 then
             if TABLE.count(GAME.completion, 0) == 9 then
                 MSG.clear()
-                MSG('dark', "REVERSED MOD unlocked!\nActivate with right click",6.26)
+                MSG('dark', "REVERSED MOD unlocked!\nActivate with right click", 6.26)
                 SFX.play('notify')
             end
             local duoWasCompleted = GAME.completion.DP

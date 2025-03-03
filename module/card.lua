@@ -26,6 +26,7 @@ function Card.new(d)
         tx = 0,
         ty = 0,
         visY = 0,
+        visY1 = 0,
 
         float = 0,
 
@@ -284,11 +285,19 @@ function Card:revJump()
                 end
             end
         end):run()
-    if self.id ~= 'IN' then
-        TWEEN.new(function(t)
+    local anim_spin
+    if self.id == 'IN' then
+        local s, e = self.kx, self.front and 1 or -1
+        function anim_spin(t)
+            self.kx = lerp(s, e, t)
             self.r = (t - 1) * 3.1416
-        end):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
+        end
+    else
+        function anim_spin(t)
+            self.r = (t - 1) * 3.1416
+        end
     end
+    TWEEN.new(anim_spin):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
 end
 
 function Card:shake()
@@ -309,7 +318,8 @@ local activeFrame = GC.newImage('assets/card/outline.png')
 
 function Card:update(dt)
     self.x = MATH.expApproach(self.x, self.tx, dt * 16)
-    self.y = MATH.expApproach(self.y, self.ty + (self.active and 1 or -1) * self.visY, dt * 16)
+    self.y = MATH.expApproach(self.y, self.ty, dt * 16)
+    self.visY1 = MATH.expApproach(self.visY1, self.visY, dt * 26)
     self.float = MATH.expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 12)
     if self.burn then
         self.burn = self.burn - dt
@@ -352,7 +362,7 @@ function Card:draw()
     end
 
     gc_push('transform')
-    gc_translate(self.x, self.y)
+    gc_translate(self.x, self.y + self.visY1)
     gc_rotate(self.r)
     if not playing and not self.upright then gc_rotate(3.1416) end
     gc_scale(abs(self.size * self.kx), self.size * self.ky)

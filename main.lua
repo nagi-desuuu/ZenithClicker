@@ -396,7 +396,7 @@ function Daemon_Beat()
         if T > t1 + step1 then
             t1 = t1 + step1
             for i = 1, 9 do
-                Cards[i].visY = GAME.mod.MS * math.random(-6, 2)
+                Cards[i].visY = GAME.mod.MS * math.random(-4, 4)
             end
             GAME.refreshLayout()
         end
