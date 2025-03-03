@@ -434,7 +434,7 @@ function Card:draw()
             local y = lerp(-370, -330, t)
             local cr = lerp(.16, .42, t)
             local comp = completion[self.id] == 2
-            local ang = (self.upright and 0 or 3.1416) - t * 6.2832
+            local ang = -t * 6.2832
             -- Base star
             if self.upright then
                 if comp then
@@ -448,7 +448,6 @@ function Card:draw()
                 gc_setColor(1, 1, 1)
                 gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             else
-                gc_rotate(3.1416)
                 if comp then
                     gc_setColor(.2, .2, .2)
                     blurCircle(blur, -x, -y, cr * 260)
