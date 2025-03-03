@@ -578,7 +578,10 @@ end
 
 function GAME.cancelAll(instant)
     if M.NH == 2 then
-        if M.AS == 1 then GAME.cancelBurn() end
+        if M.AS == 1 then
+            GAME.cancelBurn()
+            GAME.fault = true
+        end
         return
     end
     TASK.removeTask_code(GAME.task_cancelAll)
