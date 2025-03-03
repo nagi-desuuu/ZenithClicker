@@ -240,8 +240,11 @@ function Card:setActive(auto, key)
             key and MATH.clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
         SFX.play('card_tone_' .. ModData.name[self.id], 1, 0, M.GV)
     end
-    if not noSpin then self:spin() end
-    if revOn then self:bounce(1200, .62) end
+    if revOn then
+        self:revAnim()
+    elseif not noSpin then
+        self:spin()
+    end
 end
 
 function Card:flip()
@@ -279,6 +282,18 @@ function Card:bounce(height, duration)
     TWEEN.new(function(t)
         self.y = self.ty + t * (t - 1) * height
     end):setUnique('bounce_' .. self.id):setEase(bounceEase):setDuration(duration):run()
+end
+
+function Card:revAnim()
+    TWEEN.new(function(t)
+        t = t * (t - 1) * 4
+        self.y = self.ty + t * 355
+        self.kx = 1 - .4 * t
+        self.ky = 1 - .5 * t
+    end):setUnique('revBounce_' .. self.id):setEase(bounceEase):setDuration(.62):run()
+    TWEEN.new(function(t)
+        self.r = (t - 1) * 3.1416
+    end):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
 end
 
 function Card:shake()
@@ -418,32 +433,32 @@ function Card:draw()
             local x = lerp(155, 0, t)
             local y = lerp(-370, -330, t)
             local cr = lerp(.16, .42, t)
-            gc_scale(math.abs(1 / self.kx), 1)
             local comp = completion[self.id] == 2
+            local ang = (self.upright and 0 or 3.1416) - t * 6.2832
             -- Base star
             if self.upright then
                 if comp then
                     gc_setColor(.5, .5, .5)
                     blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1)
-                    gc_mDraw(img, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(img, lerp(35, 0, t) - x, -y, ang, lerp(.16, .42, t))
                 end
                 gc_setColor(.5, .5, .5)
                 blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, 1, 1)
-                gc_mDraw(img, x, y, -t * 6.2832, lerp(.16, .42, t))
+                gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             else
                 gc_rotate(3.1416)
                 if comp then
                     gc_setColor(.2, .2, .2)
                     blurCircle(blur, -x, -y, cr * 260)
                     gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
-                    gc_mDraw(img, -x, -y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
                 end
                 gc_setColor(.2, .2, .2)
                 blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
-                gc_mDraw(img, x, y, -t * 6.2832, lerp(.16, .42, t))
+                gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             end
             -- Float star
             if not self.active then
@@ -451,11 +466,11 @@ function Card:draw()
                     gc_setColor(.5, .5, .5, t)
                     blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1, t)
-                    gc_mDraw(TEXTURE.star1, lerp(35, 0, t) - x, -y, -t * 6.2832, lerp(.16, .42, t))
-                    gc_mDraw(TEXTURE.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, lerp(35, 0, t) - x, -y, ang, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
                 else
                     gc_setColor(1, 1, 1, t)
-                    gc_mDraw(TEXTURE.star1, x, y, -t * 6.2832, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
                 end
             end
         end
