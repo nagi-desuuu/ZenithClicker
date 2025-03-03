@@ -291,9 +291,11 @@ function Card:revAnim()
         self.kx = 1 - .4 * t
         self.ky = 1 - .5 * t
     end):setUnique('revBounce_' .. self.id):setEase(bounceEase):setDuration(.62):run()
-    TWEEN.new(function(t)
-        self.r = (t - 1) * 3.1416
-    end):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
+    if self.id ~= 'IN' then
+        TWEEN.new(function(t)
+            self.r = (t - 1) * 3.1416
+        end):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
+    end
 end
 
 function Card:shake()
@@ -435,6 +437,7 @@ function Card:draw()
             local cr = lerp(.16, .42, t)
             local comp = completion[self.id] == 2
             local ang = -t * 6.2832
+            gc_scale(math.abs(1 / self.kx * self.ky), 1)
             -- Base star
             if self.upright then
                 if comp then
