@@ -533,16 +533,19 @@ function GAME.refreshPBText()
     local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
     local height = DATA.highScore[setStr]
     local time = DATA.speedrun[setStr]
-    if height == 0 then return TEXTS.pb:set("No Score Yet") end
-    local f = 0
-    for i = 1, #Floors do
-        if height < Floors[i].top then
-            f = i
-            break
-        end
-    end
-    TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, f))
     TEXTS.sr:set(time < 1e99 and STRING.time(time) or "")
+    if height == 0 then
+        TEXTS.pb:set("No Score Yet")
+    else
+        local f = 0
+        for i = 1, #Floors do
+            if height < Floors[i].top then
+                f = i
+                break
+            end
+        end
+        TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, f))
+    end
 end
 
 function GAME.refreshRev()
