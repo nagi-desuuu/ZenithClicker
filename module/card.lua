@@ -190,60 +190,18 @@ function Card:setActive(auto, key)
     if auto then return end
 
     -- Sound and animation
-    if not self.active then
-        SFX.play('card_slide_' .. math.random(4))
-        return
-    end
-    if revOn then
-        SFX.play('card_select_reverse', 1, 0, M.GV)
-        SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', 1, 0, M.GV)
-        TASK.new(function()
-            TASK.yieldT(0.62)
-            local currentState = M[self.id]
-            if currentState == 2 then
-                SFX.play('card_reverse_impact', 1, 0, M.GV)
-                TWEEN.new(tween_deckPress):setUnique('DeckPress')
-                    :setEase('OutQuad'):setDuration(.42):run()
-                for _, C in ipairs(Cards) do
-                    if C ~= self then
-                        local r = math.random()
-                        if self.id == 'EX' then r = r * 2.6 end
-                        C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
-                    end
-                end
-                local color = ModData.color[self.id]
-                table.insert(ImpactGlow, {
-                    r = (color[1] - .26) * .8,
-                    g = (color[2] - .26) * .8,
-                    b = (color[3] - .26) * .8,
-                    x = self.x,
-                    y = self.y,
-                    t = 2.6,
-                })
-                GAME.revDeckSkin = true
-            else
-                SFX.play('spin')
-                if currentState == 0 then
-                    self:bounce(100, .26)
-                else
-                    for _, C in ipairs(Cards) do
-                        if C ~= self then
-                            local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
-                            C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
-                        end
-                    end
-                end
-            end
-        end)
-    else
-        SFX.play('card_select', 1, 0,
+    if self.active then
+        local postfix = revOn and '_reverse' or ''
+        SFX.play('card_select' .. postfix, 1, 0,
             key and MATH.clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
-        SFX.play('card_tone_' .. ModData.name[self.id], 1, 0, M.GV)
-    end
-    if revOn then
-        self:revAnim()
-    elseif not noSpin then
-        self:spin()
+        SFX.play('card_tone_' .. ModData.name[self.id] .. postfix, 1, 0, M.GV)
+        if revOn then
+            self:revJump()
+        elseif not noSpin then
+            self:spin()
+        end
+    else
+        SFX.play('card_slide_' .. math.random(4))
     end
 end
 
@@ -284,13 +242,48 @@ function Card:bounce(height, duration)
     end):setUnique('bounce_' .. self.id):setEase(bounceEase):setDuration(duration):run()
 end
 
-function Card:revAnim()
+function Card:revJump()
     TWEEN.new(function(t)
         t = t * (t - 1) * 4
         self.y = self.ty + t * 355
-        self.kx = 1 - .4 * t
-        self.ky = 1 - .5 * t
-    end):setUnique('revBounce_' .. self.id):setEase(bounceEase):setDuration(.62):run()
+        self.size = .62 - .26 * t
+    end):setUnique('revBounce_' .. self.id):setEase(bounceEase):setDuration(.62)
+        :setOnFinish(function()
+            local currentState = GAME.mod[self.id]
+            if currentState == 2 then
+                SFX.play('card_reverse_impact', 1, 0, GAME.mod.GV)
+                TWEEN.new(tween_deckPress):setUnique('DeckPress'):setEase('OutQuad'):setDuration(.42):run()
+                for _, C in ipairs(Cards) do
+                    if C ~= self then
+                        local r = math.random()
+                        if self.id == 'EX' then r = r * 2.6 end
+                        C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
+                    end
+                end
+                local color = ModData.color[self.id]
+                table.insert(ImpactGlow, {
+                    r = (color[1] - .26) * .8,
+                    g = (color[2] - .26) * .8,
+                    b = (color[3] - .26) * .8,
+                    x = self.x,
+                    y = self.y,
+                    t = 2.6,
+                })
+                GAME.revDeckSkin = true
+            else
+                SFX.play('spin')
+                if currentState == 0 then
+                    self:bounce(100, .26)
+                else
+                    for _, C in ipairs(Cards) do
+                        if C ~= self then
+                            local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
+                            C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
+                        end
+                    end
+                end
+            end
+        end):run()
     if self.id ~= 'IN' then
         TWEEN.new(function(t)
             self.r = (t - 1) * 3.1416
