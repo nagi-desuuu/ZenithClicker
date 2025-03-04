@@ -341,7 +341,7 @@ end
 
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
-    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2.6 * GAME.rank then
+    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
         GAME.xpLockLevel = 5
     end
     local rankup
