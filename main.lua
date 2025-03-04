@@ -127,6 +127,7 @@ TEXTS = {
     slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
+    forfeit    = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
     credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
 }
 if fontNotLoaded then

@@ -1,4 +1,5 @@
 local max, min = math.max, math.min
+local sin, cos = math.sin, math.cos
 local abs = math.abs
 
 local M = GAME.mod
@@ -180,17 +181,18 @@ function scene.update(dt)
         Cards[i]:update(dt)
     end
     if love.keyboard.isDown('escape') and GAME.playing then
-        GAME.forfeitTimer = GAME.forfeitTimer + dt * MATH.clampInterpolate(4, 6, 10, 2, GAME.questCount)
+        GAME.forfeitTimer = GAME.forfeitTimer +
+            dt * MATH.clampInterpolate(6, 2.6, 12, 1, min(GAME.questCount, GAME.time))
         if TASK.lock('forfeit_sfx', .0872) then
-            SFX.play('detonate1', MATH.clampInterpolate(0, .4, 2, .6, GAME.forfeitTimer))
+            SFX.play('detonate1', MATH.clampInterpolate(0, .4, 1, .6, GAME.forfeitTimer))
         end
-        if GAME.forfeitTimer > 2.6 then
+        if GAME.forfeitTimer > 1 then
             SFX.play('detonate2')
             GAME.finish('forfeit')
         end
     else
         if GAME.forfeitTimer > 0 then
-            GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 2.6 or 6.2) * dt
+            GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 1 or 2.6) * dt
         end
     end
 end
@@ -552,8 +554,8 @@ function scene.overDraw()
             gc_push('transform')
             gc_translate(0, -110)
             local t = love.timer.getTime()
-            gc_scale(1 + math.sin(t / 2.6) * .026)
-            gc_shear(math.sin(t) * .26, math.cos(t * 1.2) * .026)
+            gc_scale(1 + sin(t / 2.6) * .026)
+            gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
             GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 2600 * .075, -35 + 4, 2600, 'center', 0, 0.85, 1)
             GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 2600 * .075, -35 + 2, 2600, 'center', 0, 0.85, 1)
             GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 2600 * .075, -35, 2600, 'center', 0, 0.85, 1)
@@ -568,13 +570,29 @@ function scene.overDraw()
         end
     end
 
-    -- Forfeit Roll
+    -- Forfeit Panel
     if GAME.forfeitTimer > 0 then
         gc_replaceTransform(SCR.origin)
-        gc_setColor(.872, .26, .26, GAME.forfeitTimer * .6)
-        gc_rectangle('fill', 0, SCR.h, SCR.w, -SCR.h * GAME.forfeitTimer / 2.6 * .5)
-        gc_setColor(.626, 0, 0, GAME.forfeitTimer * .6)
-        gc_rectangle('fill', 0, SCR.h * (1 - GAME.forfeitTimer / 2.6 * .5), SCR.w, -5)
+        local alpha = min(GAME.forfeitTimer * 2.6, 1)
+        local h = SCR.h * GAME.forfeitTimer * .5
+
+        -- Body
+        gc_setColor(.8, .2, .0626, alpha)
+        gc_rectangle('fill', 0, SCR.h, SCR.w, -h)
+
+        -- Blur
+        gc_setColor(1, 1, 1, alpha * .355)
+        gc_draw(TEXTURE.transition, 0, SCR.h - h, 1.5708, h / 128, SCR.w, 0, 1)
+        gc_setColor(1, 0, 0, alpha * .42)
+        gc_draw(TEXTURE.transition, 0, SCR.h - h, -1.5708, SCR.k * 42 / 128, SCR.w)
+
+        -- Line
+        gc_setColor(1, 0, 0, alpha)
+        gc_rectangle('fill', 0, SCR.h - h, SCR.w, -5 * SCR.k)
+
+        -- Text
+        gc_setColor(1, .872, .872, alpha)
+        gc_mDraw(TEXTS.forfeit, SCR.w / 2, SCR.h - h * .5, 0, SCR.k * .85, SCR.k)
     end
 end
 
