@@ -1,4 +1,152 @@
-return {
+ModData = {
+    deck = {
+        { id = 'EX', initOrder = 1, lockfull = false },
+        { id = 'NH', initOrder = 2, lockfull = true },
+        { id = 'MS', initOrder = 3, lockfull = true },
+        { id = 'GV', initOrder = 4, lockfull = true },
+        { id = 'VL', initOrder = 5, lockfull = true },
+        { id = 'DH', initOrder = 6, lockfull = true },
+        { id = 'IN', initOrder = 7, lockfull = true },
+        { id = 'AS', initOrder = 8, lockfull = true },
+        { id = 'DP', initOrder = 9, lockfull = false },
+    },
+    name = {
+        EX = 'expert',
+        NH = 'nohold',
+        MS = 'messy',
+        GV = 'gravity',
+        VL = 'volatile',
+        DH = 'doublehole',
+        IN = 'invisible',
+        AS = 'allspin',
+        DP = 'duo',
+    },
+    fullName = {
+        EX = "< EXPERT MODE >",
+        NH = "< NO HOLD >",
+        MS = "< MESSIER GARBAGE  >",
+        GV = "< GRAVITY >",
+        VL = "< VOLATILE GARBAGE >",
+        DH = "< DOUBLE HOLE GARBAGE >",
+        IN = "< INVISIBLE >",
+        AS = "< ALL-SPIN >",
+        DP = "< DUO >",
+        lock = "< LOCKED >",
+        lockDP = "< LOCKED? >",
+    },
+    desc = {
+        EX = "A LESS LENIENT CHALLENGE, FOR THOSE WHO DARE",
+        NH = "CANCELING IS DISABLED",
+        MS = "TAROTS WILL BE SHUFFLED BY FLOOR",
+        GV = "AUTO COMMITTING, TIMED BY FLOOR",
+        VL = "LARGER GAPS BETWEEN TAROTS, BUT MUST CLICK TWICE",
+        DH = "COMBOS WILL SPAWN HARDER",
+        IN = "TAROTS FACE DOWN AND HINTS FLASH ONCE EVERY TWO SECONDS",
+        AS = "KEYBOARD AVAILABLE, BUT DOUBLE CLICKING IS PENALIZED",
+        DP = "FLOOD THE TOWER WITH SOMEONE DOESN'T EXIST",
+        lock = "REACH HIGHER FLOOR TO UNLOCK",
+        lockDP = "MASTER THIS MOD TO UNLOCK",
+    },
+    revName = {
+        EX = "> THE TYRANT <",
+        NH = "> ASCETICISM <",
+        MS = "> LOADED DICE <",
+        GV = "> FREEFALL <",
+        VL = "> LAST STAND <",
+        DH = "> DAMNATION <",
+        IN = "> THE EXILE <",
+        AS = "> THE WARLOCK <",
+        DP = "> BLEEDING HEARTS <",
+    },
+    revDesc = {
+        EX = "FEAR, OPPRESSION, AND LIMITLESS AMBITION.",
+        NH = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE.",
+        MS = "IN A RIGGED GAME, YOUR MIND IS THE ONLY FAIR ADVANTAGE.",
+        GV = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE.",
+        VL = "STRENGTH ISN'T NECESSARY FOR THOSE WITH NOTHING TO LOSE.",
+        DH = "NO MORE SECOND CHANCES.",
+        IN = "NEVER UNDERESTIMATE BLIND FAITH.",
+        AS = "INTO REALMS BEYOND HEAVEN AND EARTH.",
+        DP = "EVEN AS WE BLEED, WE KEEP HOLDING ON...",
+    },
+    weight = {
+        EX = 13, --  8 + 5
+        NH = 12, --  8 + 4
+        MS = 14, -- 10 + 4
+        GV = 12, -- 10 + 2
+        VL = 17, -- 15 + 2
+        DH = 12, --  8 + 4
+        IN = 7,  --  6 + 1
+        AS = 13, -- 10 + 3
+        DP = 4,  --  3 + 1
+    },
+    color = {
+        EX = { COLOR.HEX "89590B" },
+        NH = { COLOR.HEX "FF00D4" },
+        MS = { COLOR.HEX "FFB400" },
+        GV = { COLOR.HEX "FFFF00" },
+        VL = { COLOR.HEX "FF1500" },
+        DH = { COLOR.HEX "47ACFF" },
+        IN = { COLOR.HEX "BD24FF" },
+        AS = { COLOR.HEX "00FED4" },
+        DP = { COLOR.HEX "FF8C9D" },
+    },
+    textColor = {
+        EX = { COLOR.HEX "C29F68" },
+        NH = { COLOR.HEX "FF8BEC" },
+        MS = { COLOR.HEX "FFD572" },
+        GV = { COLOR.HEX "F7FF8A" },
+        VL = { COLOR.HEX "FF978D" },
+        DH = { COLOR.HEX "A6D5FF" },
+        IN = { COLOR.HEX "E8B3FF" },
+        AS = { COLOR.HEX "93FFE0" },
+        DP = { COLOR.HEX "FFC0C9" },
+    },
+    prio = { IN = 0, MS = 1, VL = 2, NH = 3, DH = 4, AS = 5, GV = 6, EX = 7, DP = 8, rIN = 0, rMS = 1, rVL = 2, rNH = 3, rDH = 4, rAS = 5, rGV = 6, rEX = 7, rDP = 8 },
+    prio_icon = { EX = 0, DP = 1, DH = 2, VL = 3, GV = 4, NH = 5, MS = 6, IN = 7, AS = 8, rEX = 0, rDP = 1, rDH = 2, rVL = 3, rGV = 4, rNH = 5, rMS = 6, rIN = 7, rAS = 8 },
+    adj = {
+        IN = "INVISIBLE",
+        MS = "MESSY",
+        VL = "VOLATILE",
+        NH = "HOLDLESS",
+        DH = "DOUBLE HOLE",
+        AS = "ALL-SPIN",
+        GV = "GRAVITY",
+        EX = "EXPERT",
+        DP = "DUO",
+        rIN = "BELIEVED",
+        rMS = "DECEPTIVE",
+        rVL = "DESPERATE",
+        rNH = "ASCENDANT",
+        rDH = "DAMNED",
+        rAS = "OMNI-SPIN",
+        rGV = "COLLAPSED",
+        rEX = "TYRANNICAL",
+        rDP = "PIERCING",
+    },
+    noun = {
+        IN = "INVISIBLITY",
+        MS = "MESSINESS",
+        VL = "VOLATILITY",
+        NH = "NO HOLD",
+        DH = "DOUBLE HOLE",
+        AS = "ALL-SPIN",
+        GV = "GRAVITY",
+        EX = "EXPERT",
+        DP = "DUO",
+        rIN = "BELIEF",
+        rMS = "DECEPTION",
+        rVL = "DESPERATION",
+        rNH = "ASCENSION",
+        rDH = "DAMNATION",
+        rAS = "OMNI-SPIN",
+        rGV = "COLLAPSE",
+        rEX = "TYRANNY",
+        rDP = "HEARTACHE",
+    },
+}
+
+ComboData = {
     -------- EX NH MS GV VL DH IN AS DP --------
     { set = '   NH    GV               ', name = "a modern classic",          basic = true },
     { set = '   NH MS       DH         ', name = "deadlock",                  basic = true },
@@ -147,3 +295,68 @@ return {
     { set = 'EX NH MS GV               ', name = "atlas' lament" },
     { set = 'EX NH MS GV VL            ', name = "oppression" },
 }
+
+Floors = {
+    { top = 50,   event = {},                                                 name = "Hall of Beginnings" },
+    { top = 150,  event = { 'dmgDelay', -2, 'dmgWrong', 1 },                  name = "The Hotel" },
+    { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                name = "The Casino" },
+    { top = 450,  event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Arena" },
+    { top = 650,  event = { 'dmgDelay', -1, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "The Museum" },
+    { top = 850,  event = { 'dmgDelay', -1, 'dmgTime', 1 },                   name = "Abandoned Offices" },
+    { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Laboratory" },
+    { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Core" },
+    { top = 1650, event = { 'dmgDelay', -.5, 'dmgWrong', 1 },                 name = "Corruption" },
+    { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 1 }, name = "Platform of the Gods" },
+    -- Initial: Delay=15. Cycle=5, Wrong=1
+    -- Total: Delay-10, Cycle-3, Wrong+4
+}
+
+Fatigue = {
+    normal = {
+        { time = 300, event = { 'dmgTimeMul', -.1 }, text = "FATIGUE SETS IN…", desc = "TimerSpeed++" },
+        { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
+        { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "TimerSpeed++   Heal--" },
+        { time = 390, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "TimerSpeed++   Damage++" },
+        { time = 420, event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 }, text = "THIS IS THE END", desc = "TimerSpeed++   DmgCycle--" },
+        { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
+    },
+    rEX = {
+        { time = 240, event = { 'dmgTimeMul', -.2 }, text = "YOUR POWER SLIPS…", desc = "TimerSpeed++" },
+        { time = 270, event = { 'dmgWrong', 2 }, text = "WHISPERS OF DISCONTENT SPREAD…", desc = "Damage++" },
+        { time = 300, event = { 'dmgCycle', -1 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
+        { time = 330, event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…", desc = "TimerSpeed++   Damage++" },
+        { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "TimerSpeed++   Heal--" },
+        { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgCycle--   Damage++" },
+        { time = 420, event = { 'dmgTimeMul', -.3 }, text = "THE END OF AN ERA", desc = "TimerSpeed++++" },
+        { time = 1e99 }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
+    },
+    rDP = {
+        { time = 20,  event = {}, text = [[YOUR PASSION FADES..]] },                        -- MESS+
+        { time = 40,  event = {}, text = [[THEIR REPLIES BECOME LESS ENGAGED..]] },         -- MESS++
+        { time = 60,  event = {}, text = [[YOU FEELS NEGLECTED..]] },                       -- MESS+++
+        { time = 80,  event = {}, text = [[THEY SUCCESSFULLY APOLOGIZES.?]] },              -- MESS-
+        { time = 100, event = {}, text = [[THINGS ARE BACK TO HOW THEY USED TO BE.!]] },    -- MESS---
+        { time = 120, event = {}, text = [[MINOR ISSUES BECOME LARGE CONFLICTS..]] },       -- MESS++
+        { time = 140, event = {}, text = [[YOU BLAMES THEY FOR THEIR OWN PROBLEMS..]] },    -- MESS+++
+        { time = 160, event = {}, text = [[THEY WOULD RATHER SPEND TIME ALONE..]] },        -- REVIVE++
+        { time = 180, event = {}, text = [[YOU PROMISES TO CHANGE..]] },                    -- MESS--
+        { time = 200, event = {}, text = [[PROMISES ARE BROKEN..]] },                       -- +4 PERMA
+        { time = 220, event = {}, text = [[CONVERSATIONS DEVOLVE TO SHOUTING MATCHES..]] }, -- MESS+++
+        { time = 240, event = {}, text = [[ALL TRUST HAS WITHERED AWAY..]] },               -- MESS++
+        { time = 260, event = {}, text = [[THEY SETS AN ULTIMATUM..]] },                    -- MESS++
+        { time = 280, event = {}, text = [[YOU CAN'T BE BOTHERED ANYMORE..]] },             -- MESS++
+        { time = 300, event = {}, text = [[ONE LAST PAINFUL ARGUMENT..]] },                 -- DMG+
+        { time = 320, event = {}, text = [[GOODBYE.]] },                                    -- REVIVE=INF
+        { time = 360, event = {}, text = [["I MISS YOU"]] },                                -- MESS---
+        { time = 380, event = {}, text = [[MAYBE IT CAN STILL WORK.?]] },                   -- MESS-
+        { time = 400, event = {}, text = [[GOODBYE.]] },                                    -- +12 PERMA
+        { time = 1e99 },
+    },
+}
+
+GravityTimer = {
+    { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
+    { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
+}
+
+GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }

@@ -133,7 +133,7 @@ function GAME.getComboName(list, extend, colored)
         end
 
         local str = table.concat(TABLE.sort(list), ' ')
-        if Combos[str] and (Combos[str].basic or extend) then return { COLOR.dL, Combos[str].name } end
+        if ComboData[str] and (ComboData[str].basic or extend) then return { COLOR.dL, ComboData[str].name } end
 
         table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
 
@@ -162,7 +162,7 @@ function GAME.getComboName(list, extend, colored)
         end
 
         local str = table.concat(TABLE.sort(list), ' ')
-        if Combos[str] and (Combos[str].basic or extend) then return Combos[str].name end
+        if ComboData[str] and (ComboData[str].basic or extend) then return ComboData[str].name end
 
         table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
 
@@ -517,6 +517,14 @@ function GAME.refreshLayout()
     end
 end
 
+function GAME.refreshCursor()
+    local sum = 0
+    for _, v in next, GAME.completion do
+        sum = sum + v ^ 1.37851162325373
+    end
+    CursorProgress = sum/23.4
+end
+
 function GAME.refreshLockState()
     Cards.EX.lock = DATA.maxFloor < 9
     Cards.NH.lock = DATA.maxFloor < 2
@@ -574,6 +582,19 @@ function GAME.refreshRev()
         end):setUnique('revSwitched'):setDuration(.26):run()
         GAME.updateBgm('revSwitched')
     end
+end
+
+-- SFX.play('boardlock')
+-- SFX.play('boardlock_revive')
+function GAME.incrementPrompt(prompt)
+    -- TODO
+    SFX.play('boardlock_clink')
+    SFX.play('boardlock_clear')
+end
+
+function GAME.nixPrompt(prompt)
+    -- TODO
+    SFX.play('boardlock_fail')
 end
 
 function GAME.cancelAll(instant)

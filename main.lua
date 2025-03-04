@@ -1,4 +1,3 @@
-love.window.setFullscreen(true)
 love.window.setIcon(love.image.newImageData('assets/icon.png'))
 
 require 'Zenitha'
@@ -159,7 +158,6 @@ local _DATA = {
     speedrun = setmetatable({}, { __index = function() return 1e99 end }),
     maxFloor = 1,
 }
-
 DATA = setmetatable({
     load = function() TABLE.update(_DATA, FILE.load('data.luaon', '-luaon -canskip') or NONE) end,
     save = function() love.filesystem.write('data.luaon', TABLE.dumpDeflate(_DATA)) end,
@@ -168,6 +166,26 @@ DATA = setmetatable({
     __newindex = function(_, k, v)
         _DATA[k] = v
         DATA.save()
+    end,
+})
+
+local _CONF = {
+    fullscreen = true,
+    syscursor = false,
+}
+local function saver()
+    TASK.yieldT(2.6)
+    CONF.save()
+end
+CONF = setmetatable({
+    load = function() TABLE.update(_CONF, FILE.load('conf.luaon', '-luaon -canskip') or NONE) end,
+    save = function() love.filesystem.write('conf.luaon', TABLE.dumpDeflate(_CONF)) end,
+}, {
+    __index = _CONF,
+    __newindex = function(_, k, v)
+        _CONF[k] = v
+        TASK.removeTask_code(saver)
+        TASK.new(saver)
     end,
 })
 
@@ -215,81 +233,17 @@ BgmSets = {
     },
     assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
 }
-ModData = require "module/mod_data"
 
-BasicComboCount = 9
-Combos = require "module/combo_data"
-for i = 1, #Combos do
-    local cmb = Combos[i]
+require 'module.game_data'
+
+for i = 1, #ComboData do
+    local cmb = ComboData[i]
     cmb.name = '"' .. cmb.name:upper() .. '"'
     local cmbStr = table.concat(TABLE.sort(cmb.set:trim():split('%s+', true)), ' ')
-    Combos[cmbStr] = Combos[cmbStr] or cmb
+    ComboData[cmbStr] = ComboData[cmbStr] or cmb
 end
 
-Floors = {
-    { top = 50,   event = {},                                                 name = "Hall of Beginnings" },
-    { top = 150,  event = { 'dmgDelay', -2, 'dmgWrong', 1 },                  name = "The Hotel" },
-    { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                name = "The Casino" },
-    { top = 450,  event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Arena" },
-    { top = 650,  event = { 'dmgDelay', -1, 'dmgCycle', -.5, 'dmgWrong', 1 }, name = "The Museum" },
-    { top = 850,  event = { 'dmgDelay', -1, 'dmgTime', 1 },                   name = "Abandoned Offices" },
-    { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Laboratory" },
-    { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                name = "The Core" },
-    { top = 1650, event = { 'dmgDelay', -.5, 'dmgWrong', 1 },                 name = "Corruption" },
-    { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 1 }, name = "Platform of the Gods" },
-    -- Initial: Delay=15. Cycle=5, Wrong=1
-    -- Total: Delay-10, Cycle-3, Wrong+4
-}
-
-Fatigue = {
-    normal = {
-        { time = 300, event = { 'dmgTimeMul', -.1 }, text = "FATIGUE SETS IN…", desc = "TimerSpeed++" },
-        { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
-        { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "TimerSpeed++   Heal--" },
-        { time = 390, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "TimerSpeed++   Damage++" },
-        { time = 420, event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 }, text = "THIS IS THE END", desc = "TimerSpeed++   DmgCycle--" },
-        { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
-    },
-    rEX = {
-        { time = 240, event = { 'dmgTimeMul', -.2 }, text = "YOUR POWER SLIPS…", desc = "TimerSpeed++" },
-        { time = 270, event = { 'dmgWrong', 2 }, text = "WHISPERS OF DISCONTENT SPREAD…", desc = "Damage++" },
-        { time = 300, event = { 'dmgCycle', -1 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
-        { time = 330, event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…", desc = "TimerSpeed++   Damage++" },
-        { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "TimerSpeed++   Heal--" },
-        { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgCycle--   Damage++" },
-        { time = 420, event = { 'dmgTimeMul', -.3 }, text = "THE END OF AN ERA", desc = "TimerSpeed++++" },
-        { time = 1e99 }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
-    },
-    rDP = {
-        { time = 030, event = {}, text = [[THE RELATIONSHIP STAGNATES…]] }, -- garbage becomes a bit messier
-        { time = 060, event = {}, text = [[INSECURITIES GROW STRONGER…]] }, -- garbage becomes messier
-        { time = 090, event = {}, text = [[%p2 FEELS NEGLECTED…]] }, -- garbage becomes much messier
-        { time = 120, event = {}, text = [[%p1 SUCCESSFULLY APOLOGIZES…?]] }, -- garbage becomes a bit cleaner
-        { time = 150, event = {}, text = [[THINGS ARE BACK TO HOW THEY SHOULD BE…!]] }, -- garbage becomes much cleaner
-        { time = 180, event = {}, text = [[THE WEIGHT OF WORDS UNSPOKEN…]] }, -- garbage becomes messier
-        { time = 210, event = {}, text = [["WHY CAN'T YOU JUST LISTEN TO ME?"]] }, -- garbage becomes much messier
-        { time = 240, event = {}, text = [["THIS IS ALL YOUR FAULT".]] }, -- revive difficulty increased
-        { time = 270, event = {}, text = [[%p2 MAKES THE SAME PROMISE AGAIN…]] }, -- garbage becomes cleaner
-        { time = 300, event = {}, text = [["THIS TIME WILL BE DIFFERENT."]] }, -- +4 PERMANENT GARBAGE
-        { time = 330, event = {}, text = [[SOME HABITS CAN'T BE BROKEN…]] }, -- garbage becomes much messier
-        { time = 360, event = {}, text = [[ALL TRUST HAS WITHERED AWAY…]] }, -- garbage becomes messier
-        { time = 390, event = {}, text = [[%p1 SETS AN ULTIMATUM…]] }, -- garbage becomes messier
-        { time = 420, event = {}, text = [[%p2 CONTEMPLATES THEIR WASTED EFFORT…]] }, -- garbage becomes messier
-        { time = 450, event = {}, text = [[ONE LAST PAINFUL ARGUMENT…]] }, -- receive 25% more garbage
-        { time = 480, event = {}, text = [[GOODBYE.]] }, -- you can no longer revive
-        { time = 510, event = {}, text = [["I MISS YOU"]] }, -- garbage becomes much cleaner
-        { time = 540, event = {}, text = [[WHAT IF…?]] }, -- garbage becomes a bit cleaner
-        { time = 570, event = {}, text = [[…]] }, -- +12 PERMANENT GARBAGE
-        { time = 1e99 },
-    },
-}
-
-GravityTimer = {
-    { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
-    { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
-}
-
-GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
+Shader_Coloring = GC.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
 
 GAME = require 'module/game'
 
@@ -303,22 +257,44 @@ SCN.add('tower', require 'module/tower')
 SCN.add('joining', require 'module/joining')
 ZENITHA.setFirstScene('joining')
 
-ZENITHA.globalEvent.drawCursor = NULL
-ZENITHA.globalEvent.clickFX = NULL
+local gc = love.graphics
 
-local _keyDown_orig = ZENITHA.globalEvent.keyDown
-function ZENITHA.globalEvent.keyDown(key)
-    if _keyDown_orig(key) then return true end
-    if key == 'f11' then
-        love.window.setFullscreen(not love.window.getFullscreen())
-        return true
-    elseif key == 'f12' then
-        MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
-        return true
+local pressValue = 0
+
+CursorProgress = 0
+local function StarHandCursor(x, y)
+    GC.translate(x, y)
+    GC.scale(1.42)
+    GC.rotate(MATH.lerp(-.626, -1.2, pressValue))
+    GC.scale(.8 + .2 * pressValue, 1)
+    local l = .626 + .374 * pressValue
+    GC.setColor(l, l, l)
+    GC.draw(TEXTURE.star0, 0, -6, 0, .14, .3, TEXTURE.star1:getWidth() * .5, 0)
+    GC.scale(.12, .26)
+    GC.setShader(Shader_Coloring)
+    GC.setColor(1, .626, .5)
+    GC.draw(TEXTURE.star0, -150, 0)
+    if CursorProgress <= .384626 then
+        local t = MATH.interpolate(0, 1, .384626, 0, CursorProgress)
+        GC.setColor(.9, .9, .9, t)
+        GC.draw(TEXTURE.star0, -150, 0)
+        GC.setShader()
+    else
+        GC.setShader()
+        GC.setColor(1, 1, 1, MATH.iLerp(.384626, 1, CursorProgress))
+        GC.draw(TEXTURE.star1, -150, 0)
     end
 end
 
-local gc = love.graphics
+function RefreshSysCursor()
+    love.mouse.setVisible(CONF.syscursor)
+    ZENITHA.globalEvent.drawCursor = CONF.syscursor and NULL or StarHandCursor
+end
+
+love.mouse.setVisible(false)
+ZENITHA.globalEvent.drawCursor = NULL
+ZENITHA.globalEvent.clickFX = NULL
+
 function WIDGET._prototype.button:draw()
     gc.push('transform')
     gc.translate(self._x, self.name == 'back' and self._y or self._y + DeckPress)
@@ -353,6 +329,18 @@ function WIDGET._prototype.button:draw()
     WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
 
     gc.pop()
+end
+
+-- Mouse Holding daemon
+function Daemon_Cursor()
+    while true do
+        local dt = coroutine.yield()
+        if love.mouse.isDown(1, 2, 3) then
+            pressValue = 1
+        else
+            pressValue = MATH.expApproach(pressValue, 0, dt * 12)
+        end
+    end
 end
 
 -- Muisc syncing daemon
@@ -433,6 +421,7 @@ end
 
 -- Load data
 DATA.load()
+CONF.load()
 local oldVer = DATA.version
 if DATA.version == nil then
     for k in next, DATA.highScore do
@@ -478,6 +467,7 @@ for i = 1, #Cards do
 end
 GAME.refreshLockState()
 GAME.refreshPBText()
+love.window.setFullscreen(CONF.fullscreen)
 
 -- Test
 TASK.new(function()

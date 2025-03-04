@@ -111,6 +111,11 @@ local function keyPress(key)
     end
 end
 
+function scene.enter()
+    RefreshSysCursor()
+    GAME.refreshCursor()
+end
+
 function scene.mouseMove(x, y)
     mouseMove(x, y)
 end
@@ -143,12 +148,31 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 local cancelNextPress
 function scene.keyDown(key)
+    if key == 'q' then
+        CursorProgress = 0
+    elseif key == 'w' then
+        CursorProgress = CursorProgress + 1 / 24
+    end
+
+
+    if key == 'f10' then
+        CONF.syscursor = not CONF.syscursor
+        RefreshSysCursor()
+    elseif key == 'f11' then
+        CONF.fullscreen = not CONF.fullscreen
+        love.window.setFullscreen(CONF.fullscreen)
+        return true
+    elseif key == 'f12' then
+        MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
+        return true
+    end
     if M.EX == 0 then
         keyPress(key)
         if M.EX > 0 then
             cancelNextPress = true
         end
     end
+    ZENITHA.setCursorVis(true)
     return true
 end
 
@@ -223,6 +247,7 @@ local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDra
 local gc_setAlpha = GC.setAlpha
 local gc_move, gc_back = GC.ucs_move, GC.ucs_back
 local setFont = FONT.set
+local gc_blurCircle = GC.blurCircle
 
 local chargeIcon = GC.load {
     w = 256, h = 256,
@@ -333,7 +358,7 @@ function scene.draw()
                 GAME.chain < 8 and .26 or 1
             ))
         end
-        GC.blurCircle(-.26, 326, 270, 100 * k)
+        gc_blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         gc_setAlpha(1)
         gc_draw(TEXTS.b2b, x, 214, 0, 1, 1.1)
@@ -380,7 +405,7 @@ function scene.overDraw()
     for i = 1, #ImpactGlow do
         local L = ImpactGlow[i]
         gc_setColor(L.r, L.g, L.b, L.t - 1.5)
-        GC.blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
+        gc_blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
     end
 
     -- GigaSpeed Timer
@@ -654,7 +679,7 @@ scene.widgetList = {
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
-            Space: Confirm    Z: Reset selection    ESC: Forfeit/Quit    F11: Fullscreen
+            Space: commit    Z: reset    Esc: forfeit/quit    F10: cursor    F11: fullscreen
 
             All assets from TETR.IO, by osk team:
             Musics & Sounds by Dr.Ocelot

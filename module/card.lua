@@ -1,5 +1,8 @@
-local abs = math.abs
-local lerp = MATH.lerp
+local max, min = math.max, math.min
+local abs, rnd = math.abs, math.random
+local sin, cos = math.sin, math.cos
+local sign, lerp = MATH.sign, MATH.lerp
+local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
 
 ---@class Card
 ---@field burn false | number
@@ -59,7 +62,7 @@ function Card:setActive(auto, key)
             SFX.play('clearline', .42)
             if self.charge < 1.2 then
                 self:shake()
-                SFX.play('combo_' .. math.random(2, 3), .626, 0, -2 + M.GV)
+                SFX.play('combo_' .. rnd(2, 3), .626, 0, -2 + M.GV)
                 return
             end
             SFX.play('combo_4', .626, 0, M.GV)
@@ -203,7 +206,7 @@ function Card:setActive(auto, key)
             self:spin()
         end
     else
-        SFX.play('card_slide_' .. math.random(4))
+        SFX.play('card_slide_' .. rnd(4))
     end
 end
 
@@ -218,11 +221,11 @@ end
 function Card:spin()
     TWEEN.new(function(t)
         if GAME.mod.IN ~= 1 then
-            self.ky = .9 + .1 * math.cos(t * 6.2832)
+            self.ky = .9 + .1 * cos(t * 6.2832)
             self.r = t * 6.2832
-            self.kx = math.cos((GAME.mod.AS + 1) * t * 6.2832)
+            self.kx = cos((GAME.mod.AS + 1) * t * 6.2832)
         else
-            self.kx = math.cos(t * 6.2832)
+            self.kx = cos(t * 6.2832)
         end
         if not self.front then
             self.kx = -self.kx
@@ -257,7 +260,7 @@ function Card:revJump()
                 TWEEN.new(tween_deckPress):setUnique('DeckPress'):setEase('OutQuad'):setDuration(.42):run()
                 for _, C in ipairs(Cards) do
                     if C ~= self then
-                        local r = math.random()
+                        local r = rnd()
                         if self.id == 'EX' then r = r * 2.6 end
                         C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
                     end
@@ -279,7 +282,7 @@ function Card:revJump()
                 else
                     for _, C in ipairs(Cards) do
                         if C ~= self then
-                            local r = 1 - math.abs(C.initOrder - self.initOrder) / 8
+                            local r = 1 - abs(C.initOrder - self.initOrder) / 8
                             C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
                         end
                     end
@@ -318,10 +321,10 @@ end
 local activeFrame = GC.newImage('assets/card/outline.png')
 
 function Card:update(dt)
-    self.x = MATH.expApproach(self.x, self.tx, dt * 16)
-    self.y = MATH.expApproach(self.y, self.ty, dt * 16)
-    self.visY1 = MATH.expApproach(self.visY1, self.visY, dt * 26)
-    self.float = MATH.expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 12)
+    self.x = expApproach(self.x, self.tx, dt * 16)
+    self.y = expApproach(self.y, self.ty, dt * 16)
+    self.visY1 = expApproach(self.visY1, self.visY, dt * 26)
+    self.float = expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 12)
     if self.burn then
         self.burn = self.burn - dt
         if self.burn <= 0 then
@@ -330,7 +333,7 @@ function Card:update(dt)
         end
     end
     if self.charge > 0 then
-        self.charge = math.max(self.charge - dt, 0)
+        self.charge = max(self.charge - dt, 0)
     end
 end
 
@@ -342,9 +345,9 @@ local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_draw = gc.draw
 local gc_setColor, gc_setShader = gc.setColor, gc.setShader
 local gc_mDraw = GC.mDraw
-local blurCircle = GC.blurCircle
+local gc_blurCircle = GC.blurCircle
 
-local outlineShader = gc.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
+local Shader_Coloring = Shader_Coloring
 function Card:draw()
     local texture = TEXTURE[self.id]
     local playing = GAME.playing
@@ -372,8 +375,8 @@ function Card:draw()
     if self == Cards[FloatOnCard] then
         local dx, dy = (MX - self.x) / (260 * self.size), (MY - self.y) / (350 * self.size)
         local d = (abs(dx) - abs(dy)) * .026
-        gc_scale(math.min(1, 1 - d), math.min(1, 1 + d))
-        local D = -MATH.sign(dx * dy) * abs(dx * dy) ^ .626 * .026
+        gc_scale(min(1, 1 - d), min(1, 1 + d))
+        local D = -sign(dx * dy) * abs(dx * dy) ^ .626 * .026
         gc_shear(D, D)
         gc_scale(1 - abs(D))
     end
@@ -401,7 +404,7 @@ function Card:draw()
         if playing and not self.hintMark and GAME.mod.IN < 2 then
             -- But wrong
             a = 1
-            r, g, b = .4 + .1 * math.sin(GAME.time * 42 - self.x * .0026), 0, 0
+            r, g, b = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
         else
             a = .6 + .4 * self.float
         end
@@ -411,17 +414,17 @@ function Card:draw()
         local qt = GAME.questTime
         if GAME.mod.IN == 0 then
             if GAME.hardMode then qt = qt - 1.5 end
-            a = MATH.clampInterpolate(1, 0, 2, .4, qt) +
-                MATH.clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * math.sin(qt * 26 - self.x * .0026)
+            a = clampInterpolate(1, 0, 2, .4, qt) +
+                clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * sin(qt * 26 - self.x * .0026)
         elseif GAME.mod.IN == 1 then
             if GAME.hardMode then qt = qt * .626 end
-            a = -.1 + .4 * math.sin(3.1416 + qt * 3)
+            a = -.1 + .4 * sin(3.1416 + qt * 3)
         else
             a = 0
         end
     end
     if a > 0 then
-        gc_setShader(outlineShader)
+        gc_setShader(Shader_Coloring)
         gc_setColor(r, g, b, a)
         gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
         gc_setShader()
@@ -441,36 +444,36 @@ function Card:draw()
             local cr = lerp(.16, .42, t)
             local comp = completion[self.id] == 2
             local ang = -t * 6.2832
-            gc_scale(math.abs(1 / self.kx * self.ky), 1)
+            gc_scale(abs(1 / self.kx * self.ky), 1)
             -- Base star
             if self.upright then
                 if comp then
                     gc_setColor(.5, .5, .5)
-                    blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    gc_blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1)
                     gc_mDraw(img, lerp(35, 0, t) - x, -y, ang, lerp(.16, .42, t))
                 end
                 gc_setColor(.5, .5, .5)
-                blurCircle(blur, x, y, cr * 260)
+                gc_blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, 1, 1)
                 gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             else
                 if comp then
                     gc_setColor(.2, .2, .2)
-                    blurCircle(blur, -x, -y, cr * 260)
-                    gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
+                    gc_blurCircle(blur, -x, -y, cr * 260)
+                    gc_setColor(1, .7 + .15 * sin(love.timer.getTime() * 62 + self.x), .2)
                     gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
                 end
                 gc_setColor(.2, .2, .2)
-                blurCircle(blur, x, y, cr * 260)
-                gc_setColor(1, .7 + .15 * math.sin(love.timer.getTime() * 62 + self.x), .2)
+                gc_blurCircle(blur, x, y, cr * 260)
+                gc_setColor(1, .7 + .15 * sin(love.timer.getTime() * 62 + self.x), .2)
                 gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             end
             -- Float star
             if not self.active then
                 if comp then
                     gc_setColor(.5, .5, .5, t)
-                    blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    gc_blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
                     gc_setColor(1, 1, 1, t)
                     gc_mDraw(TEXTURE.star1, lerp(35, 0, t) - x, -y, ang, lerp(.16, .42, t))
                     gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
