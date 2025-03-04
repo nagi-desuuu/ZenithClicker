@@ -248,8 +248,8 @@ function Card:revJump()
     TWEEN.new(function(t)
         t = t * (t - 1) * 4
         self.y = self.ty + t * 355
-        self.size = .62 - .26 * t
-    end):setUnique('revBounce_' .. self.id):setEase(bounceEase):setDuration(.62)
+        self.size = .62 - .355 * t
+    end):setUnique('revJump_' .. self.id):setEase(bounceEase):setDuration(.62)
         :setOnFinish(function()
             local currentState = GAME.mod[self.id]
             if currentState == 2 then
