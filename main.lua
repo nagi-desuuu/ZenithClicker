@@ -393,7 +393,7 @@ function Daemon_Beat()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if GAME.mod.EX > 0 then
+            if GAME.mod.EX > 0 and not SCN.swapping then
                 if GAME.anyRev then
                     BGM.set('expert', 'volume', MATH.rand(.7, 1) or 0, 0)
                 else

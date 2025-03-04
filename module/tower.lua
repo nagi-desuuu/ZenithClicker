@@ -60,8 +60,8 @@ local function keyPress(key)
                 MSG.clear()
                 MSG('dark', "PRESS AGAIN TO QUIT", 2.6)
             else
-                BGM.set('all', 'volume', 0, 1.6)
                 SFX.play('menuback')
+                BGM.set('all', 'volume', 0, 1.6)
                 SCN.back()
             end
         end
