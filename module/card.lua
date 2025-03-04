@@ -186,9 +186,8 @@ function Card:setActive(auto, key)
         end
         SCN.scenes.tower.widgetList.reset:setVisible(not (M.NH == 2 and M.AS ~= 1))
         GAME.refreshPBText()
-        if revOn or wasRev then
-            GAME.refreshRev()
-        end
+        if revOn or wasRev then GAME.refreshRev() end
+        GAME.refreshRPC()
     end
     GAME.refreshCurrentCombo()
     GAME.refreshLayout()

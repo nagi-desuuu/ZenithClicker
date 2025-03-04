@@ -438,16 +438,35 @@ function GAME.upFloor()
 end
 
 function GAME.refreshRPC()
-    local stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
-    stateStr = stateStr .. "F" .. GAME.floor
-    local hand = GAME.getHand(true)
-    if #hand > 0 then
-        stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2)
+    if GAME.playing then
+        local stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
+        stateStr = stateStr .. "F" .. GAME.floor
+        local hand = GAME.getHand(true)
+        if #hand > 0 then
+            stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2)
+        end
+        DiscordRPC.update {
+            details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
+            state = stateStr,
+        }
+    else
+        local detailStr = "QUICK PICK"
+        if M.EX > 0 then detailStr = "EXPERT " .. detailStr end
+        if M.DP > 0 then detailStr = detailStr:gsub("PICK", "DUET") end
+
+        local stateStr = "Enjoying Music"
+        if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
+        if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
+        if M.IN > 0 then
+            stateStr = stateStr:gsub("j", "r"):gsub("s", "z"):gsub("tch", "dge")
+                :gsub("p", "b"):gsub("c", "g"):gsub("t", "d")
+        end
+        if GAME.anyRev then stateStr = stateStr:upper() end
+        DiscordRPC.update {
+            details = detailStr,
+            state = stateStr,
+        }
     end
-    DiscordRPC.update {
-        details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-        state = stateStr,
-    }
 end
 
 function GAME.refreshModIcon()
@@ -925,10 +944,7 @@ function GAME.finish(reason)
     end
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('uiHide'):run()
-    DiscordRPC.update {
-        details = "QUICK PICK",
-        state = "Enjoying Music",
-    }
+    GAME.refreshRPC()
     GAME.updateBgm('finish')
     if reason ~= 'forfeit' then
         TASK.lock('cannotStart', 1)
