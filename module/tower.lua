@@ -345,7 +345,7 @@ function scene.draw()
     -- Chain Counter
     if GAME.playing and GAME.chain >= 4 then
         local bounce = .26 / (26 * GAME.questTime + 1)
-        local k = MATH.clampInterpolate(6, .7023, 26, 2, GAME.chain)
+        local k = MATH.clampInterpolate(6, .7, 26, 2, GAME.chain)
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
         gc_draw(TEXTS.b2b, x, 216, 0, 1, 1.1)
@@ -572,7 +572,7 @@ function scene.overDraw()
         local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id
         gc_replaceTransform(SCR.xOy_d)
         gc_setColor(ShadeColor)
-        gc_setAlpha(.7023)
+        gc_setAlpha(.7)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and M[infoID] == 2 then
             setFont(60)

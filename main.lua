@@ -393,9 +393,13 @@ function Daemon_Beat()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if not GAME.playing and GAME.mod.EX > 0 and not GAME.anyRev then
-                local v = MATH.roll(GAME.mod.EX == 1 and .26 or .626)
-                BGM.set('expert', 'volume', v and MATH.rand(.42, .626) or 0, v and 0 or .1)
+            if GAME.mod.EX > 0 then
+                if GAME.anyRev then
+                    BGM.set('expert', 'volume', MATH.rand(.7, 1) or 0, 0)
+                else
+                    local pick = MATH.roll(MATH.interpolate(1, .26, 10, .9, GAME.floor))
+                    BGM.set('expert', 'volume', pick and MATH.rand(.4, .7) or 0, pick and 0 or .1)
+                end
             end
         end
         coroutine.yield()

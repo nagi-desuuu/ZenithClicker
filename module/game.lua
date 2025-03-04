@@ -172,11 +172,12 @@ function GAME.getComboName(list, extend, colored)
     end
 end
 
+---@param event 'start' | 'finish' | 'revSwitched' | 'ingame' | 'init'
 function GAME.updateBgm(event)
     if event == 'start' then
         BGM.set(BgmSets.assist, 'volume', 1)
+        BGM.set('bass', 'volume', .26)
         if GAME.anyRev then BGM.set('rev', 'volume', .62) end
-        BGM.set('expert', 'volume', GAME.anyRev and 0 or MATH.sign(M.EX))
     elseif event == 'finish' then
         BGM.set(BgmSets.assist, 'volume', 0)
         local l = TABLE.copy(BgmSets.assist)
@@ -185,12 +186,8 @@ function GAME.updateBgm(event)
         end
         if GAME.anyRev then
             BGM.set('rev', 'volume', .82)
-            BGM.set('expert', 'volume', M.EX / 2)
         end
-    elseif event == 'expertSwitched' then
-        if GAME.anyRev then BGM.set('expert', 'volume', M.EX / 2) end
     elseif event == 'revSwitched' then
-        BGM.set('expert', 'volume', M.EX / 2)
         if GAME.anyRev then
             BGM.set('rev', 'volume', .82, 4.2)
             BGM.set(BgmSets.assist, 'volume', 0, 4.2)
@@ -201,8 +198,15 @@ function GAME.updateBgm(event)
                 BGM.set(TABLE.popRandom(l), 'volume', 1, 4.2)
             end
         end
-    elseif event == 'f10' then
-        BGM.set('bass', 'volume', 0)
+    elseif event == 'ingame' then
+        if GAME.floor < 10 then
+            BGM.set('staccato', 'volume', MATH.clampInterpolate(1, 1, 6, .26, GAME.floor))
+            BGM.set('bass', 'volume', MATH.clampInterpolate(1, .26, 9, 1, GAME.floor))
+        else
+            local f = GAME.fatigue
+            BGM.set('staccato', 'volume', f == 1 and 0 or 1)
+            BGM.set('bass', 'volume', min((f - 1) * .4, 1))
+        end
     elseif event == 'init' then
         BGM.play(BgmSets.all)
         BGM.set('all', 'volume', 0, 0)
@@ -427,9 +431,9 @@ function GAME.upFloor()
                 DATA.save()
             end
         end
-        GAME.updateBgm('f10')
         Background.quad:setViewport(0, 0, 1920, 1080, 1920, 1080)
     end
+    GAME.updateBgm('ingame')
     GAME.refreshRPC()
 end
 
@@ -522,7 +526,7 @@ function GAME.refreshCursor()
     for _, v in next, GAME.completion do
         sum = sum + v ^ 1.37851162325373
     end
-    CursorProgress = sum/23.4
+    CursorProgress = sum / 23.4
 end
 
 function GAME.refreshLockState()
@@ -960,6 +964,7 @@ function GAME.update(dt)
             for i = 1, #e, 2 do
                 GAME[e[i]] = GAME[e[i]] + e[i + 1]
             end
+            if GAME.floor == 10 then GAME.updateBgm('ingame') end
             GAME.fatigue = GAME.fatigue + 1
             local duration = GAME.fatigue == #GAME.fatigueSet and 10 or 5
             TEXT:add {
