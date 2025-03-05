@@ -100,11 +100,10 @@ TEXTURE = IMG.init(TEXTURE, true)
 
 local fontNotLoaded = MATH.roll(.62)
 if fontNotLoaded then
-    FONT.load {
-        tnr = "assets/Times New Roman.ttf",
-    }
+    FONT.load { tnr = "assets/Times New Roman.ttf" }
     FONT.setDefaultFont('tnr')
 end
+FONT.get(25):setLineHeight(0.9)
 TEXTS = {
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
@@ -146,10 +145,11 @@ if fontNotLoaded then
         local scale = 60 / TEXTS.load:getFont():getHeight()
         for _, text in next, TEXTS do text:setFont(FONT.get(MATH.roundUnit(text:getFont():getHeight() * scale, 10))) end
         for _, quest in next, GAME.quests do quest.name:setFont(FONT.get(60)) end
-        WIDGET._reset()
         TEXTS.height:setFont(FONT.get(30, '_mono'))
         TEXTS.time:setFont(FONT.get(30, '_mono'))
         TEXTS.gigatime:setFont(FONT.get(50, '_mono'))
+        FONT.get(25):setLineHeight(0.9)
+        WIDGET._reset()
     end)
 end
 
