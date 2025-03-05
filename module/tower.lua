@@ -305,16 +305,20 @@ function scene.draw()
     gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
     gc_draw(TEXTS.prevPB, 0, y, 0, 1, 1, TEXTS.prevPB:getWidth() + 10, TEXTS.prevPB:getHeight() / 2)
 
-    gc_replaceTransform(SCR.xOy)
-
     -- GigaSpeed BG
     if GigaSpeed.alpha > 0 then
+        gc_replaceTransform(SCR.origin)
         gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha)
-        gc_draw(TEXTURE.transition, 0, 0, 0, 626 / 128, 470)
-        gc_draw(TEXTURE.transition, 1600, 0, 0, -626 / 128, 470)
+        local h1 = SCR.y + 470 * SCR.k
+        gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
+        gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
+
+        gc_replaceTransform(SCR.xOy)
         local h = 697 + GAME.uiHide * 420
         gc_setAlpha(.626 * GigaSpeed.alpha)
         gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
+    else
+        gc_replaceTransform(SCR.xOy)
     end
 
     -- Mod icons
@@ -692,7 +696,8 @@ scene.widgetList = {
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
-            Space: commit    Z: reset    Esc: forfeit/quit    F10: cursor    F11: fullscreen
+            Space: commit    Z: reset    Esc: forfeit/quit
+            F10: large cursor    F11: fullscreen
 
             All assets from TETR.IO, by osk team:
             Musics & Sounds by Dr.Ocelot
