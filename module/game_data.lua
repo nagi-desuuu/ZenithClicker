@@ -296,6 +296,22 @@ ComboData = {
     { set = 'EX NH MS GV VL            ', name = "oppression" },
 }
 
+RevComboData = {
+    "Z", "S", "J", "L", "T", "O", "I",
+    [["BLIGHT"]],
+    [["DESOLATION"]],
+    [["HAVOC"]],
+    [["PANDEMONIUM"]],
+    [["INFERNO"]],
+    [["PURGATORY"]],
+    [["PERDITION"]],
+    [["CATACLYSM"]],
+    [["ANNIHILATION"]],
+    [["ARMAGEDDON"]],
+    [["ABYSS"]],
+    [["APOCALYPSE"]],
+}
+
 Floors = {
     { top = 50,   event = {},                                                 name = "Hall of Beginnings" },
     { top = 150,  event = { 'dmgDelay', -2, 'dmgWrong', 1 },                  name = "The Hotel" },

@@ -112,10 +112,10 @@ end
 
 ---@param list string[] OVERWRITE!!!
 ---@param extend? boolean use extended combo lib from community
----@param colored? boolean return a color-string table instead
-function GAME.getComboName(list, extend, colored)
+---@param ingame? boolean return a color-string table instead
+function GAME.getComboName(list, extend, ingame)
     local len = #list
-    if colored then
+    if ingame then
         if len == 0 then return {} end
 
         local fstr = {}
@@ -143,7 +143,11 @@ function GAME.getComboName(list, extend, colored)
         end
         ins(fstr, MD.textColor[list[len]])
         ins(fstr, MD.noun[list[len]])
-        if M.IN > 0 then
+        if M.NH == 2 then
+            for i = 1, #fstr, 2 do
+                fstr[i] = COLOR.L
+            end
+        elseif M.IN > 0 then
             local r = 0
             for i = 1, #fstr, 2 do
                 r = (r + rnd(0, 3)) % 4
@@ -153,14 +157,23 @@ function GAME.getComboName(list, extend, colored)
 
         return fstr
     else
+        -- Simple
         if len == 0 then return "" end
         if len == 1 then return MD.noun[list[1]] end
 
-        if not GAME.anyRev and not TABLE.find(list, 'DP') then
-            if len == 8 then return [["SWAMP WATER"]] end
-            if len == 7 then return [["SWAMP WATER LITE"]] end
+        -- Super Set
+        if not GAME.anyRev and len >= 7 then
+            return
+                len == 7 and [["SWAMP WATER LITE"]] or
+                len == 8 and [["SWAMP WATER"]] or
+                len == 9 and [["SWAMP WATER PRO"]] or
+                [["SWAMP WATER X"]]
+        elseif GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
+            local weight = #table.concat(list) - #list
+            if weight >= 8 then return RevComboData[min(weight, #RevComboData)] end
         end
 
+        -- Normal Combo
         local str = table.concat(TABLE.sort(list), ' ')
         if ComboData[str] and (ComboData[str].basic or extend) then return ComboData[str].name end
 
@@ -301,7 +314,7 @@ function GAME.genQuest()
 
     ins(GAME.quests, {
         combo = combo,
-        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), M.DH == 2, M.NH < 2)),
+        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), M.DH == 2, true)),
     })
 end
 
