@@ -423,6 +423,17 @@ function Daemon_Floor()
     end
 end
 
+DiscordState = {}
+function Daemon_DiscordRPC()
+    while true do
+        TASK.yieldT(1)
+        if DiscordState.needUpdate and not TASK.getLock('RPC_update') then
+            DiscordState.needUpdate = nil
+            DiscordRPC.update(DiscordState)
+        end
+    end
+end
+
 -- Load data
 DATA.load()
 CONF.load()

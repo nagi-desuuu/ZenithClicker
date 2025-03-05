@@ -437,36 +437,38 @@ function GAME.upFloor()
     GAME.refreshRPC()
 end
 
+local revLetter = setmetatable({
+    P = "Ь", R = "ᖉ", T = "ꓕ", Q = "О́", U = "Ո", A = "Ɐ", L = "Γ",
+}, { __index = function(_, k) return k end })
 function GAME.refreshRPC()
+    local detailStr = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK"
+    if M.DP > 0 then detailStr = detailStr:gsub("QUICK", "DUAL") end
+    if GAME.anyRev then detailStr = detailStr:gsub(".", revLetter) end
+
+    local stateStr
     if GAME.playing then
-        local stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
+        stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
         stateStr = stateStr .. "F" .. GAME.floor
         local hand = GAME.getHand(true)
         if #hand > 0 then
             stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2)
         end
-        DiscordRPC.update {
-            details = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK",
-            state = stateStr,
-        }
     else
-        local detailStr = "QUICK PICK"
-        if M.EX > 0 then detailStr = "EXPERT " .. detailStr end
-        if M.DP > 0 then detailStr = detailStr:gsub("PICK", "DUET") end
-
-        local stateStr = "Enjoying Music"
+        stateStr = "Enjoying Music"
         if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
         if M.IN > 0 then
             stateStr = stateStr:gsub("j", "r"):gsub("s", "z"):gsub("tch", "dge")
                 :gsub("p", "b"):gsub("c", "g"):gsub("t", "d")
         end
-        if GAME.anyRev then stateStr = stateStr:upper() end
-        DiscordRPC.update {
-            details = detailStr,
-            state = stateStr,
-        }
     end
+
+    DiscordState = {
+        needUpdate = true,
+        details = detailStr,
+        state = stateStr,
+    }
+    TASK.lock('RPC_update', 1)
 end
 
 function GAME.refreshModIcon()
