@@ -148,9 +148,13 @@ function GAME.getComboName(list, extend, ingame)
                 fstr[i] = COLOR.L
             end
         elseif M.IN > 0 then
-            local r = 0
+            local r = rnd(0, 3)
             for i = 1, #fstr, 2 do
-                r = (r + rnd(0, 3)) % 4
+                r =
+                    r == 0 and rnd(2, 3) or
+                    r == 1 and 3 or
+                    r == 2 and 0 or
+                    r == 3 and rnd(0, 1)
                 fstr[i] = { 1, 1, 1, .55 + .15 * r }
             end
         end
