@@ -308,14 +308,14 @@ end
 function GAME.questReady()
     GAME.questTime = 0
     GAME.fault = false
-    GAME.faultWrong = false
+    GAME.faultWrong = 0
+    GAME.gravTimer = false
     for _, C in ipairs(Cards) do
         C.touchCount = 0
-        C.hintMark = false
+        C.isCorrect = false
     end
     local Q = GAME.quests[1].combo
-    for i = 1, #Q do Cards[Q[i]].hintMark = true end
-    GAME.gravTimer = false
+    for i = 1, #Q do Cards[Q[i]].isCorrect = true end
 end
 
 function GAME.takeDamage(dmg, killReason)
@@ -634,7 +634,7 @@ function GAME.cancelAll(instant)
 end
 
 function GAME.task_cancelAll(instant)
-    local spinMode = not instant and GAME.mod.AS > 0
+    local spinMode = not instant and M.AS > 0
     local list = TABLE.copy(Cards, 0)
     local needFlip = {}
     for i = 1, #Cards do
@@ -732,25 +732,28 @@ function GAME.commit()
 
         GAME.genQuest()
         rem(GAME.quests, 1)
-        GAME.questCount = GAME.questCount + 1
-
         local combo = GAME.quests[1] and GAME.quests[1].combo or NONE
         local hasDH = TABLE.find(combo, 'DH') and 1 or 0
         if #combo >= 4 then
             SFX.play('garbagewindup_' .. MATH.clamp(#combo * 2 - 7 + hasDH, 1, 4))
         end
+        GAME.questReady()
+        GAME.questCount = GAME.questCount + 1
 
         GAME.cancelAll(true)
         GAME.cancelBurn()
-
         GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
-        GAME.questReady()
         return true
     else
         GAME.fault = true
-        GAME.faultWrong = true
-        if GAME.takeDamage(min(GAME.dmgWrong, 1), 'wrongAns') then return end
+        GAME.faultWrong = GAME.faultWrong + 1
+
+        local dmg = GAME.dmgWrong
+        if GAME.faultWrong >= 3 then dmg = dmg + (GAME.faultWrong - 2) end
+        if GAME.takeDamage(max(dmg, 1), 'wrongAns') then return end
+
+        if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
         if M.EX > 0 then
             GAME.cancelAll(true)
         elseif M.AS == 1 then
@@ -760,23 +763,17 @@ function GAME.commit()
 end
 
 local function task_startSpin()
-    for i = 1, #Cards do
-        local C = Cards[i]
+    for _, C in ipairs(Cards) do if C.active then C:setActive(true) end end
+    for _, C in ipairs(Cards) do
         if C.lock then
             C.lock = false
             C:flick()
         else
             C:spin()
         end
-        if C.active then
-            C:setActive(true)
-        end
         TASK.yieldT(.01)
     end
-    if M.MS > 0 then
-        GAME.shuffleCards()
-    end
-    GAME.questReady()
+    if M.MS > 0 then GAME.shuffleCards() end
 end
 function GAME.start()
     if TASK.getLock('cannotStart') then
@@ -835,6 +832,7 @@ function GAME.start()
 
     TABLE.clear(GAME.quests)
     for _ = 1, GAME.queueLen do GAME.genQuest() end
+    GAME.questReady()
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
@@ -860,7 +858,7 @@ function GAME.finish(reason)
             C:setActive(true)
         end
         C.touchCount = 0
-        C.hintMark = false
+        C.isCorrect = false
         C.burn = false
         C.charge = 0
     end
@@ -1047,7 +1045,7 @@ function GAME.update(dt)
         if GAME.gravTimer then
             GAME.gravTimer = GAME.gravTimer - dt
             if GAME.gravTimer <= 0 then
-                GAME.gravTimer = GAME.gravDelay
+                GAME.faultWrong = 0
                 GAME.commit()
             end
         end

@@ -35,7 +35,7 @@ function Card.new(d)
 
         touchCount = 0,
         burn = false,
-        hintMark = false,
+        isCorrect = false,
         charge = 0,
     }, Card)
     return obj
@@ -94,7 +94,7 @@ function Card:setActive(auto, key)
     if GAME.playing then
         self.touchCount = self.touchCount + 1
         if self.touchCount == 1 then
-            if self.hintMark and not GAME.hardMode then
+            if self.isCorrect and not GAME.hardMode then
                 GAME.addXP(1)
             end
         elseif self.touchCount == 2 then
@@ -400,14 +400,14 @@ function Card:draw()
 
     if self.active then
         -- Active
-        if playing and not self.hintMark and GAME.mod.IN < 2 then
+        if playing and not self.isCorrect and GAME.mod.IN < 2 then
             -- But wrong
             a = 1
             r, g, b = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
         else
             a = .6 + .4 * self.float
         end
-    elseif self.hintMark then
+    elseif self.isCorrect then
         -- Inactive but need
         r, g, b = 1, 1, 1
         local qt = GAME.questTime
