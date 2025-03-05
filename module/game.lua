@@ -450,9 +450,7 @@ function GAME.refreshRPC()
         stateStr = GAME.gigaspeed and "Speedrun: " or "In Game: "
         stateStr = stateStr .. "F" .. GAME.floor
         local hand = GAME.getHand(true)
-        if #hand > 0 then
-            stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2)
-        end
+        if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2) end
     else
         stateStr = "Enjoying Music"
         if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end

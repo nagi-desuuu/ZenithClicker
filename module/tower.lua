@@ -123,10 +123,13 @@ end
 local cancelNextClick
 function scene.mouseDown(x, y, k)
     if M.EX == 0 then
+        SFX.play('move')
         mousePress(x, y, k)
         if M.EX > 0 then
             cancelNextClick = true
         end
+    else
+        SFX.play('rotate')
     end
 end
 
