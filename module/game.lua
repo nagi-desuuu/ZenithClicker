@@ -730,6 +730,10 @@ function GAME.commit()
             GAME.refreshLayout()
         end
 
+        GAME.cancelAll(true)
+        GAME.cancelBurn()
+        GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
+
         GAME.genQuest()
         rem(GAME.quests, 1)
         local combo = GAME.quests[1] and GAME.quests[1].combo or NONE
@@ -739,10 +743,6 @@ function GAME.commit()
         end
         GAME.questReady()
         GAME.questCount = GAME.questCount + 1
-
-        GAME.cancelAll(true)
-        GAME.cancelBurn()
-        GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
         return true
     else
