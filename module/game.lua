@@ -300,12 +300,14 @@ function GAME.genQuest()
     if M.DH > 0 then base, var = base + .626, var * .626 end
 
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
+    if M.DP == 0 then
     GAME.atkBuffer = GAME.atkBuffer + r
     if GAME.atkBuffer > 8 then
         r = r - (GAME.atkBuffer - 8)
         GAME.atkBuffer = 8
     end
     GAME.atkBuffer = max(GAME.atkBuffer - max(GAME.floor / 3, 2), 0)
+    end
 
     local pool = TABLE.copyAll(MD.weight)
     local lastQ = GAME.quests[#GAME.quests]
