@@ -145,9 +145,6 @@ function Card:setActive(auto, key)
             end
         end
         local wasRev = M[self.id] == 2
-        if wasRev and not revOn then
-            self:spin()
-        end
         M[self.id] = self.active and (revOn and 2 or 1) or 0
         -- if revOn then -- Limit only one Rev mod can be selected
         --     for _, C in ipairs(Cards) do
@@ -157,6 +154,7 @@ function Card:setActive(auto, key)
         --     end
         -- end
         self.upright = not (self.active and revOn)
+        if wasRev and not revOn then self:spin() end
         if self.id == 'EX' then
             if M.EX == 0 then BGM.set('expert', 'volume', 0, .1) end
             TWEEN.new(function(t)
@@ -218,25 +216,38 @@ function Card:flip()
 end
 
 function Card:spin()
-    TWEEN.new(function(t)
+    local animFunc, ease
+    local re = self.upright and 0 or 3.1416
         if GAME.mod.IN ~= 1 then
+        -- Normal
+        ease = 'OutQuart'
+        function animFunc(t)
             self.ky = .9 + .1 * cos(t * 6.2832)
             self.r = t * 6.2832
             self.kx = cos((GAME.mod.AS + 1) * t * 6.2832)
-        else
-            self.kx = cos(t * 6.2832)
+            if not self.front then
+                self.kx = -self.kx
+            end
         end
+        else
+        -- Flip only
+        ease = 'OutInQuart'
+        local s = self.r
+        function animFunc(t)
+            self.kx = cos(t * 6.2832)
+            self.r = lerp(s, re, t)
         if not self.front then
             self.kx = -self.kx
+            end
         end
-    end):setUnique('spin_' .. self.id)
+    end
+    TWEEN.new(animFunc):setUnique('spin_' .. self.id):setEase(ease):setDuration(.42)
         :setOnKill(function()
             self.ky = 1
-            self.r = 0
+            self.r = re
             -- self.kx = self.front and 1 or -1
         end)
-        :setEase(GAME.mod.IN == 1 and 'OutInQuart' or 'OutQuart')
-        :setDuration(0.42):run()
+        :run()
 end
 
 local bounceEase = { 'linear', 'inQuad' }
@@ -288,19 +299,11 @@ function Card:revJump()
                 end
             end
         end):run()
-    local anim_spin
-    if self.id == 'IN' then
         local s, e = self.kx, self.front and 1 or -1
-        function anim_spin(t)
+    TWEEN.new(function(t)
             self.kx = lerp(s, e, t)
             self.r = (t - 1) * 3.1416
-        end
-    else
-        function anim_spin(t)
-            self.r = (t - 1) * 3.1416
-        end
-    end
-    TWEEN.new(anim_spin):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
+    end):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
 end
 
 function Card:shake()
