@@ -10,6 +10,7 @@ local ins, rem = table.insert, table.remove
 
 ---@class Game
 ---@field comboStr string
+---@field totalFlip number
 ---
 ---@field dmgHeal number
 ---@field dmgWrong number
@@ -486,11 +487,11 @@ function GAME.upFloor()
         if GAME.gigaspeed then
             GAME.gigaTime = GAME.time
             GAME.setGigaspeedAnim(false, true)
-            local t = DATA.speedrun[GAME.comboStr]
+            local t = BEST.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
-                DATA.speedrun[GAME.comboStr] = MATH.roundUnit(GAME.time, .001)
-                DATA.save()
+                BEST.speedrun[GAME.comboStr] = MATH.roundUnit(GAME.time, .001)
+                SaveBest()
             end
         end
         Background.quad:setViewport(0, 0, 1920, 1080, 1920, 1080)
@@ -611,21 +612,21 @@ function GAME.refreshCursor()
 end
 
 function GAME.refreshLockState()
-    Cards.EX.lock = DATA.maxFloor < 9
-    Cards.NH.lock = DATA.maxFloor < 2
-    Cards.MS.lock = DATA.maxFloor < 3
-    Cards.GV.lock = DATA.maxFloor < 4
-    Cards.VL.lock = DATA.maxFloor < 5
-    Cards.DH.lock = DATA.maxFloor < 6
-    Cards.IN.lock = DATA.maxFloor < 7
-    Cards.AS.lock = DATA.maxFloor < 8
+    Cards.EX.lock = STAT.maxFloor < 9
+    Cards.NH.lock = STAT.maxFloor < 2
+    Cards.MS.lock = STAT.maxFloor < 3
+    Cards.GV.lock = STAT.maxFloor < 4
+    Cards.VL.lock = STAT.maxFloor < 5
+    Cards.DH.lock = STAT.maxFloor < 6
+    Cards.IN.lock = STAT.maxFloor < 7
+    Cards.AS.lock = STAT.maxFloor < 8
     Cards.DP.lock = GAME.completion.DP == 0 -- Possible, try to find the way to play it
 end
 
 function GAME.refreshPBText()
     local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
-    local height = DATA.highScore[setStr]
-    local time = DATA.speedrun[setStr]
+    local height = BEST.highScore[setStr]
+    local time = BEST.speedrun[setStr]
     TEXTS.sr:set(time < 1e99 and STRING.time(time) or "")
     if height == 0 then
         TEXTS.pb:set("No Score Yet")
@@ -865,7 +866,7 @@ function GAME.start()
     SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
 
     GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
-    GAME.prevPB = DATA.highScore[GAME.comboStr]
+    GAME.prevPB = BEST.highScore[GAME.comboStr]
     if GAME.prevPB == 0 then GAME.prevPB = -260 end
     GAME.playing = true
     GAME.dmgHeal = 2
@@ -903,6 +904,9 @@ function GAME.start()
     GAME.life2 = 20
     GAME.chain2 = 0
     GAME.maxRank = M.DP == 2 and 4 or 26000
+
+    -- Statistics
+    GAME.totalFlip = 0
 
     GAME.refreshModIcon()
 
@@ -956,18 +960,19 @@ function GAME.finish(reason)
             for k, v in next, M do GAME.completion[k] = max(GAME.completion[k], v) end
             unlockDuo = duoWasCompleted == 0 and GAME.completion.DP > 0
         end
-        local newPB
-        if GAME.floor > DATA.maxFloor then
-            DATA.maxFloor = GAME.floor
-            newPB = true
-        end
-        local oldPB = DATA.highScore[GAME.comboStr]
+
+        if GAME.floor > STAT.maxFloor then STAT.maxFloor = GAME.floor end
+        STAT.totalGame = STAT.totalGame + 1
+        STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
+        STAT.totalQuest = STAT.totalQuest + GAME.questCount
+        STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
+        STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
+        STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
+        SaveStat()
+
+        local oldPB = BEST.highScore[GAME.comboStr]
         if GAME.height > oldPB then
-            DATA.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .1)
-            DATA.maxFloor = DATA.maxFloor
-            newPB = true
-        end
-        if newPB then
+            BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .1)
             local modCount = #GAME.getHand(true)
             if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
@@ -989,7 +994,7 @@ function GAME.finish(reason)
                 SFX.play('personalbest', 1, 0, -.1 + M.GV)
             end
             SFX.play('applause', GAME.floor / 10)
-            DATA.save()
+            SaveBest()
         end
 
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))

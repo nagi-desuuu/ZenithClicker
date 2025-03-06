@@ -272,11 +272,7 @@ local TextColor = TextColor
 local ShadeColor = ShadeColor
 function scene.draw()
     gc_replaceTransform(SCR.origin)
-    if GAME.playing and Background.floor < 10 then
-        gc_setColor(1, 1, 1, Background.alpha * (GAME.gigaspeed and (.26 + .26 * GigaSpeed.bgAlpha) or .42))
-    else
-        gc_setColor(1, 1, 1, Background.alpha * .42)
-    end
+    gc_setColor(1, 1, 1, Background.alpha * (GAME.gigaspeed and .26 * (1 + GigaSpeed.bgAlpha) or .5))
     if Background.floor < 10 then
         Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080)
         gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,

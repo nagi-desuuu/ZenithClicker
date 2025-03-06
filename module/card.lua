@@ -95,6 +95,7 @@ function Card:setActive(auto, key)
     local revOn
     if GAME.playing then
         self.touchCount = self.touchCount + 1
+        GAME.totalFlip = GAME.totalFlip + 1
         if self.touchCount == 1 then
             if self.isCorrect == 1 and not GAME.hardMode then
                 GAME.addXP(1)

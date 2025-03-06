@@ -153,19 +153,15 @@ if fontNotLoaded then
     end)
 end
 
-local _DATA = {
+local _BEST = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
     speedrun = setmetatable({}, { __index = function() return 1e99 end }),
-    maxFloor = 1,
 }
-DATA = setmetatable({
-    load = function() TABLE.update(_DATA, FILE.load('data.luaon', '-luaon -canskip') or NONE) end,
-    save = function() love.filesystem.write('data.luaon', TABLE.dumpDeflate(_DATA)) end,
-}, {
-    __index = _DATA,
+BEST = setmetatable({}, {
+    __index = _BEST,
     __newindex = function(_, k, v)
-        _DATA[k] = v
-        DATA.save()
+        _BEST[k] = v
+        SaveBest()
     end,
 })
 
@@ -173,21 +169,35 @@ local _CONF = {
     fullscreen = true,
     syscursor = false,
 }
-local function saver()
+local function confSaver()
     TASK.yieldT(2.6)
-    CONF.save()
+    SaveConf()
 end
-CONF = setmetatable({
-    load = function() TABLE.update(_CONF, FILE.load('conf.luaon', '-luaon -canskip') or NONE) end,
-    save = function() love.filesystem.write('conf.luaon', TABLE.dumpDeflate(_CONF)) end,
-}, {
+CONF = setmetatable({}, {
     __index = _CONF,
     __newindex = function(_, k, v)
         _CONF[k] = v
-        TASK.removeTask_code(saver)
-        TASK.new(saver)
+        TASK.removeTask_code(confSaver)
+        TASK.new(confSaver)
     end,
 })
+
+STAT = {
+    saveRequest = nil,
+    maxFloor = 1,
+    totalGame = 0,
+    totalTime = 0,
+    totalQuest = 0,
+    totalHeight = 0,
+    totalFloor = 0,
+    totalFlip = 0,
+}
+
+function SaveBest() love.filesystem.write('best.luaon', TABLE.dumpDeflate(_BEST)) end
+
+function SaveStat() love.filesystem.write('stat.luaon', TABLE.dumpDeflate(STAT)) end
+
+function SaveConf() love.filesystem.write('conf.luaon', TABLE.dumpDeflate(_CONF)) end
 
 MX, MY = 0, 0
 
@@ -435,32 +445,44 @@ function Daemon_DiscordRPC()
 end
 
 -- Load data
-DATA.load()
-CONF.load()
-local oldVer = DATA.version
-if DATA.version == nil then
-    for k in next, DATA.highScore do
+if FILE.exist('data.luaon') then
+    love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
+    love.filesystem.remove('data.luaon')
+end
+TABLE.update(_BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
+TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
+TABLE.update(_CONF, FILE.load('conf.luaon', '-luaon -canskip') or NONE)
+
+local oldVer = BEST.version
+if BEST.version == nil then
+    for k in next, BEST.highScore do
         if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
-            DATA.highScore[k] = nil
+            BEST.highScore[k] = nil
         end
     end
-    DATA.version = 162
+    BEST.version = 162
 end
-if DATA.version == 162 then
-    TABLE.clear(DATA.speedrun)
-    DATA.version = 163
+if BEST.version == 162 then
+    TABLE.clear(BEST.speedrun)
+    BEST.version = 163
 end
-if DATA.version ~= oldVer then DATA.save() end
+if BEST.version == 163 then
+    STAT.maxFloor = BEST.maxFloor
+    BEST.maxFloor = nil
+    BEST.version = 166
+    SaveStat()
+end
+if BEST.version ~= oldVer then SaveBest() end
 
 -- Some Initialization
 for i = 1, #Cards do
     local f10 = Floors[9].top
     local id = Cards[i].id
     local rid = 'r' .. id
-    if DATA.highScore[rid] >= f10 then
+    if BEST.highScore[rid] >= f10 then
         GAME.completion[id] = 2
     else
-        for cmb, h in next, DATA.highScore do
+        for cmb, h in next, BEST.highScore do
             if h >= f10 and cmb:find(rid) then
                 GAME.completion[id] = 2
                 break
@@ -468,10 +490,10 @@ for i = 1, #Cards do
         end
     end
     if GAME.completion[id] ~= 2 then
-        if DATA.highScore[id] >= f10 then
+        if BEST.highScore[id] >= f10 then
             GAME.completion[id] = 1
         else
-            for cmb, h in next, DATA.highScore do
+            for cmb, h in next, BEST.highScore do
                 if h >= f10 and (cmb:gsub('r', ''):find(id) or 0) % 2 == 1 then
                     GAME.completion[id] = 1
                     break
