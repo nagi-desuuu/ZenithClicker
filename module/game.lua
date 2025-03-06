@@ -174,8 +174,7 @@ function GAME.getComboName(list, extend, ingame)
                 r =
                     r == 0 and rnd(2, 3) or
                     r == 1 and 3 or
-                    r == 2 and 0 or
-                    r == 3 and rnd(0, 1)
+                    r == 2 and 0 or rnd(0, 1)
                 fstr[i] = { 1, 1, 1, .55 + .15 * r }
             end
         end
