@@ -4,8 +4,11 @@ local sin, cos = math.sin, math.cos
 local sign, lerp = MATH.sign, MATH.lerp
 local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
 
+local M = GAME.mod
+
 ---@class Card
 ---@field burn false | number
+---@field isCorrect false | number
 local Card = {}
 Card.__index = Card
 function Card.new(d)
@@ -51,7 +54,6 @@ local completion = GAME.completion
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
-    local M = GAME.mod
     if TASK.getLock('cannotFlip') or GAME.playing and M.NH == 1 and not auto and self.active then
         SFX.play('no')
         return
@@ -94,11 +96,16 @@ function Card:setActive(auto, key)
     if GAME.playing then
         self.touchCount = self.touchCount + 1
         if self.touchCount == 1 then
-            if self.isCorrect and not GAME.hardMode then
+            if self.isCorrect == 1 and not GAME.hardMode then
                 GAME.addXP(1)
             end
         elseif self.touchCount == 2 then
             GAME.fault = true
+        end
+        if M.DP > 0 and not auto and self.id == 'DP' and self.active then
+            if GAME.swapControl() then
+                SFX.play('party_ready', .8, 0, M.GV)
+            end
         end
         if not auto then
             if M.GV > 0 and not GAME.gravTimer then
@@ -210,44 +217,45 @@ end
 function Card:flip()
     self.front = not self.front
     local s, e = self.kx, self.front and 1 or -1
+    local rs, re = self.r % 6.2832, (GAME.playing or self.upright) and 0 or 3.1416
     TWEEN.new(function(t)
         self.kx = lerp(s, e, t)
+        self.r = lerp(rs, re, t)
     end):setUnique('spin_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
 end
 
 function Card:spin()
     local animFunc, ease
-    local re = self.upright and 0 or 3.1416
-        if GAME.mod.IN ~= 1 then
+    local re = (GAME.playing or self.upright) and 0 or 3.1416
+    if M.IN ~= 1 then
         -- Normal
         ease = 'OutQuart'
         function animFunc(t)
             self.ky = .9 + .1 * cos(t * 6.2832)
             self.r = t * 6.2832
-            self.kx = cos((GAME.mod.AS + 1) * t * 6.2832)
+            self.kx = cos((M.AS + 1) * t * 6.2832)
             if not self.front then
                 self.kx = -self.kx
             end
         end
-        else
+    else
         -- Flip only
         ease = 'OutInQuart'
-        local s = self.r
+        local s = self.r % 6.2832
         function animFunc(t)
             self.kx = cos(t * 6.2832)
             self.r = lerp(s, re, t)
-        if not self.front then
-            self.kx = -self.kx
+            if not self.front then
+                self.kx = -self.kx
             end
         end
     end
-    TWEEN.new(animFunc):setUnique('spin_' .. self.id):setEase(ease):setDuration(.42)
+    TWEEN.new(animFunc):setUnique('spin_' .. self.id):setEase(ease):setDuration(.42):run()
         :setOnKill(function()
             self.ky = 1
             self.r = re
             -- self.kx = self.front and 1 or -1
         end)
-        :run()
 end
 
 local bounceEase = { 'linear', 'inQuad' }
@@ -262,11 +270,11 @@ function Card:revJump()
         t = t * (t - 1) * 4
         self.y = self.ty + t * 355
         self.size = .62 - .355 * t
-    end):setUnique('revJump_' .. self.id):setEase(bounceEase):setDuration(.62)
+    end):setUnique('revJump_' .. self.id):setEase(bounceEase):setDuration(.62):run()
         :setOnFinish(function()
-            local currentState = GAME.mod[self.id]
+            local currentState = M[self.id]
             if currentState == 2 then
-                SFX.play('card_reverse_impact', 1, 0, GAME.mod.GV)
+                SFX.play('card_reverse_impact', 1, 0, M.GV)
                 TWEEN.new(tween_deckPress):setUnique('DeckPress'):setEase('OutQuad'):setDuration(.42):run()
                 for _, C in ipairs(Cards) do
                     if C ~= self then
@@ -298,11 +306,11 @@ function Card:revJump()
                     end
                 end
             end
-        end):run()
-        local s, e = self.kx, self.front and 1 or -1
+        end)
+    local s, e = self.kx, self.front and 1 or -1
     TWEEN.new(function(t)
-            self.kx = lerp(s, e, t)
-            self.r = (t - 1) * 3.1416
+        self.kx = lerp(s, e, t)
+        self.r = (t - 1) * 3.1416
     end):setUnique('spin_' .. self.id):setEase('OutQuart'):setDuration(.52):run()
 end
 
@@ -357,7 +365,7 @@ function Card:draw()
     if self.lock and self.lockfull then
         img = texture.lock
     else
-        if GAME.mod.IN == 2 then
+        if M.IN == 2 then
             img = texture.back
         else
             img = self.kx * self.ky > 0 and texture.front or texture.back
@@ -403,22 +411,26 @@ function Card:draw()
 
     if self.active then
         -- Active
-        if playing and not self.isCorrect and GAME.mod.IN < 2 then
+        if playing and not self.isCorrect and M.IN < 2 then
             -- But wrong
             a = 1
             r, g, b = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
         else
             a = .6 + .4 * self.float
+            if self.isCorrect == 2 and M.IN < 2 then
+                -- Second quest!
+                r, g, b = .942, .626, .872
+            end
         end
-    elseif self.isCorrect then
+    elseif self.isCorrect == 1 then
         -- Inactive but need
         r, g, b = 1, 1, 1
         local qt = GAME.questTime
-        if GAME.mod.IN == 0 then
+        if M.IN == 0 then
             if GAME.hardMode then qt = qt - 1.5 end
             a = clampInterpolate(1, 0, 2, .4, qt) +
                 clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * sin(qt * 26 - self.x * .0026)
-        elseif GAME.mod.IN == 1 then
+        elseif M.IN == 1 then
             if GAME.hardMode then qt = qt * .626 end
             a = -.1 + .4 * sin(3.1416 + qt * 3)
         else

@@ -192,6 +192,7 @@ end
 function scene.update(dt)
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
+    GAME.lifeShow2 = MATH.expApproach(GAME.lifeShow2, GAME.life2, dt * 10)
     GAME.bgH = MATH.expApproach(GAME.bgH, GAME.height, dt * 2.6)
     if DeckPress > 0 then
         DeckPress = DeckPress - dt
@@ -397,11 +398,16 @@ local questStyle = {
     { k = 1.0, y = 100 },
     { k = 0.9, y = 40 },
 }
+local questStyleDP = {
+    { k = 1.6, y = 175 },
+    { k = 1.6, y = 90 },
+    { k = 0.6, y = 30 },
+}
 function scene.overDraw()
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
-        if M.IN == 2 then gc_setAlpha(.42) end
+        if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(love.timer.getTime() * 2.6)) end
         local k = min(.9, 760 / TEXTS.mod:getWidth())
         gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, nil, k, k * 1.1)
     end
@@ -434,21 +440,36 @@ function scene.overDraw()
         GC.setBlendMode('alpha')
     end
 
+    -- Health Bar
+    local safeHP = GAME.playing and max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime) or 0
+    if M.DP == 0 then
+        gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
+        gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
+    else
+        gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
+        if GAME.onAlly then gc_setAlpha(.42) end
+        gc_rectangle('fill', 800, 440 - 5, -1540 / 2 * GAME.lifeShow / 20, GAME.onAlly and 8 or 12)
+        gc_setColor(GAME.playing and GAME.life2 > safeHP and COLOR.L or COLOR.R)
+        if not GAME.onAlly then gc_setAlpha(.42) end
+        gc_rectangle('fill', 800, 440 - 5, 1540 / 2 * GAME.lifeShow2 / 20, GAME.onAlly and 12 or 8)
+    end
+
     if GAME.playing then
         -- Quests
+        local style = M.DP == 0 and questStyle or questStyleDP
         for i = 1, #GAME.quests do
             local t = GAME.quests[i].name
-            local kx = min(questStyle[i].k, 1550 / t:getWidth())
-            local ky = max(kx, questStyle[i].k * .8)
+            local kx = min(style[i].k, 1550 / t:getWidth())
+            local ky = max(kx, style[i].k * .8)
             local a = 1
-            if M.IN == 2 and i == 1 then
+            if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
                 a = 1 - GAME.questTime * GAME.floor * .26
-                if GAME.faultWrong > 0 then a = max(a, .355) end
+                if GAME.faultWrong then a = max(a, .355) end
             end
             gc_setColor(.2, .2, .2, a)
-            gc_mDraw(t, 800, questStyle[i].y + 5, 0, kx, ky)
+            gc_mDraw(t, 800, style[i].y + 5, 0, kx, ky)
             gc_setColor(1, 1, 1, a)
-            gc_mDraw(t, 800, questStyle[i].y, 0, kx, ky)
+            gc_mDraw(t, 800, style[i].y, 0, kx, ky)
         end
 
         -- Damage Timer
@@ -459,10 +480,6 @@ function scene.overDraw()
         gc_setColor(COLOR.LD)
         gc_rectangle('line', 390, 430, -360 * (GAME.dmgCycle / delay), -20 - 2 * delay)
         gc_rectangle('line', 390, 430, -360, -20 - 2 * delay)
-
-        -- Health Bar
-        gc_setColor(GAME.life > max(GAME.dmgWrong, GAME.dmgTime) and COLOR.L or COLOR.R)
-        gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
 
         -- Gravity Timer
         if M.GV > 0 then

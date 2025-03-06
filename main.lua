@@ -355,7 +355,7 @@ function Daemon_Sync()
             local obj = lib[set[i]]
             local T = t0
             if set[i] == 'piano2' then T = T * 2 % length end
-            if set[i] == 'violin2' then T = (T - 4 * 60 / 184) % length end
+            if set[i] == 'violin2' then T = (T - 8 * 60 / 184) % length end
             if math.abs(obj.source:tell() - T) > 0.026 then
                 -- print('Desync', set[i])
                 obj.source:seek(T)

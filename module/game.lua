@@ -13,36 +13,68 @@ local ins, rem = table.insert, table.remove
 ---
 ---@field dmgHeal number
 ---@field dmgWrong number
+---@field dmgWrongExtra number
 ---@field dmgTime number
 ---@field dmgDelay number
 ---@field dmgCycle number
 ---@field queueLen number
 ---
+---@field gravDelay false | number
+---@field gravTimer false | number
+---
+---@field playing boolean
+---@field time number
 ---@field gigaTime false | number
 ---@field questTime number
 ---@field floorTime number
----@field gravDelay false | number
----@field gravTimer false | number
 ---@field questCount number
+---@field rank number
+---@field xp number
 ---@field rankupLast boolean
 ---@field xpLockLevel number
 ---@field xpLockTimer number
+---@field floor number
 ---@field fatigueSet {time:number, event:table, text:string, desc:string}[]
 ---@field fatigue number
+---@field height number
+---@field heightBuffer number
+---@field life number
 ---@field dmgTimer number
 ---@field chain number
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered boolean
+---
+---@field onAlly boolean
+---@field life2 number
+---@field chain2 number
+---@field maxRank number
 local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
     revTimer = 0,
     revDeckSkin = false,
     uiHide = 0,
+    bgH = 0,
+    bgLastH = 0,
+    lifeShow = 0,
+    lifeShow2 = 0,
+    prevPB = -260,
     iconSB = GC.newSpriteBatch(TEXTURE.icon.ingame),
     iconRevSB = GC.newSpriteBatch(TEXTURE.icon.ingame_rev),
     resultSB = GC.newSpriteBatch(TEXTURE.icon.result),
     resultRevSB = GC.newSpriteBatch(TEXTURE.icon.result_rev),
+
+    completion = { -- 0=locked, 1=unlocked, 2=mastered
+        EX = 0,
+        NH = 0,
+        MS = 0,
+        GV = 0,
+        VL = 0,
+        DH = 0,
+        IN = 0,
+        AS = 0,
+        DP = 0,
+    },
 
     mod = {
         EX = 0,
@@ -56,34 +88,20 @@ local GAME = {
         DP = 0,
     },
     hardMode = false,
-    anyRev = false,
+    numberRev = false,
 
-    completion = { -- 0=locked, 1=unlocked, 2=mastered
-        EX = 0,
-        NH = 0,
-        MS = 0,
-        GV = 0,
-        VL = 0,
-        DH = 0,
-        IN = 0,
-        AS = 0,
-        DP = 0,
-    },
-    prevPB = -260,
-
-    playing = false,
     quests = {}, --- @type Question[]
-
-    life = 0,
-    lifeShow = 0,
-    time = 0,
-    floor = 1,
-    rank = 1,
-    xp = 0,
-    height = 0,
-    bgH = 0,
-    bgLastH = 0,
 }
+
+GAME.playing = false
+GAME.life = 0
+GAME.life2 = 0
+GAME.time = 0
+GAME.floor = 1
+GAME.rank = 1
+GAME.xp = 0
+GAME.height = 0
+
 local M = GAME.mod
 local MD = ModData
 
@@ -133,7 +151,9 @@ function GAME.getComboName(list, extend, ingame)
         end
 
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or extend) then return { COLOR.dL, ComboData[str].name } end
+        if ComboData[str] and (ComboData[str].basic or extend) then
+            return { COLOR.dL, ComboData[str].name }
+        end
 
         table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
 
@@ -194,7 +214,9 @@ function GAME.updateBgm(event)
     if event == 'start' then
         BGM.set(BgmSets.assist, 'volume', 1)
         BGM.set('bass', 'volume', .26)
-        if GAME.anyRev then BGM.set('rev', 'volume', .62) end
+        if GAME.anyRev then
+            BGM.set('rev', 'volume', M.DP > 0 and .5 or .7)
+        end
     elseif event == 'finish' then
         BGM.set(BgmSets.assist, 'volume', 0)
         local l = TABLE.copy(BgmSets.assist)
@@ -202,12 +224,14 @@ function GAME.updateBgm(event)
             BGM.set(TABLE.popRandom(l), 'volume', 1)
         end
         if GAME.anyRev then
-            BGM.set('rev', 'volume', .82)
+            BGM.set('rev', 'volume', M.DP > 0 and .5 or .7)
+            if M.DP == 2 then BGM.set('violin', 'volume', 1) end
         end
     elseif event == 'revSwitched' then
         if GAME.anyRev then
-            BGM.set('rev', 'volume', .82, 4.2)
+            BGM.set('rev', 'volume', M.DP > 0 and .5 or .7, 4.2)
             BGM.set(BgmSets.assist, 'volume', 0, 4.2)
+            if M.DP == 2 then BGM.set('violin', 'volume', 1) end
         else
             BGM.set('rev', 'volume', 0, 2.6)
             local l = TABLE.copy(BgmSets.assist)
@@ -243,11 +267,8 @@ function GAME.anim_setMenuHide_rev(t)
 end
 
 function GAME.task_gigaspeed()
-    TWEEN.new(function(t)
-        GigaSpeed.textTimer = 1 - 2 * t
-    end):setEase('Linear'):setDuration(2.6):setOnFinish(function()
-        GigaSpeed.textTimer = false
-    end):run()
+    TWEEN.new(function(t) GigaSpeed.textTimer = 1 - 2 * t end):setEase('Linear'):setDuration(2.6):run()
+        :setOnFinish(function() GigaSpeed.textTimer = false end)
 end
 
 function GAME.task_fatigueWarn()
@@ -301,12 +322,12 @@ function GAME.genQuest()
 
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
     if M.DP == 0 then
-    GAME.atkBuffer = GAME.atkBuffer + r
-    if GAME.atkBuffer > 8 then
-        r = r - (GAME.atkBuffer - 8)
-        GAME.atkBuffer = 8
-    end
-    GAME.atkBuffer = max(GAME.atkBuffer - max(GAME.floor / 3, 2), 0)
+        GAME.atkBuffer = GAME.atkBuffer + r
+        if GAME.atkBuffer > 8 then
+            r = r - (GAME.atkBuffer - 8)
+            GAME.atkBuffer = 8
+        end
+        GAME.atkBuffer = max(GAME.atkBuffer - max(GAME.floor / 3, 2), 0)
     end
 
     local pool = TABLE.copyAll(MD.weight)
@@ -327,28 +348,49 @@ end
 function GAME.questReady()
     GAME.questTime = 0
     GAME.fault = false
-    GAME.faultWrong = 0
+    GAME.faultWrong = false
+    GAME.dmgWrongExtra = 0
     GAME.gravTimer = false
-    for _, C in ipairs(Cards) do
-        C.touchCount = 0
-        C.isCorrect = false
+    for _, C in ipairs(Cards) do C.touchCount, C.isCorrect = 0, false end
+    if M.DP > 0 and GAME.quests[2] then
+        for _, v in next, GAME.quests[2].combo do Cards[v].isCorrect = 2 end
     end
-    local Q = GAME.quests[1].combo
-    for i = 1, #Q do Cards[Q[i]].isCorrect = true end
+    for _, v in next, GAME.quests[1].combo do Cards[v].isCorrect = 1 end
 end
 
-function GAME.takeDamage(dmg, killReason)
-    GAME.life = max(GAME.life - dmg, 0)
-    SFX.play(
-        dmg <= 1 and 'damage_small' or
-        dmg <= 4 and 'damage_medium' or
-        'damage_large', .872)
-    if GAME.life <= 0 then
-        GAME.finish(killReason)
-        return true
+function GAME.getLifeKey(ally)
+    if M.DP == 0 then
+        return 'life'
     else
-        local dangerDmg = max(GAME.dmgWrong, GAME.dmgTime)
-        if GAME.life <= dangerDmg and GAME.life + dmg > dangerDmg then
+        return (GAME.onAlly ~= not ally) and 'life' or 'life2'
+    end
+end
+
+function GAME.heal(hp)
+    if M.DP > 0 then hp = hp * 2 end
+    local k = GAME.getLifeKey()
+    GAME[k] = min(GAME[k] + max(hp, 0), 20)
+end
+
+function GAME.takeDamage(dmg, reason, toAlly)
+    if M.DP > 0 then dmg = dmg * 2 end
+    local k = GAME.getLifeKey(toAlly)
+    GAME[k] = max(GAME[k] - dmg, 0)
+    SFX.play(
+        dmg <= 1.626 and 'damage_small' or
+        dmg <= 4.2 and 'damage_medium' or
+        'damage_large', .872)
+    if GAME[k] <= 0 then
+        if GAME[GAME.getLifeKey(true)] > 0 then
+            SFX.play('boardlock')
+            GAME.swapControl()
+        else
+            GAME.finish(reason)
+            return true
+        end
+    else
+        local dangerDmg = max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime)
+        if GAME[k] <= dangerDmg and GAME[k] + dmg > dangerDmg then
             SFX.play('hyperalert')
         end
     end
@@ -363,11 +405,10 @@ function GAME.addXP(xp)
     if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
         GAME.xpLockLevel = 5
     end
-    local rankup
+    local oldRank = GAME.rank
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
-        rankup = true
         GAME.rankupLast = true
         GAME.xpLockTimer = GAME.xpLockLevel
         GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
@@ -383,7 +424,11 @@ function GAME.addXP(xp)
             GAME.xpLockLevel = 5
         end
     end
-    if rankup then
+    if GAME.rank > GAME.maxRank then
+        GAME.rank = GAME.maxRank
+        GAME.xp = 4 * GAME.rank
+    end
+    if GAME.rank ~= oldRank then
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
         if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[GAME.floor] then
@@ -436,9 +481,7 @@ function GAME.upFloor()
         color = 'LY', duration = 4.2,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
-    if GAME.gigaspeed then
-        SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
-    end
+    if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
     if GAME.floor == 10 then
         if GAME.gigaspeed then
             GAME.gigaTime = GAME.time
@@ -485,7 +528,7 @@ function GAME.refreshRPC()
         details = detailStr,
         state = stateStr,
     }
-    TASK.lock('RPC_update', 1)
+    TASK.lock('RPC_update', 1.6)
 end
 
 function GAME.refreshModIcon()
@@ -599,19 +642,19 @@ function GAME.refreshPBText()
 end
 
 function GAME.refreshRev()
-    local anyRev = false
+    local numberRev = false
     for _, C in ipairs(Cards) do
         if M[C.id] == 2 then
-            anyRev = true
+            numberRev = true
             break
         end
     end
-    if anyRev ~= GAME.anyRev then
-        GAME.anyRev = anyRev
+    if numberRev ~= GAME.anyRev then
+        GAME.anyRev = numberRev
         if not GAME.anyRev then
             GAME.revDeckSkin = false
         end
-        local s, e = GAME.revTimer, anyRev and 1 or 0
+        local s, e = GAME.revTimer, numberRev and 1 or 0
         TWEEN.new(function(t)
             t = MATH.lerp(s, e, t)
             GAME.revTimer = t
@@ -623,6 +666,13 @@ function GAME.refreshRev()
             ShadeColor[3] = MATH.lerp(.0, 0, t)
         end):setUnique('revSwitched'):setDuration(.26):run()
         GAME.updateBgm('revSwitched')
+    end
+end
+
+function GAME.swapControl()
+    if GAME[GAME.getLifeKey(true)] > 0 then
+        GAME.onAlly = not GAME.onAlly
+        return true
     end
 end
 
@@ -675,12 +725,17 @@ end
 function GAME.commit()
     if #GAME.quests == 0 then return end
 
-    local Q = GAME.quests[1]
+    local hand = TABLE.sort(GAME.getHand(false))
 
-    local hand = GAME.getHand(false)
+    local correct
+    if TABLE.equal(hand, TABLE.sort(GAME.quests[1].combo)) then
+        correct = 1
+    elseif M.DP > 0 and GAME.quests[2] and TABLE.equal(hand, TABLE.sort(GAME.quests[2].combo)) then
+        correct = 2
+    end
 
-    if TABLE.equal(TABLE.sort(hand), TABLE.sort(Q.combo)) then
-        GAME.life = min(GAME.life + max(GAME.dmgHeal, 0), 20)
+    if correct then
+        GAME.heal(GAME.dmgHeal)
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
@@ -701,9 +756,10 @@ function GAME.commit()
                 if GAME.chain >= 8 then
                     SFX.play('thunder' .. rnd(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
                 end
-                while GAME.chain > 0 and GAME.life < 20 do
+                local k = GAME.onAlly and 'life2' or 'life'
+                while GAME.chain > 0 and GAME[k] < 20 do
                     GAME.chain = max(GAME.chain - 2, 0)
-                    GAME.life = min(GAME.life + 1, 20)
+                    GAME[k] = min(GAME[k] + 1, 20)
                 end
                 if GAME.chain > 0 then
                     attack = attack + GAME.chain
@@ -754,23 +810,27 @@ function GAME.commit()
         GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
         GAME.genQuest()
-        rem(GAME.quests, 1)
-        local combo = GAME.quests[1] and GAME.quests[1].combo or NONE
+        rem(GAME.quests, correct)
+        local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
         local hasDH = TABLE.find(combo, 'DH') and 1 or 0
-        if #combo >= 4 then
-            SFX.play('garbagewindup_' .. MATH.clamp(#combo * 2 - 7 + hasDH, 1, 4))
-        end
+        if #combo >= 4 then SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + hasDH, 1, 0, M.GV) end
         GAME.questReady()
         GAME.questCount = GAME.questCount + 1
+
+        if M.DP > 0 and correct == 2 then
+            if GAME.swapControl() then
+                SFX.play('party_ready', 1, 0, M.GV)
+            end
+        end
 
         return true
     else
         GAME.fault = true
-        GAME.faultWrong = GAME.faultWrong + 1
+        GAME.faultWrong = true
 
         local dmg = GAME.dmgWrong
-        if GAME.faultWrong >= 3 then dmg = dmg + (GAME.faultWrong - 2) end
-        if GAME.takeDamage(max(dmg, 1), 'wrongAns') then return end
+        if GAME.takeDamage(max(dmg + GAME.dmgWrongExtra, 1), 'wrongAns') then return end
+        GAME.dmgWrongExtra = GAME.dmgWrongExtra + .5
 
         if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
         if M.EX > 0 then
@@ -799,13 +859,6 @@ function GAME.start()
         SFX.play('clutch')
         return
     end
-    if M.DP > 0 then
-        MSG.clear()
-        MSG('dark', "Work in Progress")
-        Cards.DP:shake()
-        SFX.play('no')
-        return
-    end
     SCN.scenes.tower.widgetList.hint:setVisible(false)
 
     SFX.play('menuconfirm', .8)
@@ -821,7 +874,7 @@ function GAME.start()
     GAME.dmgTimeMul = 1
     GAME.dmgDelay = 15
     GAME.dmgCycle = 5
-    GAME.queueLen = M.NH == 2 and 1 or 3
+    GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
 
     GAME.time = 0
     GAME.gigaTime = false
@@ -844,6 +897,12 @@ function GAME.start()
     GAME.atkBuffer = 0
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
+
+    -- rDP
+    GAME.onAlly = false
+    GAME.life2 = 20
+    GAME.chain2 = 0
+    GAME.maxRank = M.DP == 2 and 4 or 26000
 
     GAME.refreshModIcon()
 
@@ -883,6 +942,7 @@ function GAME.finish(reason)
     end
 
     GAME.playing = false
+    GAME.life, GAME.life2 = 0, 0
 
     local unlockDuo
     if GAME.questCount > 2.6 then
@@ -934,7 +994,9 @@ function GAME.finish(reason)
 
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
         local text = STRING.time_simp(GAME.time)
-        if GAME.gigaTime then text = text .. "(" .. STRING.time_simp(GAME.gigaTime) .. ")" end
+        if GAME.gigaTime then
+            text = text .. "(" .. STRING.time_simp(GAME.gigaTime) .. ")"
+        end
         text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
         TEXTS.endTime:set(text)
         GAME.refreshResultModIcon()
@@ -1064,7 +1126,7 @@ function GAME.update(dt)
         if GAME.gravTimer then
             GAME.gravTimer = GAME.gravTimer - dt
             if GAME.gravTimer <= 0 then
-                GAME.faultWrong = 0
+                GAME.faultWrong = false
                 GAME.commit()
             end
         end
