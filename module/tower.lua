@@ -122,6 +122,7 @@ end
 
 local cancelNextClick
 function scene.mouseDown(x, y, k)
+    if k == 3 then return true end
     if M.EX == 0 then
         SFX.play('move')
         mousePress(x, y, k)
@@ -189,6 +190,8 @@ function scene.keyUp(key)
     end
 end
 
+local KBIsDown = love.keyboard.isDown
+local MSIsDown = love.mouse.isDown
 function scene.update(dt)
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
@@ -208,7 +211,7 @@ function scene.update(dt)
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
-    if love.keyboard.isDown('escape') and GAME.playing then
+    if GAME.playing and (KBIsDown('escape') or MSIsDown(3)) then
         GAME.forfeitTimer = GAME.forfeitTimer +
             dt * MATH.clampInterpolate(6, 2.6, 12, 1, min(GAME.questCount, GAME.time))
         if TASK.lock('forfeit_sfx', .0872) then
@@ -684,11 +687,9 @@ scene.widgetList = {
         textColor = TextColor,
         sound_hover = 'menuhover',
         fontSize = 80, text = "START",
-        onClick = function()
-            if GAME.playing then
-                GAME.commit()
-            else
-                GAME.start()
+        onClick = function(k)
+            if k == 1 or k == 2 then
+                GAME[GAME.playing and 'commit' or 'start']()
             end
         end,
     },
@@ -699,7 +700,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 40, text = "RESET", textColor = 'dR',
-        onClick = function() GAME.cancelAll() end,
+        onClick = function(k) if k == 1 or k == 2 then GAME.cancelAll() end end,
     },
     WIDGET.new {
         name = 'hint', type = 'hint',

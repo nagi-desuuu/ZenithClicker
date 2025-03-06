@@ -335,7 +335,7 @@ end
 function Daemon_Cursor()
     while true do
         local dt = coroutine.yield()
-        if love.mouse.isDown(1, 2, 3) then
+        if love.mouse.isDown(1, 2) then
             pressValue = 1
         else
             pressValue = MATH.expApproach(pressValue, 0, dt * 12)
