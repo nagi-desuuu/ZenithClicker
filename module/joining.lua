@@ -40,13 +40,13 @@ end
 
 function scene.draw()
     GC.setColor(.2, .2, .2)
-    GC.strokeDraw('full', 7, TEXTS.load, 800, 500, 0, 1.26, 2, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
+    GC.strokeDraw('full', 7, TEXTS.load, 800, 500, 0, 1.6, 1.6, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
     GC.setColor(.4, .4, .4)
-    GC.strokeDraw('full', 4, TEXTS.load, 800, 500, 0, 1.26, 2, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
+    GC.strokeDraw('full', 4, TEXTS.load, 800, 500, 0, 1.6, 1.6, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
     GC.setColor(.6, .6, .6)
-    GC.strokeDraw('full', 2, TEXTS.load, 800, 500, 0, 1.26, 2, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
+    GC.strokeDraw('full', 2, TEXTS.load, 800, 500, 0, 1.6, 1.6, TEXTS.load:getWidth() / 2, TEXTS.load:getHeight() / 2)
     GC.setColor(.9, .9, .9)
-    GC.mDraw(TEXTS.load, 800, 500, 0, 1.26, 2)
+    GC.mDraw(TEXTS.load, 800, 500, 0, 1.6)
 end
 
 return scene

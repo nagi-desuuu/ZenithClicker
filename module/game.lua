@@ -175,7 +175,7 @@ function GAME.getComboName(list, extend, ingame)
                     r == 0 and rnd(2, 3) or
                     r == 1 and 3 or
                     r == 2 and 0 or rnd(0, 1)
-                fstr[i] = { 1, 1, 1, .55 + .15 * r }
+                fstr[i] = { 1, 1, 1, .6 + .13 * r }
             end
         end
 
@@ -341,7 +341,7 @@ function GAME.genQuest()
 
     ins(GAME.quests, {
         combo = combo,
-        name = GC.newText(FONT.get(60), GAME.getComboName(TABLE.copy(combo), M.DH == 2, true)),
+        name = GC.newText(FONT.get(70), GAME.getComboName(TABLE.copy(combo), M.DH == 2, true)),
     })
 end
 
@@ -444,12 +444,13 @@ function GAME.setGigaspeedAnim(on, finish)
     local s = GigaSpeed.alpha
     if on then
         GAME.gigaspeedEntered = true
-        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 1, t) end):setUnique('gigaspeed'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 1, t) end)
+            :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
     else
-        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55):setUnique(
-            'gigaspeed'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
+            :setUnique('giga'):run()
     end
 end
 
@@ -637,7 +638,7 @@ function GAME.refreshPBText()
                 break
             end
         end
-        TEXTS.pb:set(("Best: %.1fm   <F%d>"):format(height, f))
+        TEXTS.pb:set(("BEST: %.1fm   <F%d>"):format(height, f))
     end
 end
 
@@ -999,7 +1000,7 @@ function GAME.finish(reason)
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
         local text = STRING.time_simp(GAME.time)
         if GAME.gigaTime then
-            text = text .. "(" .. STRING.time_simp(GAME.gigaTime) .. ")"
+            text = text .. " F10%-" .. STRING.time_simp(GAME.gigaTime)
         end
         text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
         TEXTS.endTime:set(text)

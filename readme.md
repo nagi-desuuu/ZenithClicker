@@ -10,3 +10,5 @@ Inspired by mod selection screen of tetr.io QP2, its interactive feel is really 
 and there's still no convenient way to know which mods are included in a specific combo.
 
 Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
+
+Font: D-Din-Pro by Adrian Frutigеr

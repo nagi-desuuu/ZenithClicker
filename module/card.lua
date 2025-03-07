@@ -165,9 +165,7 @@ function Card:setActive(auto, key)
         if wasRev and not revOn then self:spin() end
         if self.id == 'EX' then
             if M.EX == 0 then BGM.set('expert', 'volume', 0, .1) end
-            TWEEN.new(function(t)
-                GAME.exTimer = M.EX > 0 and t or (1 - t)
-            end):setDuration(M.EX > 0 and .26 or .1):run()
+            TWEEN.new(function(t) GAME.exTimer = M.EX > 0 and t or (1 - t) end):setDuration(M.EX > 0 and .26 or .1):run()
         elseif self.id == 'NH' then
             BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
         elseif self.id == 'GV' then

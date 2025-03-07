@@ -99,29 +99,29 @@ TEXTURE.transition = GC.load(transition)
 TEXTURE = IMG.init(TEXTURE, true)
 
 local fontNotLoaded = MATH.roll(.62)
-if fontNotLoaded then
-    FONT.load { tnr = "assets/Times New Roman.ttf" }
-    FONT.setDefaultFont('tnr')
-end
-FONT.get(25):setLineHeight(0.9)
-TEXTS = {
+FONT.load {
+    tnr = "assets/Times New Roman.ttf",
+    din = "assets/DINPro-Medium.otf",
+}
+FONT.setDefaultFont(fontNotLoaded and 'tnr' or 'din')
+TEXTS = { -- Must use only 2 sizes
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
-    load       = GC.newText(FONT.get(60), "JOINING ROOM..."),
+    load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
     sr         = GC.newText(FONT.get(50)),
     endHeight  = GC.newText(FONT.get(50)),
     endTime    = GC.newText(FONT.get(30)),
     prevPB     = GC.newText(FONT.get(50), "PB"),
-    height     = GC.newText(FONT.get(30, '_mono')),
-    time       = GC.newText(FONT.get(30, '_mono')),
+    height     = GC.newText(FONT.get(30)),
+    time       = GC.newText(FONT.get(30)),
     chain      = GC.newText(FONT.get(50)),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
     gigaspeed  = GC.newText(FONT.get(50), {
         COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
         COLOR.K, "A", COLOR.G, "S", COLOR.J, "P",
         COLOR.C, "E", COLOR.S, "E", COLOR.B, "D" }),
-    gigatime   = GC.newText(FONT.get(50, '_mono')),
+    gigatime   = GC.newText(FONT.get(50)),
     slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
@@ -141,14 +141,13 @@ if fontNotLoaded then
                 return
             end
         end
-        FONT.setDefaultFont('_norm')
-        local scale = 60 / TEXTS.load:getFont():getHeight()
-        for _, text in next, TEXTS do text:setFont(FONT.get(MATH.roundUnit(text:getFont():getHeight() * scale, 10))) end
-        for _, quest in next, GAME.quests do quest.name:setFont(FONT.get(60)) end
-        TEXTS.height:setFont(FONT.get(30, '_mono'))
-        TEXTS.time:setFont(FONT.get(30, '_mono'))
-        TEXTS.gigatime:setFont(FONT.get(50, '_mono'))
-        FONT.get(25):setLineHeight(0.9)
+        FONT.setDefaultFont('din')
+        local sep = (TEXTS.mod:getFont():getHeight() + TEXTS.title:getFont():getHeight()) / 2
+        for _, text in next, TEXTS do text:setFont(FONT.get(text:getFont():getHeight() < sep and 30 or 50)) end
+        for _, quest in next, GAME.quests do quest.name:setFont(FONT.get(70)) end
+        TEXTS.height:setFont(FONT.get(30))
+        TEXTS.time:setFont(FONT.get(30))
+        TEXTS.gigatime:setFont(FONT.get(50))
         WIDGET._reset()
     end)
 end
@@ -336,7 +335,7 @@ function WIDGET._prototype.button:draw()
 
     -- Drawable
     gc.setColor(self.textColor)
-    WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1.15 * (1 - 2 * GAME.revTimer))
+    WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1 - 2 * GAME.revTimer)
 
     gc.pop()
 end

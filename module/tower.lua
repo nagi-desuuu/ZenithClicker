@@ -355,7 +355,7 @@ function scene.draw()
         local k = MATH.clampInterpolate(6, .7, 26, 2, GAME.chain)
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
-        gc_draw(TEXTS.b2b, x, 216, 0, 1, 1.1)
+        gc_draw(TEXTS.b2b, x, 216)
         if GAME.fault then
             gc_setColor(.62, .62, .62, GAME.chain < 8 and .26 or 1)
         else
@@ -368,7 +368,7 @@ function scene.draw()
         gc_blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         gc_setAlpha(1)
-        gc_draw(TEXTS.b2b, x, 214, 0, 1, 1.1)
+        gc_draw(TEXTS.b2b, x, 214)
         gc_setColor(COLOR.L)
         gc_strokeDraw('full', k * 2, TEXTS.chain, 326, 270, 0, k, 1.1 * k,
             TEXTS.chain:getWidth() / 2, TEXTS.chain:getHeight() / 2)
@@ -384,31 +384,31 @@ function scene.draw()
         gc_draw(GAME.resultRevSB, 380, 168, nil, .9)
         gc_draw(GAME.resultSB, 380, 168, nil, .9)
         gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.endHeight, 0, 140, 0, 2, 2)
+        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8, 1.8)
         gc_mDraw(TEXTS.endTime, 0, 204)
         gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 2, 2)
+        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8, 1.8)
         gc_mDraw(TEXTS.endTime, 0, 201)
     end
 end
 
 local questStyle = {
-    { k = 1.6, y = 175 },
-    { k = 1.0, y = 100 },
-    { k = 0.9, y = 40 },
+    { k = 1.5, y = 175 },
+    { k = 1.0, y = 95 },
+    { k = 0.9, y = 30 },
 }
 local questStyleDP = {
-    { k = 1.6, y = 175 },
-    { k = 1.6, y = 90 },
-    { k = 0.6, y = 30 },
+    { k = 1.5, y = 175 },
+    { k = 1.5, y = 85 },
+    { k = 0.6, y = 25 },
 }
 function scene.overDraw()
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
         if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(love.timer.getTime() * 2.6)) end
-        local k = min(.9, 760 / TEXTS.mod:getWidth())
-        gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, nil, k, k * 1.1)
+        local k = min(1, 760 / TEXTS.mod:getWidth())
+        gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, nil, k)
     end
 
     gc_translate(0, DeckPress)
@@ -459,13 +459,13 @@ function scene.overDraw()
         for i = 1, #GAME.quests do
             local t = GAME.quests[i].name
             local kx = min(style[i].k, 1550 / t:getWidth())
-            local ky = max(kx, style[i].k * .8)
+            local ky = max(kx, style[i].k)
             local a = 1
             if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
-                a = 1 - GAME.questTime * GAME.floor * .26
+                a = a * (1 - GAME.questTime * GAME.floor * .26)
                 if GAME.faultWrong then a = max(a, .355) end
             end
-            gc_setColor(.2, .2, .2, a)
+            gc_setColor(.2 * a, .2 * a, .2 * a, a)
             gc_mDraw(t, 800, style[i].y + 5, 0, kx, ky)
             gc_setColor(1, 1, 1, a)
             gc_mDraw(t, 800, style[i].y, 0, kx, ky)
@@ -499,7 +499,7 @@ function scene.overDraw()
     end
 
     -- Debug
-    -- setFont(40) gc_setColor(1, 1, 1)
+    -- setFont(60) gc_setColor(1, 1, 1)
     -- for i = 1, #Cards do
     --     gc.print(Cards[i].ty, Cards[i].x, Cards[i].y-260)
     -- end
@@ -533,7 +533,7 @@ function scene.overDraw()
         TEXTS.time:set(STRING.time_simp(GAME.time))
         gc_setColor(COLOR.D)
         local wid, hgt = TEXTS.height:getDimensions()
-        gc_strokeDraw('full', 2, TEXTS.height, 800, 978, 0, 1, 1, wid / 2, hgt / 2)
+        gc_strokeDraw('full', 1, TEXTS.height, 800, 978, 0, 1, 1, wid / 2, hgt / 2)
         wid, hgt = TEXTS.time:getDimensions()
         gc_strokeDraw('full', 2, TEXTS.time, 375, 978, 0, 1, 1, wid / 2, hgt / 2)
 
@@ -557,7 +557,7 @@ function scene.overDraw()
 
     -- Allspin keyboard hint
     if M.AS > 0 then
-        setFont(60)
+        setFont(50)
         for i = 1, #Cards do
             GC.strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
         end
@@ -577,22 +577,21 @@ function scene.overDraw()
         gc_setColor(TextColor)
         gc_rectangle('fill', -1300, 70 - d, 2600, 4)
         gc_replaceTransform(SCR.xOy_ul)
-        gc_draw(TEXTS.title,
-            exT * 205 - 195, TEXTS.title:getHeight() / 2 - d, nil,
-            1, 1.1 * (1 - 2 * revT), 0, TEXTS.title:getHeight() / 2)
+        local h = TEXTS.title:getHeight()
+        gc_draw(TEXTS.title, MATH.lerp(-181, 10, exT), h / 2 - d, nil, 1, 1 - 2 * revT, 0, h / 2)
         gc_replaceTransform(SCR.xOy_ur)
-        gc_draw(TEXTS.pb, -10, -d, nil, 1, 1.1, TEXTS.pb:getWidth(), 0)
+        gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
         gc_replaceTransform(SCR.xOy_u)
-        gc_draw(TEXTS.sr, 0, -d, nil, 1, 1.1, TEXTS.sr:getWidth() / 2, 0)
+        gc_draw(TEXTS.sr, 0, -d, 0, 1, 1, TEXTS.sr:getWidth() / 2, 0)
         gc_replaceTransform(SCR.xOy_dl)
         gc_translate(0, DeckPress + d)
         if revT > 0 then
-            gc_draw(TEXTS.slogan, 6, 2 + (exT + revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan:getHeight())
-            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT + revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_EX:getHeight())
-            gc_draw(TEXTS.slogan_rEX, 6, 2 + (1 - revT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_rEX:getHeight())
+            gc_draw(TEXTS.slogan, 6, 2 + (exT + revT) * 42, 0, 1, 1, 0, TEXTS.slogan:getHeight())
+            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT + revT) * 42, 0, 1, 1, 0, TEXTS.slogan_EX:getHeight())
+            gc_draw(TEXTS.slogan_rEX, 6, 2 + (1 - revT) * 42, 0, 1, 1, 0, TEXTS.slogan_rEX:getHeight())
         else
-            gc_draw(TEXTS.slogan, 6, 2 + exT * 42, nil, 1, 1.26, 0, TEXTS.slogan:getHeight())
-            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT) * 42, nil, 1, 1.26, 0, TEXTS.slogan_EX:getHeight())
+            gc_draw(TEXTS.slogan, 6, 2 + exT * 42, 0, 1, 1, 0, TEXTS.slogan:getHeight())
+            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT) * 42, 0, 1, 1, 0, TEXTS.slogan_EX:getHeight())
         end
         gc_replaceTransform(SCR.xOy_dr)
         gc_translate(0, DeckPress)
@@ -604,28 +603,31 @@ function scene.overDraw()
         local C = Cards[FloatOnCard]
         local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id
         gc_replaceTransform(SCR.xOy_d)
+        gc_move('m', 0, 126 * (1 - C.float))
         gc_setColor(ShadeColor)
         gc_setAlpha(.7)
         gc_rectangle('fill', -840 / 2, -140, 840, 110, 10)
         if GAME.anyRev and M[infoID] == 2 then
             setFont(60)
             gc_push('transform')
-            gc_translate(0, -110)
+            gc_translate(0, -112)
             local t = love.timer.getTime()
             gc_scale(1 + sin(t / 2.6) * .026)
             gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
-            GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 2600 * .075, -35 + 4, 2600, 'center', 0, 0.85, 1)
-            GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 2600 * .075, -35 + 2, 2600, 'center', 0, 0.85, 1)
-            GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 2600 * .075, -35, 2600, 'center', 0, 0.85, 1)
+            GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 2600 * .05, -35 + 4, 2600, 'center', 0, .9, 1)
+            GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 2600 * .05, -35 + 2, 2600, 'center', 0, .9, 1)
+            GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 2600 * .05, -35, 2600, 'center', 0, .9, 1)
             gc_pop()
-            setFont(30)
-            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 2600 * 0.15, -75, 2600, 'center', 0, 0.7, 1)
+            setFont(25)
+            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 2600 * .1, -75, 2600, 'center', 0, .8, 1)
         else
             setFont(60)
-            GC.strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 195, -145, 2600, 'center', 0, 0.85, 1)
-            setFont(30)
-            GC.strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 2600 * 0.15, -75, 2600, 'center', 0, 0.7, 1)
+            GC.strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 2600 * .05, -145, 2600, 'center', 0, .9,
+                1)
+            setFont(25)
+            GC.strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 2600 * .1, -75, 2600, 'center', 0, .8, 1)
         end
+        gc_back()
     end
 
     -- Forfeit Panel
@@ -650,7 +652,7 @@ function scene.overDraw()
 
         -- Text
         gc_setColor(1, .872, .872, alpha)
-        gc_mDraw(TEXTS.forfeit, SCR.w / 2, SCR.h - h * .5, 0, SCR.k * .85, SCR.k)
+        gc_mDraw(TEXTS.forfeit, SCR.w / 2, SCR.h - h * .5, 0, SCR.k, SCR.k)
     end
 end
 
@@ -660,7 +662,7 @@ scene.widgetList = {
         pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
         color = { .15, .15, .15 },
         sound_hover = 'menutap',
-        fontSize = 30, text = "      BACK", textColor = 'DL',
+        fontSize = 35, text = "    BACK", textColor = 'DL',
         onClick = function()
             if GAME.playing then
                 if TASK.lock('sure_forfeit', 2.6) then
@@ -682,9 +684,9 @@ scene.widgetList = {
         color = { .35, .12, .05 },
         textColor = TextColor,
         sound_hover = 'menuhover',
-        fontSize = 80, text = "START",
+        fontSize = 90, text = "START",
         onClick = function(k)
-            if k ~=3 then
+            if k ~= 3 then
                 GAME[GAME.playing and 'commit' or 'start']()
             end
         end,
@@ -702,7 +704,7 @@ scene.widgetList = {
         name = 'hint', type = 'hint',
         pos = { 1, 0 }, x = -50, y = 120, w = 80, cornerR = 40,
         color = TextColor,
-        fontSize = 80, text = "?",
+        fontSize = 50, text = "?",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 25,
@@ -713,7 +715,7 @@ scene.widgetList = {
             Space: commit    Z: reset    Esc: forfeit/quit
             F10: large cursor    F11: fullscreen
 
-            All assets from TETR.IO, by osk team:
+            Design by MrZ, most assets from TETR.IO, by osk team:
             Musics & Sounds by Dr.Ocelot
             Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
         ]],
