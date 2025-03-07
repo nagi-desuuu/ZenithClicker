@@ -241,13 +241,12 @@ local gc_push, gc_pop = gc.push, gc.pop
 local gc_replaceTransform = gc.replaceTransform
 local gc_translate, gc_scale, gc_shear = gc.translate, gc.scale, gc.shear
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
-local gc_draw, gc_line = gc.draw, gc.line
+local gc_draw = gc.draw
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
-local gc_setAlpha = GC.setAlpha
-local gc_move, gc_back = GC.ucs_move, GC.ucs_back
+local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
+local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
 local setFont = FONT.set
-local gc_blurCircle = GC.blurCircle
 
 local chargeIcon = GC.load {
     w = 256, h = 256,
@@ -551,7 +550,7 @@ function scene.overDraw()
     if M.AS > 0 then
         setFont(50)
         for i = 1, #Cards do
-            GC.strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
+            gc_strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
         end
     end
 
@@ -606,18 +605,17 @@ function scene.overDraw()
             local t = love.timer.getTime()
             gc_scale(1 + sin(t / 2.6) * .026)
             gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
-            GC.strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 2600 * .05, -35 + 4, 2600, 'center', 0, .9, 1)
-            GC.strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 2600 * .05, -35 + 2, 2600, 'center', 0, .9, 1)
-            GC.strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 2600 * .05, -35, 2600, 'center', 0, .9, 1)
+            gc_strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 130, -35 + 4, 2600, 'center', 0, .9, 1)
+            gc_strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 130, -35 + 2, 2600, 'center', 0, .9, 1)
+            gc_strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 130, -35, 2600, 'center', 0, .9, 1)
             gc_pop()
             setFont(25)
-            GC.strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 2600 * .1, -75, 2600, 'center', 0, .8, 1)
+            gc_strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 260, -70, 2600, 'center', 0, .8, 1)
         else
             setFont(60)
-            GC.strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 2600 * .05, -145, 2600, 'center', 0, .9,
-                1)
+            gc_strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 130, -145, 2600, 'center', 0, .9, 1)
             setFont(25)
-            GC.strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 2600 * .1, -75, 2600, 'center', 0, .8, 1)
+            gc_strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 260, -70, 2600, 'center', 0, .8, 1)
         end
         gc_back()
     end
@@ -696,10 +694,10 @@ scene.widgetList = {
         name = 'hint', type = 'hint',
         pos = { 1, 0 }, x = -50, y = 120, w = 80, cornerR = 40,
         color = TextColor,
-        fontSize = 50, text = "?",
+        fontSize = 60, text = "?",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
-        floatFontSize = 25,
+        floatFontSize = 20,
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!

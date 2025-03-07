@@ -104,7 +104,7 @@ FONT.load {
     din = "assets/DINPro-Medium.otf",
 }
 FONT.setDefaultFont(fontNotLoaded and 'tnr' or 'din')
-TEXTS = { -- Must use only 2 sizes
+TEXTS = { -- Font size can only be 30 and 50 here !!!
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
