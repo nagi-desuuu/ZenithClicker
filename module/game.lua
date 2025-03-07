@@ -1051,11 +1051,11 @@ function GAME.update(dt)
         end
 
         GAME.questTime = GAME.questTime + dt
+        GAME.floorTime = GAME.floorTime + dt
         if M.GV > 0 and not GAME.gravTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
             GAME.gravTimer = GAME.gravDelay
         end
         if M.EX == 2 and GAME.floorTime > 30 then
-            GAME.floorTime = GAME.floorTime + dt
             GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
         end
         local stage = GAME.fatigueSet[GAME.fatigue]
