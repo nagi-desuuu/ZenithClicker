@@ -266,6 +266,21 @@ function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
 
+function GAME.getBgFloor()
+    local h = GAME.bgH
+    return
+        h <= Floors[1].top and 1 or
+        h <= Floors[2].top and 2 or
+        h <= Floors[3].top and 3 or
+        h <= Floors[4].top and 4 or
+        h <= Floors[5].top and 5 or
+        h <= Floors[6].top and 6 or
+        h <= Floors[7].top and 7 or
+        h <= Floors[8].top and 8 or
+        h <= Floors[9].top and 9 or
+        10
+end
+
 function GAME.task_gigaspeed()
     TWEEN.new(function(t) GigaSpeed.textTimer = 1 - 2 * t end):setEase('Linear'):setDuration(2.6):run()
         :setOnFinish(function() GigaSpeed.textTimer = false end)
@@ -494,7 +509,6 @@ function GAME.upFloor()
                 SaveBest()
             end
         end
-        Background.quad:setViewport(0, 0, 1920, 1080, 1920, 1080)
     end
     GAME.updateBgm('ingame')
     GAME.refreshRPC()
@@ -1006,6 +1020,8 @@ function GAME.finish(reason)
         TEXTS.endTime:set(text)
         GAME.refreshResultModIcon()
     else
+        TEXTS.endHeight:set("")
+        TEXTS.endTime:set("")
         GAME.resultSB:clear()
         GAME.resultRevSB:clear()
     end
@@ -1038,11 +1054,11 @@ end
 
 function GAME.update(dt)
     if GAME.playing then
-        -- if love.keyboard.isDown('x') then
-        --     GAME.addHeight(dt * 260)
-        -- elseif love.keyboard.isDown('c') then
-        --     GAME.addXP(dt * 26)
-        -- end
+        if love.keyboard.isDown('x') then
+            GAME.addHeight(dt * 260)
+        elseif love.keyboard.isDown('c') then
+            GAME.addXP(dt * 26)
+        end
 
         GAME.time = GAME.time + dt
         if GAME.gigaspeed then
@@ -1094,7 +1110,7 @@ function GAME.update(dt)
         else
             GAME.height = max(
                 GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
-                GAME.floor == 1 and 0 or Floors[GAME.floor - 1].top
+                Floors[GAME.floor - 1].top
             )
         end
 

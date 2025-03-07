@@ -201,6 +201,9 @@ function scene.update(dt)
         end
     end
 
+    StarPS:moveTo(0, -GAME.bgH * 2 * BackgroundScale)
+    StarPS:update(dt)
+
     for i = 1, #Cards do
         Cards[i]:update(dt)
     end
@@ -236,11 +239,16 @@ local rankColor = {
     { .4, .9, 1 },
     { 1,  .8, 1 },
 }
+local f10colors = {
+    { .9, .6, .4, .2, .4, 1,  1,  .8, .0 },
+    { .3, .3, .2, .5, .6, 0,  0,  0,  .0 },
+    { .9, .8, .7, .7, .4, .5, .6, 1,  1 },
+}
 local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_replaceTransform = gc.replaceTransform
 local gc_translate, gc_scale, gc_shear = gc.translate, gc.scale, gc.shear
-local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
+local gc_setColor, gc_setLineWidth, gc_setBlendMode = gc.setColor, gc.setLineWidth, gc.setBlendMode
 local gc_draw = gc.draw
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
@@ -262,32 +270,92 @@ local TEXTURE = TEXTURE
 local Cards = Cards
 local TextColor = TextColor
 local ShadeColor = ShadeColor
+local bgQuad = GC.newQuad(0, 0, 0, 0, 0, 0)
 function scene.draw()
     gc_replaceTransform(SCR.origin)
-    gc_setColor(1, 1, 1, Background.alpha * (GAME.gigaspeed and .26 * (1 + GigaSpeed.bgAlpha) or .5))
-    if Background.floor < 10 then
-        Background.quad:setViewport(0, -26 * GAME.bgH, 1920, 1080, 1920, 1080)
-        gc_mDrawQ(TEXTURE.floorBG[Background.floor], Background.quad,
-            SCR.w / 2, SCR.h / 2, nil, max(SCR.w / 1920, SCR.h / 1080))
+    local bgFloor = GAME.getBgFloor()
+    local bgAlpha = GAME.gigaspeed and .26 * (1 + GigaSpeed.bgAlpha) or .7
+    if bgFloor < 10 then
+        gc_setColor(1, 1, 1, bgAlpha)
+        local bottom = Floors[bgFloor - 1].top
+        local top = Floors[bgFloor].top
+        local bg = TEXTURE.towerBG[bgFloor]
+        local w, h = bg:getDimensions()
+        local quadStartH = MATH.interpolate(bottom, h, top, 0, GAME.bgH) - 640
+        bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
+        gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BackgroundScale)
+        if bgFloor == 9 then
+            if GAME.bgH > 1562 then
+                gc_setColor(.626, .626, .626, MATH.interpolate(1562, 0, 1650, 1, GAME.bgH))
+                gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+            end
+        elseif quadStartH < 0 then
+            bg = TEXTURE.towerBG[bgFloor + 1]
+            w, h = bg:getDimensions()
+            bgQuad:setViewport(0, h - 640, 1024, 640, w, h)
+            gc_mDrawQ(bg, bgQuad,
+                SCR.w / 2, SCR.h * MATH.interpolate(0, -.5, -640, .5, quadStartH),
+                0, BackgroundScale)
+        end
     else
-        gc_mDraw(TEXTURE.floorBG[10], SCR.w / 2, SCR.h / 2, nil, max(SCR.w / 1920, SCR.h / 1080))
+        -- Fading Base
+        gc_setColor(0, 0, GAME.bgH > 1900 and 0 or MATH.interpolate(1650, .2, 1900, 0, GAME.bgH))
+        gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+
+        -- Transition at Bottom
+        if GAME.bgH < 2500 then
+            local t = MATH.iLerp(1650, 2500, GAME.bgH)
+            gc_setColor(
+                MATH.lLerp(f10colors[1], t),
+                MATH.lLerp(f10colors[2], t),
+                MATH.lLerp(f10colors[3], t),
+                .626 * (1 - t)
+            )
+        end
+        gc_draw(TEXTURE.transition, 0, SCR.h, -1.5708, SCR.h / 128, SCR.w)
+
+        -- Space
+        gc_setBlendMode('add', 'alphamultiply')
+        gc_setColor(1, 1, 1, .8)
+        gc_draw(StarPS, SCR.w / 2, SCR.h / 2 + GAME.bgH * 2 * BackgroundScale)
+        gc_mDraw(TEXTURE.moon, SCR.w / 2, SCR.h / 2 + (GAME.bgH - 2202.84) * 2 * BackgroundScale, 0, .2 * BackgroundScale)
+        gc_setBlendMode('alpha')
+
+        -- Tower
+        if GAME.bgH < 1700 then
+            gc_setColor(1, 1, 1)
+            local bg = TEXTURE.towerBG[10]
+            local w, h = bg:getDimensions()
+            local quadStartH = MATH.interpolate(1650, h, 1700, 0, GAME.bgH) - 640
+            bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
+            gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BackgroundScale)
+        end
+
+        -- Cover
+        if GAME.floorTime < 4.2 then
+            gc_setColor(.626, .626, .626, MATH.interpolate(0, 1, 4.2, 0, GAME.floorTime))
+            gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+        end
     end
 
     -- Wind Particles
-    local dh = GAME.bgH - GAME.bgLastH
-    GAME.bgLastH = GAME.bgH
-    for i = 1, 62 do
-        local w = Wind[i]
-        w[2] = w[2] + dh / w[3] / 42
-        if w[2] < 0 or w[2] > 1 then
-            w[1], w[2] = math.random(), w[2] % 1
+    if GAME.height <= 1650 then
+        local dh = GAME.bgH - GAME.bgLastH
+        GAME.bgLastH = GAME.bgH
+        for i = 1, 62 do
+            local w = Wind[i]
+            w[2] = w[2] + dh / w[3] / 42
+            if w[2] < 0 or w[2] > 1 then
+                w[1], w[2] = math.random(), w[2] % 1
+            end
+            WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, 0, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
         end
-        WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, nil, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
+        gc_setColor(1, 1, 1, GAME.uiHide *
+            MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
+            MATH.cLerp(.62, 1, abs(dh * 26))
+        )
+        gc_draw(WindBatch)
     end
-    gc_setColor(1, 1, 1, GAME.uiHide * Background.alpha *
-        MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
-        MATH.cLerp(.62, 1, abs(dh * 26)))
-    gc_draw(WindBatch)
 
     -- Previous PB Line
     gc_replaceTransform(SCR.xOy_r)
@@ -296,6 +364,8 @@ function scene.draw()
     gc_setColor(1, .8 + over * .2, over * 1, 1 - over * .626)
     gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
     gc_draw(TEXTS.prevPB, 0, y, 0, 1, 1, TEXTS.prevPB:getWidth() + 10, TEXTS.prevPB:getHeight() / 2)
+
+    local panelH = 697 + GAME.uiHide * (420 + GAME.height / 6.2)
 
     -- GigaSpeed BG
     if GigaSpeed.alpha > 0 then
@@ -306,9 +376,8 @@ function scene.draw()
         gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
 
         gc_replaceTransform(SCR.xOy)
-        local h = 697 + GAME.uiHide * 420
         gc_setAlpha(GigaSpeed.alpha)
-        gc_draw(TEXTURE.transition, 800 - 1586 / 2, h - 303, 1.5708, 26, 1586, 0, 1)
+        gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
     else
         gc_replaceTransform(SCR.xOy)
     end
@@ -322,23 +391,22 @@ function scene.draw()
 
     -- Card Panel
     gc_translate(0, DeckPress)
-    local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
-    gc_draw(TEXTURE.transition, 800 - 1586 / 2, h - 303, 1.5708, 6.26, 1586, 0, 1)
+    gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 6.26, 1586, 0, 1)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
-        gc_mDraw(TEXTURE.panel.glass_a, 800, h)
-        gc_mDraw(TEXTURE.panel.glass_b, 800, h)
+        gc_mDraw(TEXTURE.panel.glass_a, 800, panelH)
+        gc_mDraw(TEXTURE.panel.glass_b, 800, panelH)
         gc_setColor(1, 1, 1, ThrobAlpha.bg1)
-        gc_mDraw(TEXTURE.panel.throb_a, 800, h)
+        gc_mDraw(TEXTURE.panel.throb_a, 800, panelH)
         gc_setColor(1, 1, 1, ThrobAlpha.bg2)
-        gc_mDraw(TEXTURE.panel.throb_b, 800, h)
+        gc_mDraw(TEXTURE.panel.throb_b, 800, panelH)
     end
     gc_setColor(ShadeColor)
-    gc_draw(TEXTURE.transition, 800 - 1586 / 2, h - 303, 1.5708, 12.6, -3, 0, 1)
-    gc_draw(TEXTURE.transition, 800 + 1586 / 2, h - 303, 1.5708, 12.6, 3, 0, 1)
+    gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 12.6, -3, 0, 1)
+    gc_draw(TEXTURE.transition, 800 + 1586 / 2, panelH - 303, 1.5708, 12.6, 3, 0, 1)
     gc_setColor(TextColor)
-    gc_mRect('fill', 800, h - 303 - 2, 1586 + 6, 4)
+    gc_mRect('fill', 800, panelH - 303 - 2, 1586 + 6, 4)
 
     -- Chain Counter
     if GAME.playing and GAME.chain >= 4 then
@@ -372,8 +440,8 @@ function scene.draw()
         gc_replaceTransform(SCR.xOy_u)
         gc_translate(0, -3.2 * GAME.uiHide * 70)
         gc_setColor(1, 1, 1)
-        gc_draw(GAME.resultRevSB, 380, 168, nil, .9)
-        gc_draw(GAME.resultSB, 380, 168, nil, .9)
+        gc_draw(GAME.resultRevSB, 380, 168, 0, .9)
+        gc_draw(GAME.resultSB, 380, 168, 0, .9)
         gc_setColor(COLOR.D)
         gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8, 1.8)
         gc_mDraw(TEXTS.endTime, 0, 204)
@@ -385,7 +453,7 @@ end
 
 local questStyle = {
     { k = 1.5, y = 175 },
-    { k = 1.0, y = 95 },
+    { k = 1,   y = 95 },
     { k = 0.9, y = 30 },
 }
 local questStyleDP = {
@@ -399,7 +467,7 @@ function scene.overDraw()
         gc_setColor(TextColor)
         if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(love.timer.getTime() * 2.6)) end
         local k = min(1, 760 / TEXTS.mod:getWidth())
-        gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, nil, k)
+        gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, 0, k)
     end
 
     gc_translate(0, DeckPress)
@@ -422,12 +490,12 @@ function scene.overDraw()
 
     -- GigaSpeed Anim
     if GigaSpeed.textTimer then
-        GC.setBlendMode('add', 'alphamultiply')
+        gc_setBlendMode('add', 'alphamultiply')
         gc_setColor(.26, .26, .26)
         for t = -10, 10, 3 do
-            gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + t * .01) ^ 7 * 1800, 395, nil, 1.6)
+            gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + t * .01) ^ 7 * 1800, 395, 0, 1.6)
         end
-        GC.setBlendMode('alpha')
+        gc_setBlendMode('alpha')
     end
 
     -- Health Bar
@@ -569,7 +637,7 @@ function scene.overDraw()
         gc_rectangle('fill', -1300, 70 - d, 2600, 4)
         gc_replaceTransform(SCR.xOy_ul)
         local h = TEXTS.title:getHeight()
-        gc_draw(TEXTS.title, MATH.lerp(-181, 10, exT), h / 2 - d, nil, 1, 1 - 2 * revT, 0, h / 2)
+        gc_draw(TEXTS.title, MATH.lerp(-181, 10, exT), h / 2 - d, 0, 1, 1 - 2 * revT, 0, h / 2)
         gc_replaceTransform(SCR.xOy_ur)
         gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
         gc_replaceTransform(SCR.xOy_u)
@@ -705,7 +773,8 @@ scene.widgetList = {
             Space: commit    Z: reset    Esc: forfeit/quit
             F10: large cursor    F11: fullscreen
 
-            Redesign by MrZ, origin design and assets are from TETR.IO, by osk team:
+            Redesign by MrZ, backgrounds recontructed by DJ Asrial
+            Origin design and assets are from TETR.IO, by osk team:
             Musics & Sounds by Dr.Ocelot
             Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
         ]],

@@ -88,7 +88,9 @@ TEXTURE = {
     IN = { lock = p 'card/lockfull-7.png', front = p 'card/invisible.png', back = p 'card/invisible-back.png', throb = p 'card/invisible-throb.png', },
     AS = { lock = p 'card/lockfull-8.png', front = p 'card/allspin.png', back = p 'card/allspin-back.png', throb = p 'card/allspin-throb.png', },
     DP = { lock = p 'card/lockover-supporter.png', front = p 'card/duo.png', back = p 'card/duo-back.png', throb = p 'card/duo-throb.png', },
-    floorBG = { p 'bg/1fa.jpg', p 'bg/2fa.jpg', p 'bg/3fa.jpg', p 'bg/4fa.jpg', p 'bg/5fa.jpg', p 'bg/6fa.jpg', p 'bg/7fa.jpg', p 'bg/8fa.jpg', p 'bg/9fa.jpg', p 'bg/10fa.jpg' },
+    towerBG = { p 'tower/f1.jpg', p 'tower/f2.jpg', p 'tower/f3.jpg', p 'tower/f4.jpg', p 'tower/f5.jpg', p 'tower/f6.jpg', p 'tower/f7.jpg', p 'tower/f8.jpg', p 'tower/f9.jpg', p 'tower/f10.png' },
+    moon = p 'tower/moon.png',
+    stars = p 'tower/stars.png',
 }
 local transition = { w = 128, h = 1 }
 for x = 0, 127 do
@@ -189,11 +191,6 @@ Cards = {}
 ---@type nil|number
 FloatOnCard = nil
 
-Background = {
-    floor = 2,
-    alpha = 0,
-    quad = GC.newQuad(0, 0, 1920, 1080, 1920, 1080)
-}
 GigaSpeed = {
     r = 0,
     g = 0,
@@ -215,7 +212,12 @@ for i = 1, 62 do
     Wind[i] = { math.random(), math.random(), MATH.clampInterpolate(1, 0.5, 260, 2.6, i) }
     WindBatch:add(0, 0)
 end
-
+StarPS = GC.newParticleSystem(TEXTURE.stars, 32)
+StarPS:setParticleLifetime(2.6)
+StarPS:setRotation(0, 6.26)
+StarPS:setEmissionRate(12)
+StarPS:setColors(COLOR.LX, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.LX)
+BackgroundScale = 1
 BgmSets = {
     all = {
         'piano',
@@ -286,6 +288,19 @@ end
 love.mouse.setVisible(false)
 ZENITHA.globalEvent.drawCursor = NULL
 ZENITHA.globalEvent.clickFX = NULL
+
+function ZENITHA.globalEvent.resize()
+    BackgroundScale = math.max(SCR.w / 1024, SCR.h / 640)
+    StarPS:reset()
+    StarPS:moveTo(0, -GAME.bgH * 2 * BackgroundScale)
+    StarPS:setEmissionArea('uniform', SCR.w * .626, SCR.h * .626)
+    StarPS:setSizes(SCR.k * 1.626)
+    local dt = 1 / StarPS:getEmissionRate()
+    for _ = 1, StarPS:getBufferSize() do
+        StarPS:emit(1)
+        StarPS:update(dt)
+    end
+end
 
 function WIDGET._prototype.button:draw()
     gc.push('transform')
@@ -395,23 +410,6 @@ function Daemon_Beat()
             end
         end
         coroutine.yield()
-    end
-end
-
--- Background transition deamon
-function Daemon_Floor()
-    local bg = Background
-    while true do
-        repeat TASK.yieldT(.1) until bg.floor ~= GAME.floor
-        repeat
-            bg.alpha = bg.alpha - coroutine.yield()
-        until bg.alpha <= 0
-        bg.floor = GAME.floor
-        bg.alpha = 0
-        repeat
-            bg.alpha = bg.alpha + coroutine.yield()
-        until bg.alpha >= 1
-        bg.alpha = 1
     end
 end
 

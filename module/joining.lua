@@ -24,11 +24,11 @@ function scene.update(dt)
             TASK.new(Daemon_Cursor)
             TASK.new(Daemon_Sync)
             TASK.new(Daemon_Beat)
-            TASK.new(Daemon_Floor)
             TASK.new(Daemon_DiscordRPC)
             ---@diagnostic disable-next-line
             local _ = TEXTURE.panel.glass_a, TEXTURE.panel.glass_b, TEXTURE.panel.throb_a, TEXTURE.panel.throb_b
-            for i = 1, 10 do TEXTURE.floorBG[i]:setWrap('repeat', 'repeat') end
+            for i = 1, 10 do _ = TEXTURE.towerBG[i] end
+            _, _ = TEXTURE.moon, TEXTURE.stars
         end
     elseif t2 > 0 then
         t2 = t2 - dt
