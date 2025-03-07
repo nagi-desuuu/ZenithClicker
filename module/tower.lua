@@ -684,7 +684,7 @@ scene.widgetList = {
         sound_hover = 'menuhover',
         fontSize = 80, text = "START",
         onClick = function(k)
-            if k == 1 or k == 2 then
+            if k ~=3 then
                 GAME[GAME.playing and 'commit' or 'start']()
             end
         end,
