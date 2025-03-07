@@ -275,7 +275,7 @@ local bgQuad = GC.newQuad(0, 0, 0, 0, 0, 0)
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     local bgFloor = GAME.getBgFloor()
-    local bgAlpha = GAME.gigaspeed and .26 * (1 + GigaSpeed.bgAlpha) or .7
+    local bgAlpha = GAME.gigaspeed and .35 * (1 + GigaSpeed.bgAlpha) or .5
     if bgFloor < 10 then
         gc_setColor(1, 1, 1, bgAlpha)
         local bottom = Floors[bgFloor - 1].top
@@ -287,7 +287,7 @@ function scene.draw()
         gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BackgroundScale)
         if bgFloor == 9 then
             if GAME.bgH > 1562 then
-                gc_setColor(.626, .626, .626, MATH.interpolate(1562, 0, 1650, 1, GAME.bgH))
+                gc_setColor(.5, .5, .5, MATH.interpolate(1562, 0, 1650, 1, GAME.bgH))
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
             end
         elseif quadStartH < 0 then
@@ -334,7 +334,7 @@ function scene.draw()
 
         -- Cover
         if GAME.floorTime < 4.2 then
-            gc_setColor(.626, .626, .626, MATH.interpolate(0, 1, 4.2, 0, GAME.floorTime))
+            gc_setColor(.5, .5, .5, MATH.interpolate(0, 1, 4.2, 0, GAME.floorTime))
             gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
         end
     end
