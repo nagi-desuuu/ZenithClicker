@@ -691,7 +691,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 40, text = "RESET", textColor = 'dR',
-        onClick = function(k) if k == 1 or k == 2 then GAME.cancelAll() end end,
+        onClick = function(k) if k ~= 3 then GAME.cancelAll() end end,
     },
     WIDGET.new {
         name = 'hint', type = 'hint',
