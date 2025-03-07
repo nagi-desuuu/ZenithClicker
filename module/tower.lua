@@ -152,19 +152,12 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 local cancelNextPress
 function scene.keyDown(key)
-    if key == 'q' then
-        CursorProgress = 0
-    elseif key == 'w' then
-        CursorProgress = CursorProgress + 1 / 24
-    end
-
-
     if key == 'f10' then
-        CONF.syscursor = not CONF.syscursor
+        STAT.syscursor = not STAT.syscursor
         RefreshSysCursor()
     elseif key == 'f11' then
-        CONF.fullscreen = not CONF.fullscreen
-        love.window.setFullscreen(CONF.fullscreen)
+        STAT.fullscreen = not STAT.fullscreen
+        love.window.setFullscreen(STAT.fullscreen)
         return true
     elseif key == 'f12' then
         MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")

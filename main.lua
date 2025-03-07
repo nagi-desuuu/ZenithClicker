@@ -164,25 +164,7 @@ BEST = setmetatable({}, {
     end,
 })
 
-local _CONF = {
-    fullscreen = true,
-    syscursor = false,
-}
-local function confSaver()
-    TASK.yieldT(2.6)
-    SaveConf()
-end
-CONF = setmetatable({}, {
-    __index = _CONF,
-    __newindex = function(_, k, v)
-        _CONF[k] = v
-        TASK.removeTask_code(confSaver)
-        TASK.new(confSaver)
-    end,
-})
-
 STAT = {
-    saveRequest = nil,
     maxFloor = 1,
     totalGame = 0,
     totalTime = 0,
@@ -190,13 +172,14 @@ STAT = {
     totalHeight = 0,
     totalFloor = 0,
     totalFlip = 0,
+
+    fullscreen = true,
+    syscursor = false,
 }
 
 function SaveBest() love.filesystem.write('best.luaon', TABLE.dumpDeflate(_BEST)) end
 
 function SaveStat() love.filesystem.write('stat.luaon', TABLE.dumpDeflate(STAT)) end
-
-function SaveConf() love.filesystem.write('conf.luaon', TABLE.dumpDeflate(_CONF)) end
 
 MX, MY = 0, 0
 
@@ -296,8 +279,8 @@ local function StarHandCursor(x, y)
 end
 
 function RefreshSysCursor()
-    love.mouse.setVisible(CONF.syscursor)
-    ZENITHA.globalEvent.drawCursor = CONF.syscursor and NULL or StarHandCursor
+    love.mouse.setVisible(STAT.syscursor)
+    ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or StarHandCursor
 end
 
 love.mouse.setVisible(false)
@@ -448,9 +431,9 @@ if FILE.exist('data.luaon') then
     love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
     love.filesystem.remove('data.luaon')
 end
+if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(_BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
-TABLE.update(_CONF, FILE.load('conf.luaon', '-luaon -canskip') or NONE)
 
 local oldVer = BEST.version
 if BEST.version == nil then
@@ -503,7 +486,7 @@ for i = 1, #Cards do
 end
 GAME.refreshLockState()
 GAME.refreshPBText()
-love.window.setFullscreen(CONF.fullscreen)
+love.window.setFullscreen(STAT.fullscreen)
 
 -- Test
 TASK.new(function()
