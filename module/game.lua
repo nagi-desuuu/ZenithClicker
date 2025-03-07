@@ -1014,7 +1014,7 @@ function GAME.finish(reason)
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
         local text = STRING.time_simp(GAME.time)
         if GAME.gigaTime then
-            text = text .. " F10%-" .. STRING.time_simp(GAME.gigaTime)
+            text = text .. "   F10%-" .. STRING.time_simp(GAME.gigaTime)
         end
         text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
         TEXTS.endTime:set(text)

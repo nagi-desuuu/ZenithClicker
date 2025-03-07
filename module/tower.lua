@@ -452,14 +452,14 @@ function scene.draw()
 end
 
 local questStyle = {
-    { k = 1.5, y = 175 },
-    { k = 1,   y = 95 },
+    { k = 1.4, y = 175 },
+    { k = 1.1, y = 95 },
     { k = 0.9, y = 30 },
 }
 local questStyleDP = {
-    { k = 1.5, y = 175 },
-    { k = 1.5, y = 85 },
-    { k = 0.6, y = 25 },
+    { k = 1.4, y = 175 },
+    { k = 1.4, y = 90 },
+    { k = 0.7, y = 25 },
 }
 function scene.overDraw()
     -- Current combo
