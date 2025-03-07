@@ -135,6 +135,7 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseClick(x, y, k)
+    if k == 3 then return true end
     if cancelNextClick then
         cancelNextClick = false
         return
