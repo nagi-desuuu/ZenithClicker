@@ -874,6 +874,13 @@ function GAME.start()
         SFX.play('clutch')
         return
     end
+    if M.DP > 0 then
+        MSG.clear()
+        MSG('dark', "Work in Progress")
+        Cards.DP:shake()
+        SFX.play('no')
+        return
+    end
     SCN.scenes.tower.widgetList.hint:setVisible(false)
 
     SFX.play('menuconfirm', .8)
