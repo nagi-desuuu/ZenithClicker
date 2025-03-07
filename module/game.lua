@@ -1019,12 +1019,15 @@ function GAME.finish(reason)
         end
 
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
-        local text = STRING.time_simp(GAME.time)
         if GAME.gigaTime then
-            text = text .. "   F10%-" .. STRING.time_simp(GAME.gigaTime)
+            local l = STRING.atomize("F10: " .. Floors[10].name .. "   in " .. STRING.time_simp(GAME.gigaTime))
+            for i = #l, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / #l), .42, 1) }) end
+            ins(l, 1, COLOR.LL)
+            ins(l, 2, STRING.time_simp(GAME.time) .. "     ")
+            TEXTS.endTime:set(l)
+        else
+            TEXTS.endTime:set(STRING.time_simp(GAME.time) .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
-        text = text .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name
-        TEXTS.endTime:set(text)
         GAME.refreshResultModIcon()
     else
         TEXTS.endHeight:set("")
