@@ -305,7 +305,7 @@ function WIDGET._prototype.button:draw()
 
     -- Frame
     gc.setLineWidth(3)
-    gc.setColor(frameC[1] * .2, frameC[2] * .2, frameC[3] * .2)
+    gc.setColor(frameC[1] * .42, frameC[2] * .42, frameC[3] * .42)
     gc.line(-w / 2, h / 2, w / 2, h / 2, w / 2, -h / 2 - 1.5)
     gc.setColor(.2 + frameC[1] * .8, .2 + frameC[2] * .8, .2 + frameC[3] * .8)
     gc.line(-w / 2, h / 2 + 1.5, -w / 2, -h / 2, w / 2 - 1.5, -h / 2)

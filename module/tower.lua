@@ -308,8 +308,8 @@ function scene.draw()
 
         gc_replaceTransform(SCR.xOy)
         local h = 697 + GAME.uiHide * 420
-        gc_setAlpha(.626 * GigaSpeed.alpha)
-        gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
+        gc_setAlpha(GigaSpeed.alpha)
+        gc_draw(TEXTURE.transition, 800 - 1586 / 2, h - 303, 1.5708, 26, 1586, 0, 1)
     else
         gc_replaceTransform(SCR.xOy)
     end
@@ -325,8 +325,7 @@ function scene.draw()
     gc_translate(0, DeckPress)
     local h = 697 + GAME.uiHide * 420
     gc_setColor(ShadeColor)
-    gc_setAlpha(.8)
-    gc_rectangle('fill', 800 - 1586 / 2, h - 303, 1586, 2600)
+    gc_draw(TEXTURE.transition, 800 - 1586 / 2, h - 303, 1.5708, 6.26, 1586, 0, 1)
     if GAME.revDeckSkin then
         gc_setColor(1, 1, 1, GAME.revTimer)
         gc_mDraw(TEXTURE.panel.glass_a, 800, h)
@@ -337,10 +336,10 @@ function scene.draw()
         gc_mDraw(TEXTURE.panel.throb_b, 800, h)
     end
     gc_setColor(ShadeColor)
-    gc_setLineWidth(4)
-    gc_line(800 - 1586 / 2, h + 303, 800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303, 800 + 1586 / 2, h + 303)
+    gc_draw(TEXTURE.transition, 800 - 1586 / 2, h - 303, 1.5708, 12.6, -3, 0, 1)
+    gc_draw(TEXTURE.transition, 800 + 1586 / 2, h - 303, 1.5708, 12.6, 3, 0, 1)
     gc_setColor(TextColor)
-    gc_line(800 - 1586 / 2, h - 303, 800 + 1586 / 2, h - 303)
+    gc_mRect('fill', 800, h - 303 - 2, 1586 + 6, 4)
 
     -- Chain Counter
     if GAME.playing and GAME.chain >= 4 then
