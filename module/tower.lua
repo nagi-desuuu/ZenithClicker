@@ -774,7 +774,7 @@ scene.widgetList = {
             Space: commit    Z: reset    Esc: forfeit/quit
             F10: large cursor    F11: fullscreen
 
-            Redesign by MrZ, backgrounds recontructed by DJ Asrial
+            Redesign by MrZ, backgrounds reconstructed by DJ Asrial
             Origin design and assets are from TETR.IO, by osk team:
             Musics & Sounds by Dr.Ocelot
             Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
