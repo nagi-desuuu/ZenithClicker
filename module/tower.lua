@@ -112,7 +112,7 @@ local function keyPress(key)
 end
 
 function scene.enter()
-    RefreshSysCursor()
+    ApplySettings()
     GAME.refreshCursor()
 end
 
@@ -153,17 +153,6 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 local cancelNextPress
 function scene.keyDown(key)
-    if key == 'f10' then
-        STAT.syscursor = not STAT.syscursor
-        RefreshSysCursor()
-    elseif key == 'f11' then
-        STAT.fullscreen = not STAT.fullscreen
-        love.window.setFullscreen(STAT.fullscreen)
-        return true
-    elseif key == 'f12' then
-        MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
-        return true
-    end
     if M.EX == 0 then
         keyPress(key)
         if M.EX > 0 then
@@ -202,7 +191,7 @@ function scene.update(dt)
         end
     end
 
-    StarPS:moveTo(0, -GAME.bgH * 2 * BackgroundScale)
+    StarPS:moveTo(0, -GAME.bgH * 2 * BgScale)
     StarPS:update(dt)
 
     for i = 1, #Cards do
@@ -274,69 +263,73 @@ local ShadeColor = ShadeColor
 local bgQuad = GC.newQuad(0, 0, 0, 0, 0, 0)
 function scene.draw()
     gc_replaceTransform(SCR.origin)
-    local bgFloor = GAME.getBgFloor()
-    local bgAlpha = GAME.gigaspeed and .35 * (1 + GigaSpeed.bgAlpha) or .5
-    if bgFloor < 10 then
-        gc_setColor(1, 1, 1, bgAlpha)
-        local bottom = Floors[bgFloor - 1].top
-        local top = Floors[bgFloor].top
-        local bg = TEXTURE.towerBG[bgFloor]
-        local w, h = bg:getDimensions()
-        local quadStartH = MATH.interpolate(bottom, h, top, 0, GAME.bgH) - 640
-        bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
-        gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BackgroundScale)
-        if bgFloor == 9 then
-            if GAME.bgH > 1562 then
-                gc_setColor(.5, .5, .5, MATH.interpolate(1562, 0, 1650, 1, GAME.bgH))
+    if STAT.bg then
+        local bgFloor = GAME.getBgFloor()
+        local bgAlpha = GAME.gigaspeed and .35 * (1 + GigaSpeed.bgAlpha) or .5
+        if bgFloor < 10 then
+            gc_setColor(1, 1, 1, bgAlpha)
+            local bottom = Floors[bgFloor - 1].top
+            local top = Floors[bgFloor].top
+            local bg = TEXTURE.towerBG[bgFloor]
+            local w, h = bg:getDimensions()
+            local quadStartH = MATH.interpolate(bottom, h, top, 0, GAME.bgH) - 640
+            bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
+            gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BgScale)
+            if bgFloor == 9 then
+                if GAME.bgH > 1562 then
+                    gc_setColor(.5, .5, .5, MATH.interpolate(1562, 0, 1650, 1, GAME.bgH))
+                    gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+                end
+            elseif quadStartH < 0 then
+                bg = TEXTURE.towerBG[bgFloor + 1]
+                w, h = bg:getDimensions()
+                bgQuad:setViewport(0, h - 640, 1024, 640, w, h)
+                gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h * MATH.interpolate(0, -.5, -640, .5, quadStartH), 0, BgScale)
+            end
+        else
+            -- Fading Base
+            gc_setColor(0, 0, GAME.bgH > 1900 and 0 or MATH.interpolate(1650, .2, 1900, 0, GAME.bgH))
+            gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+
+            -- Transition at Bottom
+            if GAME.bgH < 2500 then
+                local t = MATH.iLerp(1650, 2500, GAME.bgH)
+                gc_setColor(
+                    MATH.lLerp(f10colors[1], t),
+                    MATH.lLerp(f10colors[2], t),
+                    MATH.lLerp(f10colors[3], t),
+                    .626 * (1 - t)
+                )
+            end
+            gc_draw(TEXTURE.transition, 0, SCR.h, -1.5708, SCR.h / 128, SCR.w)
+
+            -- Space
+            gc_setBlendMode('add', 'alphamultiply')
+            gc_setColor(1, 1, 1, .8)
+            gc_draw(StarPS, SCR.w / 2, SCR.h / 2 + GAME.bgH * 2 * BgScale)
+            gc_mDraw(TEXTURE.moon, SCR.w / 2, SCR.h / 2 + (GAME.bgH - 2202.84) * 2 * BgScale, 0, .2 * BgScale)
+            gc_setBlendMode('alpha')
+
+            -- Tower
+            if GAME.bgH < 1700 then
+                gc_setColor(1, 1, 1)
+                local bg = TEXTURE.towerBG[10]
+                local w, h = bg:getDimensions()
+                local quadStartH = MATH.interpolate(1650, h, 1700, 0, GAME.bgH) - 640
+                bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
+                gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BgScale)
+            end
+
+            -- Cover
+            if GAME.floorTime < 4.2 then
+                gc_setColor(.5, .5, .5, MATH.interpolate(0, 1, 4.2, 0, GAME.floorTime))
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
             end
-        elseif quadStartH < 0 then
-            bg = TEXTURE.towerBG[bgFloor + 1]
-            w, h = bg:getDimensions()
-            bgQuad:setViewport(0, h - 640, 1024, 640, w, h)
-            gc_mDrawQ(bg, bgQuad,
-                SCR.w / 2, SCR.h * MATH.interpolate(0, -.5, -640, .5, quadStartH),
-                0, BackgroundScale)
         end
     else
-        -- Fading Base
-        gc_setColor(0, 0, GAME.bgH > 1900 and 0 or MATH.interpolate(1650, .2, 1900, 0, GAME.bgH))
+        -- MATH.ilLerp()
+        gc_setColor(.4, .3, .2)
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
-
-        -- Transition at Bottom
-        if GAME.bgH < 2500 then
-            local t = MATH.iLerp(1650, 2500, GAME.bgH)
-            gc_setColor(
-                MATH.lLerp(f10colors[1], t),
-                MATH.lLerp(f10colors[2], t),
-                MATH.lLerp(f10colors[3], t),
-                .626 * (1 - t)
-            )
-        end
-        gc_draw(TEXTURE.transition, 0, SCR.h, -1.5708, SCR.h / 128, SCR.w)
-
-        -- Space
-        gc_setBlendMode('add', 'alphamultiply')
-        gc_setColor(1, 1, 1, .8)
-        gc_draw(StarPS, SCR.w / 2, SCR.h / 2 + GAME.bgH * 2 * BackgroundScale)
-        gc_mDraw(TEXTURE.moon, SCR.w / 2, SCR.h / 2 + (GAME.bgH - 2202.84) * 2 * BackgroundScale, 0, .2 * BackgroundScale)
-        gc_setBlendMode('alpha')
-
-        -- Tower
-        if GAME.bgH < 1700 then
-            gc_setColor(1, 1, 1)
-            local bg = TEXTURE.towerBG[10]
-            local w, h = bg:getDimensions()
-            local quadStartH = MATH.interpolate(1650, h, 1700, 0, GAME.bgH) - 640
-            bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
-            gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BackgroundScale)
-        end
-
-        -- Cover
-        if GAME.floorTime < 4.2 then
-            gc_setColor(.5, .5, .5, MATH.interpolate(0, 1, 4.2, 0, GAME.floorTime))
-            gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
-        end
     end
 
     -- Wind Particles

@@ -151,6 +151,7 @@ if fontNotLoaded then
         TEXTS.time:setFont(FONT.get(30))
         TEXTS.gigatime:setFont(FONT.get(50))
         WIDGET._reset()
+        MSG.clear()
     end)
 end
 
@@ -177,6 +178,9 @@ STAT = {
 
     fullscreen = true,
     syscursor = false,
+    bg = true,
+    bgm = true,
+    sfx = true,
 }
 
 function SaveBest() love.filesystem.write('best.luaon', TABLE.dumpDeflate(_BEST)) end
@@ -217,7 +221,7 @@ StarPS:setParticleLifetime(2.6)
 StarPS:setRotation(0, 6.26)
 StarPS:setEmissionRate(12)
 StarPS:setColors(COLOR.LX, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.LX)
-BackgroundScale = 1
+BgScale = 1
 BgmSets = {
     all = {
         'piano',
@@ -280,9 +284,11 @@ local function StarHandCursor(x, y)
     end
 end
 
-function RefreshSysCursor()
+function ApplySettings()
     love.mouse.setVisible(STAT.syscursor)
     ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or StarHandCursor
+    BGM.setVol(STAT.bgm and 1 or 0)
+    SFX.setVol(STAT.sfx and 1 or 0)
 end
 
 love.mouse.setVisible(false)
@@ -290,15 +296,45 @@ ZENITHA.globalEvent.drawCursor = NULL
 ZENITHA.globalEvent.clickFX = NULL
 
 function ZENITHA.globalEvent.resize()
-    BackgroundScale = math.max(SCR.w / 1024, SCR.h / 640)
+    BgScale = math.max(SCR.w / 1024, SCR.h / 640)
     StarPS:reset()
-    StarPS:moveTo(0, -GAME.bgH * 2 * BackgroundScale)
+    StarPS:moveTo(0, -GAME.bgH * 2 * BgScale)
     StarPS:setEmissionArea('uniform', SCR.w * .626, SCR.h * .626)
     StarPS:setSizes(SCR.k * 1.626)
     local dt = 1 / StarPS:getEmissionRate()
     for _ = 1, StarPS:getBufferSize() do
         StarPS:emit(1)
         StarPS:update(dt)
+    end
+end
+
+function ZENITHA.globalEvent.keyDown(key, isRep)
+    if isRep then return end
+    if key == 'f12' then
+        MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
+    elseif key == 'f11' then
+        STAT.fullscreen = not STAT.fullscreen
+        MSG('dark', STAT.fullscreen and "Fullscreen" or "Window Mode", 1)
+        love.window.setFullscreen(STAT.fullscreen)
+    elseif key == 'f10' then
+        STAT.syscursor = not STAT.syscursor
+        MSG('dark', STAT.syscursor and "Star Force OFF" or "Star Force ON", 1)
+        ApplySettings()
+    elseif key == 'f9' then
+        STAT.bg = not STAT.bg
+        MSG('dark', STAT.bg and "Background ON" or "Background OFF", 1)
+    elseif key == 'f8' then
+        STAT.bgm = not STAT.bgm
+        MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
+        ApplySettings()
+    elseif key == 'f7' then
+        STAT.sfx = not STAT.sfx
+        MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
+        ApplySettings()
+    elseif key == 'f6' then
+        -- IDK
+    elseif key == 'f5' then
+        -- IDK
     end
 end
 
@@ -485,6 +521,7 @@ end
 GAME.refreshLockState()
 GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
+ApplySettings()
 
 -- Test
 TASK.new(function()
