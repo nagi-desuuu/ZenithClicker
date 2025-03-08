@@ -95,12 +95,14 @@ function Card:setActive(auto, key)
     local revOn
     if GAME.playing then
         self.touchCount = self.touchCount + 1
-        GAME.totalFlip = GAME.totalFlip + 1
+        if not auto then
+            GAME.totalFlip = GAME.totalFlip + 1
+        end
         if self.touchCount == 1 then
             if self.isCorrect == 1 and not GAME.hardMode then
                 GAME.addXP(1)
             end
-        elseif self.touchCount == 2 then
+        elseif self.touchCount == 2 and M.AS == 0 then
             GAME.fault = true
         end
         if M.DP > 0 and not auto and self.id == 'DP' and self.active then
@@ -188,7 +190,7 @@ function Card:setActive(auto, key)
             BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
             BGM.set('piano2', 'volume', M.DP > 0 and .626 or 0, .26)
         end
-        SCN.scenes.tower.widgetList.reset:setVisible(not (M.NH == 2 and M.AS ~= 1))
+        SCN.scenes.tower.widgetList.reset:setVisible(M.NH ~= 2)
         GAME.refreshPBText()
         if revOn or wasRev then GAME.refreshRev() end
         GAME.refreshRPC()

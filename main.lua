@@ -447,7 +447,7 @@ if BEST.version == 162 then
     BEST.version = 163
 end
 if BEST.version == 163 then
-    STAT.maxFloor = BEST.maxFloor
+    STAT.maxFloor = BEST.maxFloor or 1
     BEST.maxFloor = nil
     BEST.version = 166
     SaveStat()

@@ -66,7 +66,7 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
-        if M.NH == 2 and M.AS ~= 1 then
+        if M.NH == 2 then
             SFX.play('no')
             return true
         end
@@ -76,7 +76,7 @@ local function keyPress(key)
         SFX.play('menuclick')
         GAME.cancelAll()
     elseif key == 'space' then
-        if M.NH == 2 and M.AS ~= 1 then
+        if M.NH == 2 and M.AS == 0 then
             SFX.play('no')
             return true
         end
@@ -135,7 +135,7 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseClick(x, y, k)
-    if k == 3 then return true end
+    if k == 3 then return end
     if cancelNextClick then
         cancelNextClick = false
         return
