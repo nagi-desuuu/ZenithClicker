@@ -575,20 +575,21 @@ function GAME.upFloor()
     end
     if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
 
+    local duration = GAME.floor == 10 and 8.72 or 4.2
     TEXT:add {
         text = "Floor",
         x = 160, y = 290, k = 1.6, fontSize = 30,
-        color = 'LY', duration = 4.2,
+        color = 'LY', duration = duration,
     }
     TEXT:add {
         text = tostring(GAME.floor),
         x = 240, y = 280, k = 2.6, fontSize = 30,
-        color = 'LY', duration = 4.2, align = 'left',
+        color = 'LY', duration = duration, align = 'left',
     }
     TEXT:add {
         text = Floors[GAME.floor].name,
         x = 200, y = 350, k = 1.2, fontSize = 30,
-        color = 'LY', duration = 4.2,
+        color = 'LY', duration = duration,
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
     if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
