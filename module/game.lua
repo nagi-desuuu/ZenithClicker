@@ -11,6 +11,8 @@ local ins, rem = table.insert, table.remove
 ---@class Game
 ---@field comboStr string
 ---@field totalFlip number
+---@field totalQuest number
+---@field totalAttack number
 ---
 ---@field dmgHeal number
 ---@field dmgWrong number
@@ -28,7 +30,6 @@ local ins, rem = table.insert, table.remove
 ---@field gigaTime false | number
 ---@field questTime number
 ---@field floorTime number
----@field questCount number
 ---@field rank number
 ---@field xp number
 ---@field rankupLast boolean
@@ -804,6 +805,7 @@ function GAME.commit()
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
 
+        GAME.totalAttack = GAME.totalAttack + attack
         GAME.addHeight(attack)
         GAME.addXP(attack + xp)
 
@@ -830,7 +832,7 @@ function GAME.commit()
         local hasDH = TABLE.find(combo, 'DH') and 1 or 0
         if #combo >= 4 then SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + hasDH, 1, 0, M.GV) end
         GAME.questReady()
-        GAME.questCount = GAME.questCount + 1
+        GAME.totalQuest = GAME.totalQuest + 1
 
         if M.DP > 0 and correct == 2 then
             if GAME.swapControl() then
@@ -928,6 +930,8 @@ function GAME.start()
 
     -- Statistics
     GAME.totalFlip = 0
+    GAME.totalQuest = 0
+    GAME.totalAttack = 0
 
     GAME.refreshModIcon()
 
@@ -970,7 +974,7 @@ function GAME.finish(reason)
     GAME.life, GAME.life2 = 0, 0
 
     local unlockDuo
-    if GAME.questCount > 2.6 then
+    if GAME.totalQuest > 2.6 then
         if GAME.floor >= 10 then
             if TABLE.count(GAME.completion, 0) == 9 then
                 MSG.clear()
@@ -985,10 +989,12 @@ function GAME.finish(reason)
         if GAME.floor > STAT.maxFloor then STAT.maxFloor = GAME.floor end
         STAT.totalGame = STAT.totalGame + 1
         STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
-        STAT.totalQuest = STAT.totalQuest + GAME.questCount
+        STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
+        STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
+        STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
         STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
-        STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
+        if GAME.gigaspeedEntered then GAME.totalGiga = GAME.totalGiga + 1 end
         SaveStat()
 
         local oldPB = BEST.highScore[GAME.comboStr]

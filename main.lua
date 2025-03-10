@@ -175,6 +175,8 @@ STAT = {
     totalHeight = 0,
     totalFloor = 0,
     totalFlip = 0,
+    totalAttack = 0,
+    totalGiga = 0,
 
     fullscreen = true,
     syscursor = false,
