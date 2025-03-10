@@ -111,11 +111,6 @@ local function keyPress(key)
     end
 end
 
-function scene.enter()
-    ApplySettings()
-    GAME.refreshCursor()
-end
-
 function scene.mouseMove(x, y)
     mouseMove(x, y)
 end

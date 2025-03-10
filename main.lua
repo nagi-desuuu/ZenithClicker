@@ -526,6 +526,7 @@ GAME.refreshLockState()
 GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
 ApplySettings()
+GAME.refreshCursor()
 
 -- Test
 TASK.new(function()
