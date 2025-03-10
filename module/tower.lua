@@ -70,16 +70,19 @@ local function keyPress(key)
             SFX.play('no')
             return true
         end
+        GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.reset
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
         SFX.play('menuclick')
+        if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
         GAME.cancelAll()
     elseif key == 'space' then
         if M.NH == 2 and M.AS == 0 then
             SFX.play('no')
             return true
         end
+        GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.start
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
@@ -102,6 +105,7 @@ local function keyPress(key)
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then
             if GAME.playing or not C.lock then
+                GAME.nixPrompt('keep_no_keyboard')
                 C:setActive()
             else
                 C:flick()
@@ -112,11 +116,13 @@ local function keyPress(key)
 end
 
 function scene.mouseMove(x, y)
+    GAME.nixPrompt('keep_no_mouse')
     mouseMove(x, y)
 end
 
 local cancelNextClick
 function scene.mouseDown(x, y, k)
+    GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return true end
     if M.EX == 0 then
         SFX.play('move')
@@ -130,6 +136,7 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseClick(x, y, k)
+    GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return end
     if cancelNextClick then
         cancelNextClick = false
@@ -194,7 +201,7 @@ function scene.update(dt)
     end
     if GAME.playing and (KBIsDown('escape') or MSIsDown(3)) then
         GAME.forfeitTimer = GAME.forfeitTimer +
-            dt * MATH.clampInterpolate(6, 2.6, 12, 1, min(GAME.questCount, GAME.time))
+            dt * MATH.clampInterpolate(6, 2.6, 12, 1, min(GAME.totalQuest, GAME.time))
         if TASK.lock('forfeit_sfx', .0872) then
             SFX.play('detonate1', MATH.clampInterpolate(0, .4, 1, .6, GAME.forfeitTimer))
         end
@@ -232,7 +239,7 @@ local f10colors = {
 local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_replaceTransform = gc.replaceTransform
-local gc_translate, gc_scale, gc_shear = gc.translate, gc.scale, gc.shear
+local gc_translate, gc_scale, gc_rotate, gc_shear = gc.translate, gc.scale, gc.rotate, gc.shear
 local gc_setColor, gc_setLineWidth, gc_setBlendMode = gc.setColor, gc.setLineWidth, gc.setBlendMode
 local gc_draw = gc.draw
 local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
@@ -256,6 +263,13 @@ local Cards = Cards
 local TextColor = TextColor
 local ShadeColor = ShadeColor
 local bgQuad = GC.newQuad(0, 0, 0, 0, 0, 0)
+local reviveQuad = {
+    GC.newQuad(0, 0, 1042, 296, TEXTURE.revive),
+    GC.newQuad(0, 355, 1042, 342, TEXTURE.revive),
+    GC.newQuad(0, 740, 1042, 354, TEXTURE.revive),
+}
+local reviveRot = { -.095, .15, -.17 }
+
 function scene.draw()
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
@@ -546,6 +560,29 @@ function scene.overDraw()
         end
     end
 
+    if GAME.playing and GAME.currentTask then
+        gc_push('transform')
+        local allyDie = GAME.life2 <= 0
+        gc_translate(allyDie and 1150 or 450, 450)
+        gc_setColor(1, 1, 1)
+        local r = math.floor(love.timer.getTime()) % 3 + 1
+        -- local r=GAME.currentTask.cur
+        gc_mDrawQ(
+            M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left,
+            reviveQuad[r], 0, 0, 0, .4
+        )
+        gc_rotate(reviveRot[r])
+        gc_translate(-150, -26)
+        gc_draw(GAME.currentTask.textObj)
+        -- setFont(30)
+        -- gc.print(GAME.currentTask.text, 0, 0)
+        -- gc.print(GAME.currentTask.prompt, 0, 30)
+        -- gc.print(GAME.currentTask.progress, 0, 60)
+        -- gc.print(GAME.currentTask.target, 0, 90)
+        gc_pop()
+        gc_mDraw(GAME.currentTask.shortObj, 800, 330, 0, 1.6)
+    end
+
     -- Debug
     -- setFont(60) gc_setColor(1, 1, 1)
     -- for i = 1, #Cards do
@@ -745,7 +782,12 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 40, text = "RESET", textColor = 'dR',
-        onClick = function(k) if k ~= 3 then GAME.cancelAll() end end,
+        onClick = function(k)
+            if k ~= 3 then
+                if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
+                GAME.cancelAll()
+            end
+        end,
     },
     WIDGET.new {
         name = 'hint', type = 'hint',

@@ -90,6 +90,24 @@ function Card:setActive(auto, key)
         end
         self.charge = 0
     end
+
+    if GAME.currentTask then
+        if self.active then
+            GAME.incrementPrompt('cancel')
+            if not auto then GAME.nixPrompt('keep_no_cancel') end
+        else
+            GAME.incrementPrompt('active')
+        end
+        if not auto then
+            if self.id ~= GAME.lastFlip then
+                GAME.nixPrompt('flip_single')
+                GAME.lastFlip = self.id
+            end
+            GAME.incrementPrompt('flip_single')
+        end
+        GAME.incrementPrompt('flip')
+    end
+
     local noSpin
     self.active = not self.active
     local revOn

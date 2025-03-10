@@ -8,6 +8,12 @@ local ins, rem = table.insert, table.remove
 ---@field combo string[]
 ---@field name love.Text
 
+---@class ReviveTask:Prompt
+---@field cur number
+---@field progress number
+---@field textObj love.Text
+---@field shortObj love.Text
+
 ---@class Game
 ---@field comboStr string
 ---@field totalFlip number
@@ -92,7 +98,10 @@ local GAME = {
     hardMode = false,
     numberRev = false,
 
-    quests = {}, --- @type Question[]
+    quests = {}, ---@type Question[]
+    reviveTasks = {}, ---@type ReviveTask[]
+    currentTask = false, ---@type false | ReviveTask
+    lastFlip = false,
 }
 
 GAME.playing = false
@@ -368,27 +377,109 @@ function GAME.questReady()
     GAME.dmgWrongExtra = 0
     GAME.gravTimer = false
     for _, C in ipairs(Cards) do C.touchCount, C.isCorrect = 0, false end
-    if M.DP > 0 and GAME.quests[2] then
-        for _, v in next, GAME.quests[2].combo do Cards[v].isCorrect = 2 end
-    end
+    if M.DP > 0 then for _, v in next, GAME.quests[2].combo do Cards[v].isCorrect = 2 end end
     for _, v in next, GAME.quests[1].combo do Cards[v].isCorrect = 1 end
 end
 
-function GAME.getLifeKey(ally)
-    if M.DP == 0 then
-        return 'life'
-    else
-        return (GAME.onAlly ~= not ally) and 'life' or 'life2'
+function GAME.startRevive()
+    local power = min(GAME.floor + GAME.reviveCount, 17)
+    local maxOut = power == 17
+    local powerList = TABLE.new(math.floor(power / 3), 3)
+    if power % 3 == 1 then
+        if power == maxOut then
+            powerList[2] = powerList[2] + 1
+        else
+            local r = rnd(3)
+            powerList[r] = powerList[r] + 1
+        end
+    elseif power % 3 == 2 then
+        powerList[1] = powerList[1] + 1
+        powerList[2] = powerList[2] + 1
+        powerList[3] = powerList[3] + 1
+        local r = rnd(3)
+        powerList[r] = powerList[r] - 1
+    end
+
+    TABLE.clear(GAME.reviveTasks)
+    for i = 1, 3 do
+        local pow = powerList[i]
+        local options = {} ---@type Prompt[]
+        for j = 1, #RevivePrompts do
+            local p = RevivePrompts[j]
+            if p.rank == pow and (not p.cond or p.cond()) then
+                ins(options, p)
+            end
+        end
+        if #options > 0 then
+            local task = TABLE.copyAll(TABLE.getRandom(options))
+            if task.init then task.init(task) end
+            ---@cast task ReviveTask
+            task.cur = #GAME.reviveTasks + 1
+            task.progress = 0
+            task.textObj = GC.newText(FONT.get(30), task.text)
+            task.shortObj = GC.newText(FONT.get(30), task.short)
+            ins(GAME.reviveTasks, task)
+        end
+    end
+    GAME.currentTask = GAME.reviveTasks[1] or false
+end
+
+function GAME.incrementPrompt(prompt, value)
+    local t = GAME.currentTask
+    if t and prompt == t.prompt then
+        local oldProg = t.progress
+        t.progress = min(t.progress + (value or 1), t.target)
+        if floor(oldProg) ~= floor(t.progress) and not TASK.getLock('noIncrementSFX') then
+            SFX.play('boardlock_clink')
+        end
+        if t.progress >= t.target then
+            if t.cur < #GAME.reviveTasks then
+                GAME.currentTask = GAME.reviveTasks[t.cur + 1]
+                SFX.play('boardlock_clear')
+            else
+                GAME.reviveCount = GAME.reviveCount + 1
+                GAME.currentTask = false
+                GAME[GAME.getLifeKey(true)] = 20
+                SFX.play('boardlock_revive')
+            end
+        end
     end
 end
 
+function GAME.nixPrompt(prompt)
+    local t = GAME.currentTask
+    if t and prompt == t.prompt then
+        if t.progress >= 1 then
+            SFX.play('boardlock_fail')
+            TASK.lock('noIncrementSFX', 0.026)
+        end
+        t.progress = 0
+    end
+end
+
+function GAME.getLifeKey(another)
+    if M.DP == 0 then return 'life' end
+    return (GAME.onAlly ~= not another) and 'life' or 'life2'
+end
+
 function GAME.heal(hp)
+    GAME.incrementPrompt('heal', hp)
+
     if M.DP > 0 then hp = hp * 2 end
     local k = GAME.getLifeKey()
     GAME[k] = min(GAME[k] + max(hp, 0), 20)
+
+    GAME.freshLifeState()
 end
 
+---@param reason 'wrong' | 'time'
 function GAME.takeDamage(dmg, reason, toAlly)
+    if GAME.currentTask then
+        GAME.incrementPrompt('dmg_time')
+        GAME.incrementPrompt('dmg_amount', dmg)
+        if reason == 'time' then GAME.incrementPrompt('timedmg_time') end
+    end
+
     if M.DP > 0 then dmg = dmg * 2 end
     local k = GAME.getLifeKey(toAlly)
     GAME[k] = max(GAME[k] - dmg, 0)
@@ -400,15 +491,13 @@ function GAME.takeDamage(dmg, reason, toAlly)
         if GAME[GAME.getLifeKey(true)] > 0 then
             SFX.play('boardlock')
             GAME.swapControl()
+            GAME.startRevive()
         else
             GAME.finish(reason)
             return true
         end
     else
-        local dangerDmg = max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime)
-        if GAME[k] <= dangerDmg and GAME[k] + dmg > dangerDmg then
-            SFX.play('hyperalert')
-        end
+        GAME.freshLifeState()
     end
 end
 
@@ -685,24 +774,30 @@ function GAME.refreshRev()
     end
 end
 
-function GAME.swapControl()
-    if GAME[GAME.getLifeKey(true)] > 0 then
-        GAME.onAlly = not GAME.onAlly
-        return true
+function GAME.freshLifeState()
+    local oldState = GAME.lifeState
+    local hp = GAME[GAME.getLifeKey()]
+    local newState
+    if hp == 20 then
+        newState = 'full'
+    else
+        local dangerDmg = max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime)
+        newState = hp <= dangerDmg and 'danger' or 'safe'
+    end
+    if oldState ~= newState then
+        GAME.lifeState = newState
+        if newState == 'danger' then
+            SFX.play('hyperalert')
+        end
     end
 end
 
--- SFX.play('boardlock')
--- SFX.play('boardlock_revive')
-function GAME.incrementPrompt(prompt)
-    -- TODO
-    SFX.play('boardlock_clink')
-    SFX.play('boardlock_clear')
-end
-
-function GAME.nixPrompt(prompt)
-    -- TODO
-    SFX.play('boardlock_fail')
+function GAME.swapControl()
+    if GAME[GAME.getLifeKey(true)] > 0 then
+        GAME.onAlly = not GAME.onAlly
+        GAME.freshLifeState()
+        return true
+    end
 end
 
 function GAME.cancelAll(instant)
@@ -742,15 +837,76 @@ function GAME.commit()
     if #GAME.quests == 0 then return end
 
     local hand = TABLE.sort(GAME.getHand(false))
+    local q1 = GAME.quests[1].combo
+    local q2 = M.DP > 0 and GAME.quests[2].combo
+
+    if GAME.currentTask then
+        GAME.incrementPrompt('commit')
+        GAME.nixPrompt('keep_no_commit')
+        for i = 1, 9 do
+            local id = ModData.deck[i].id
+            if TABLE.find(hand, id) then
+                GAME.incrementPrompt('commit_' .. id)
+                GAME.incrementPrompt('commit_' .. id .. '_row')
+                GAME.nixPrompt('commit_no_' .. id .. '_row')
+            else
+                GAME.incrementPrompt('commit_no_' .. id .. '_row')
+                GAME.nixPrompt('commit_' .. id .. '_row')
+            end
+        end
+        if #hand == 0 then
+            GAME.incrementPrompt('commit_0')
+            GAME.incrementPrompt('commit_0_row')
+        else
+            GAME.nixPrompt('commit_0_row')
+            if not GAME.faultWrong then
+                GAME.incrementPrompt('commit_' .. #hand .. 'card')
+            end
+        end
+        local maxConn = 0
+        local conn = 0
+        for _, C in ipairs(Cards) do
+            if C.active then
+                conn = conn + 1
+                maxConn = max(maxConn, conn)
+            else
+                conn = 0
+            end
+        end
+        if maxConn >= 2 then
+            GAME.incrementPrompt('commit_conn_2')
+            if maxConn >= 3 then
+                GAME.incrementPrompt('commit_conn_3')
+                if maxConn >= 4 then
+                    GAME.incrementPrompt('commit_conn_4')
+                end
+            end
+        else
+            GAME.incrementPrompt('commit_no_conn')
+        end
+    end
 
     local correct
-    if TABLE.equal(hand, TABLE.sort(GAME.quests[1].combo)) then
+    if TABLE.equal(hand, TABLE.sort(q1)) then
         correct = 1
-    elseif M.DP > 0 and GAME.quests[2] and TABLE.equal(hand, TABLE.sort(GAME.quests[2].combo)) then
+    elseif q2 and TABLE.equal(hand, TABLE.sort(q2)) then
         correct = 2
+        GAME.incrementPrompt('pass_second')
     end
 
     if correct then
+        if GAME.currentTask then
+            GAME.incrementPrompt('pass')
+            for i = 1, #hand do GAME.incrementPrompt(('pass_' .. hand[i]):lower()) end
+
+            if #hand >= 4 then
+                GAME.incrementPrompt('pass_windup')
+                if #hand >= 5 then
+                    GAME.incrementPrompt('pass_windup3')
+                end
+            end
+        end
+
         GAME.heal(GAME.dmgHeal)
 
         local dp = TABLE.find(hand, 'DP')
@@ -758,10 +914,29 @@ function GAME.commit()
         local xp = 0
         if dp and M.EX <= 2 then attack = attack + 2 end
         if GAME.fault then
+            -- Non-perfect
+            if GAME.currentTask then
+                GAME.incrementPrompt('pass_imperfect')
+                GAME.incrementPrompt('pass_imperfect_row')
+                GAME.nixPrompt('pass_perfect_row')
+                GAME.nixPrompt('keep_no_imperfect')
+                GAME.nixPrompt('pass_windup_inb2b')
+            end
             xp = xp + 2
             if GAME.chain < 4 then
                 SFX.play('clearline', .62)
             else
+                if GAME.currentTask then
+                    if GAME.chain >= 4 and GAME.chain <= 10 and GAME.chain % 2 == 0 then
+                        GAME.incrementPrompt('b2b_break_' .. GAME.chain)
+                    end
+                    if #hand >= 4 then
+                        GAME.incrementPrompt('b2b_break_windup')
+                        if #hand >= 5 then
+                            GAME.incrementPrompt('b2b_break_windup3')
+                        end
+                    end
+                end
                 SFX.play('clearline')
                 SFX.play(
                     GAME.chain < 8 and 'b2bcharge_blast_1' or
@@ -783,6 +958,23 @@ function GAME.commit()
             end
             GAME.chain = 0
         else
+            -- Perfect
+            if GAME.currentTask then
+                GAME.incrementPrompt('pass_perfect')
+                GAME.incrementPrompt('pass_perfect_row')
+                GAME.nixPrompt('pass_imperfect_row')
+                GAME.nixPrompt('keep_no_perfect')
+                if #hand >= 4 then
+                    GAME.incrementPrompt('pass_windup_perfect')
+                    if #hand >= 5 then
+                        GAME.incrementPrompt('pass_windup3_perfect')
+                    end
+                    if GAME.chain >= 4 then
+                        GAME.incrementPrompt('pass_windup_inb2b')
+                    end
+                end
+            end
+
             SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
             attack = attack + 1
             xp = xp + 3
@@ -805,6 +997,7 @@ function GAME.commit()
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
 
+        GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
         GAME.addHeight(attack)
         GAME.addXP(attack + xp)
@@ -842,11 +1035,25 @@ function GAME.commit()
 
         return true
     else
+        if GAME.currentTask then
+            if #hand >= 7 and not TABLE.find(hand, 'DP') then
+                GAME.incrementPrompt(#hand == 8 and 'commit_swamp' or 'commit_swamp_l')
+            end
+            if
+                #hand + #q1 == 9 and
+                #hand == #TABLE.subtract(TABLE.copy(hand), q1) or
+                q2 and #hand + #q2 == 9 and
+                #hand == #TABLE.subtract(TABLE.copy(hand), q2)
+            then
+                GAME.incrementPrompt('commit_reversed')
+            end
+        end
+
         GAME.fault = true
         GAME.faultWrong = true
 
         local dmg = GAME.dmgWrong
-        if GAME.takeDamage(max(dmg + GAME.dmgWrongExtra, 1), 'wrongAns') then return end
+        if GAME.takeDamage(max(dmg + GAME.dmgWrongExtra, 1), 'wrong') then return end
         GAME.dmgWrongExtra = GAME.dmgWrongExtra + .5
 
         if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
@@ -876,13 +1083,6 @@ function GAME.start()
         SFX.play('clutch')
         return
     end
-    if M.DP > 0 then
-        MSG.clear()
-        MSG('dark', "Work in Progress")
-        Cards.DP:shake()
-        SFX.play('no')
-        return
-    end
     SCN.scenes.tower.widgetList.hint:setVisible(false)
 
     SFX.play('menuconfirm', .8)
@@ -904,7 +1104,6 @@ function GAME.start()
     GAME.gigaTime = false
     GAME.questTime = 0
     GAME.floorTime = 0
-    GAME.questCount = 0
     GAME.rank = 1
     GAME.xp = 0
     GAME.rankupLast = false
@@ -927,6 +1126,8 @@ function GAME.start()
     GAME.life2 = 20
     GAME.chain2 = 0
     GAME.maxRank = M.DP == 2 and 4 or 26000
+    GAME.reviveCount = 0
+    GAME.currentTask = false
 
     -- Statistics
     GAME.totalFlip = 0
@@ -948,15 +1149,15 @@ function GAME.start()
     GAME.updateBgm('start')
 end
 
----@param reason 'forfeit' | 'wrongAns' | 'killed'
+---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
     SCN.scenes.tower.widgetList.hint:setVisible(true)
     MSG.clear()
 
     SFX.play(
         reason == 'forfeit' and 'detonated' or
-        reason == 'wrongAns' and 'topout' or
-        reason == 'killed' and 'losestock' or
+        reason == 'wrong' and 'topout' or
+        reason == 'time' and 'losestock' or
         'shatter', .8)
 
     table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
@@ -1082,6 +1283,19 @@ function GAME.update(dt)
                 floor(GAME.time / 60), floor(GAME.time % 60), GAME.time % 1 * 1000))
         end
 
+        local t = GAME.currentTask
+        if t and t.prompt:sub(1, 5) == 'keep_' then
+            if t.prompt:sub(6, 12) == 'health_' then
+                if t.prompt:sub(13) == GAME.lifeState then
+                    GAME.incrementPrompt(t.prompt, dt)
+                else
+                    GAME.nixPrompt(t.prompt)
+                end
+            else
+                GAME.incrementPrompt(t.prompt, dt)
+            end
+        end
+
         GAME.questTime = GAME.questTime + dt
         GAME.floorTime = GAME.floorTime + dt
         if M.GV > 0 and not GAME.gravTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
@@ -1157,7 +1371,7 @@ function GAME.update(dt)
         GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimeMul
         if GAME.dmgTimer <= 0 then
             GAME.dmgTimer = GAME.dmgCycle
-            GAME.takeDamage(GAME.dmgTime, 'killed')
+            GAME.takeDamage(GAME.dmgTime, 'time')
         end
 
         if GAME.gravTimer then

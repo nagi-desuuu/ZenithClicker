@@ -1,3 +1,10 @@
+GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
+
+GravityTimer = {
+    { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
+    { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
+}
+
 ModData = {
     deck = {
         { id = 'EX', initOrder = 1, lockfull = false },
@@ -163,7 +170,7 @@ ComboData = {
     { set = 'EX NH                AS   ', name = "positioning master" },
 
     -- Contents below are ideas from tetr.io's community:
-    -- https://docs.google.com/spreadsheets/d/1syh3q2oiduCZb1cJ5QI95Y2XhhedAfhv4YnEH9z2tbc
+    -- https://docs.google.com/spreadsheets/d/1 syh3q2oiduCZb1cJ5QI95Y2XhhedAfhv4YnEH9z2tbc
     { set = '                  IN AS   ', name = "the abstract artist" },
     { set = '               DH    AS   ', name = "the deal with the devil" },
     { set = '               DH IN      ', name = "the ghost" },
@@ -371,9 +378,112 @@ Fatigue = {
     },
 }
 
-GravityTimer = {
-    { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
-    { 3.2, 3.0, 2.8, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0 },
-}
+local function rndMod(t)
+    local d = ModData.deck[math.random(9)].id
+    t.prompt = t.prompt:repD(d)
+    t.text = t.text:repD(ModData.adj[d])
+    t.short = t.short:repD(d)
+end
 
-GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
+---@class Prompt
+---@field rank number
+---@field prompt string
+---@field target number
+---@field short string
+---@field text string
+---@field cond? fun():boolean
+---@field init? fun(t:Prompt)
+
+---@type Prompt[]
+RevivePrompts = {
+    { rank = 1, prompt = 'activate',             target = 40,  short = "Activate 40",             text = "Activate 40 cards" },
+    { rank = 1, prompt = 'activate',             target = 100, short = "Activate 100",            text = "Activate 100 cards" },
+    { rank = 1, prompt = 'cancel',               target = 40,  short = "Cancel 40",               text = "Cancel 40 cards" },
+    { rank = 1, prompt = 'cancel',               target = 80,  short = "Cancel 80",               text = "Cancel 80 cards" },
+    { rank = 1, prompt = 'cancel',               target = 120, short = "Cancel 120",              text = "Cancel 120 cards" },
+    { rank = 1, prompt = 'flip',                 target = 20,  short = "Flip 20",                 text = "Flip 20 cards" },
+    { rank = 1, prompt = 'flip',                 target = 80,  short = "Flip 80",                 text = "Flip 80 cards" },
+    { rank = 1, prompt = 'flip',                 target = 300, short = "Flip 300",                text = "Flip 300 cards" },
+    { rank = 1, prompt = 'flip_single',          target = 10,  short = "Flip single 10",          text = "Flip single card\n10 times in a row" },
+    { rank = 1, prompt = 'flip_single',          target = 20,  short = "Flip single 20",          text = "Flip single card\n20 times in a row" },
+    { rank = 1, prompt = 'commit',               target = 6,   short = "Commit x 6",              text = "Commit 6 times" },
+    { rank = 1, prompt = 'commit',               target = 15,  short = "Commit x 15",             text = "Commit 15 times" },
+    { rank = 1, prompt = 'commit',               target = 30,  short = "Commit x 30",             text = "Commit 30 times" },
+    { rank = 1, prompt = 'commit_$1',            target = 2,   short = "Commit $1 x 2",           text = "Commit 2 times\nwith $1",                        init = rndMod },
+    { rank = 1, prompt = 'commit_$1',            target = 4,   short = "Commit $1 x 4",           text = "Commit 4 times\nwith $1",                        init = rndMod },
+    { rank = 1, prompt = 'commit_$1_row',        target = 2,   short = "2 Chain with $1",         text = "Commit 2 times\nwith $1 in a row",               init = rndMod },
+    { rank = 1, prompt = 'commit_$1_row',        target = 3,   short = "3 Chain with $1",         text = "Commit 3 times\nwith $1 in a row",               init = rndMod },
+    { rank = 1, prompt = 'commit_no_$1_row',     target = 2,   short = "2 Chain without $1",      text = "Commit 2 times\nwithout $1 in a row",            init = rndMod },
+    { rank = 1, prompt = 'commit_no_$1_row',     target = 3,   short = "3 Chain without $1",      text = "Commit 3 times\nwithout $1 in a row",            init = rndMod },
+    { rank = 1, prompt = 'commit_0',             target = 4,   short = "Commit NOTHING x 4",      text = "Commit NOTHING\n4 times" },
+    { rank = 1, prompt = 'commit_0',             target = 6,   short = "Commit NOTHING x 6",      text = "Commit NOTHING\n6 times" },
+    { rank = 1, prompt = 'commit_0',             target = 8,   short = "Commit NOTHING x 8",      text = "Commit NOTHING\n8 times" },
+    { rank = 1, prompt = 'commit_0_row',         target = 3,   short = "3 x Spam commit",         text = "Commit NOTHING\n3 times in a row" },
+    { rank = 1, prompt = 'commit_no_conn',       target = 1,   short = "Commit no conn",          text = "Commit without\nconsecutive cards" },
+    { rank = 1, prompt = 'commit_conn_2',        target = 1,   short = "Commit 2 conn",           text = "Commit with 2\nconsecutive cards" },
+    { rank = 1, prompt = 'commit_conn_3',        target = 1,   short = "Commit 3 conn",           text = "Commit with 3\nconsecutive cards" },
+    { rank = 1, prompt = 'commit_conn_4',        target = 1,   short = "Commit 4 conn",           text = "Commit with 4\nconsecutive cards" },
+    { rank = 1, prompt = 'commit_swamp_l',       target = 1,   short = "Commit SWAMP WATER LITE", text = "Commit SWAMP WATER LITE" },
+    { rank = 1, prompt = 'commit_swamp',         target = 1,   short = "Commit SWAMP WATER",      text = "Commit SWAMP WATER" },
+    { rank = 1, prompt = 'commit_reversed',      target = 1,   short = "Commit inversed",         text = "Commit all cards\nwhich are not requested" },
+    { rank = 1, prompt = 'commit_1card',         target = 3,   short = "Commit 1 cards x 3",      text = "Commit 3 times with\n1 cards on different quest" },
+    { rank = 1, prompt = 'commit_2card',         target = 4,   short = "Commit 2 cards x 4",      text = "Commit 4 times with\n2 cards on different quest" },
+    { rank = 1, prompt = 'commit_3card',         target = 5,   short = "Commit 3 cards x 5",      text = "Commit 5 times with\n3 cards on different quest" },
+    { rank = 1, prompt = 'commit_4card',         target = 4,   short = "Commit 4 cards x 4",      text = "Commit 4 times with\n4 cards on different quest" },
+    { rank = 1, prompt = 'commit_5card',         target = 3,   short = "Commit 5 cards x 3",      text = "Commit 3 times with\n5 cards on different quest" },
+    { rank = 1, prompt = 'pass',                 target = 10,  short = "Pass 10",                 text = "Pass 10 times" },
+    { rank = 1, prompt = 'pass',                 target = 20,  short = "Pass 20",                 text = "Pass 20 times" },
+    { rank = 1, prompt = 'pass_$1',              target = 2,   short = "Pass 2 with $1",          text = "Pass 2 times with $1",                           init = rndMod },
+    { rank = 1, prompt = 'pass_$1',              target = 3,   short = "Pass 3 with $1",          text = "Pass 3 times with $1",                           init = rndMod },
+    { rank = 1, prompt = 'pass_$1',              target = 4,   short = "Pass 4 with $1",          text = "Pass 4 times with $1",                           init = rndMod },
+    { rank = 1, prompt = 'pass_perfect',         target = 6,   short = "6 Chain im-perf",         text = "Pass 6 times\nimperfectly in a row" },
+    { rank = 1, prompt = 'pass_perfect',         target = 12,  short = "12 Chain im-perf",        text = "Pass 12 times\nimperfectly in a row" },
+    { rank = 1, prompt = 'pass_imperfect',       target = 6,   short = "6 Chain im-perf",         text = "Pass 6 times\nimperfectly in a row" },
+    { rank = 1, prompt = 'pass_imperfect',       target = 12,  short = "12 Chain im-perf",        text = "Pass 12 times\nimperfectly in a row" },
+    { rank = 1, prompt = 'pass_imperfect_row',   target = 3,   short = "3 Chain im-perf",         text = "Pass 3 times\nimperfectly in a row" },
+    { rank = 1, prompt = 'pass_imperfect_row',   target = 8,   short = "8 Chain im-perf",         text = "Pass 8 times\nimperfectly in a row" },
+    { rank = 1, prompt = 'pass_perfect_row',     target = 4,   short = "B2B x 4",                 text = "Reach B2B x 4" },
+    { rank = 1, prompt = 'pass_perfect_row',     target = 6,   short = "B2B x 6",                 text = "Reach B2B x 6" },
+    { rank = 1, prompt = 'pass_perfect_row',     target = 8,   short = "B2B x 8",                 text = "Reach B2B x 8" },
+    { rank = 1, prompt = 'pass_perfect_row',     target = 10,  short = "B2B x 10",                text = "Reach B2B x 10" },
+    { rank = 1, prompt = 'pass_second',          target = 4,   short = "2nd quest x 4",           text = "Pass second quest\n4 times" },
+    { rank = 1, prompt = 'pass_second',          target = 8,   short = "2nd quest x 8",           text = "Pass second quest\n8 times" },
+    { rank = 1, prompt = 'pass_second',          target = 12,  short = "2nd quest x 12",          text = "Pass second quest\n12 times" },
+    { rank = 1, prompt = 'b2b_break_4',          target = 1,   short = "Break B2B x 4",           text = "Break B2B x 4" },
+    { rank = 1, prompt = 'b2b_break_6',          target = 1,   short = "Break B2B x 6",           text = "Break B2B x 6" },
+    { rank = 1, prompt = 'b2b_break_8',          target = 1,   short = "Break B2B x 8",           text = "Break B2B x 8" },
+    { rank = 1, prompt = 'b2b_break_10',         target = 1,   short = "Break B2B x 10",          text = "Break B2B x 10" },
+    { rank = 1, prompt = 'b2b_break_windup',     target = 1,   short = "Break B2B at a windup",   text = "Break B2B at\na windup" },
+    { rank = 1, prompt = 'b2b_break_windup3',    target = 1,   short = "Break B2B at a windup3+", text = "Break B2B at\na lv.3+ windup" },
+    { rank = 1, prompt = 'heal',                 target = 4,   short = "+4 HP",                   text = "Heal 4 hp" },
+    { rank = 1, prompt = 'heal',                 target = 10,  short = "+10 HP",                  text = "Heal 10 hp" },
+    { rank = 1, prompt = 'send',                 target = 6,   short = "Send 6",                  text = "Send 6 attacks" },
+    { rank = 1, prompt = 'send',                 target = 14,  short = "Send 14",                 text = "Send 14 attacks" },
+    { rank = 1, prompt = 'pass_windup',          target = 1,   short = "Windup x 1",              text = "Pass a windup" },
+    { rank = 1, prompt = 'pass_windup3',         target = 1,   short = "Windup3+ x 1",            text = "Pass a lv.3+ windup" },
+    { rank = 1, prompt = 'pass_windup_inb2b',    target = 2,   short = "Windup with B2B x 2",     text = "Pass 2 windups\nduring one B2B charge" },
+    { rank = 1, prompt = 'pass_windup',          target = 4,   short = "Windup x 4",              text = "Pass 4 windups" },
+    { rank = 1, prompt = 'pass_windup_perfect',  target = 1,   short = "Windup perf x 1",         text = "Pass a windup perfectly" },
+    { rank = 1, prompt = 'pass_windup_inb2b',    target = 4,   short = "Windup with B2B x 4",     text = "Pass 4 windups\nduring one B2B charge" },
+    { rank = 1, prompt = 'pass_windup_perfect',  target = 4,   short = "Windup perf x 4",         text = "Pass 4 windups\nperfectly" },
+    { rank = 1, prompt = 'pass_windup3_perfect', target = 1,   short = "Windup3+ perf x 1",       text = "Pass a lv.3+\nwindup perfectly" },
+    { rank = 1, prompt = 'pass_windup3_perfect', target = 4,   short = "Windup3+ perf x 4",       text = "Pass 4 lv.3+\nwindups perfectly" },
+    { rank = 1, prompt = 'dmg_time',             target = 4,   short = "Take Dmg x 4",            text = "Take damage 4 times" },
+    { rank = 1, prompt = 'dmg_time',             target = 8,   short = "Take Dmg x 8",            text = "Take damage 8 times" },
+    { rank = 1, prompt = 'dmg_time',             target = 12,  short = "Take Dmg x 12",           text = "Take damage 12 times" },
+    { rank = 1, prompt = 'dmg_amount',           target = 10,  short = "-10 HP",                  text = "Take 10 damage in total" },
+    { rank = 1, prompt = 'dmg_amount',           target = 20,  short = "-20 HP",                  text = "Take 20 damage in total" },
+    { rank = 1, prompt = 'timedmg_time',         target = 2,   short = "Take Time Dmg x 2",       text = "Take time damage\n2 times" },
+    { rank = 1, prompt = 'timedmg_time',         target = 4,   short = "Take Time Dmg x 4",       text = "Take time damage\n4 times" },
+    { rank = 1, prompt = 'timedmg_time',         target = 6,   short = "Take Time Dmg x 6",       text = "Take time damage\n6 times" },
+    { rank = 1, prompt = 'keep_health_full',     target = 4,   short = "Full HP 4 s",             text = "Keep HP full\nfor 4 seconds" },
+    { rank = 1, prompt = 'keep_health_safe',     target = 8,   short = "Safe HP 8 s",             text = "Keep HP safe\nfor 8 seconds" },
+    { rank = 1, prompt = 'keep_health_danger',   target = 3,   short = "Danger HP 3 s",           text = "Keep HP danger\nfor 3 seconds" },
+    { rank = 1, prompt = 'keep_no_mouse',        target = 4,   short = "No mouse 4 s",            text = "Don't touch mouse\nfor 4 seconds" },
+    { rank = 1, prompt = 'keep_no_commit',       target = 6,   short = "No commit 6 s",           text = "Don't commit\nfor 6 seconds" },
+    { rank = 1, prompt = 'keep_no_cancel',       target = 8,   short = "No cancel 8 s",           text = "Don't cancel\nfor 8 seconds" },
+    { rank = 1, prompt = 'keep_no_keyboard',     target = 10,  short = "No keyboard 10 s",        text = "Don't touch keyboard\nfor 10 seconds" },
+    { rank = 1, prompt = 'keep_no_imperfect',    target = 14,  short = "Keep perf 14 s",          text = "Don't pass imperfectly\nfor 14 seconds" },
+    { rank = 1, prompt = 'keep_no_perfect',      target = 12,  short = "Keep im-perf 12 s",       text = "Don't pass perfectly\nfor 12 seconds" },
+    { rank = 1, prompt = 'keep_no_reset',        target = 16,  short = "No reset 16 s",           text = "Don't reset\nfor 16 seconds" },
+}

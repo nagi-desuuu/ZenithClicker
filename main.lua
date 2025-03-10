@@ -16,22 +16,22 @@ MSG.setSafeY(75)
 MSG.addCategory('dark', COLOR.lD, COLOR.L)
 
 ---@return love.Texture
-local function p(path) return 'assets/' .. path end
+local function assets(path) return 'assets/' .. path end
 local function q(x, y, size) return GC.newQuad(x * size, y * size, size, size, size * 5, size * 2) end
 TEXTURE = {
-    star0 = p 'crystal-dark.png',
-    star1 = p 'crystal.png',
+    star0 = assets 'crystal-dark.png',
+    star1 = assets 'crystal.png',
     panel = {
-        glass_a = p 'panel/glass-a.png',
-        glass_b = p 'panel/glass-b.png',
-        throb_a = p 'panel/throb-a.png',
-        throb_b = p 'panel/throb-b.png',
+        glass_a = assets 'panel/glass-a.png',
+        glass_b = assets 'panel/glass-b.png',
+        throb_a = assets 'panel/throb-a.png',
+        throb_b = assets 'panel/throb-b.png',
     },
     icon = {
-        ingame = p 'icon/ingame.png',
-        ingame_rev = p 'icon/ingame_rev.png',
-        result = p 'icon/result.png',
-        result_rev = p 'icon/result_rev.png',
+        ingame = assets 'icon/ingame.png',
+        ingame_rev = assets 'icon/ingame_rev.png',
+        result = assets 'icon/result.png',
+        result_rev = assets 'icon/result_rev.png',
         quad = {
             ingame = {
                 VL = q(0, 0, 128),
@@ -79,18 +79,21 @@ TEXTURE = {
             },
         },
     },
-    EX = { lock = p 'card/lockover-9.png', front = p 'card/expert.png', back = p 'card/expert-back.png', throb = p 'card/expert-throb.png', },
-    NH = { lock = p 'card/lockfull-2.png', front = p 'card/nohold.png', back = p 'card/nohold-back.png', throb = p 'card/nohold-throb.png', },
-    MS = { lock = p 'card/lockfull-3.png', front = p 'card/messy.png', back = p 'card/messy-back.png', throb = p 'card/messy-throb.png', },
-    GV = { lock = p 'card/lockfull-4.png', front = p 'card/gravity.png', back = p 'card/gravity-back.png', throb = p 'card/gravity-throb.png', },
-    VL = { lock = p 'card/lockfull-5.png', front = p 'card/volatile.png', back = p 'card/volatile-back.png', throb = p 'card/volatile-throb.png', },
-    DH = { lock = p 'card/lockfull-6.png', front = p 'card/doublehole.png', back = p 'card/doublehole-back.png', throb = p 'card/doublehole-throb.png', },
-    IN = { lock = p 'card/lockfull-7.png', front = p 'card/invisible.png', back = p 'card/invisible-back.png', throb = p 'card/invisible-throb.png', },
-    AS = { lock = p 'card/lockfull-8.png', front = p 'card/allspin.png', back = p 'card/allspin-back.png', throb = p 'card/allspin-throb.png', },
-    DP = { lock = p 'card/lockover-supporter.png', front = p 'card/duo.png', back = p 'card/duo-back.png', throb = p 'card/duo-throb.png', },
-    towerBG = { p 'tower/f1.jpg', p 'tower/f2.jpg', p 'tower/f3.jpg', p 'tower/f4.jpg', p 'tower/f5.jpg', p 'tower/f6.jpg', p 'tower/f7.jpg', p 'tower/f8.jpg', p 'tower/f9.jpg', p 'tower/f10.png' },
-    moon = p 'tower/moon.png',
-    stars = p 'tower/stars.png',
+    EX = { lock = assets 'card/lockover-9.png', front = assets 'card/expert.png', back = assets 'card/expert-back.png', throb = assets 'card/expert-throb.png', },
+    NH = { lock = assets 'card/lockfull-2.png', front = assets 'card/nohold.png', back = assets 'card/nohold-back.png', throb = assets 'card/nohold-throb.png', },
+    MS = { lock = assets 'card/lockfull-3.png', front = assets 'card/messy.png', back = assets 'card/messy-back.png', throb = assets 'card/messy-throb.png', },
+    GV = { lock = assets 'card/lockfull-4.png', front = assets 'card/gravity.png', back = assets 'card/gravity-back.png', throb = assets 'card/gravity-throb.png', },
+    VL = { lock = assets 'card/lockfull-5.png', front = assets 'card/volatile.png', back = assets 'card/volatile-back.png', throb = assets 'card/volatile-throb.png', },
+    DH = { lock = assets 'card/lockfull-6.png', front = assets 'card/doublehole.png', back = assets 'card/doublehole-back.png', throb = assets 'card/doublehole-throb.png', },
+    IN = { lock = assets 'card/lockfull-7.png', front = assets 'card/invisible.png', back = assets 'card/invisible-back.png', throb = assets 'card/invisible-throb.png', },
+    AS = { lock = assets 'card/lockfull-8.png', front = assets 'card/allspin.png', back = assets 'card/allspin-back.png', throb = assets 'card/allspin-throb.png', },
+    DP = { lock = assets 'card/lockover-supporter.png', front = assets 'card/duo.png', back = assets 'card/duo-back.png', throb = assets 'card/duo-throb.png', },
+    towerBG = { assets 'tower/f1.jpg', assets 'tower/f2.jpg', assets 'tower/f3.jpg', assets 'tower/f4.jpg', assets 'tower/f5.jpg', assets 'tower/f6.jpg', assets 'tower/f7.jpg', assets 'tower/f8.jpg', assets 'tower/f9.jpg', assets 'tower/f10.png' },
+    moon = assets 'tower/moon.png',
+    stars = assets 'tower/stars.png',
+    revive = assets 'revive.png',
+    revive_rev_left = assets 'revive_rev_left.png',
+    revive_rev_right = assets 'revive_rev_right.png',
 }
 local transition = { w = 128, h = 1 }
 for x = 0, 127 do
@@ -222,6 +225,7 @@ StarPS = GC.newParticleSystem(TEXTURE.stars, 32)
 StarPS:setParticleLifetime(2.6)
 StarPS:setRotation(0, 6.26)
 StarPS:setEmissionRate(12)
+---@diagnostic disable-next-line
 StarPS:setColors(COLOR.LX, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.LX)
 BgScale = 1
 BgmSets = {
@@ -262,7 +266,7 @@ local gc = love.graphics
 local pressValue = 0
 
 CursorProgress = 0
-local function StarHandCursor(x, y)
+local function starCursor(x, y)
     GC.translate(x, y)
     GC.scale(1.42)
     GC.rotate(MATH.lerp(-.626, -1.2, pressValue))
@@ -288,7 +292,7 @@ end
 
 function ApplySettings()
     love.mouse.setVisible(STAT.syscursor)
-    ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or StarHandCursor
+    ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or starCursor
     BGM.setVol(STAT.bgm and 1 or 0)
     SFX.setVol(STAT.sfx and 1 or 0)
 end
