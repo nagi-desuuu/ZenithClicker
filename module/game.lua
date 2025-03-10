@@ -994,7 +994,7 @@ function GAME.finish(reason)
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
         STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
-        if GAME.gigaspeedEntered then GAME.totalGiga = GAME.totalGiga + 1 end
+        if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         SaveStat()
 
         local oldPB = BEST.highScore[GAME.comboStr]
