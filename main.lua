@@ -464,7 +464,9 @@ end
 
 -- Load data
 if FILE.exist('data.luaon') then
-    love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
+    if not FILE.exist('best.luaon') then
+        love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
+    end
     love.filesystem.remove('data.luaon')
 end
 if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
