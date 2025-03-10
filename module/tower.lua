@@ -560,31 +560,52 @@ function scene.overDraw()
         end
     end
 
-    if GAME.playing and GAME.currentTask then
-        gc_push('transform')
+    local task = GAME.currentTask
+    if GAME.playing and task then
         local allyDie = GAME.life2 <= 0
+        gc_push('transform')
+
+        -- Lock
         gc_translate(allyDie and 1150 or 450, 450)
         gc_setColor(1, 1, 1)
-        local r = math.floor(love.timer.getTime()) % 3 + 1
-        -- local r=GAME.currentTask.cur
         gc_mDrawQ(
             M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left,
-            reviveQuad[r], 0, 0, 0, .4
+            reviveQuad[task.cur], 0, 0, 0, .4
         )
-        gc_rotate(reviveRot[r])
-        gc_translate(-150, -26)
-        gc_draw(GAME.currentTask.textObj)
-        -- setFont(30)
-        -- gc.print(GAME.currentTask.text, 0, 0)
-        -- gc.print(GAME.currentTask.prompt, 0, 30)
-        -- gc.print(GAME.currentTask.progress, 0, 60)
-        -- gc.print(GAME.currentTask.target, 0, 90)
+
+        -- Text
+        gc_rotate(reviveRot[task.cur])
+        gc_translate(-155, 0)
+        local txt = task.textObj
+        local w, h = txt:getDimensions()
+        local ky = h < 40 and 1 or .7
+        if task.target == 1 then
+            local kx = min(ky, 310 / w)
+            gc_draw(txt, (310 - w * kx) / 2, h < 40 and -12 or -22, 0, kx, ky)
+        else
+            local kx = min(ky, 240 / w)
+            gc_draw(txt, 0, h < 40 and -12 or -22, 0, kx, ky)
+            -- Progres
+            local w2 = task.progObj:getWidth()
+            gc_draw(task.progObj, 310, -22, 0, min((300 - w * kx) / w2, 1.5), 1.5, w2)
+        end
+
+        -- gc_setColor(0, 1, 0)
+        -- gc_rectangle('line', 0, -25, 310, 63.5)
         gc_pop()
+
+        -- Short Text & Panel
+        gc_setColor(.3, .1, 0, .62)
+        gc_mRect('fill', 800, 330, GAME.currentTask.shortObj:getWidth() * 1.6 + 120, 110, 20)
+        gc_setColor(1, 1, 1)
         gc_mDraw(GAME.currentTask.shortObj, 800, 330, 0, 1.6)
+
+        setFont(50)
+        gc.print(task.prompt,100,100)
     end
 
     -- Debug
-    -- setFont(60) gc_setColor(1, 1, 1)
+    -- setFont(30) gc_setColor(1, 1, 1)
     -- for i = 1, #Cards do
     --     gc.print(Cards[i].ty, Cards[i].x, Cards[i].y-260)
     -- end

@@ -13,6 +13,7 @@ local ins, rem = table.insert, table.remove
 ---@field progress number
 ---@field textObj love.Text
 ---@field shortObj love.Text
+---@field progObj love.Text
 
 ---@class Game
 ---@field comboStr string
@@ -418,6 +419,7 @@ function GAME.startRevive()
             task.progress = 0
             task.textObj = GC.newText(FONT.get(30), task.text)
             task.shortObj = GC.newText(FONT.get(30), task.short)
+            task.progObj = GC.newText(FONT.get(30), "0/" .. task.target)
             ins(GAME.reviveTasks, task)
         end
     end
@@ -443,6 +445,7 @@ function GAME.incrementPrompt(prompt, value)
                 SFX.play('boardlock_revive')
             end
         end
+        t.progObj:set(math.floor(t.progress) .. "/" .. t.target)
     end
 end
 
@@ -454,6 +457,7 @@ function GAME.nixPrompt(prompt)
             TASK.lock('noIncrementSFX', 0.026)
         end
         t.progress = 0
+        t.progObj:set(math.floor(t.progress) .. "/" .. t.target)
     end
 end
 
@@ -971,6 +975,8 @@ function GAME.commit()
                     end
                     if GAME.chain >= 4 then
                         GAME.incrementPrompt('pass_windup_inb2b')
+                    else
+                        GAME.nixPrompt('pass_windup_inb2b')
                     end
                 end
             end
