@@ -407,7 +407,7 @@ function Daemon_Sync()
             if set[i] == 'violin2' then T = (T - 8 * 60 / 184) % length end
             if math.abs(obj.source:tell() - T) > 0.026 then
                 -- print('Desync', set[i])
-                obj.source:seek(T)
+                obj.source:seek(math.max(T,0))
             end
         end
         TASK.yieldT(1)
