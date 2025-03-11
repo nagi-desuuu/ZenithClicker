@@ -1173,9 +1173,10 @@ function GAME.start()
     GAME.currentTask = false
     GAME.DPlock = false
     if M.DP == 2 then
-        GAME.maxRank = 8
+        GAME.maxRank = 8 + 4 * M.EX
         GAME.dmgHeal = 3
     end
+    GAME.lastFlip = false
 
     -- Statistics
     GAME.totalFlip = 0
@@ -1221,6 +1222,7 @@ function GAME.finish(reason)
 
     GAME.playing = false
     GAME.life, GAME.life2 = 0, 0
+    GAME.currentTask = false
 
     local unlockDuo
     if GAME.totalQuest > 2.6 then
