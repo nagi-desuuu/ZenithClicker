@@ -158,17 +158,10 @@ if fontNotLoaded then
     end)
 end
 
-local _BEST = {
+BEST = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
     speedrun = setmetatable({}, { __index = function() return 1e99 end }),
 }
-BEST = setmetatable({}, {
-    __index = _BEST,
-    __newindex = function(_, k, v)
-        _BEST[k] = v
-        SaveBest()
-    end,
-})
 
 STAT = {
     maxFloor = 1,
@@ -188,7 +181,7 @@ STAT = {
     sfx = true,
 }
 
-function SaveBest() love.filesystem.write('best.luaon', TABLE.dumpDeflate(_BEST)) end
+function SaveBest() love.filesystem.write('best.luaon', TABLE.dumpDeflate(BEST)) end
 
 function SaveStat() love.filesystem.write('stat.luaon', TABLE.dumpDeflate(STAT)) end
 
@@ -407,7 +400,7 @@ function Daemon_Sync()
             if set[i] == 'violin2' then T = (T - 8 * 60 / 184) % length end
             if math.abs(obj.source:tell() - T) > 0.026 then
                 -- print('Desync', set[i])
-                obj.source:seek(math.max(T,0))
+                obj.source:seek(math.max(T, 0))
             end
         end
         TASK.yieldT(1)
@@ -474,7 +467,7 @@ if FILE.exist('data.luaon') then
     love.filesystem.remove('data.luaon')
 end
 if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
-TABLE.update(_BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
+TABLE.update(BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
 
 local oldVer = BEST.version
@@ -494,9 +487,11 @@ if BEST.version == 163 then
     STAT.maxFloor = BEST.maxFloor or 1
     BEST.maxFloor = nil
     BEST.version = 166
-    SaveStat()
 end
-if BEST.version ~= oldVer then SaveBest() end
+if BEST.version ~= oldVer then
+    SaveStat()
+    SaveBest()
+end
 
 -- Some Initialization
 for i = 1, #Cards do
