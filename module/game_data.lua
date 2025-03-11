@@ -378,7 +378,7 @@ Fatigue = {
     },
 }
 -- My formatter doesn't work if there's "…" inside
-for _, f in next, Fatigue do for _, v in next,f do v.text = v.text:gsub("_", "…") end end
+for _, f in next, Fatigue do for _, v in next, f do v.text = v.text:gsub("_", "…") end end
 
 local function rndMod(t)
     local d = ModData.deck[math.random(9)].id

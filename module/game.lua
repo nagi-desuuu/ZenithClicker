@@ -55,7 +55,6 @@ local ins, rem = table.insert, table.remove
 ---
 ---@field onAlly boolean
 ---@field life2 number
----@field chain2 number
 ---@field maxRank number
 ---@field DPlock boolean
 local GAME = {
@@ -1152,8 +1151,7 @@ function GAME.start()
     -- rDP
     GAME.onAlly = false
     GAME.life2 = 20
-    GAME.chain2 = 0
-    GAME.maxRank = M.DP == 2 and 4 or 26000
+    GAME.maxRank = M.DP == 2 and 8 or 26000
     GAME.reviveCount = 0
     GAME.currentTask = false
     GAME.DPlock = false
