@@ -337,46 +337,48 @@ Floors = {
 
 Fatigue = {
     normal = {
-        { time = 300, event = { 'dmgTimeMul', -.1 }, text = "FATIGUE SETS IN…", desc = "TimerSpeed++" },
-        { time = 330, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "YOUR BODY GROWS WEAK…", desc = "DmgCycle--   Damage++" },
-        { time = 360, event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 }, text = "ALL SENSES BLUR TOGETHER…", desc = "TimerSpeed++   Heal--" },
-        { time = 390, event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 }, text = "YOUR CONSCIOUSNESS FADES…", desc = "TimerSpeed++   Damage++" },
-        { time = 420, event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 }, text = "THIS IS THE END", desc = "TimerSpeed++   DmgCycle--" },
-        { time = 1e99 }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
+        { time = 300,  event = { 'dmgTimeMul', -.1 },                  text = "FATIGUE SETS IN_",          desc = "TimerSpeed++" },
+        { time = 330,  event = { 'dmgCycle', -.5, 'dmgWrong', 1 },     text = "YOUR BODY GROWS WEAK_",     desc = "DmgCycle--   Damage++" },
+        { time = 360,  event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 },   text = "ALL SENSES BLUR TOGETHER_", desc = "TimerSpeed++   Heal--" },
+        { time = 390,  event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 },   text = "YOUR CONSCIOUSNESS FADES_", desc = "TimerSpeed++   Damage++" },
+        { time = 420,  event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 }, text = "THIS IS THE END",           desc = "TimerSpeed++   DmgCycle--" },
+        { time = 1e99, text = "" }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
     },
     rEX = {
-        { time = 240, event = { 'dmgTimeMul', -.2 }, text = "YOUR POWER SLIPS…", desc = "TimerSpeed++" },
-        { time = 270, event = { 'dmgWrong', 2 }, text = "WHISPERS OF DISCONTENT SPREAD…", desc = "Damage++" },
-        { time = 300, event = { 'dmgCycle', -1 }, text = "PROTESTERS LINE THE STREETS…", desc = "DmgCycle--" },
-        { time = 330, event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT…", desc = "TimerSpeed++   Damage++" },
-        { time = 360, event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT…", desc = "TimerSpeed++   Heal--" },
-        { time = 390, event = { 'dmgCycle', -.5, 'dmgWrong', 1 }, text = "THE REVOLUTION HAS BEGUN…", desc = "DmgCycle--   Damage++" },
-        { time = 420, event = { 'dmgTimeMul', -.3 }, text = "THE END OF AN ERA", desc = "TimerSpeed++++" },
-        { time = 1e99 }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
+        { time = 240,  event = { 'dmgTimeMul', -.2 },                 text = "YOUR POWER SLIPS_",               desc = "TimerSpeed++" },
+        { time = 270,  event = { 'dmgWrong', 2 },                     text = "WHISPERS OF DISCONTENT SPREAD_",  desc = "Damage++" },
+        { time = 300,  event = { 'dmgCycle', -1 },                    text = "PROTESTERS LINE THE STREETS_",    desc = "DmgCycle--" },
+        { time = 330,  event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, }, text = "YOUR CLOSEST ALLIES DEFECT_",     desc = "TimerSpeed++   Damage++" },
+        { time = 360,  event = { 'dmgTimeMul', -.2, 'dmgHeal', -1 },  text = "PARANOIA CLOUDS YOUR JUDGEMENT_", desc = "TimerSpeed++   Heal--" },
+        { time = 390,  event = { 'dmgCycle', -.5, 'dmgWrong', 1 },    text = "THE REVOLUTION HAS BEGUN_",       desc = "DmgCycle--   Damage++" },
+        { time = 420,  event = { 'dmgTimeMul', -.3 },                 text = "THE END OF AN ERA",               desc = "TimerSpeed++++" },
+        { time = 1e99, text = "" }, -- Total: dmgTimeMul-90%, Cycle-1, Wrong+5
     },
     rDP = {
-        { time = 20,  event = {}, text = [[YOUR PASSION FADES..]] },                        -- MESS+
-        { time = 40,  event = {}, text = [[THEIR REPLIES BECOME LESS ENGAGED..]] },         -- MESS++
-        { time = 60,  event = {}, text = [[YOU FEELS NEGLECTED..]] },                       -- MESS+++
-        { time = 80,  event = {}, text = [[THEY SUCCESSFULLY APOLOGIZES.?]] },              -- MESS-
-        { time = 100, event = {}, text = [[THINGS ARE BACK TO HOW THEY USED TO BE.!]] },    -- MESS---
-        { time = 120, event = {}, text = [[MINOR ISSUES BECOME LARGE CONFLICTS..]] },       -- MESS++
-        { time = 140, event = {}, text = [[YOU BLAMES THEY FOR THEIR OWN PROBLEMS..]] },    -- MESS+++
-        { time = 160, event = {}, text = [[THEY WOULD RATHER SPEND TIME ALONE..]] },        -- REVIVE++
-        { time = 180, event = {}, text = [[YOU PROMISES TO CHANGE..]] },                    -- MESS--
-        { time = 200, event = {}, text = [[PROMISES ARE BROKEN..]] },                       -- +4 PERMA
-        { time = 220, event = {}, text = [[CONVERSATIONS DEVOLVE TO SHOUTING MATCHES..]] }, -- MESS+++
-        { time = 240, event = {}, text = [[ALL TRUST HAS WITHERED AWAY..]] },               -- MESS++
-        { time = 260, event = {}, text = [[THEY SETS AN ULTIMATUM..]] },                    -- MESS++
-        { time = 280, event = {}, text = [[YOU CAN'T BE BOTHERED ANYMORE..]] },             -- MESS++
-        { time = 300, event = {}, text = [[ONE LAST PAINFUL ARGUMENT..]] },                 -- DMG+
-        { time = 320, event = {}, text = [[GOODBYE.]] },                                    -- REVIVE=INF
-        { time = 360, event = {}, text = [["I MISS YOU"]] },                                -- MESS---
-        { time = 380, event = {}, text = [[MAYBE IT CAN STILL WORK.?]] },                   -- MESS-
-        { time = 400, event = {}, text = [[GOODBYE.]] },                                    -- +12 PERMA
-        { time = 1e99 },
+        { time = 20,   event = {}, text = "YOUR PASSION FADES_",                        desc = "MESS+" },
+        { time = 40,   event = {}, text = "THEIR REPLIES BECOME LESS ENGAGED_",         desc = "MESS++" },
+        { time = 60,   event = {}, text = "YOU FEELS NEGLECTED_",                       desc = "MESS+++" },
+        { time = 80,   event = {}, text = "THEY SUCCESSFULLY APOLOGIZES_?",             desc = "MESS-" },
+        { time = 100,  event = {}, text = "THINGS ARE BACK TO HOW THEY USED TO BE_!",   desc = "MESS---" },
+        { time = 120,  event = {}, text = "MINOR ISSUES BECOME LARGE CONFLICTS_",       desc = "MESS++" },
+        { time = 140,  event = {}, text = "YOU BLAMES THEY FOR THEIR OWN PROBLEMS_",    desc = "MESS+++" },
+        { time = 160,  event = {}, text = "THEY WOULD RATHER SPEND TIME ALONE_",        desc = "REVIVE++" },
+        { time = 180,  event = {}, text = "YOU PROMISES TO CHANGE_",                    desc = "MESS--" },
+        { time = 200,  event = {}, text = "PROMISES ARE BROKEN_",                       desc = "+4 PERMA" },
+        { time = 220,  event = {}, text = "CONVERSATIONS DEVOLVE TO SHOUTING MATCHES_", desc = "MESS+++" },
+        { time = 240,  event = {}, text = "ALL TRUST HAS WITHERED AWAY_",               desc = "MESS++" },
+        { time = 260,  event = {}, text = "THEY SETS AN ULTIMATUM_",                    desc = "MESS++" },
+        { time = 280,  event = {}, text = "YOU CAN'T BE BOTHERED ANYMORE_",             desc = "MESS++" },
+        { time = 300,  event = {}, text = "ONE LAST PAINFUL ARGUMENT_",                 desc = "DMG+" },
+        { time = 320,  event = {}, text = "GOODBYE.",                                   desc = "REVIVE=INF" },
+        { time = 360,  event = {}, text = "\"I MISS YOU\"",                             desc = "MESS---" },
+        { time = 380,  event = {}, text = "MAYBE IT CAN STILL WORK_?",                  desc = "MESS-" },
+        { time = 400,  event = {}, text = "GOODBYE.",                                   desc = "+12 PERMA" },
+        { time = 1e99, text = "" },
     },
 }
+-- My formatter doesn't work if there's "…" inside
+for _, f in next, Fatigue do for _, v in next,f do v.text = v.text:gsub("_", "…") end end
 
 local function rndMod(t)
     local d = ModData.deck[math.random(9)].id
