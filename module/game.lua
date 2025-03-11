@@ -408,7 +408,7 @@ function GAME.startRevive()
         local options = {} ---@type Prompt[]
         for j = 1, #RevivePrompts do
             local p = RevivePrompts[j]
-            if p.rank == pow and (not p.cond or p.cond()) then
+            if p.rank[1] <= pow and pow <= p.rank[2] and (not p.cond or p.cond()) and not TABLE.find(options, p) then
                 ins(options, p)
             end
         end
