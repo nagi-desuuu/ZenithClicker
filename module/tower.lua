@@ -268,6 +268,7 @@ local reviveQuad = {
     GC.newQuad(0, 355, 1042, 342, TEXTURE.revive),
     GC.newQuad(0, 740, 1042, 354, TEXTURE.revive),
 }
+local reviveMove = { -155, -147, -154 }
 local reviveRot = { -.095, .15, -.17 }
 
 function scene.draw()
@@ -574,7 +575,7 @@ function scene.overDraw()
 
         -- Text
         gc_rotate(reviveRot[task.cur])
-        gc_translate(-155, 0)
+        gc_translate(reviveMove[task.cur], 0)
         local txt = task.textObj
         local w, h = txt:getDimensions()
         local ky = h < 40 and 1 or .7
