@@ -925,7 +925,7 @@ function GAME.commit()
     if correct then
         if GAME.currentTask then
             GAME.incrementPrompt('pass')
-            for i = 1, #hand do GAME.incrementPrompt(('pass_' .. hand[i]):lower()) end
+            for i = 1, #hand do GAME.incrementPrompt('pass_' .. hand[i]) end
 
             if #hand >= 4 then
                 GAME.incrementPrompt('pass_windup')
