@@ -383,45 +383,50 @@ function GAME.questReady()
 end
 
 function GAME.startRevive()
-    local power = min(GAME.floor + GAME.reviveCount, 17)
-    local maxOut = power == 17
-    local powerList = TABLE.new(math.floor(power / 3), 3)
-    if power % 3 == 1 then
-        if power == maxOut then
+    if GAME.reviveCount < 260 then
+        local power = min(GAME.floor + GAME.reviveCount, 17)
+        local maxOut = power == 17
+        local powerList = TABLE.new(math.floor(power / 3), 3)
+        if power % 3 == 1 then
+            if power == maxOut then
+                powerList[2] = powerList[2] + 1
+            else
+                local r = rnd(3)
+                powerList[r] = powerList[r] + 1
+            end
+        elseif power % 3 == 2 then
+            powerList[1] = powerList[1] + 1
             powerList[2] = powerList[2] + 1
-        else
+            powerList[3] = powerList[3] + 1
             local r = rnd(3)
-            powerList[r] = powerList[r] + 1
+            powerList[r] = powerList[r] - 1
         end
-    elseif power % 3 == 2 then
-        powerList[1] = powerList[1] + 1
-        powerList[2] = powerList[2] + 1
-        powerList[3] = powerList[3] + 1
-        local r = rnd(3)
-        powerList[r] = powerList[r] - 1
-    end
 
-    TABLE.clear(GAME.reviveTasks)
-    for i = 1, 3 do
-        local pow = powerList[i]
-        local options = {} ---@type Prompt[]
-        for j = 1, #RevivePrompts do
-            local p = RevivePrompts[j]
-            if p.rank[1] <= pow and pow <= p.rank[2] and (not p.cond or p.cond()) and not TABLE.find(options, p) then
-                ins(options, p)
+        TABLE.clear(GAME.reviveTasks)
+        for i = 1, 3 do
+            local pow = powerList[i]
+            local options = {} ---@type Prompt[]
+            for j = 1, #RevivePrompts do
+                local p = RevivePrompts[j]
+                if p.rank[1] <= pow and pow <= p.rank[2] and (not p.cond or p.cond()) and not TABLE.find(options, p) then
+                    ins(options, p)
+                end
+            end
+            if #options > 0 then
+                local task = TABLE.copyAll(TABLE.getRandom(options))
+                if task.init then task.init(task) end
+                ---@cast task ReviveTask
+                task.cur = #GAME.reviveTasks + 1
+                task.progress = 0
+                task.textObj = GC.newText(FONT.get(30), task.text)
+                task.shortObj = GC.newText(FONT.get(30), task.short)
+                task.progObj = GC.newText(FONT.get(30), "0/" .. task.target)
+                ins(GAME.reviveTasks, task)
             end
         end
-        if #options > 0 then
-            local task = TABLE.copyAll(TABLE.getRandom(options))
-            if task.init then task.init(task) end
-            ---@cast task ReviveTask
-            task.cur = #GAME.reviveTasks + 1
-            task.progress = 0
-            task.textObj = GC.newText(FONT.get(30), task.text)
-            task.shortObj = GC.newText(FONT.get(30), task.short)
-            task.progObj = GC.newText(FONT.get(30), "0/" .. task.target)
-            ins(GAME.reviveTasks, task)
-        end
+        SFX.play('boardlock')
+    else
+        SFX.play('losestock')
     end
     GAME.currentTask = GAME.reviveTasks[1] or false
     GAME.DPlock = M.DP == 2
@@ -498,8 +503,9 @@ function GAME.takeDamage(dmg, reason, toAlly)
         'damage_large', .872)
     if GAME[k] <= 0 then
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
-            SFX.play('boardlock')
-            if not toAlly then
+            if toAlly then
+                SFX.play('elim')
+            else
                 GAME.swapControl()
             end
             GAME.startRevive()
@@ -1151,10 +1157,14 @@ function GAME.start()
     -- rDP
     GAME.onAlly = false
     GAME.life2 = 20
-    GAME.maxRank = M.DP == 2 and 8 or 26000
+    GAME.maxRank = 26000
     GAME.reviveCount = 0
     GAME.currentTask = false
     GAME.DPlock = false
+    if M.DP == 2 then
+        GAME.maxRank = 8
+        GAME.dmgHeal = 4
+    end
 
     -- Statistics
     GAME.totalFlip = 0

@@ -173,7 +173,7 @@ return {
     -- warp=                        {800, 10.54},
     -- finish=                      {409, 2.7},
     -- death=                       {798, 0.6},
-    -- elim=                        {460, 0.5},
+    elim = { 460, 0.5 },
     shatter = { 300, 3 },
     hyperalert = { 333, 1.7 },
     topout = { 709, 4.6 },
