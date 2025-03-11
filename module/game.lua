@@ -300,7 +300,7 @@ end
 
 function GAME.task_fatigueWarn()
     for _ = 1, 3 do
-        for _ = 1, 3 do SFX.play('warning', 1, 0, M.GV) end
+        for _ = 1, M.DP == 2 and 1 or 3 do SFX.play('warning', 1, 0, M.GV) end
         TASK.yieldT(1)
     end
 end
