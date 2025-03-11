@@ -474,11 +474,12 @@ function GAME.getLifeKey(another)
 end
 
 function GAME.heal(hp)
-    GAME.incrementPrompt('heal', hp)
-
     if M.DP > 0 then hp = hp * 2 end
+
     local k = GAME.getLifeKey()
-    GAME[k] = min(GAME[k] + max(hp, 0), 20)
+    hp = max(min(hp, 20 - GAME[k]), 0)
+    GAME[k] = GAME[k] + hp
+    GAME.incrementPrompt('heal', hp)
 
     GAME.freshLifeState()
 end
@@ -997,19 +998,21 @@ function GAME.commit()
             end
 
             SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
-            attack = attack + 1
-            xp = xp + 3
-            GAME.chain = GAME.chain + 1
-            if GAME.chain < 4 then
-            elseif GAME.chain < 8 then
-                if GAME.chain == 4 then SFX.play('b2bcharge_start', .8) end
-                SFX.play('b2bcharge_1', .8)
-            elseif GAME.chain < 12 then
-                SFX.play('b2bcharge_2', .8)
-            elseif GAME.chain < 24 then
-                SFX.play('b2bcharge_3', .8)
-            else
-                SFX.play('b2bcharge_4', .8)
+            if correct == 1 then
+                attack = attack + 1
+                xp = xp + 3
+                GAME.chain = GAME.chain + 1
+                if GAME.chain < 4 then
+                elseif GAME.chain < 8 then
+                    if GAME.chain == 4 then SFX.play('b2bcharge_start', .8) end
+                    SFX.play('b2bcharge_1', .8)
+                elseif GAME.chain < 12 then
+                    SFX.play('b2bcharge_2', .8)
+                elseif GAME.chain < 24 then
+                    SFX.play('b2bcharge_3', .8)
+                else
+                    SFX.play('b2bcharge_4', .8)
+                end
             end
         end
         if GAME.chain >= 4 then

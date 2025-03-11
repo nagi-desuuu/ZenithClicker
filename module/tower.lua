@@ -507,12 +507,13 @@ function scene.overDraw()
         gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
         gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
     else
+        local onAlly = GAME.onAlly
         gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
-        if GAME.onAlly then gc_setAlpha(.42) end
-        gc_rectangle('fill', 800, 440 - 5, -1540 / 2 * GAME.lifeShow / 20, GAME.onAlly and 8 or 12)
+        if onAlly then gc_setAlpha(.42) end
+        gc_rectangle('fill', 800, 440 - 5, -1540 / 2 * GAME.lifeShow / 20, onAlly and 8 * M.DP or 12)
         gc_setColor(GAME.playing and GAME.life2 > safeHP and COLOR.L or COLOR.R)
-        if not GAME.onAlly then gc_setAlpha(.42) end
-        gc_rectangle('fill', 800, 440 - 5, 1540 / 2 * GAME.lifeShow2 / 20, GAME.onAlly and 12 or 8)
+        if not onAlly then gc_setAlpha(.42) end
+        gc_rectangle('fill', 800, 440 - 5, 1540 / 2 * GAME.lifeShow2 / 20, onAlly and 12 or 8 * M.DP)
     end
 
     if GAME.playing then
@@ -568,10 +569,8 @@ function scene.overDraw()
         -- Lock
         gc_translate(allyDie and 1150 or 450, 450)
         gc_setColor(1, 1, 1)
-        gc_mDrawQ(
-            M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left,
-            reviveQuad[task.cur], 0, 0, 0, .4
-        )
+        local texture = M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left
+        for i = #GAME.reviveTasks, task.cur, -1 do gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4) end
 
         -- Text
         gc_rotate(reviveRot[task.cur])
