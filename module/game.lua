@@ -1174,7 +1174,7 @@ function GAME.start()
     GAME.DPlock = false
     if M.DP == 2 then
         GAME.maxRank = 8
-        GAME.dmgHeal = 4
+        GAME.dmgHeal = 3
     end
 
     -- Statistics
