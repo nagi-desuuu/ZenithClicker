@@ -401,15 +401,23 @@ function GAME.startRevive()
             local r = rnd(3)
             powerList[r] = powerList[r] - 1
         end
+        TABLE.delete(powerList, 0)
 
         TABLE.clear(GAME.reviveTasks)
-        for i = 1, 3 do
-            local pow = powerList[i]
+        for _, pow in next, powerList do
             local options = {} ---@type Prompt[]
-            for j = 1, #RevivePrompts do
-                local p = RevivePrompts[j]
-                if p.rank[1] <= pow and pow <= p.rank[2] and (not p.cond or p.cond()) and not TABLE.find(options, p) then
-                    ins(options, p)
+            for _, opt in next, RevivePrompts do
+                if opt.rank[1] <= pow and pow <= opt.rank[2] and (not opt.cond or opt.cond()) then
+                    local repeated
+                    for _, t in next, GAME.reviveTasks do
+                        if t.prompt == opt.prompt then
+                            repeated = true
+                            break
+                        end
+                    end
+                    if not repeated then
+                        ins(options, opt)
+                    end
                 end
             end
             if #options > 0 then
