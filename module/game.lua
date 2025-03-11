@@ -57,6 +57,7 @@ local ins, rem = table.insert, table.remove
 ---@field life2 number
 ---@field chain2 number
 ---@field maxRank number
+---@field DPlock boolean
 local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
@@ -424,6 +425,7 @@ function GAME.startRevive()
         end
     end
     GAME.currentTask = GAME.reviveTasks[1] or false
+    GAME.DPlock = M.DP == 2
 end
 
 function GAME.incrementPrompt(prompt, value)
@@ -443,6 +445,7 @@ function GAME.incrementPrompt(prompt, value)
                 GAME.currentTask = false
                 GAME[GAME.getLifeKey(true)] = 20
                 SFX.play('boardlock_revive')
+                GAME.DPlock = false
             end
         end
         t.progObj:set(math.floor(t.progress) .. "/" .. t.target)
@@ -476,7 +479,9 @@ function GAME.heal(hp)
     GAME.freshLifeState()
 end
 
+---@param dmg number
 ---@param reason 'wrong' | 'time'
+---@param toAlly? boolean
 function GAME.takeDamage(dmg, reason, toAlly)
     if GAME.currentTask then
         GAME.incrementPrompt('dmg_time')
@@ -488,14 +493,18 @@ function GAME.takeDamage(dmg, reason, toAlly)
     local k = GAME.getLifeKey(toAlly)
     GAME[k] = max(GAME[k] - dmg, 0)
     SFX.play(
+        toAlly and 'inject' or
         dmg <= 1.626 and 'damage_small' or
         dmg <= 4.2 and 'damage_medium' or
         'damage_large', .872)
     if GAME[k] <= 0 then
-        if GAME[GAME.getLifeKey(true)] > 0 then
+        if GAME[GAME.getLifeKey(not toAlly)] > 0 then
             SFX.play('boardlock')
-            GAME.swapControl()
+            if not toAlly then
+                GAME.swapControl()
+            end
             GAME.startRevive()
+            GAME.dmgWrongExtra = 0 -- Being tolerant!
         else
             GAME.finish(reason)
             return true
@@ -1004,10 +1013,21 @@ function GAME.commit()
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
 
+        if M.DP == 2 then
+            if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then return end
+        end
+
+        if M.DP > 0 and GAME[GAME.getLifeKey(true)] == 0 then
+            attack = attack / 2
+            attack = floor(attack) + (MATH.roll(attack % 1) and 1 or 0)
+        end
+
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
-        GAME.addHeight(attack)
-        GAME.addXP(attack + xp)
+        if not GAME.DPlock then
+            GAME.addHeight(attack)
+            GAME.addXP(attack + xp)
+        end
 
         if M.MS == 2 then
             local r1 = rnd(2, #Cards - 1)
@@ -1029,8 +1049,9 @@ function GAME.commit()
         GAME.genQuest()
         rem(GAME.quests, correct)
         local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
-        local hasDH = TABLE.find(combo, 'DH') and 1 or 0
-        if #combo >= 4 then SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + hasDH, 1, 0, M.GV) end
+        if #combo >= 4 then
+            SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + (TABLE.find(combo, 'DH') and 1 or 0), 1, 0, M.GV)
+        end
         GAME.questReady()
         GAME.totalQuest = GAME.totalQuest + 1
 
@@ -1117,7 +1138,7 @@ function GAME.start()
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
     GAME.floor = 0
-    GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.EX == 2 and 'rDP' or 'normal']
+    GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
     GAME.fatigue = 1
     GAME.height = 0
     GAME.heightBuffer = 0
@@ -1135,6 +1156,7 @@ function GAME.start()
     GAME.maxRank = M.DP == 2 and 4 or 26000
     GAME.reviveCount = 0
     GAME.currentTask = false
+    GAME.DPlock = false
 
     -- Statistics
     GAME.totalFlip = 0
@@ -1337,40 +1359,42 @@ function GAME.update(dt)
             TASK.new(GAME.task_fatigueWarn)
         end
 
-        local releaseHeight = GAME.heightBuffer
-        GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
-        releaseHeight = releaseHeight - GAME.heightBuffer
+        if not GAME.DPlock then
+            local releaseHeight = GAME.heightBuffer
+            GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
+            releaseHeight = releaseHeight - GAME.heightBuffer
 
-        GAME.height = GAME.height + releaseHeight
-        if M.EX < 2 then
-            GAME.height = GAME.height + GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
-        else
-            GAME.height = max(
-                GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
-                Floors[GAME.floor - 1].top
-            )
-        end
+            GAME.height = GAME.height + releaseHeight
+            if M.EX < 2 then
+                GAME.height = GAME.height + GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
+            else
+                GAME.height = max(
+                    GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
+                    Floors[GAME.floor - 1].top
+                )
+            end
 
-        if GAME.height >= Floors[GAME.floor].top then
-            GAME.upFloor()
-        end
+            if GAME.height >= Floors[GAME.floor].top then
+                GAME.upFloor()
+            end
 
-        if GAME.xpLockTimer > 0 then
-            GAME.xpLockTimer = GAME.xpLockTimer - dt
-        else
-            GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
-            if GAME.xp <= 0 then
-                GAME.xp = 0
-                if GAME.rank > 1 then
-                    GAME.rank = GAME.rank - 1
-                    GAME.xp = 4 * GAME.rank
-                    GAME.rankupLast = false
-                    if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
-                        GAME.setGigaspeedAnim(false)
-                        SFX.play('zenith_speedrun_end')
-                        SFX.play('zenith_speedrun_end')
+            if GAME.xpLockTimer > 0 then
+                GAME.xpLockTimer = GAME.xpLockTimer - dt
+            else
+                GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+                if GAME.xp <= 0 then
+                    GAME.xp = 0
+                    if GAME.rank > 1 then
+                        GAME.rank = GAME.rank - 1
+                        GAME.xp = 4 * GAME.rank
+                        GAME.rankupLast = false
+                        if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
+                            GAME.setGigaspeedAnim(false)
+                            SFX.play('zenith_speedrun_end')
+                            SFX.play('zenith_speedrun_end')
+                        end
+                        SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                     end
-                    SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                 end
             end
         end

@@ -96,7 +96,7 @@ function Card:setActive(auto, key)
             GAME.incrementPrompt('cancel')
             if not auto then GAME.nixPrompt('keep_no_cancel') end
         else
-            GAME.incrementPrompt('active')
+            GAME.incrementPrompt('activate')
         end
         if not auto then
             if self.id ~= GAME.lastFlip then

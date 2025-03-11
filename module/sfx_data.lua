@@ -151,7 +151,7 @@ return {
     thunder5 = { 701, 5 },
     thunder6 = { 76, 5 },
 
-    -- inject=                      {286, 0.8},
+    inject = { 286, 0.8 },
     -- impact=                      {125, 1.2},
     -- offset=                      {172, 0.4},
 
@@ -246,10 +246,10 @@ return {
     -- mmstart=                     {17,  2.5},
     no = { 429, 0.188 },
     notify = { 250, 0.2 },
-    pause_continue=              {133, 1},
-    pause_exit=                  {515, 1.16},
-    pause_retry=                 {451, 1},
-    pause_start=                 {116, 1},
+    pause_continue = { 133, 1 },
+    pause_exit = { 515, 1.16 },
+    pause_retry = { 451, 1 },
+    pause_start = { 116, 1 },
     -- piece_change=                {292, 2.03},
     -- protected_large=             {141, 0.92},
     -- protected_medium=            {86,  0.4},

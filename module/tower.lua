@@ -596,12 +596,9 @@ function scene.overDraw()
 
         -- Short Text & Panel
         gc_setColor(.3, .1, 0, .62)
-        gc_mRect('fill', 800, 330, GAME.currentTask.shortObj:getWidth() * 1.6 + 120, 110, 20)
+        gc_mRect('fill', 800, 330, GAME.currentTask.shortObj:getWidth() * 1.6 + 50, 75, 20)
         gc_setColor(1, 1, 1)
         gc_mDraw(GAME.currentTask.shortObj, 800, 330, 0, 1.6)
-
-        setFont(50)
-        gc.print(task.prompt,100,100)
     end
 
     -- Debug
@@ -616,23 +613,26 @@ function scene.overDraw()
         gc_move('m', 0, h)
 
         -- Thruster
-        gc_setColor(rankColor[GAME.rank - 1] or COLOR.L)
+        local rank = GAME.DPlock and 1 or GAME.rank
+        gc_setColor(rankColor[rank - 1] or COLOR.L)
         gc_setLineWidth(6)
         gc_mRect('line', 800, 965, 420, 26)
-        if GAME.rankupLast then
-            if GAME.xpLockLevel < 5 then
-                gc_setLineWidth(2)
-                gc_setAlpha(.8 - GAME.xpLockLevel * .15)
-                gc_mRect('line', 800, 965, 210, 26)
+        if not GAME.DPlock then
+            if GAME.rankupLast then
+                if GAME.xpLockLevel < 5 then
+                    gc_setLineWidth(2)
+                    gc_setAlpha(.8 - GAME.xpLockLevel * .15)
+                    gc_mRect('line', 800, 965, 210, 26)
+                end
+            else
+                gc_mRect('fill', 800, 965, 420, 2)
             end
-        else
-            gc_mRect('fill', 800, 965, 420, 2)
+            gc_setColor(rankColor[rank] or COLOR.L)
+            if GAME.xpLockTimer > 0 then
+                gc_setAlpha(sin(6200 / (GAME.xpLockTimer + 4.2) ^ 3) * .26 + .74)
+            end
+            gc_mRect('fill', 800, 965, 420 * GAME.xp / (4 * rank), 3 + GAME.xpLockLevel)
         end
-        gc_setColor(rankColor[GAME.rank] or COLOR.L)
-        if GAME.xpLockTimer > 0 then
-            gc_setAlpha(sin(6200 / (GAME.xpLockTimer + 4.2) ^ 3) * .26 + .74)
-        end
-        gc_mRect('fill', 800, 965, 420 * GAME.xp / (4 * GAME.rank), 3 + GAME.xpLockLevel)
 
         -- Height & Time
         TEXTS.height:set(("%.1fm"):format(GAME.height))
@@ -644,8 +644,11 @@ function scene.overDraw()
         gc_strokeDraw('full', 2, TEXTS.time, 375, 978, 0, 1, 1, wid / 2, hgt / 2)
 
         gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.height, 800, 978)
         gc_mDraw(TEXTS.time, 375, 978)
+        if GAME.DPlock then
+            gc_setColor(GAME.time % .9 > .45 and COLOR.R or COLOR.D)
+        end
+        gc_mDraw(TEXTS.height, 800, 978)
 
         gc_back()
     end
