@@ -508,15 +508,15 @@ function scene.overDraw()
     local safeHP = GAME.playing and max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime) or 0
     if M.DP == 0 then
         gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
-        gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / 20, 10)
+        gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / GAME.fullHealth, 10)
     else
         local onAlly = GAME.onAlly
         gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
         if onAlly then gc_setAlpha(.42) end
-        gc_rectangle('fill', 800, 440 - 5, -1540 / 2 * GAME.lifeShow / 20, onAlly and 8 * M.DP or 12)
+        gc_rectangle('fill', 800, 440 - 5, -1540 / 2 * GAME.lifeShow / GAME.fullHealth, onAlly and 8 * M.DP or 12)
         gc_setColor(GAME.playing and GAME.life2 > safeHP and COLOR.L or COLOR.R)
         if not onAlly then gc_setAlpha(.42) end
-        gc_rectangle('fill', 800, 440 - 5, 1540 / 2 * GAME.lifeShow2 / 20, onAlly and 12 or 8 * M.DP)
+        gc_rectangle('fill', 800, 440 - 5, 1540 / 2 * GAME.lifeShow2 / GAME.fullHealth, onAlly and 12 or 8 * M.DP)
     end
 
     if GAME.playing then

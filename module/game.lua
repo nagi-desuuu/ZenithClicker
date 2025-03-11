@@ -106,6 +106,7 @@ local GAME = {
 }
 
 GAME.playing = false
+GAME.fullHealth = 20
 GAME.life = 0
 GAME.life2 = 0
 GAME.time = 0
@@ -447,6 +448,7 @@ function GAME.incrementPrompt(prompt, value)
         t.progress = min(t.progress + (value or 1), t.target)
         if floor(oldProg) ~= floor(t.progress) and not TASK.getLock('noIncrementSFX') then
             SFX.play('boardlock_clink')
+            TASK.lock('noIncrementSFX', 0.026)
         end
         if t.progress >= t.target then
             if t.cur < #GAME.reviveTasks then
@@ -455,7 +457,7 @@ function GAME.incrementPrompt(prompt, value)
             else
                 GAME.reviveCount = GAME.reviveCount + 1
                 GAME.currentTask = false
-                GAME[GAME.getLifeKey(true)] = 20
+                GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
             end
@@ -482,10 +484,8 @@ function GAME.getLifeKey(another)
 end
 
 function GAME.heal(hp)
-    if M.DP > 0 then hp = hp * 2 end
-
     local k = GAME.getLifeKey()
-    hp = max(min(hp, 20 - GAME[k]), 0)
+    hp = max(min(hp, GAME.fullHealth - GAME[k]), 0)
     GAME[k] = GAME[k] + hp
     GAME.incrementPrompt('heal', hp)
 
@@ -502,7 +502,6 @@ function GAME.takeDamage(dmg, reason, toAlly)
         if reason == 'time' then GAME.incrementPrompt('timedmg_time') end
     end
 
-    if M.DP > 0 then dmg = dmg * 2 end
     local k = GAME.getLifeKey(toAlly)
     GAME[k] = max(GAME[k] - dmg, 0)
     SFX.play(
@@ -806,7 +805,7 @@ function GAME.freshLifeState()
     local oldState = GAME.lifeState
     local hp = GAME[GAME.getLifeKey()]
     local newState
-    if hp == 20 then
+    if hp == GAME.fullHealth then
         newState = 'full'
     else
         local dangerDmg = max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime)
@@ -976,10 +975,12 @@ function GAME.commit()
                     SFX.play('thunder' .. rnd(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
                 end
                 local k = GAME.onAlly and 'life2' or 'life'
-                while GAME.chain > 0 and GAME[k] < 20 do
+                local oldLife = GAME[k]
+                while GAME.chain > 0 and GAME[k] < GAME.fullHealth do
                     GAME.chain = max(GAME.chain - 2, 0)
-                    GAME[k] = min(GAME[k] + 1, 20)
+                    GAME[k] = min(GAME[k] + 1, GAME.fullHealth)
                 end
+                if GAME[k] > oldLife then GAME.incrementPrompt('heal', GAME[k] - oldLife) end
                 if GAME.chain > 0 then
                     attack = attack + GAME.chain
                 end
@@ -1096,8 +1097,7 @@ function GAME.commit()
         GAME.fault = true
         GAME.faultWrong = true
 
-        local dmg = GAME.dmgWrong
-        if GAME.takeDamage(max(dmg + GAME.dmgWrongExtra, 1), 'wrong') then return end
+        if GAME.takeDamage(max(GAME.dmgWrong + GAME.dmgWrongExtra, 1), 'wrong') then return end
         GAME.dmgWrongExtra = GAME.dmgWrongExtra + .5
 
         if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
@@ -1159,6 +1159,7 @@ function GAME.start()
     GAME.height = 0
     GAME.heightBuffer = 0
     GAME.life = 20
+    GAME.fullHealth = 20
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
     GAME.atkBuffer = 0
@@ -1172,11 +1173,17 @@ function GAME.start()
     GAME.reviveCount = 0
     GAME.currentTask = false
     GAME.DPlock = false
+    GAME.lastFlip = false
     if M.DP == 2 then
         GAME.maxRank = 8 + 4 * M.EX
         GAME.dmgHeal = 3
     end
-    GAME.lastFlip = false
+
+    if M.DP > 0 then
+        GAME.life = 10
+        GAME.life2 = 10
+        GAME.fullHealth = 10
+    end
 
     -- Statistics
     GAME.totalFlip = 0
