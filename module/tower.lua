@@ -486,10 +486,12 @@ function scene.overDraw()
     -- GigaSpeed Timer
     if GigaSpeed.alpha > 0 then
         local w, h = TEXTS.gigatime:getDimensions()
-        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .26 * GigaSpeed.alpha)
+        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .2 * GigaSpeed.alpha)
         gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
-        gc_setAlpha(GigaSpeed.alpha)
-        gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+        if M.DP < 2 then
+            gc_setAlpha(GigaSpeed.alpha)
+            gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+        end
     end
 
     -- GigaSpeed Anim

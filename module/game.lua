@@ -1362,20 +1362,23 @@ function GAME.update(dt)
             end
             if GAME.floor == 10 then GAME.updateBgm('ingame') end
             GAME.fatigue = GAME.fatigue + 1
-            local duration = GAME.fatigue == #GAME.fatigueSet and 10 or 5
+            local duration = 5
+            if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
+                duration = duration * 2
+            end
             TEXT:add {
                 text = stage.text,
                 x = 800, y = 265, fontSize = 30, k = 1.5,
                 style = 'score', duration = duration,
                 inPoint = .1, outPoint = .26,
-                color = 'lM',
+                color = stage.color or 'lM',
             }
             TEXT:add {
                 text = stage.desc,
                 x = 800, y = 300, fontSize = 30,
                 style = 'score', duration = duration,
                 inPoint = .26, outPoint = .1,
-                color = 'lM',
+                color = stage.color or 'lM',
             }
             TASK.new(GAME.task_fatigueWarn)
         end
