@@ -1202,7 +1202,7 @@ function GAME.start()
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
 
-    TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('textHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
 end
 
