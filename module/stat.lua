@@ -6,15 +6,6 @@ local card = GC.newCanvas(1200, 720)
 
 local floor = math.floor
 
-local gc = love.graphics
-local gc_origin, gc_replaceTransform = gc.origin, gc.replaceTransform
-local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
-local gc_draw, gc_line = gc.draw, gc.line
-local gc_rectangle = gc.rectangle
-local gc_print, gc_printf = gc.print, gc.printf
-local gc_mDraw, gc_mStr = GC.mDraw, GC.mStr
-local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
-
 local baseColor = { .08, .26, .14 }
 local areaColor = { .08, .23, .12 }
 local titleColor = { COLOR.HEX("16582D") }
@@ -41,9 +32,9 @@ saw:setWrap('repeat', 'repeat')
 local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
 local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
 local function dblMidStr(str, x, y)
-    gc_mStr(str, x, y)
-    gc_setAlpha(.6)
-    gc_mStr(str, x, y + 3)
+    GC.mStr(str, x, y)
+    GC.setAlpha(.6)
+    GC.mStr(str, x, y + 3)
 end
 
 function scene.load()
@@ -60,7 +51,7 @@ function scene.load()
     end)
 
     GC.setCanvas(setup)
-    gc_origin()
+    GC.origin()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
 
 
@@ -68,164 +59,170 @@ function scene.load()
     local t50 = GC.newText(FONT.get(50))
 
     -- Banner
-    gc_setColor(.42, .42, .42)
-    gc_draw(TEXTURE.banner, bannerQuad, 0, 10, 0, 1200 / 512, 150 / 256)
+    GC.setColor(.42, .42, .42)
+    GC.draw(TEXTURE.banner, bannerQuad, 0, 10, 0, 1200 / 512, 150 / 256)
 
     -- Main panel & frame
-    gc_setColor(baseColor)
+    GC.setColor(baseColor)
     -- base
-    gc_rectangle('fill', 0, 720, 1200, -560)
+    GC.rectangle('fill', 0, 720, 1200, -560)
     -- deco
-    gc_draw(saw, sawQuad, 0, 720 - 560, 0, 7.2, 7.2, 0, 3)
+    GC.draw(saw, sawQuad, 0, 720 - 560, 0, 7.2, 7.2, 0, 3)
     -- top ribbon
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 210, 1200, 60)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 210, 1200, 60)
     -- bottom ribbon
-    gc_rectangle('fill', 0, 720, 1200, -90)
+    GC.rectangle('fill', 0, 720, 1200, -90)
     -- github link
     FONT.set(50)
-    gc_setColor(scoreColor)
-    gc_printf("↗  VIEW SOURCE FILE", 0, 640, 1200, 'center')
+    GC.setColor(scoreColor)
+    GC.printf("↗  VIEW SOURCE FILE", 0, 640, 1200, 'center')
     -- bottom dark
-    gc_setColor(.04, .16, .08)
-    gc_rectangle('fill', 0, 720, 1200, -3)
+    GC.setColor(.04, .16, .08)
+    GC.rectangle('fill', 0, 720, 1200, -3)
     -- right dark
-    gc_setColor(.08, .2, .1)
-    gc_rectangle('fill', 1200, 720, -3, -560)
-    gc_draw(TEXTURE.transition, 1200, 720 - 560, -1.5708, .626, -3)
+    GC.setColor(.08, .2, .1)
+    GC.rectangle('fill', 1200, 720, -3, -560)
+    GC.draw(TEXTURE.transition, 1200, 720 - 560, -1.5708, .626, -3)
     -- left light
-    gc_setColor(.26, .42, .32)
-    gc_rectangle('fill', 0, 720, 3, -560)
-    gc_draw(TEXTURE.transition, 0, 720 - 560, -1.5708, .626, 3)
+    GC.setColor(.26, .42, .32)
+    GC.rectangle('fill', 0, 720, 3, -560)
+    GC.draw(TEXTURE.transition, 0, 720 - 560, -1.5708, .626, 3)
 
     -- X
     FONT.set(30)
-    gc_setColor(COLOR.DL)
-    gc_print("CLOSE", 1068 - 10, 45 - 3, 0, 1.2)
+    GC.setColor(COLOR.DL)
+    GC.print("CLOSE", 1068 - 10, 45 - 3, 0, 1.2)
 
     -- PFP
-    gc_setColor(1, 1, 1)
+    GC.setColor(1, 1, 1)
     GC.stc_setComp()
     GC.stc_rect(30, 0, 120, 120, 6)
-    gc_draw(TEXTURE.avatar, 20, 0, 0, 130 / TEXTURE.avatar:getWidth())
+    GC.draw(TEXTURE.avatar, 20, 0, 0, 130 / TEXTURE.avatar:getWidth())
     GC.stc_stop()
 
     -- ID
     FONT.set(30)
-    gc_print("JOINED " .. STAT.joinDate, 165, 96, 0, .7)
+    GC.print(("Joined " .. STAT.joinDate):upper(), 165, 96, 0, .7)
     FONT.set(50)
-    gc_setColor(COLOR.L)
-    gc_print(STAT.uid, 165, 18, 0, 1.2)
+    GC.setColor(COLOR.L)
+    GC.print(STAT.uid, 165, 18, 0, 1.2)
 
     -- Time
-    gc_move('m', 1065, 165)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 110, 40, 5)
-    gc_setColor(1, 1, 1)
+    GC.ucs_move('m', 1065, 165)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 110, 40, 5)
+    GC.setColor(1, 1, 1)
     FONT.set(30)
-    gc_mStr(STAT.totalTime <= 36000 and
+    GC.mStr(STAT.totalTime <= 36000 and
         { scoreColor, floor(STAT.totalTime / 60), textColor, "min" }
         or { scoreColor, floor(STAT.totalTime / 3600), textColor, "H" },
         55, 0)
-    gc_back()
+    GC.ucs_back()
 
     -- Clicker
-    gc_setColor(1, 1, 1)
-    gc_mDraw(TEXTURE.clicker, 970, 182, 0, .626)
+    GC.setColor(1, 1, 1)
+    GC.mDraw(TEXTURE.clicker, 970, 182, 0, .626)
 
     -- Introduction
-    gc_move('m', 25, 280)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 1150, 80)
+    GC.ucs_move('m', 25, 280)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 1150, 80)
     FONT.set(30)
-    gc_setColor(titleColor)
-    gc_print("ABOUT  US", 7, 2, 0, .8)
-    gc_setColor(textColor)
-    gc_print("Click the Zenith!", 15, 35, 0, .8)
-    gc_back()
+    GC.setColor(titleColor)
+    GC.print("ABOUT  US", 7, 2, 0, .8)
+    GC.setColor(textColor)
+    GC.print("Click the Zenith!", 15, 35, 0, .8)
+    GC.ucs_back()
 
-    gc_setLineWidth(2)
+    GC.setLineWidth(2)
 
     -- Rating
-    gc_move('m', 25, 370)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 375, 120)
+    GC.ucs_move('m', 25, 370)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 375, 120)
     FONT.set(30)
-    gc_setColor(titleColor)
-    gc_print("CLICKER  LEAGUE", 7, 2, 0, .8)
+    GC.setColor(titleColor)
+    GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
+    GC.line(7, 90, 370 - 7, 90)
     FONT.set(50)
-    gc_setColor(scoreColor)
-    -- dblMidStr("00000FR", 370 / 2, 24)
-    gc_back()
+    t50:set("-----")
+    GC.setColor(scoreColor)
+    GC.draw(t50, 370 / 2, 24, 0, 1, 1, t50:getWidth() / 2)
+    GC.setAlpha(.6)
+    GC.draw(t50, 370 / 2, 24 + 3, 0, 1, 1, t50:getWidth() / 2)
+    t30:set("CR")
+    GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47)
+    GC.ucs_back()
 
     -- Height
-    gc_move('m', 412.5, 370)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 375, 120)
+    GC.ucs_move('m', 412.5, 370)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 375, 120)
     FONT.set(30)
-    gc_setColor(titleColor)
-    gc_print("MAX  ALTITUDE", 7, 2, 0, .8)
-    gc_line(7, 90, 370 - 7, 90)
-    gc_setColor(textColor)
+    GC.setColor(titleColor)
+    GC.print("MAX  ALTITUDE", 7, 2, 0, .8)
+    GC.line(7, 90, 370 - 7, 90)
+    GC.setColor(textColor)
     t30:set(STAT.heightDate)
-    gc_mDraw(t30, 370 / 2, 105, 0, .75)
-    gc_setColor(scoreColor)
+    GC.mDraw(t30, 370 / 2, 105, 0, .75)
+    GC.setColor(scoreColor)
     FONT.set(50)
     dblMidStr(STAT.maxHeight .. "m", 370 / 2, 24)
-    gc_back()
+    GC.ucs_back()
 
     -- Speedrun
-    gc_move('m', 800, 370)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 375, 120)
+    GC.ucs_move('m', 800, 370)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 375, 120)
     FONT.set(30)
-    gc_setColor(titleColor)
-    gc_print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
-    gc_line(7, 90, 370 - 7, 90)
-    gc_setColor(textColor)
+    GC.setColor(titleColor)
+    GC.print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
+    GC.line(7, 90, 370 - 7, 90)
+    GC.setColor(textColor)
     t30:set(STAT.timeDate)
-    gc_mDraw(t30, 370 / 2, 105, 0, .75)
-    gc_setColor(scoreColor)
+    GC.mDraw(t30, 370 / 2, 105, 0, .75)
+    GC.setColor(scoreColor)
     FONT.set(50)
     dblMidStr(STRING.time(STAT.minTime), 370 / 2, 24)
-    gc_back()
+    GC.ucs_back()
 
     -- Career
-    gc_move('m', 25, 500)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 570, 120)
+    GC.ucs_move('m', 25, 500)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 570, 120)
     FONT.set(30)
-    gc_setColor(titleColor)
-    gc_print("CAREER", 7, 2, 0, .8)
+    GC.setColor(titleColor)
+    GC.print("CAREER", 7, 2, 0, .8)
     FONT.set(50)
-    gc_setColor(scoreColor)
+    GC.setColor(scoreColor)
     -- TODO
-    gc_back()
+    GC.ucs_back()
 
     -- Full stats
-    gc_move('m', 605, 500)
-    gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 570, 120)
+    GC.ucs_move('m', 605, 500)
+    GC.setColor(areaColor)
+    GC.rectangle('fill', 0, 0, 570, 120)
     FONT.set(30)
-    gc_setColor(titleColor)
-    gc_print("FULL  STATS", 7, 2, 0, .8)
+    GC.setColor(titleColor)
+    GC.print("FULL  STATS", 7, 2, 0, .8)
     local l = {
         { "Game",   { scoreColor, STAT.totalGame },                                   x = 80,  d = 70, y = 35 },
         { "Floor",  { scoreColor, STAT.totalFloor },                                  x = 80,  d = 70, y = 60 },
         { "Giga",   { scoreColor, STAT.totalGiga },                                   x = 80,  d = 70, y = 85 },
         { "Flip",   { scoreColor, STAT.totalFlip },                                   x = 300, d = 80, y = 10 },
         { "Quest",  { scoreColor, STAT.totalQuest },                                  x = 300, d = 80, y = 35 },
-        { "Height", { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 300, d = 80, y = 60 },
-        { "Attack", { scoreColor, STAT.totalAttack },                                 x = 300, d = 80, y = 85 },
+        { "Attack", { scoreColor, STAT.totalAttack },                                 x = 300, d = 80, y = 60 },
+        { "Height", { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 300, d = 80, y = 85 },
     }
     for i = 1, #l do
         local v = l[i]
-        gc_setColor(textColor)
-        gc_print(v[1], v.x, v.y, 0, .75)
-        gc_setColor(1, 1, 1)
-        gc_print(v[2], v.x + v.d, v.y, 0, .75)
+        GC.setColor(textColor)
+        GC.print(v[1], v.x, v.y, 0, .75)
+        GC.setColor(1, 1, 1)
+        GC.print(v[2], v.x + v.d, v.y, 0, .75)
     end
-    gc_back()
+    GC.ucs_back()
 
     GC.setCanvas()
 end
@@ -255,18 +252,18 @@ end
 
 function scene.draw()
     SCN.scenes.tower.draw()
-    gc_replaceTransform(SCR.xOy)
+    GC.replaceTransform(SCR.xOy)
     WIDGET.draw(SCN.scenes.tower.widgetList)
     SCN.scenes.tower.overDraw()
-    gc_origin()
-    gc_setColor(0, 0, 0, maskAlpha * .7023)
-    gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+    GC.origin()
+    GC.setColor(0, 0, 0, maskAlpha * .7023)
+    GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
 
     if cardShow > 0 then
-        gc_replaceTransform(SCR.xOy_m)
-        gc_setColor(1, 1, 1, cardShow)
+        GC.replaceTransform(SCR.xOy_m)
+        GC.setColor(1, 1, 1, cardShow)
         local k = .9 + cardShow * .1
-        gc_mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67)
+        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67)
     end
 end
 
