@@ -821,6 +821,7 @@ scene.widgetList = {
                 end
             else
                 love.keypressed('escape')
+                love.keyreleased('escape')
             end
         end,
     },
@@ -830,7 +831,10 @@ scene.widgetList = {
         color = { .1, .26, .15 },
         sound_hover = 'menutap',
         fontSize = 35, text = "    STAT", textColor = 'lG',
-        onClick = WIDGET.c_pressKey 'tab',
+        onClick = function()
+            love.keypressed('tab')
+            love.keyreleased('tab')
+        end,
     },
     WIDGET.new {
         name = 'start', type = 'button',
