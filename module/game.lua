@@ -1035,6 +1035,7 @@ function GAME.commit()
         end
 
         if M.DP > 0 and GAME[GAME.getLifeKey(true)] == 0 then
+            xp = xp / 2
             attack = attack / 2
             attack = floor(attack) + (MATH.roll(attack % 1) and 1 or 0)
         end
