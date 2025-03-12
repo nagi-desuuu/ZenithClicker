@@ -1249,8 +1249,8 @@ function GAME.finish(reason)
             STAT.maxHeight = GAME.height
             STAT.heightDate = os.date("%d.%m.%y %H:%M%p")
         end
-        if GAME.time < STAT.maxTime then
-            STAT.maxTime = MATH.roundUnit(GAME.time, .01)
+        if GAME.time < STAT.minTime then
+            STAT.minTime = MATH.roundUnit(GAME.time, .01)
             STAT.timeDate = os.date("%d.%m.%y %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
