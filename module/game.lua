@@ -1246,12 +1246,12 @@ function GAME.finish(reason)
 
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
         if GAME.height > STAT.maxHeight then
-            STAT.maxHeight = GAME.height
-            STAT.heightDate = os.date("%d.%m.%y %H:%M%p")
+            STAT.maxHeight = MATH.roundUnit(GAME.height, .1)
+            STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
         if GAME.time < STAT.minTime then
             STAT.minTime = MATH.roundUnit(GAME.time, .01)
-            STAT.timeDate = os.date("%d.%m.%y %H:%M%p")
+            STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
         STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
