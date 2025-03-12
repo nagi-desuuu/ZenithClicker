@@ -38,7 +38,6 @@ saw:setFilter('nearest', 'nearest')
 saw:setWrap('repeat', 'repeat')
 local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
 local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
-
 local function dblMidStr(str, x, y)
     gc_mStr(str, x, y)
     gc_setAlpha(.6)
@@ -58,6 +57,10 @@ function scene.load()
     GC.setCanvas(setup)
     gc_origin()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
+
+
+    local t30 = GC.newText(FONT.get(30))
+    local t50 = GC.newText(FONT.get(50))
 
     -- Banner
     gc_setColor(.42, .42, .42)
@@ -115,7 +118,7 @@ function scene.load()
     gc_rectangle('fill', 0, 0, 100, 40, 5)
     gc_setColor(scoreColor)
     local t
-    if STAT.totalTime <= 3600 then
+    if STAT.totalTime <= 36000 then
         t = math.floor(STAT.totalTime / 60) .. "Min"
     else
         t = math.floor(STAT.totalTime / 3600) .. "H"
@@ -148,7 +151,6 @@ function scene.load()
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("CLICKER  LEAGUE", 7, 2, 0, .8)
-    gc_line(7, 90, 370 - 7, 90)
     FONT.set(50)
     gc_setColor(scoreColor)
     -- dblMidStr("00000FR", 370 / 2, 24)
@@ -163,7 +165,8 @@ function scene.load()
     gc_print("MAX  ALTITUDE", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
     gc_setColor(scoreColor)
-    gc_mStr(STAT.heightDate, 370 / 2, 85)
+    t30:set(STAT.heightDate)
+    gc_mDraw(t30, 370 / 2, 105, 0, .75)
     FONT.set(50)
     dblMidStr(STAT.maxHeight .. "m", 370 / 2, 24)
     gc_back()
@@ -177,7 +180,8 @@ function scene.load()
     gc_print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
     gc_setColor(scoreColor)
-    gc_mStr(STAT.timeDate, 370 / 2, 85)
+    t30:set(STAT.timeDate)
+    gc_mDraw(t30, 370 / 2, 105, 0, .75)
     FONT.set(50)
     dblMidStr(STRING.time(STAT.minTime), 370 / 2, 24)
     gc_back()
