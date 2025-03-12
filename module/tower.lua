@@ -245,16 +245,16 @@ local rankColor = {
     { 1,  .8, 1 },
 }
 local floorColors = TABLE.transpose {
-    { .4, .3, .2 }, -- F1
-    { .4, .3, .2 }, -- F2
-    { .4, .3, .2 }, -- F3
-    { .4, .3, .2 }, -- F4
-    { .4, .3, .2 }, -- F5
-    { .4, .3, .2 }, -- F6
-    { .4, .3, .2 }, -- F7
-    { .4, .3, .2 }, -- F8
-    { .4, .3, .2 }, -- F9
-    { .4, .3, .2 }, -- F10
+    { COLOR.HEX '81330F' }, -- F1
+    { COLOR.HEX 'BA924D' }, -- F2
+    { COLOR.HEX '685E08' }, -- F3
+    { COLOR.HEX '993019' }, -- F4
+    { COLOR.HEX '859098' }, -- F5
+    { COLOR.HEX 'C86A3C' }, -- F6
+    { COLOR.HEX '196FA3' }, -- F7
+    { COLOR.HEX '9B212D' }, -- F8
+    { COLOR.HEX '0B5D38' }, -- F9
+    { COLOR.HEX '130031' }, -- F10
 }
 local f10colors = TABLE.transpose {
     { .9, .3, .9 }, -- 1650 m
@@ -368,15 +368,12 @@ function scene.draw()
             end
         end
     else
-        local f = GAME.floor + MATH.interpolate(
-            Floors[GAME.floor - 1].top, -.26,
-            Floors[GAME.floor].top, .74,
-            GAME.height
-        )
+        local top = Floors[GAME.floor].top
+        local t = MATH.icLerp(1, 10, GAME.floor + MATH.clampInterpolate(top - 50, 0, top, 1, GAME.height))
         gc_setColor(
-            MATH.lLerp(floorColors[1], f),
-            MATH.lLerp(floorColors[2], f),
-            MATH.lLerp(floorColors[3], f)
+            MATH.lLerp(floorColors[1], t),
+            MATH.lLerp(floorColors[2], t),
+            MATH.lLerp(floorColors[3], t)
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
