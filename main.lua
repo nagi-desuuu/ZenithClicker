@@ -94,6 +94,9 @@ TEXTURE = {
     revive = assets 'revive.png',
     revive_rev_left = assets 'revive_rev_left.png',
     revive_rev_right = assets 'revive_rev_right.png',
+
+    banner = assets 'icon.png',
+    avatar = assets 'avatar.png',
 }
 local transition = { w = 128, h = 1 }
 for x = 0, 127 do
@@ -157,6 +160,9 @@ if fontNotLoaded then
         MSG.clear()
     end)
 end
+
+local button_invis = WIDGET.newClass('button_invis', 'button')
+button_invis.draw = NULL
 
 BEST = {
     highScore = setmetatable({}, { __index = function() return 0 end }),
@@ -251,6 +257,7 @@ for i, C in ipairs(Cards) do
 end
 
 SCN.add('tower', require 'module/tower')
+SCN.add('stat', require 'module/stat')
 SCN.add('joining', require 'module/joining')
 ZENITHA.setFirstScene('joining')
 

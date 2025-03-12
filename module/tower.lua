@@ -87,6 +87,11 @@ local function keyPress(key)
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
         GAME[GAME.playing and 'commit' or 'start']();
+    elseif key == 'tab' then
+        if not GAME.playing then
+            SFX.play('menuhit1')
+            SCN.go('stat', 'none')
+        end
     elseif key == '\\' then
         if not GAME.playing then
             local unlocked
@@ -787,6 +792,14 @@ scene.widgetList = {
                 love.keypressed('escape')
             end
         end,
+    },
+    WIDGET.new {
+        name = 'back', type = 'button',
+        pos = { 0, 0 }, x = 60, y = 220, w = 160, h = 60,
+        color = { .1, .26, .15 },
+        sound_hover = 'menutap',
+        fontSize = 35, text = "    STAT", textColor = 'lG',
+        onClick = WIDGET.c_pressKey 'tab',
     },
     WIDGET.new {
         name = 'start', type = 'button',
