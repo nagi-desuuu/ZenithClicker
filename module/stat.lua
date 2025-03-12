@@ -39,6 +39,12 @@ saw:setWrap('repeat', 'repeat')
 local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
 local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
 
+local function dblMidStr(str, x, y)
+    GC.mStr(str, x, y)
+    gc_setAlpha(.6)
+    GC.mStr(str, x, y + 3)
+end
+
 function scene.load()
     maskAlpha, cardShow = 0, 0
     TWEEN.new(function(t)
@@ -54,8 +60,6 @@ function scene.load()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
 
     -- Banner
-    -- gc_setColor(.15, .06, 0)
-    -- gc_rectangle('fill', 0, 10, 1200, 150)
     gc_setColor(.42, .42, .42)
     gc_draw(TEXTURE.banner, bannerQuad, 0, 10, 0, 1200 / 512, 150 / 256)
 
@@ -65,9 +69,12 @@ function scene.load()
     gc_rectangle('fill', 0, 720, 1200, -560)
     -- deco
     gc_draw(saw, sawQuad, 0, 720 - 560, 0, 7.2, 7.2, 0, 3)
-    -- bottom panel & link button
+    -- top ribbon
     gc_setColor(areaColor)
+    gc_rectangle('fill', 0, 210, 1200, 60)
+    -- bottom ribbon
     gc_rectangle('fill', 0, 720, 1200, -90)
+    -- github link
     FONT.set(50)
     gc_setColor(scoreColor)
     gc_printf("↗  VIEW SOURCE FILE", 0, 640, 1200, 'center')
@@ -84,9 +91,9 @@ function scene.load()
     gc_draw(TEXTURE.transition, 0, 720 - 560, -1.5708, .626, 3)
 
     -- X
-    FONT.set(50)
+    FONT.set(30)
     gc_setColor(COLOR.DL)
-    gc_print("CLOSE", 1060, 42, 0, .7)
+    gc_print("CLOSE", 1068 - 10, 45 - 3, 0, 1.2)
 
     -- PFP
     gc_setColor(1, 1, 1)
@@ -102,10 +109,29 @@ function scene.load()
     gc_setColor(COLOR.L)
     gc_print("ANON-20250226", 165, 18, 0, 1.2)
 
-    -- Introduction
-    gc_move('m', 30, 265)
+    -- Time
+    gc_move('m', 1075, 165)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 1140, 80)
+    gc_rectangle('fill', 0, 0, 100, 40, 5)
+    gc_setColor(scoreColor)
+    local t
+    if STAT.totalTime <= 3600 then
+        t = math.floor(STAT.totalTime / 60) .. "Min"
+    else
+        t = math.floor(STAT.totalTime / 3600) .. "H"
+    end
+    FONT.set(30)
+    GC.mStr(t, 50, 0)
+    gc_back()
+
+    -- Clicker
+    gc_setColor(1, 1, 1)
+    gc_mDraw(TEXTURE.clicker, 980, 182, 0, .626)
+
+    -- Introduction
+    gc_move('m', 25, 280)
+    gc_setColor(areaColor)
+    gc_rectangle('fill', 0, 0, 1150, 80)
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("ABOUT  US", 7, 2, 0, .8)
@@ -116,62 +142,60 @@ function scene.load()
     gc_setLineWidth(2)
 
     -- Rating
-    gc_move('m', 30, 360)
+    gc_move('m', 25, 370)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 370, 120)
+    gc_rectangle('fill', 0, 0, 375, 120)
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("CLICKER  LEAGUE", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
     FONT.set(50)
     gc_setColor(scoreColor)
-    gc_print("D 00000FR", 62, 24)
-    gc_setAlpha(.6)
-    gc_print("D 00000FR", 62, 26)
+    -- dblMidStr("00000FR", 370 / 2, 24)
     gc_back()
 
     -- Height
-    gc_move('m', 415, 360)
+    gc_move('m', 412.5, 370)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 370, 120)
+    gc_rectangle('fill', 0, 0, 375, 120)
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("MAX  ALTITUDE", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
     FONT.set(50)
     gc_setColor(scoreColor)
-    gc_printf("TODO", 0, 24, 370, 'center')
+    dblMidStr(TABLE.maxAll(BEST.highScore) .. "m", 370 / 2, 24)
     gc_back()
 
     -- Speedrun
-    gc_move('m', 800, 360)
+    gc_move('m', 800, 370)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 370, 120)
+    gc_rectangle('fill', 0, 0, 375, 120)
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
     FONT.set(50)
     gc_setColor(scoreColor)
-    gc_printf("TODO", 0, 24, 370, 'center')
+    dblMidStr(STRING.time(TABLE.minAll(BEST.speedrun)), 370 / 2, 24)
     gc_back()
 
     -- Career
-    gc_move('m', 30, 500)
+    gc_move('m', 25, 500)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 560, 120)
+    gc_rectangle('fill', 0, 0, 570, 120)
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("CAREER", 7, 2, 0, .8)
     FONT.set(50)
     gc_setColor(scoreColor)
-    gc_printf("TODO", 0, 24, 560, 'center')
+    -- TODO
     gc_back()
 
     -- Full stats
-    gc_move('m', 610, 500)
+    gc_move('m', 605, 500)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 560, 120)
+    gc_rectangle('fill', 0, 0, 570, 120)
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("FULL  STATS", 7, 2, 0, .8)
@@ -220,7 +244,7 @@ function scene.draw()
         gc_replaceTransform(SCR.xOy_m)
         gc_setColor(1, 1, 1, cardShow)
         local k = .9 + cardShow * .1
-        gc_mDraw(card,0,0,0,k * .67, k ^ 26 * .67)
+        gc_mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67)
     end
 end
 

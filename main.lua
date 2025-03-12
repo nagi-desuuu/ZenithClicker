@@ -97,6 +97,7 @@ TEXTURE = {
 
     banner = assets 'icon.png',
     avatar = assets 'avatar.png',
+    clicker = assets 'clicker.png',
 }
 local transition = { w = 128, h = 1 }
 for x = 0, 127 do
@@ -156,7 +157,8 @@ if fontNotLoaded then
         TEXTS.height:setFont(FONT.get(30))
         TEXTS.time:setFont(FONT.get(30))
         TEXTS.gigatime:setFont(FONT.get(50))
-        WIDGET._reset()
+        for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
+        for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
         MSG.clear()
     end)
 end
