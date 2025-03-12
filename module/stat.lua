@@ -266,7 +266,7 @@ function scene.draw()
         GC.replaceTransform(SCR.xOy_m)
         GC.setColor(1, 1, 1, cardShow)
         local k = .9 + cardShow * .1
-        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67)
+        GC.mDraw(card, 0, 0, GAME.anyRev and 3.1416 or 0, k * .67, k ^ 26 * .67)
     end
 end
 
