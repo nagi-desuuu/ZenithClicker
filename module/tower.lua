@@ -245,11 +245,11 @@ local rankColor = {
     { 1,  .8, 1 },
 }
 local floorColors = TABLE.transpose {
-    { COLOR.HEX '81330F' }, -- F1
-    { COLOR.HEX 'BA924D' }, -- F2
-    { COLOR.HEX '685E08' }, -- F3
+    { COLOR.HEX '792B12' }, -- F1
+    { COLOR.HEX '98773E' }, -- F2
+    { COLOR.HEX '56320C' }, -- F3
     { COLOR.HEX '993019' }, -- F4
-    { COLOR.HEX '859098' }, -- F5
+    { COLOR.HEX '818A8A' }, -- F5
     { COLOR.HEX 'C86A3C' }, -- F6
     { COLOR.HEX '196FA3' }, -- F7
     { COLOR.HEX '9B212D' }, -- F8
