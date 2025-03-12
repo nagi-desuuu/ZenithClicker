@@ -180,7 +180,7 @@ STAT = {
     uid = "ANON-" .. os.date("%d_") .. math.random(2600, 6200),
     maxFloor = 1,
     maxHeight = 0,
-    heightDate = "BEFORE 25.3.12",
+    heightDate = "BEFORE 25.3.12", -- oh god. -fily
     minTime = 26 * 60,
     timeDate = "BEFORE 25.3.12",
 
