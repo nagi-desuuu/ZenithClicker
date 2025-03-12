@@ -1336,11 +1336,11 @@ end
 
 function GAME.update(dt)
     if GAME.playing then
-        if love.keyboard.isDown('x') then
-            GAME.addHeight(dt * 260)
-        elseif love.keyboard.isDown('c') then
-            GAME.addXP(dt * 26)
-        end
+        -- if love.keyboard.isDown('x') then
+        --     GAME.addHeight(dt * 260)
+        -- elseif love.keyboard.isDown('c') then
+        --     GAME.addXP(dt * 26)
+        -- end
 
         GAME.time = GAME.time + dt
         if GAME.gigaspeed then
