@@ -55,6 +55,9 @@ end
 local function keyPress(key)
     if key == 'escape' then
         if not GAME.playing then
+            local W = scene.widgetList.back
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
             if TASK.lock('sure_quit', 2.6) then
                 SFX.play('menuclick')
                 MSG.clear()
@@ -91,6 +94,9 @@ local function keyPress(key)
         if not GAME.playing then
             SFX.play('menuhit1')
             SCN.go('stat', 'none')
+            local W = scene.widgetList.stat
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
         end
     elseif key == '\\' then
         if not GAME.playing then
@@ -794,7 +800,7 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
-        name = 'back', type = 'button',
+        name = 'stat', type = 'button',
         pos = { 0, 0 }, x = 60, y = 220, w = 160, h = 60,
         color = { .1, .26, .15 },
         sound_hover = 'menutap',

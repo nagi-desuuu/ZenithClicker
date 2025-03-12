@@ -4,6 +4,8 @@ local scene = {}
 local maskAlpha, cardShow
 local card = GC.newCanvas(1200, 720)
 
+local floor = math.floor
+
 local gc = love.graphics
 local gc_origin, gc_replaceTransform = gc.origin, gc.replaceTransform
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
@@ -116,23 +118,20 @@ function scene.load()
     gc_print(STAT.uid, 165, 18, 0, 1.2)
 
     -- Time
-    gc_move('m', 1075, 165)
+    gc_move('m', 1065, 165)
     gc_setColor(areaColor)
-    gc_rectangle('fill', 0, 0, 100, 40, 5)
-    gc_setColor(scoreColor)
-    local t
-    if STAT.totalTime <= 36000 then
-        t = math.floor(STAT.totalTime / 60) .. "Min"
-    else
-        t = math.floor(STAT.totalTime / 3600) .. "H"
-    end
+    gc_rectangle('fill', 0, 0, 110, 40, 5)
+    gc_setColor(1, 1, 1)
     FONT.set(30)
-    gc_mStr(t, 50, 0)
+    gc_mStr(STAT.totalTime <= 36000 and
+        { scoreColor, floor(STAT.totalTime / 60), textColor, "min" }
+        or { scoreColor, floor(STAT.totalTime / 3600), textColor, "H" },
+        55, 0)
     gc_back()
 
     -- Clicker
     gc_setColor(1, 1, 1)
-    gc_mDraw(TEXTURE.clicker, 980, 182, 0, .626)
+    gc_mDraw(TEXTURE.clicker, 970, 182, 0, .626)
 
     -- Introduction
     gc_move('m', 25, 280)
@@ -167,9 +166,10 @@ function scene.load()
     gc_setColor(titleColor)
     gc_print("MAX  ALTITUDE", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
-    gc_setColor(scoreColor)
+    gc_setColor(textColor)
     t30:set(STAT.heightDate)
     gc_mDraw(t30, 370 / 2, 105, 0, .75)
+    gc_setColor(scoreColor)
     FONT.set(50)
     dblMidStr(STAT.maxHeight .. "m", 370 / 2, 24)
     gc_back()
@@ -182,9 +182,10 @@ function scene.load()
     gc_setColor(titleColor)
     gc_print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
-    gc_setColor(scoreColor)
+    gc_setColor(textColor)
     t30:set(STAT.timeDate)
     gc_mDraw(t30, 370 / 2, 105, 0, .75)
+    gc_setColor(scoreColor)
     FONT.set(50)
     dblMidStr(STRING.time(STAT.minTime), 370 / 2, 24)
     gc_back()
@@ -208,8 +209,22 @@ function scene.load()
     FONT.set(30)
     gc_setColor(titleColor)
     gc_print("FULL  STATS", 7, 2, 0, .8)
-    gc_setColor(scoreColor)
-    -- TODO
+    local l = {
+        { "Game",   { scoreColor, STAT.totalGame },                                   x = 80,  d = 70, y = 35 },
+        { "Floor",  { scoreColor, STAT.totalFloor },                                  x = 80,  d = 70, y = 60 },
+        { "Giga",   { scoreColor, STAT.totalGiga },                                   x = 80,  d = 70, y = 85 },
+        { "Flip",   { scoreColor, STAT.totalFlip },                                   x = 300, d = 80, y = 10 },
+        { "Quest",  { scoreColor, STAT.totalQuest },                                  x = 300, d = 80, y = 35 },
+        { "Height", { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 300, d = 80, y = 60 },
+        { "Attack", { scoreColor, STAT.totalAttack },                                 x = 300, d = 80, y = 85 },
+    }
+    for i = 1, #l do
+        local v = l[i]
+        gc_setColor(textColor)
+        gc_print(v[1], v.x, v.y, 0, .75)
+        gc_setColor(1, 1, 1)
+        gc_print(v[2], v.x + v.d, v.y, 0, .75)
+    end
     gc_back()
 
     GC.setCanvas()
