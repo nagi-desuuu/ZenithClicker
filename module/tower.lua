@@ -368,9 +368,11 @@ function scene.draw()
             end
         end
     else
-        local bottom = Floors[GAME.floor - 1].top
-        local top = Floors[GAME.floor].top
-        local f = GAME.floor + MATH.interpolate(bottom, 0, top, 1, GAME.height)
+        local f = GAME.floor + MATH.interpolate(
+            Floors[GAME.floor - 1].top, -.26,
+            Floors[GAME.floor].top, .74,
+            GAME.height
+        )
         gc_setColor(
             MATH.lLerp(floorColors[1], f),
             MATH.lLerp(floorColors[2], f),
