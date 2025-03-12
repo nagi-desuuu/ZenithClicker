@@ -416,7 +416,6 @@ function GAME.startRevive()
                 local task = TABLE.copyAll(TABLE.getRandom(options))
                 if task.init then task.init(task) end
                 ---@cast task ReviveTask
-                task.cur = #GAME.reviveTasks + 1
                 task.progress = 0
                 task.textObj = GC.newText(FONT.get(30), task.text)
                 task.shortObj = GC.newText(FONT.get(30), task.short)
@@ -442,12 +441,12 @@ function GAME.incrementPrompt(prompt, value)
             TASK.lock('noIncrementSFX', 0.026)
         end
         if t.progress >= t.target then
-            if t.cur < #GAME.reviveTasks then
-                GAME.currentTask = GAME.reviveTasks[t.cur + 1]
+            GAME.currentTask = TABLE.next(GAME.reviveTasks, GAME.currentTask)
+            if GAME.currentTask then
                 SFX.play('boardlock_clear')
             else
-                GAME.reviveCount = GAME.reviveCount + 1
                 GAME.currentTask = false
+                GAME.reviveCount = GAME.reviveCount + 1
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
