@@ -360,7 +360,7 @@ end
 
 function WIDGET._prototype.button:draw()
     gc.push('transform')
-    gc.translate(self._x, self.name == 'back' and self._y or self._y + DeckPress)
+    gc.translate(self._x, #self.name == 4 and self._y or self._y + DeckPress)
 
     if self._pressTime > 0 then
         gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)

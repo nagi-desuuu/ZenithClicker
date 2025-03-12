@@ -91,13 +91,15 @@ local function keyPress(key)
         W._hoverTime = W._hoverTimeMax
         GAME[GAME.playing and 'commit' or 'start']();
     elseif key == 'tab' then
-        if not GAME.playing then
+        if GAME.playing then
+            SFX.play('no')
+        else
             SFX.play('menuhit1')
             SCN.go('stat', 'none')
-            local W = scene.widgetList.stat
-            W._pressTime = W._pressTimeMax * 2
-            W._hoverTime = W._hoverTimeMax
         end
+        local W = scene.widgetList.stat
+        W._pressTime = W._pressTimeMax * 2
+        W._hoverTime = W._hoverTimeMax
     elseif key == '\\' then
         if not GAME.playing then
             local unlocked

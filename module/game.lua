@@ -616,6 +616,11 @@ function GAME.upFloor()
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
     if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
     if GAME.floor == 10 then
+        if GAME.time < STAT.minTime then
+            STAT.minTime = MATH.roundUnit(GAME.time, .01)
+            STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
+            SaveStat()
+        end
         if GAME.gigaspeed then
             GAME.gigaTime = GAME.time
             GAME.setGigaspeedAnim(false, true)
@@ -1245,14 +1250,11 @@ function GAME.finish(reason)
             unlockDuo = duoWasCompleted == 0 and GAME.completion.DP > 0
         end
 
+        -- Statistics
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
         if GAME.height > STAT.maxHeight then
             STAT.maxHeight = MATH.roundUnit(GAME.height, .1)
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
-        end
-        if GAME.time < STAT.minTime then
-            STAT.minTime = MATH.roundUnit(GAME.time, .01)
-            STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
         STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
@@ -1262,9 +1264,12 @@ function GAME.finish(reason)
         STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
-        if GAME.floor>=10 then STAT.totalF10 = STAT.totalF10 + 1 end
+        if GAME.floor >= 10 then
+            STAT.totalF10 = STAT.totalF10 + 1
+        end
         SaveStat()
 
+        -- Best
         local oldPB = BEST.highScore[GAME.comboStr]
         if GAME.height > oldPB then
             BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .1)
