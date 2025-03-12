@@ -139,15 +139,19 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
 }
 if fontNotLoaded then
     TASK.new(function()
-        local t = love.timer.getTime()
-        local delay = MATH.roll(.9626) and MATH.rand(2.6, 6.26) or 26
-        while love.timer.getTime() - t < delay do
-            coroutine.yield()
+        local loadTime = love.timer.getTime() + (MATH.roll(.9626) and MATH.rand(2.6, 6.26) or 26)
+        while love.timer.getTime() < loadTime do
+            TASK.yieldT(0.1)
             if GAME.anyRev then
                 TASK.yieldT(0.26)
                 SFX.play('staffsilence')
                 MSG('dark', "A DARK FORCE INTERRUPTED THE FONT LOADING")
                 return
+            end
+            if GAME.mod.DP > 0 then
+                TASK.yieldT(0.26)
+                SFX.play('staffspam')
+                break
             end
         end
         FONT.setDefaultFont('din')
@@ -188,6 +192,7 @@ STAT = {
     totalFlip = 0,
     totalAttack = 0,
     totalGiga = 0,
+    totalF10 = 0,
 
     fullscreen = true,
     syscursor = false,
@@ -485,6 +490,7 @@ end
 if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
+if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
 
 local oldVer = BEST.version
 if BEST.version == nil then

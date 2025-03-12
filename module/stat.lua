@@ -153,6 +153,8 @@ function scene.load()
     GC.draw(t50, 370 / 2, 24 + 3, 0, 1, 1, t50:getWidth() / 2)
     t30:set("CR")
     GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47)
+    GC.setAlpha(.6)
+    GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47 + 3)
     GC.ucs_back()
 
     -- Height
@@ -207,20 +209,21 @@ function scene.load()
     GC.setColor(titleColor)
     GC.print("FULL  STATS", 7, 2, 0, .8)
     local l = {
-        { "Game",   { scoreColor, STAT.totalGame },                                   x = 80,  d = 70, y = 35 },
-        { "Floor",  { scoreColor, STAT.totalFloor },                                  x = 80,  d = 70, y = 60 },
-        { "Giga",   { scoreColor, STAT.totalGiga },                                   x = 80,  d = 70, y = 85 },
-        { "Flip",   { scoreColor, STAT.totalFlip },                                   x = 300, d = 80, y = 10 },
-        { "Quest",  { scoreColor, STAT.totalQuest },                                  x = 300, d = 80, y = 35 },
-        { "Attack", { scoreColor, STAT.totalAttack },                                 x = 300, d = 80, y = 60 },
-        { "Height", { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 300, d = 80, y = 85 },
+        { "Game",   { scoreColor, STAT.totalGame },                                   x = 26,  y = 35 },
+        { "Ascent", { scoreColor, STAT.totalF10 },                                    x = 26,  y = 60 },
+        { "Giga",   { scoreColor, STAT.totalGiga },                                   x = 26,  y = 85 },
+        { "Flip",   { scoreColor, STAT.totalFlip },                                   x = 196, y = 35 },
+        { "Quest",  { scoreColor, STAT.totalQuest },                                  x = 196, y = 60 },
+        { "Attack", { scoreColor, STAT.totalAttack },                                 x = 196, y = 85 },
+        { "Floor",  { scoreColor, STAT.totalFloor },                                  x = 380, y = 60 },
+        { "Height", { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 85 },
     }
     for i = 1, #l do
         local v = l[i]
         GC.setColor(textColor)
         GC.print(v[1], v.x, v.y, 0, .75)
         GC.setColor(1, 1, 1)
-        GC.print(v[2], v.x + v.d, v.y, 0, .75)
+        GC.print(v[2], v.x + 80, v.y, 0, .75)
     end
     GC.ucs_back()
 

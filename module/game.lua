@@ -1262,6 +1262,7 @@ function GAME.finish(reason)
         STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
+        if GAME.floor>=10 then STAT.totalF10 = STAT.totalF10 + 1 end
         SaveStat()
 
         local oldPB = BEST.highScore[GAME.comboStr]
