@@ -246,6 +246,7 @@ function scene.keyDown(key, isRep)
             end)
         end)
     end
+    ZENITHA.setCursorVis(true)
     return true
 end
 
