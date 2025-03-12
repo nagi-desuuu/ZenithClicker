@@ -508,7 +508,8 @@ function GAME.takeDamage(dmg, reason, toAlly)
         toAlly and 'inject' or
         dmg <= 1.626 and 'damage_small' or
         dmg <= 4.2 and 'damage_medium' or
-        'damage_large', .872)
+        'damage_large', .872
+    )
     if GAME[k] <= 0 then
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
             if toAlly then
@@ -1220,7 +1221,8 @@ function GAME.finish(reason)
         reason == 'forfeit' and 'detonated' or
         reason == 'wrong' and 'topout' or
         reason == 'time' and 'losestock' or
-        'shatter', .8)
+        'shatter', .8
+    )
 
     table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
     for _, C in ipairs(Cards) do
@@ -1352,7 +1354,10 @@ function GAME.update(dt)
         GAME.time = GAME.time + dt
         if GAME.gigaspeed then
             TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
-                floor(GAME.time / 60), floor(GAME.time % 60), GAME.time % 1 * 1000))
+                floor(GAME.time / 60),
+                floor(GAME.time % 60),
+                GAME.time % 1 * 1000)
+            )
         end
 
         local t = GAME.currentTask

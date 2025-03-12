@@ -244,10 +244,28 @@ local rankColor = {
     { .4, .9, 1 },
     { 1,  .8, 1 },
 }
-local f10colors = {
-    { .9, .6, .4, .2, .4, 1,  1,  .8, .0 },
-    { .3, .3, .2, .5, .6, 0,  0,  0,  .0 },
-    { .9, .8, .7, .7, .4, .5, .6, 1,  1 },
+local floorColors = TABLE.transpose {
+    { .4, .3, .2 }, -- F1
+    { .4, .3, .2 }, -- F2
+    { .4, .3, .2 }, -- F3
+    { .4, .3, .2 }, -- F4
+    { .4, .3, .2 }, -- F5
+    { .4, .3, .2 }, -- F6
+    { .4, .3, .2 }, -- F7
+    { .4, .3, .2 }, -- F8
+    { .4, .3, .2 }, -- F9
+    { .4, .3, .2 }, -- F10
+}
+local f10colors = TABLE.transpose {
+    { .9, .3, .9 }, -- 1650 m
+    { .6, .3, .8 }, -- 1756.25 m
+    { .4, .2, .7 }, -- 1862.5 m
+    { .2, .5, .7 }, -- 1968.75 m
+    { .4, .6, .4 }, -- 2075 m
+    { 1,  0,  .5 }, -- 2181.25 m
+    { 1,  0,  .6 }, -- 2287.5 m
+    { .8, 0,  1 },  -- 2393.75 m
+    { .0, .0, 1 },  -- 2500 m
 }
 local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
@@ -350,8 +368,16 @@ function scene.draw()
             end
         end
     else
-        -- MATH.ilLerp()
-        gc_setColor(.4, .3, .2)
+        local f = GAME.floor + MATH.interpolate(
+            Floors[GAME.floor - 1].top, -.26,
+            Floors[GAME.floor].top, .74,
+            GAME.height
+        )
+        gc_setColor(
+            MATH.lLerp(floorColors[1], f),
+            MATH.lLerp(floorColors[2], f),
+            MATH.lLerp(floorColors[3], f)
+        )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
 

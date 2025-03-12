@@ -458,7 +458,7 @@ function Daemon_Beat()
             t2 = t2 + step2
             if GAME.mod.EX > 0 and not SCN.swapping then
                 if GAME.anyRev then
-                    BGM.set('expert', 'volume', MATH.rand(.7, 1) or 0, 0)
+                    BGM.set('expert', 'volume', MATH.rand(.7, 1), 0)
                 else
                     local pick = MATH.roll(MATH.interpolate(1, .26, 10, .9, GAME.floor))
                     BGM.set('expert', 'volume', pick and MATH.rand(.4, .7) or 0, pick and 0 or .1)

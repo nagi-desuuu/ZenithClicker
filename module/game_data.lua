@@ -361,7 +361,7 @@ Fatigue = {
         { time = 80,   event = { 'dmgHeal', 1 }, --[[ 2 ]]     text = "THEY SUCCESSFULLY APOLOGIZE_?",             desc = "Heal+",         color = 'lO' },
         { time = 100,  event = { 'dmgHeal', 1 }, --[[ 3 ]]     text = "THINGS ARE BACK TO HOW THEY USED TO BE_!",   desc = "Heal+++",       color = 'lO' },
         { time = 120,  event = { 'dmgHeal', -1 }, --[[ 2 ]]    text = "MINOR ISSUES BECOME LARGE CONFLICTS_",       desc = "Heal--" },
-        { time = 140,  event = { 'dmgHeal', -1 }, --[[ 1 ]]    text = "YOU BLAMES THEM FOR YOUR OWN PROBLEMS_",    desc = "Heal---" },
+        { time = 140,  event = { 'dmgHeal', -1 }, --[[ 1 ]]    text = "YOU BLAME THEY FOR THEIR OWN PROBLEMS_",    desc = "Heal---" },
         { time = 160,  event = { 'reviveCount', 3 },           text = "THEY WOULD RATHER SPEND TIME ALONE_",        desc = "Revive++" },
         { time = 180,  event = { 'dmgHeal', 1.5 }, --[[ 2.5 ]] text = "YOU PROMISES TO CHANGE_",                    desc = "Heal++",        color = 'lO' },
         { time = 200,  event = { 'dmgTimeMul', -.2 },          text = "PROMISES ARE BROKEN_",                       desc = "TimerSpeed++" },
