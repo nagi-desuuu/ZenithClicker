@@ -1244,7 +1244,15 @@ function GAME.finish(reason)
             unlockDuo = duoWasCompleted == 0 and GAME.completion.DP > 0
         end
 
-        if GAME.floor > STAT.maxFloor then STAT.maxFloor = GAME.floor end
+        STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
+        if GAME.height > STAT.maxHeight then
+            STAT.maxHeight = GAME.height
+            STAT.heightDate = os.date("%d.%m.%y %H:%M%p")
+        end
+        if GAME.time < STAT.maxTime then
+            STAT.maxTime = MATH.roundUnit(GAME.time, .01)
+            STAT.timeDate = os.date("%d.%m.%y %H:%M%p")
+        end
         STAT.totalGame = STAT.totalGame + 1
         STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
         STAT.totalFlip = STAT.totalFlip + GAME.totalFlip

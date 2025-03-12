@@ -173,6 +173,11 @@ BEST = {
 
 STAT = {
     maxFloor = 1,
+    maxHeight = 0,
+    heightDate = "BEFORE 25.3.12",
+    minTime = 26 * 60,
+    timeDate = "BEFORE 25.3.12",
+
     totalGame = 0,
     totalTime = 0,
     totalQuest = 0,
@@ -530,6 +535,8 @@ for i = 1, #Cards do
         end
     end
 end
+if STAT.maxHeight == 0 then STAT.maxHeight = math.max(STAT.maxHeight, (TABLE.maxAll(BEST.highScore))) end
+if STAT.minTime == 26 * 60 then STAT.minTime = math.min(STAT.minTime, (TABLE.minAll(BEST.speedrun))) end
 GAME.refreshLockState()
 GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)

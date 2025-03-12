@@ -10,7 +10,7 @@ local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_draw, gc_line = gc.draw, gc.line
 local gc_rectangle = gc.rectangle
 local gc_print, gc_printf = gc.print, gc.printf
-local gc_mDraw = GC.mDraw
+local gc_mDraw, gc_mStr = GC.mDraw, GC.mStr
 local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
 
 local baseColor = { .08, .26, .14 }
@@ -40,9 +40,9 @@ local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
 local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
 
 local function dblMidStr(str, x, y)
-    GC.mStr(str, x, y)
+    gc_mStr(str, x, y)
     gc_setAlpha(.6)
-    GC.mStr(str, x, y + 3)
+    gc_mStr(str, x, y + 3)
 end
 
 function scene.load()
@@ -121,7 +121,7 @@ function scene.load()
         t = math.floor(STAT.totalTime / 3600) .. "H"
     end
     FONT.set(30)
-    GC.mStr(t, 50, 0)
+    gc_mStr(t, 50, 0)
     gc_back()
 
     -- Clicker
@@ -162,9 +162,10 @@ function scene.load()
     gc_setColor(titleColor)
     gc_print("MAX  ALTITUDE", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
-    FONT.set(50)
     gc_setColor(scoreColor)
-    dblMidStr(TABLE.maxAll(BEST.highScore) .. "m", 370 / 2, 24)
+    gc_mStr(STAT.heightDate, 370 / 2, 85)
+    FONT.set(50)
+    dblMidStr(STAT.maxHeight .. "m", 370 / 2, 24)
     gc_back()
 
     -- Speedrun
@@ -175,9 +176,10 @@ function scene.load()
     gc_setColor(titleColor)
     gc_print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
     gc_line(7, 90, 370 - 7, 90)
-    FONT.set(50)
     gc_setColor(scoreColor)
-    dblMidStr(STRING.time(TABLE.minAll(BEST.speedrun)), 370 / 2, 24)
+    gc_mStr(STAT.timeDate, 370 / 2, 85)
+    FONT.set(50)
+    dblMidStr(STRING.time(STAT.minTime), 370 / 2, 24)
     gc_back()
 
     -- Career
