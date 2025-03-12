@@ -110,7 +110,7 @@ function scene.load()
 
     -- ID
     FONT.set(30)
-    gc_print("JOINED ON " .. STAT.joinOn, 165, 96, 0, .7)
+    gc_print("JOINED " .. STAT.joinDate, 165, 96, 0, .7)
     FONT.set(50)
     gc_setColor(COLOR.L)
     gc_print(STAT.uid, 165, 18, 0, 1.2)

@@ -172,7 +172,7 @@ BEST = {
 }
 
 STAT = {
-    joinOn = os.date("%Y/%m"),
+    joinDate = os.date("%b %Y"),
     uid = "ANON-" .. os.date("%d_") .. math.random(2600, 6200),
     maxFloor = 1,
     maxHeight = 0,
