@@ -45,13 +45,16 @@ local function dblMidStr(str, x, y)
 end
 
 function scene.load()
+    TASK.lock('stat_no_quit')
     maskAlpha, cardShow = 0, 0
     TWEEN.new(function(t)
         maskAlpha = t
     end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
         TWEEN.new(function(t)
             cardShow = t
-        end):setTag('stat_in'):setDuration(.1):run()
+        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
+            TASK.unlock('stat_no_quit')
+        end)
     end)
 
     GC.setCanvas(setup)
@@ -107,10 +110,10 @@ function scene.load()
 
     -- ID
     FONT.set(30)
-    gc_print("MIGHT JOIN 26 DAYS AGO", 165, 96, 0, .7)
+    gc_print("JOINED ON " .. STAT.joinOn, 165, 96, 0, .7)
     FONT.set(50)
     gc_setColor(COLOR.L)
-    gc_print("ANON-20250226", 165, 18, 0, 1.2)
+    gc_print(STAT.uid, 165, 18, 0, 1.2)
 
     -- Time
     gc_move('m', 1075, 165)
@@ -214,21 +217,19 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' then
+    if key == 'escape' and TASK.lock('stat_no_quit') then
         SFX.play('menuclick')
         TWEEN.tag_kill('stat_in')
-        if TASK.lock('stat_quit') then
+        TWEEN.new(function(t)
+            cardShow = 1 - t
+        end):setDuration(.26):run():setOnFinish(function()
             TWEEN.new(function(t)
-                cardShow = 1 - t
+                maskAlpha = 1 - t
             end):setDuration(.26):run():setOnFinish(function()
-                TWEEN.new(function(t)
-                    maskAlpha = 1 - t
-                end):setDuration(.26):run():setOnFinish(function()
-                    SCN.back('none')
-                    TASK.unlock('stat_quit')
-                end)
+                SCN.back('none')
+                TASK.unlock('stat_no_quit')
             end)
-        end
+        end)
     end
     return true
 end
