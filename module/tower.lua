@@ -242,7 +242,7 @@ local rankColor = {
     { 1,  .8, .5 },
     { .6, 1,  .8 },
     { .4, .9, 1 },
-    { 1,  .8, 1 },
+    { 1,  .6, 1 },
 }
 local floorColors = TABLE.transpose {
     { COLOR.HEX '792B12' }, -- F1
@@ -664,6 +664,23 @@ function scene.overDraw()
         gc_setLineWidth(6)
         gc_mRect('line', 800, 965, 420, 26)
         if not GAME.DPlock then
+            gc_rectangle('fill', 800 - 35, 985, 70, 6)
+            for i = 1, min(rank - 1, 6) do
+                gc_rectangle('fill', 800 + 15 + 28 * i, 985, 22, 6)
+                gc_rectangle('fill', 800 - 15 - 28 * i, 985, -22, 6)
+            end
+            if rank >= 8 then
+                for i = 0, min(rank - 8, 3) do
+                    gc_rectangle('fill', 800 - 220 + 45 * i, 945, 35, -10)
+                    gc_rectangle('fill', 800 + 220 - 45 * i, 945, -35, -10)
+                end
+                if rank >= 12 then
+                    for i = 0, rank - 12 do
+                        gc_rectangle('fill', 800 + 218 + 15 * i, 955, 10, 32)
+                        gc_rectangle('fill', 800 - 218 - 15 * i, 955, -10, 32)
+                    end
+                end
+            end
             if GAME.rankupLast then
                 if GAME.xpLockLevel < 5 then
                     gc_setLineWidth(2)
