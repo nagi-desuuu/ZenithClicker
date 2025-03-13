@@ -36,20 +36,7 @@ local function dblMidStr(str, x, y)
     GC.setAlpha(.6)
     GC.mStr(str, x, y + 3)
 end
-
-function scene.load()
-    TASK.lock('stat_no_quit')
-    maskAlpha, cardShow = 0, 0
-    TWEEN.new(function(t)
-        maskAlpha = t
-    end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
-        TWEEN.new(function(t)
-            cardShow = t
-        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
-            TASK.unlock('stat_no_quit')
-        end)
-    end)
-
+local function refreshCanvas()
     GC.setCanvas(setup)
     GC.origin()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
@@ -151,10 +138,9 @@ function scene.load()
     GC.draw(t50, 370 / 2, 24, 0, 1, 1, t50:getWidth() / 2)
     GC.setAlpha(.6)
     GC.draw(t50, 370 / 2, 24 + 3, 0, 1, 1, t50:getWidth() / 2)
+    GC.setColor(textColor)
     t30:set("CR")
     GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47)
-    GC.setAlpha(.6)
-    GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47 + 3)
     GC.ucs_back()
 
     -- Height
@@ -230,6 +216,29 @@ function scene.load()
     GC.setCanvas()
 end
 
+function scene.load()
+    TASK.lock('stat_no_quit')
+    maskAlpha, cardShow = 0, 0
+    TWEEN.new(function(t)
+        maskAlpha = t
+    end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
+        TWEEN.new(function(t)
+            cardShow = t
+        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
+            TASK.unlock('stat_no_quit')
+        end)
+    end)
+
+    refreshCanvas()
+
+    local W = scene.widgetList.link
+    W.y = GAME.anyRev and -210 or 210
+    W:resetPos()
+    W = scene.widgetList.close
+    W.y = GAME.anyRev and 196 or -196
+    W:resetPos()
+end
+
 function scene.keyDown(key, isRep)
     if isRep then return true end
     if key == 'escape' and TASK.lock('stat_no_quit') then
@@ -267,7 +276,7 @@ function scene.draw()
         GC.replaceTransform(SCR.xOy_m)
         GC.setColor(1, 1, 1, cardShow)
         local k = .9 + cardShow * .1
-        GC.mDraw(card, 0, 0, GAME.anyRev and 3.1416 or 0, k * .67, k ^ 26 * .67)
+        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67 * (GAME.anyRev and -1 or 1))
     end
 end
 
@@ -281,7 +290,7 @@ scene.widgetList = {
         onClick = function() love.keypressed('escape') end,
     },
     WIDGET.new {
-        type = 'button_invis',
+        name = 'link', type = 'button_invis',
         pos = { .5, .5 }, y = 210, w = 800, h = 60,
         onClick = function()
             SFX.play('menuconfirm')
@@ -289,7 +298,7 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
-        type = 'button_invis',
+        name = 'close', type = 'button_invis',
         pos = { .5, .5 }, x = 344, y = -196, w = 100, h = 50,
         onClick = function() love.keypressed('escape') end,
     },
@@ -303,4 +312,5 @@ scene.widgetList = {
         onClick = function() love.keypressed('escape') end,
     }
 }
+
 return scene
