@@ -242,19 +242,19 @@ local rankColor = {
     { 1,  .8, .5 },
     { .6, 1,  .8 },
     { .4, .9, 1 },
-    { 1,  .8, 1 },
+    { 1,  .6, 1 },
 }
 local floorColors = TABLE.transpose {
-    { .4, .3, .2 }, -- F1
-    { .4, .3, .2 }, -- F2
-    { .4, .3, .2 }, -- F3
-    { .4, .3, .2 }, -- F4
-    { .4, .3, .2 }, -- F5
-    { .4, .3, .2 }, -- F6
-    { .4, .3, .2 }, -- F7
-    { .4, .3, .2 }, -- F8
-    { .4, .3, .2 }, -- F9
-    { .4, .3, .2 }, -- F10
+    { COLOR.HEX '792B12' }, -- F1
+    { COLOR.HEX '98773E' }, -- F2
+    { COLOR.HEX '56320C' }, -- F3
+    { COLOR.HEX '993019' }, -- F4
+    { COLOR.HEX '818A8A' }, -- F5
+    { COLOR.HEX 'C86A3C' }, -- F6
+    { COLOR.HEX '196FA3' }, -- F7
+    { COLOR.HEX '9B212D' }, -- F8
+    { COLOR.HEX '0B5D38' }, -- F9
+    { COLOR.HEX '130031' }, -- F10
 }
 local f10colors = TABLE.transpose {
     { .9, .3, .9 }, -- 1650 m
@@ -306,7 +306,7 @@ function scene.draw()
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
         local bgFloor = GAME.getBgFloor()
-        local bgAlpha = GAME.gigaspeed and .35 * (1 + GigaSpeed.bgAlpha) or .5
+        local bgAlpha = (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * STAT.bgBrightness / 100
         if bgFloor < 10 then
             gc_setColor(1, 1, 1, bgAlpha)
             local bottom = Floors[bgFloor - 1].top
@@ -368,15 +368,13 @@ function scene.draw()
             end
         end
     else
-        local f = GAME.floor + MATH.interpolate(
-            Floors[GAME.floor - 1].top, -.26,
-            Floors[GAME.floor].top, .74,
-            GAME.height
-        )
+        local top = Floors[GAME.floor].top
+        local t = MATH.icLerp(1, 10, GAME.floor + MATH.clampInterpolate(top - 50, 0, top, 1, GAME.height))
         gc_setColor(
-            MATH.lLerp(floorColors[1], f),
-            MATH.lLerp(floorColors[2], f),
-            MATH.lLerp(floorColors[3], f)
+            MATH.lLerp(floorColors[1], t),
+            MATH.lLerp(floorColors[2], t),
+            MATH.lLerp(floorColors[3], t),
+            STAT.bgBrightness / 100
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
@@ -612,11 +610,18 @@ function scene.overDraw()
         gc_translate(allyDie and 1150 or 450, 450)
         gc_setColor(1, 1, 1)
         local texture = M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left
-        for i = #GAME.reviveTasks, task.cur, -1 do gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4) end
+        local taskID
+        for i = #GAME.reviveTasks, 1, -1 do
+            gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4)
+            if GAME.reviveTasks[i] == GAME.currentTask then
+                taskID = i
+                break
+            end
+        end
 
         -- Text
-        gc_rotate(reviveRot[task.cur])
-        gc_translate(reviveMove[task.cur], 0)
+        gc_rotate(reviveRot[taskID])
+        gc_translate(reviveMove[taskID], 0)
         local txt = task.textObj
         local w, h = txt:getDimensions()
         local ky = h < 40 and 1 or .7
@@ -659,6 +664,23 @@ function scene.overDraw()
         gc_setLineWidth(6)
         gc_mRect('line', 800, 965, 420, 26)
         if not GAME.DPlock then
+            gc_rectangle('fill', 800 - 35, 985, 70, 6)
+            for i = 1, min(rank - 1, 6) do
+                gc_rectangle('fill', 800 + 15 + 28 * i, 985, 22, 6)
+                gc_rectangle('fill', 800 - 15 - 28 * i, 985, -22, 6)
+            end
+            if rank >= 8 then
+                for i = 0, min(rank - 8, 3) do
+                    gc_rectangle('fill', 800 - 220 + 45 * i, 945, 35, -10)
+                    gc_rectangle('fill', 800 + 220 - 45 * i, 945, -35, -10)
+                end
+                if rank >= 12 then
+                    for i = 0, rank - 12 do
+                        gc_rectangle('fill', 800 + 218 + 15 * i, 955, 10, 32)
+                        gc_rectangle('fill', 800 - 218 - 15 * i, 955, -10, 32)
+                    end
+                end
+            end
             if GAME.rankupLast then
                 if GAME.xpLockLevel < 5 then
                     gc_setLineWidth(2)
@@ -824,6 +846,7 @@ scene.widgetList = {
                 end
             else
                 love.keypressed('escape')
+                love.keyreleased('escape')
             end
         end,
     },
@@ -833,7 +856,10 @@ scene.widgetList = {
         color = { .1, .26, .15 },
         sound_hover = 'menutap',
         fontSize = 35, text = "    STAT", textColor = 'lG',
-        onClick = WIDGET.c_pressKey 'tab',
+        onClick = function()
+            love.keypressed('tab')
+            love.keyreleased('tab')
+        end,
     },
     WIDGET.new {
         name = 'start', type = 'button',
@@ -875,12 +901,11 @@ scene.widgetList = {
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
-            F10: large cursor    F11: fullscreen
 
-            Redesign by MrZ, backgrounds reconstructed by DJ Asriel
-            Origin design and assets are from TETR.IO, by osk team:
-            Musics & Sounds by Dr.Ocelot
-            Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
+            F1: About
+            F3/F4: Update name/about-me with clipboard text
+            F5/F6: Audio    F7/F8: Background brightness    F9: Background style
+            F10: Cursor style    F11: Fullscreen
         ]],
     }
 }

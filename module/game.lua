@@ -9,7 +9,6 @@ local ins, rem = table.insert, table.remove
 ---@field name love.Text
 
 ---@class ReviveTask:Prompt
----@field cur number
 ---@field progress number
 ---@field textObj love.Text
 ---@field shortObj love.Text
@@ -278,19 +277,10 @@ function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
 
+local floorHeights = {}
+for i = 0, 9 do ins(floorHeights, Floors[i].top) end
 function GAME.getBgFloor()
-    local h = GAME.bgH
-    return
-        h <= Floors[1].top and 1 or
-        h <= Floors[2].top and 2 or
-        h <= Floors[3].top and 3 or
-        h <= Floors[4].top and 4 or
-        h <= Floors[5].top and 5 or
-        h <= Floors[6].top and 6 or
-        h <= Floors[7].top and 7 or
-        h <= Floors[8].top and 8 or
-        h <= Floors[9].top and 9 or
-        10
+    return floor(1 + 9 * MATH.ilLerp(floorHeights, GAME.bgH))
 end
 
 function GAME.task_gigaspeed()
@@ -425,7 +415,6 @@ function GAME.startRevive()
                 local task = TABLE.copyAll(TABLE.getRandom(options))
                 if task.init then task.init(task) end
                 ---@cast task ReviveTask
-                task.cur = #GAME.reviveTasks + 1
                 task.progress = 0
                 task.textObj = GC.newText(FONT.get(30), task.text)
                 task.shortObj = GC.newText(FONT.get(30), task.short)
@@ -451,12 +440,12 @@ function GAME.incrementPrompt(prompt, value)
             TASK.lock('noIncrementSFX', 0.026)
         end
         if t.progress >= t.target then
-            if t.cur < #GAME.reviveTasks then
-                GAME.currentTask = GAME.reviveTasks[t.cur + 1]
+            GAME.currentTask = TABLE.next(GAME.reviveTasks, GAME.currentTask)
+            if GAME.currentTask then
                 SFX.play('boardlock_clear')
             else
-                GAME.reviveCount = GAME.reviveCount + 1
                 GAME.currentTask = false
+                GAME.reviveCount = GAME.reviveCount + 1
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
@@ -538,6 +527,7 @@ function GAME.addXP(xp)
         GAME.xpLockLevel = 5
     end
     local oldRank = GAME.rank
+    local oldLockTimer = GAME.xpLockTimer
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
@@ -568,6 +558,8 @@ function GAME.addXP(xp)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
+    else
+        GAME.xpLockTimer = oldLockTimer
     end
 end
 
@@ -617,8 +609,9 @@ function GAME.upFloor()
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
     if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
     if GAME.floor == 10 then
+        local roundTime = MATH.roundUnit(GAME.time, .001)
         if GAME.time < STAT.minTime then
-            STAT.minTime = MATH.roundUnit(GAME.time, .01)
+            STAT.minTime = roundTime
             STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
             SaveStat()
         end
@@ -628,7 +621,7 @@ function GAME.upFloor()
             local t = BEST.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
-                BEST.speedrun[GAME.comboStr] = MATH.roundUnit(GAME.time, .001)
+                BEST.speedrun[GAME.comboStr] = roundTime
                 SaveBest()
             end
         end
@@ -709,7 +702,6 @@ end
 
 function GAME.refreshCurrentCombo()
     TEXTS.mod:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
-    GAME.hardMode = M.EX > 0 or not not TABLE.findAll(M, 2)
 end
 
 function GAME.refreshLayout()
@@ -1255,11 +1247,11 @@ function GAME.finish(reason)
         -- Statistics
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
         if GAME.height > STAT.maxHeight then
-            STAT.maxHeight = MATH.roundUnit(GAME.height, .1)
+            STAT.maxHeight = MATH.roundUnit(GAME.height, .01)
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
-        STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
+        STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .001)
         STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
@@ -1274,7 +1266,7 @@ function GAME.finish(reason)
         -- Best
         local oldPB = BEST.highScore[GAME.comboStr]
         if GAME.height > oldPB then
-            BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .1)
+            BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .01)
             local modCount = #GAME.getHand(true)
             if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
@@ -1320,8 +1312,8 @@ function GAME.finish(reason)
     GAME.setGigaspeedAnim(false)
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
-    GAME.refreshPBText()
     GAME.refreshCurrentCombo()
+    GAME.refreshPBText()
 
     if unlockDuo then
         Cards.DP.lock = true
@@ -1348,7 +1340,7 @@ function GAME.update(dt)
         -- if love.keyboard.isDown('x') then
         --     GAME.addHeight(dt * 260)
         -- elseif love.keyboard.isDown('c') then
-        --     GAME.addXP(dt * 26)
+        --     GAME.addXP(dt * 42)
         -- end
 
         GAME.time = GAME.time + dt

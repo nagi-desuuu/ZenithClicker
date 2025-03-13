@@ -6,12 +6,39 @@ local card = GC.newCanvas(1200, 720)
 
 local floor = math.floor
 
-local baseColor = { .08, .26, .14 }
-local areaColor = { .08, .23, .12 }
+local baseColor = { .12, .26, .14 }
+local areaColor = { .12, .23, .12 }
 local titleColor = { COLOR.HEX("16582D") }
 local textColor = { COLOR.HEX("54B06D") }
 local scoreColor = { COLOR.HEX("B0FFC0") }
 local setup = { stencil = true, card }
+
+local function calculateRating()
+    local cr = 0
+
+    -- Best Height
+    cr = cr + 10000 * MATH.icLerp(50, 6200, STAT.maxHeight) ^ 0.26
+
+    -- Best Time
+    cr = cr + 5000 * MATH.icLerp(420, 62, STAT.minTime) ^ 0.626
+
+    -- Mod Completion
+    cr = cr + 3000 * MATH.icLerp(0, 18, MATH.sumAll(GAME.completion)) ^ 0.626
+
+    -- Mod Speedrun
+    local s = 0
+    for i = 1, 9 do
+        local id = ModData.deck[i].id
+        if BEST.speedrun[id] < 1e26 then s = s + 1 end
+        if BEST.speedrun['r' .. id] < 1e26 then s = s + 1 end
+    end
+    cr = cr + 2000 * MATH.icLerp(0, 18, s) ^ 0.626
+
+    -- Normalize
+    cr = MATH.clamp(cr / 20000 * 25000, 0, 25000)
+
+    return MATH.round(cr)
+end
 
 local sawMap = {
     { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
@@ -31,25 +58,12 @@ saw:setFilter('nearest', 'nearest')
 saw:setWrap('repeat', 'repeat')
 local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
 local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
-local function dblMidStr(str, x, y)
-    GC.mStr(str, x, y)
-    GC.setAlpha(.6)
-    GC.mStr(str, x, y + 3)
+local function dblMidDraw(obj, x, y)
+    GC.mDraw(obj, x, y)
+    GC.setAlpha(.626)
+    GC.mDraw(obj, x, y + 2.6)
 end
-
-function scene.load()
-    TASK.lock('stat_no_quit')
-    maskAlpha, cardShow = 0, 0
-    TWEEN.new(function(t)
-        maskAlpha = t
-    end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
-        TWEEN.new(function(t)
-            cardShow = t
-        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
-            TASK.unlock('stat_no_quit')
-        end)
-    end)
-
+function RefreshProfile()
     GC.setCanvas(setup)
     GC.origin()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
@@ -130,63 +144,71 @@ function scene.load()
     GC.rectangle('fill', 0, 0, 1150, 80)
     FONT.set(30)
     GC.setColor(titleColor)
-    GC.print("ABOUT  US", 7, 2, 0, .8)
+    GC.print("ABOUT  ME", 7, 2, 0, .8)
     GC.setColor(textColor)
-    GC.print("Click the Zenith!", 15, 35, 0, .8)
+    GC.print(STAT.aboutme, 15, 35, 0, .8)
     GC.ucs_back()
 
     GC.setLineWidth(2)
 
+    local bw, bh = 370, 120
+
     -- Rating
     GC.ucs_move('m', 25, 370)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 375, 120)
+    GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
-    GC.line(7, 90, 370 - 7, 90)
-    FONT.set(50)
-    t50:set("-----")
+    GC.line(7, bh - 30, bw - 7, bh - 30)
+    -- Number
+    local rating = calculateRating()
+    t50:set(tostring(rating))
     GC.setColor(scoreColor)
-    GC.draw(t50, 370 / 2, 24, 0, 1, 1, t50:getWidth() / 2)
-    GC.setAlpha(.6)
-    GC.draw(t50, 370 / 2, 24 + 3, 0, 1, 1, t50:getWidth() / 2)
+    dblMidDraw(t50, bw / 2, bh / 2 - 4)
+    -- CR
     t30:set("CR")
-    GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47)
-    GC.setAlpha(.6)
-    GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47 + 3)
+    GC.setColor(scoreColor)
+    dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
+    -- Rank
+    local rankIcon = TEXTURE.rank[STAT.totalTime <= 26 * 60 and 0 or MATH.clamp(math.ceil(rating / 1400), 1, 18)]
+    GC.setColor(1, 1, 1)
+    GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
     GC.ucs_back()
 
     -- Height
     GC.ucs_move('m', 412.5, 370)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 375, 120)
+    GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("MAX  ALTITUDE", 7, 2, 0, .8)
-    GC.line(7, 90, 370 - 7, 90)
+    GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(textColor)
     t30:set(STAT.heightDate)
-    GC.mDraw(t30, 370 / 2, 105, 0, .75)
+    GC.mDraw(t30, bw / 2, 105, 0, .75)
     GC.setColor(scoreColor)
-    FONT.set(50)
-    dblMidStr(STAT.maxHeight .. "m", 370 / 2, 24)
+    t50:set(STAT.maxHeight)
+    dblMidDraw(t50, bw / 2, bh / 2 - 4)
+    GC.setColor(textColor)
+    t30:set("M")
+    dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     GC.ucs_back()
 
     -- Speedrun
     GC.ucs_move('m', 800, 370)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 375, 120)
+    GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
-    GC.line(7, 90, 370 - 7, 90)
+    GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(textColor)
     t30:set(STAT.timeDate)
-    GC.mDraw(t30, 370 / 2, 105, 0, .75)
+    GC.mDraw(t30, bw / 2, 105, 0, .75)
     GC.setColor(scoreColor)
-    FONT.set(50)
-    dblMidStr(STRING.time(STAT.minTime), 370 / 2, 24)
+    t50:set(STRING.time(STAT.minTime))
+    dblMidDraw(t50, bw / 2, bh / 2 - 4)
     GC.ucs_back()
 
     -- Career
@@ -230,6 +252,29 @@ function scene.load()
     GC.setCanvas()
 end
 
+function scene.load()
+    TASK.lock('stat_no_quit')
+    maskAlpha, cardShow = 0, 0
+    TWEEN.new(function(t)
+        maskAlpha = t
+    end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
+        TWEEN.new(function(t)
+            cardShow = t
+        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
+            TASK.unlock('stat_no_quit')
+        end)
+    end)
+
+    RefreshProfile()
+
+    local W = scene.widgetList.link
+    W.y = GAME.anyRev and -210 or 210
+    W:resetPos()
+    W = scene.widgetList.close
+    W.y = GAME.anyRev and 196 or -196
+    W:resetPos()
+end
+
 function scene.keyDown(key, isRep)
     if isRep then return true end
     if key == 'escape' and TASK.lock('stat_no_quit') then
@@ -246,11 +291,15 @@ function scene.keyDown(key, isRep)
             end)
         end)
     end
+    ZENITHA.setCursorVis(true)
     return true
 end
 
 function scene.update(dt)
     SCN.scenes.tower.update(dt)
+    for _, W in next, SCN.scenes.tower.widgetList do
+        W:update(dt)
+    end
 end
 
 function scene.draw()
@@ -266,7 +315,7 @@ function scene.draw()
         GC.replaceTransform(SCR.xOy_m)
         GC.setColor(1, 1, 1, cardShow)
         local k = .9 + cardShow * .1
-        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67)
+        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67 * (GAME.anyRev and -1 or 1))
     end
 end
 
@@ -280,7 +329,7 @@ scene.widgetList = {
         onClick = function() love.keypressed('escape') end,
     },
     WIDGET.new {
-        type = 'button_invis',
+        name = 'link', type = 'button_invis',
         pos = { .5, .5 }, y = 210, w = 800, h = 60,
         onClick = function()
             SFX.play('menuconfirm')
@@ -288,7 +337,7 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
-        type = 'button_invis',
+        name = 'close', type = 'button_invis',
         pos = { .5, .5 }, x = 344, y = -196, w = 100, h = 50,
         onClick = function() love.keypressed('escape') end,
     },
@@ -302,4 +351,5 @@ scene.widgetList = {
         onClick = function() love.keypressed('escape') end,
     }
 }
+
 return scene

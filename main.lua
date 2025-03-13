@@ -95,6 +95,27 @@ TEXTURE = {
     revive_rev_left = assets 'revive_rev_left.png',
     revive_rev_right = assets 'revive_rev_right.png',
 
+    rank = {
+        [0] = assets 'rank/z.png',
+        assets 'rank/d.png',
+        assets 'rank/d+.png',
+        assets 'rank/c-.png',
+        assets 'rank/c.png',
+        assets 'rank/c+.png',
+        assets 'rank/b-.png',
+        assets 'rank/b.png',
+        assets 'rank/b+.png',
+        assets 'rank/a-.png',
+        assets 'rank/a.png',
+        assets 'rank/a+.png',
+        assets 'rank/s-.png',
+        assets 'rank/s.png',
+        assets 'rank/s+.png',
+        assets 'rank/ss.png',
+        assets 'rank/u.png',
+        assets 'rank/x.png',
+        assets 'rank/x+.png',
+    },
     banner = assets 'icon.png',
     avatar = assets 'avatar.png',
     clicker = assets 'clicker.png',
@@ -135,7 +156,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     forfeit    = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
-    credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
+    credit     = GC.newText(FONT.get(30), "All assets from TETR.IO"),
 }
 if fontNotLoaded then
     TASK.new(function()
@@ -163,6 +184,7 @@ if fontNotLoaded then
         TEXTS.gigatime:setFont(FONT.get(50))
         for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
         for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
+        if SCN.cur == 'stat' then RefreshProfile() end
         MSG.clear()
     end)
 end
@@ -178,11 +200,12 @@ BEST = {
 STAT = {
     joinDate = os.date("%b %Y"),
     uid = "ANON-" .. os.date("%d_") .. math.random(2600, 6200),
+    aboutme = "Click the Zenith!",
     maxFloor = 1,
     maxHeight = 0,
-    heightDate = "BEFORE 25.3.12", -- oh god. -fily
+    heightDate = "DATE LOST",
     minTime = 26 * 60,
-    timeDate = "BEFORE 25.3.12",
+    timeDate = "DATE LOST",
 
     totalGame = 0,
     totalTime = 0,
@@ -197,6 +220,7 @@ STAT = {
     fullscreen = true,
     syscursor = false,
     bg = true,
+    bgBrightness = 5,
     bgm = true,
     sfx = true,
 }
@@ -331,30 +355,117 @@ end
 function ZENITHA.globalEvent.keyDown(key, isRep)
     if isRep then return end
     if key == 'f12' then
+        MSG.clear()
         MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
     elseif key == 'f11' then
         STAT.fullscreen = not STAT.fullscreen
+        MSG.clear()
         MSG('dark', STAT.fullscreen and "Fullscreen" or "Window Mode", 1)
         love.window.setFullscreen(STAT.fullscreen)
     elseif key == 'f10' then
         STAT.syscursor = not STAT.syscursor
+        MSG.clear()
         MSG('dark', STAT.syscursor and "Star Force OFF" or "Star Force ON", 1)
         ApplySettings()
     elseif key == 'f9' then
         STAT.bg = not STAT.bg
+        MSG.clear()
         MSG('dark', STAT.bg and "Background ON" or "Background OFF", 1)
     elseif key == 'f8' then
+        if STAT.bgBrightness < 100 then
+            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 100)
+            MSG.clear()
+            MSG('dark', "Background Brightness " .. STAT.bgBrightness .. "%", 1)
+        end
+    elseif key == 'f7' then
+        if STAT.bgBrightness > 26 then
+            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 100)
+            MSG.clear()
+            MSG('dark', "Background Brightness " .. STAT.bgBrightness .. "%", 1)
+        end
+    elseif key == 'f6' then
         STAT.bgm = not STAT.bgm
+        MSG.clear()
         MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
-    elseif key == 'f7' then
+    elseif key == 'f5' then
         STAT.sfx = not STAT.sfx
+        MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
-    elseif key == 'f6' then
-        -- IDK
-    elseif key == 'f5' then
-        -- IDK
+    elseif key == 'f3' then
+        MSG.clear()
+        if TASK.forceLock('sure_rename', 2.6) then
+            SFX.play('notify')
+            MSG('dark', "Press F3 again to rename your account with text in clipboard")
+        else
+            local newName = love.system.getClipboardText()
+            repeat
+                if type(newName) ~= 'string' then
+                    MSG('dark', "No data in clipboard")
+                    break
+                end
+                newName = newName:upper()
+                if #newName < 3 or #newName > 16 or newName:find('[^A-Z0-9_%-]') then
+                    MSG('dark', "New name can only be 3~16 characters with A-Z, 0-9, _")
+                    break
+                end
+                if newName == STAT.uid then
+                    MSG('dark', "New name is the same as old one")
+                    break
+                end
+                if newName:sub(1, 4) == 'ANON' then
+                    MSG('dark', "New name can't be ANON")
+                    break
+                end
+                STAT.uid = newName
+                SaveStat()
+                SFX.play('supporter')
+                MSG('dark', "Name changed to " .. STAT.uid)
+                if SCN.cur == 'stat' then RefreshProfile() end
+                return
+            until true
+            SFX.play('staffwarning')
+        end
+    elseif key == 'f4' then
+        MSG.clear()
+        if TASK.forceLock('sure_reabout', 2.6) then
+            SFX.play('notify')
+            MSG('dark', "Press F4 again to change your 'about me' text with text in clipboard")
+        else
+            local newText = love.system.getClipboardText()
+            repeat
+                if type(newText) ~= 'string' then
+                    MSG('dark', "No data in clipboard")
+                    break
+                end
+                if #newText < 1 or #newText > 260 or newText:find('[^\32-\126]') then
+                    MSG('dark', "New text can only be 1~260 characters with visiable ASCII characters")
+                    break
+                end
+                if newText == STAT.aboutme then
+                    MSG('dark', "New text is the same as old one")
+                    break
+                end
+                STAT.aboutme = newText
+                SaveStat()
+                SFX.play('supporter')
+                MSG('dark', "About text updated")
+                if SCN.cur == 'stat' then RefreshProfile() end
+                return
+            until true
+            SFX.play('staffwarning')
+        end
+    elseif key == 'f1' then
+        MSG.clear()
+        MSG('dark', STRING.trimIndent [[
+            Redesigned by MrZ
+            Backgrounds reconstructed by DJ Asriel
+
+            Origin design and assets are from TETR.IO, by osk team:
+            Musics & Sounds by Dr.Ocelot
+            Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
+        ]])
     end
 end
 
@@ -545,6 +656,19 @@ for i = 1, #Cards do
 end
 if STAT.maxHeight == 0 then STAT.maxHeight = math.max(STAT.maxHeight, (TABLE.maxAll(BEST.highScore))) end
 if STAT.minTime == 26 * 60 then STAT.minTime = math.min(STAT.minTime, (TABLE.minAll(BEST.speedrun))) end
+do
+    -- Auto fixing
+    local realBestHeight = TABLE.maxAll(BEST.highScore)
+    if STAT.maxHeight > realBestHeight then
+        STAT.maxHeight = realBestHeight
+        STAT.heightDate = "DATE LOST"
+    end
+    local realBestTime = TABLE.minAll(BEST.speedrun)
+    if STAT.minTime < realBestTime then
+        STAT.minTime = realBestTime
+        STAT.timeDate = "DATE LOST"
+    end
+end
 GAME.refreshLockState()
 GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
