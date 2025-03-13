@@ -135,7 +135,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     forfeit    = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
-    credit     = GC.newText(FONT.get(30), "All assets from TETR.IO, see the help page"),
+    credit     = GC.newText(FONT.get(30), "All assets from TETR.IO"),
 }
 if fontNotLoaded then
     TASK.new(function()
@@ -435,6 +435,16 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             until true
             SFX.play('staffwarning')
         end
+    elseif key == 'f1' then
+        MSG.clear()
+        MSG('dark', STRING.trimIndent[[
+            Redesigned by MrZ
+            Backgrounds reconstructed by DJ Asriel
+
+            Origin design and assets are from TETR.IO, by osk team:
+            Musics & Sounds by Dr.Ocelot
+            Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
+        ]])
     end
 end
 

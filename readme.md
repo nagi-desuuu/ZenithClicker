@@ -11,4 +11,12 @@ and there's still no convenient way to know which mods are included in a specifi
 
 Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
-Font: D-Din-Pro by Adrian Frutigеr
+Redesigned by MrZ  
+Backgrounds reconstructed by DJ Asriel  
+D-Din-Pro (Font) by Adrian Frutigеr
+
+## How to play
+
+> **By Community, may not accurate**
+
+[work in progress]

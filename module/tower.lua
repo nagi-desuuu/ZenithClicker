@@ -884,12 +884,11 @@ scene.widgetList = {
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
-            F3/F4: change name/about-me   F5/F6: audio   F7/F8: brightness   F9: background   F10: cursor   F11: fullscreen
 
-            Redesign by MrZ, backgrounds reconstructed by DJ Asriel
-            Origin design and assets are from TETR.IO, by osk team:
-            Musics & Sounds by Dr.Ocelot
-            Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
+            F1: About
+            F3/F4: Update name/about-me with clipboard text
+            F5/F6: Audio    F7/F8: Background brightness    F9: Background style
+            F10: Cursor style    F11: Fullscreen
         ]],
     }
 }
