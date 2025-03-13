@@ -96,6 +96,7 @@ TEXTURE = {
     revive_rev_right = assets 'revive_rev_right.png',
 
     rank = {
+        [0] = assets 'rank/z.png',
         assets 'rank/d.png',
         assets 'rank/d+.png',
         assets 'rank/c-.png',

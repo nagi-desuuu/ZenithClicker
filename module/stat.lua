@@ -163,7 +163,6 @@ function RefreshProfile()
     GC.line(7, bh - 30, bw - 7, bh - 30)
     -- Number
     local rating = calculateRating()
-    local rankIcon = TEXTURE.rank[MATH.clamp(math.ceil(rating / 1400), 1, 18)]
     t50:set(tostring(rating))
     GC.setColor(scoreColor)
     dblMidDraw(t50, bw / 2, bh / 2 - 4)
@@ -172,6 +171,7 @@ function RefreshProfile()
     GC.setColor(scoreColor)
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     -- Rank
+    local rankIcon = TEXTURE.rank[STAT.totalTime <= 26 * 60 and 0 or MATH.clamp(math.ceil(rating / 1400), 1, 18)]
     GC.setColor(1, 1, 1)
     GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
     GC.ucs_back()
