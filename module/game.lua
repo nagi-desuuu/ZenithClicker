@@ -609,8 +609,9 @@ function GAME.upFloor()
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
     if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
     if GAME.floor == 10 then
+        local roundTime = MATH.roundUnit(GAME.time, .001)
         if GAME.time < STAT.minTime then
-            STAT.minTime = MATH.roundUnit(GAME.time, .01)
+            STAT.minTime = roundTime
             STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
             SaveStat()
         end
@@ -620,7 +621,7 @@ function GAME.upFloor()
             local t = BEST.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
-                BEST.speedrun[GAME.comboStr] = MATH.roundUnit(GAME.time, .001)
+                BEST.speedrun[GAME.comboStr] = roundTime
                 SaveBest()
             end
         end
@@ -1246,11 +1247,11 @@ function GAME.finish(reason)
         -- Statistics
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
         if GAME.height > STAT.maxHeight then
-            STAT.maxHeight = MATH.roundUnit(GAME.height, .1)
+            STAT.maxHeight = MATH.roundUnit(GAME.height, .01)
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
-        STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .01)
+        STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .001)
         STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
@@ -1265,7 +1266,7 @@ function GAME.finish(reason)
         -- Best
         local oldPB = BEST.highScore[GAME.comboStr]
         if GAME.height > oldPB then
-            BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .1)
+            BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .01)
             local modCount = #GAME.getHand(true)
             if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"

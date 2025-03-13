@@ -182,9 +182,9 @@ STAT = {
     aboutme = "Click the Zenith!",
     maxFloor = 1,
     maxHeight = 0,
-    heightDate = "BEFORE 25.3.12",
+    heightDate = "DATE LOST",
     minTime = 26 * 60,
-    timeDate = "BEFORE 25.3.12",
+    timeDate = "DATE LOST",
 
     totalGame = 0,
     totalTime = 0,
@@ -437,7 +437,7 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         end
     elseif key == 'f1' then
         MSG.clear()
-        MSG('dark', STRING.trimIndent[[
+        MSG('dark', STRING.trimIndent [[
             Redesigned by MrZ
             Backgrounds reconstructed by DJ Asriel
 
@@ -635,6 +635,19 @@ for i = 1, #Cards do
 end
 if STAT.maxHeight == 0 then STAT.maxHeight = math.max(STAT.maxHeight, (TABLE.maxAll(BEST.highScore))) end
 if STAT.minTime == 26 * 60 then STAT.minTime = math.min(STAT.minTime, (TABLE.minAll(BEST.speedrun))) end
+do
+    -- Auto fixing
+    local realBestHeight = TABLE.maxAll(BEST.highScore)
+    if STAT.maxHeight > realBestHeight then
+        STAT.maxHeight = realBestHeight
+        STAT.heightDate = "DATE LOST"
+    end
+    local realBestTime = TABLE.minAll(BEST.speedrun)
+    if STAT.minTime < realBestTime then
+        STAT.minTime = realBestTime
+        STAT.timeDate = "DATE LOST"
+    end
+end
 GAME.refreshLockState()
 GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
