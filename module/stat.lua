@@ -16,16 +16,16 @@ local setup = { stencil = true, card }
 local function calculateRating()
     local cr = 0
 
-    -- Best Height
+    -- Best Height (10K)
     cr = cr + 10000 * MATH.icLerp(50, 6200, STAT.maxHeight) ^ 0.26
 
-    -- Best Time
+    -- Best Time (5K)
     cr = cr + 5000 * MATH.icLerp(420, 62, STAT.minTime) ^ 0.626
 
-    -- Mod Completion
+    -- Mod Completion (3K)
     cr = cr + 3000 * MATH.icLerp(0, 18, MATH.sumAll(GAME.completion)) ^ 0.626
 
-    -- Mod Speedrun
+    -- Mod Speedrun (2K)
     local s = 0
     for i = 1, 9 do
         local id = ModData.deck[i].id
@@ -34,8 +34,9 @@ local function calculateRating()
     end
     cr = cr + 2000 * MATH.icLerp(0, 18, s) ^ 0.626
 
-    -- Normalize
-    cr = MATH.clamp(cr / 20000 * 25000, 0, 25000)
+    -- Achievement (5K)
+    -- TODO
+    cr = MATH.clamp(cr * 1.25, 0, 25000)
 
     return MATH.round(cr)
 end
@@ -171,7 +172,10 @@ function RefreshProfile()
     GC.setColor(scoreColor)
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     -- Rank
-    local rankIcon = TEXTURE.rank[STAT.totalTime <= 26 * 60 and 0 or MATH.clamp(math.ceil(rating / 1400), 1, 18)]
+    local rank =
+        STAT.totalTime / 60 + STAT.totalFloor / 9 + STAT.totalGiga / 2 <= 62 and 0 or
+        MATH.clamp(math.ceil(rating / 1400), 1, 18)
+    local rankIcon = TEXTURE.rank[rank]
     GC.setColor(1, 1, 1)
     GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
     GC.ucs_back()
