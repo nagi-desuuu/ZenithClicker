@@ -884,7 +884,7 @@ scene.widgetList = {
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
-            F5/F6: audio    F7/F8: brightness    F9: background    F10: cursor    F11: fullscreen
+            F4: rename   F5/F6: audio   F7/F8: brightness   F9: background   F10: cursor   F11: fullscreen
 
             Redesign by MrZ, backgrounds reconstructed by DJ Asriel
             Origin design and assets are from TETR.IO, by osk team:

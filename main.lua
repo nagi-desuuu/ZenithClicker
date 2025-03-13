@@ -163,6 +163,7 @@ if fontNotLoaded then
         TEXTS.gigatime:setFont(FONT.get(50))
         for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
         for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
+        if SCN.cur == 'stat' then RefreshProfile() end
         MSG.clear()
     end)
 end
@@ -370,6 +371,40 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
+    elseif key == 'f4' then
+        MSG.clear()
+        if TASK.forceLock('sure_rename', 2.6) then
+            SFX.play('notify')
+            MSG('dark', "Press F4 again to rename your account with text in clipboard")
+        else
+            local newName = love.system.getClipboardText()
+            repeat
+                if type(newName) ~= 'string' then
+                    MSG('dark', "No data in clipboard")
+                    break
+                end
+                newName = newName:upper()
+                if #newName < 3 or #newName > 16 or newName:find('[^A-Z0-9_]') then
+                    MSG('dark', "New name can only be 3~16 characters with A-Z, 0-9, _")
+                    break
+                end
+                if newName == STAT.uid then
+                    MSG('dark', "New name is the same as old one")
+                    break
+                end
+                if newName:sub(1, 4) == 'ANON' then
+                    MSG('dark', "New name can't be ANON")
+                    break
+                end
+                STAT.uid = newName
+                SaveStat()
+                SFX.play('supporter')
+                MSG('dark', "Name changed to " .. STAT.uid)
+                if SCN.cur == 'stat' then RefreshProfile() end
+                return
+            until true
+            SFX.play('staffwarning')
+        end
     end
 end
 

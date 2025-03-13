@@ -36,7 +36,7 @@ local function dblMidStr(str, x, y)
     GC.setAlpha(.6)
     GC.mStr(str, x, y + 3)
 end
-local function refreshCanvas()
+function RefreshProfile()
     GC.setCanvas(setup)
     GC.origin()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
@@ -229,7 +229,7 @@ function scene.load()
         end)
     end)
 
-    refreshCanvas()
+    RefreshProfile()
 
     local W = scene.widgetList.link
     W.y = GAME.anyRev and -210 or 210
