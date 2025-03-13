@@ -527,6 +527,7 @@ function GAME.addXP(xp)
         GAME.xpLockLevel = 5
     end
     local oldRank = GAME.rank
+    local oldLockTimer = GAME.xpLockTimer
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
@@ -557,6 +558,8 @@ function GAME.addXP(xp)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
+    else
+        GAME.xpLockTimer = oldLockTimer
     end
 end
 
@@ -1336,7 +1339,7 @@ function GAME.update(dt)
         -- if love.keyboard.isDown('x') then
         --     GAME.addHeight(dt * 260)
         -- elseif love.keyboard.isDown('c') then
-        --     GAME.addXP(dt * 26)
+        --     GAME.addXP(dt * 42)
         -- end
 
         GAME.time = GAME.time + dt
