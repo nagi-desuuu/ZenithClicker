@@ -609,11 +609,18 @@ function scene.overDraw()
         gc_translate(allyDie and 1150 or 450, 450)
         gc_setColor(1, 1, 1)
         local texture = M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left
-        for i = #GAME.reviveTasks, task.cur, -1 do gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4) end
+        local taskID
+        for i = #GAME.reviveTasks, 1, -1 do
+            gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4)
+            if GAME.reviveTasks[i] == GAME.currentTask then
+                taskID = i
+                break
+            end
+        end
 
         -- Text
-        gc_rotate(reviveRot[task.cur])
-        gc_translate(reviveMove[task.cur], 0)
+        gc_rotate(reviveRot[taskID])
+        gc_translate(reviveMove[taskID], 0)
         local txt = task.textObj
         local w, h = txt:getDimensions()
         local ky = h < 40 and 1 or .7

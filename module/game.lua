@@ -9,7 +9,6 @@ local ins, rem = table.insert, table.remove
 ---@field name love.Text
 
 ---@class ReviveTask:Prompt
----@field cur number
 ---@field progress number
 ---@field textObj love.Text
 ---@field shortObj love.Text
