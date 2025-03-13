@@ -211,10 +211,10 @@ function Card:setActive(auto, key)
         SCN.scenes.tower.widgetList.reset:setVisible(M.NH ~= 2)
         if revOn or wasRev then GAME.refreshRev() end
         GAME.hardMode = M.EX > 0 or GAME.anyRev
-        GAME.refreshCurrentCombo()
         GAME.refreshPBText()
         GAME.refreshRPC()
     end
+    GAME.refreshCurrentCombo()
     GAME.refreshLayout()
     if auto then return end
 
