@@ -6,8 +6,8 @@ local card = GC.newCanvas(1200, 720)
 
 local floor = math.floor
 
-local baseColor = { .08, .26, .14 }
-local areaColor = { .08, .23, .12 }
+local baseColor = { .12, .26, .14 }
+local areaColor = { .12, .23, .12 }
 local titleColor = { COLOR.HEX("16582D") }
 local textColor = { COLOR.HEX("54B06D") }
 local scoreColor = { COLOR.HEX("B0FFC0") }
@@ -37,7 +37,7 @@ local function calculateRating()
     -- Normalize
     cr = MATH.clamp(cr / 20000 * 25000, 0, 25000)
 
-    return tostring(MATH.round(cr))
+    return MATH.round(cr)
 end
 
 local sawMap = {
@@ -58,10 +58,10 @@ saw:setFilter('nearest', 'nearest')
 saw:setWrap('repeat', 'repeat')
 local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
 local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
-local function dblMidStr(str, x, y)
-    GC.mStr(str, x, y)
-    GC.setAlpha(.6)
-    GC.mStr(str, x, y + 3)
+local function dblMidDraw(obj, x, y)
+    GC.mDraw(obj, x, y)
+    GC.setAlpha(.626)
+    GC.mDraw(obj, x, y + 2.6)
 end
 function RefreshProfile()
     GC.setCanvas(setup)
@@ -151,55 +151,64 @@ function RefreshProfile()
 
     GC.setLineWidth(2)
 
+    local bw, bh = 370, 120
+
     -- Rating
     GC.ucs_move('m', 25, 370)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 375, 120)
+    GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
-    GC.line(7, 90, 370 - 7, 90)
-    FONT.set(50)
-    t50:set(calculateRating())
+    GC.line(7, bh - 30, bw - 7, bh - 30)
+    -- Number
+    local rating = calculateRating()
+    local rankIcon = TEXTURE.rank[MATH.clamp(math.ceil(rating / 1400), 1, 18)]
+    t50:set(tostring(rating))
     GC.setColor(scoreColor)
-    GC.draw(t50, 370 / 2, 24, 0, 1, 1, t50:getWidth() / 2)
-    GC.setAlpha(.6)
-    GC.draw(t50, 370 / 2, 24 + 3, 0, 1, 1, t50:getWidth() / 2)
-    GC.setColor(textColor)
+    dblMidDraw(t50, bw / 2, bh / 2 - 4)
+    -- CR
     t30:set("CR")
-    GC.draw(t30, 370 / 2 + t50:getWidth() / 2, 47)
+    GC.setColor(scoreColor)
+    dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
+    -- Rank
+    GC.setColor(1, 1, 1)
+    GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
     GC.ucs_back()
 
     -- Height
     GC.ucs_move('m', 412.5, 370)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 375, 120)
+    GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("MAX  ALTITUDE", 7, 2, 0, .8)
-    GC.line(7, 90, 370 - 7, 90)
+    GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(textColor)
     t30:set(STAT.heightDate)
-    GC.mDraw(t30, 370 / 2, 105, 0, .75)
+    GC.mDraw(t30, bw / 2, 105, 0, .75)
     GC.setColor(scoreColor)
-    FONT.set(50)
-    dblMidStr(STAT.maxHeight .. "m", 370 / 2, 24)
+    t50:set(STAT.maxHeight)
+    dblMidDraw(t50, bw / 2, bh / 2 - 4)
+    GC.setColor(textColor)
+    t30:set("M")
+    dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     GC.ucs_back()
 
     -- Speedrun
     GC.ucs_move('m', 800, 370)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 375, 120)
+    GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
-    GC.line(7, 90, 370 - 7, 90)
+    GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(textColor)
     t30:set(STAT.timeDate)
-    GC.mDraw(t30, 370 / 2, 105, 0, .75)
+    GC.mDraw(t30, bw / 2, 105, 0, .75)
     GC.setColor(scoreColor)
-    FONT.set(50)
-    dblMidStr(STRING.time(STAT.minTime), 370 / 2, 24)
+    t50:set(STRING.time(STAT.minTime))
+    dblMidDraw(t50, bw / 2, bh / 2 - 4)
     GC.ucs_back()
 
     -- Career
