@@ -237,10 +237,10 @@ end
 function Card:flip()
     self.front = not self.front
     local s, e = self.kx, self.front and 1 or -1
-    local rs, re = self.r % 6.2832, (GAME.playing or self.upright) and 0 or 3.1416
+    local rs = self.r % 6.2832
     TWEEN.new(function(t)
         self.kx = lerp(s, e, t)
-        self.r = lerp(rs, re, t)
+        self.r = lerp(rs, 0, t)
     end):setUnique('spin_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
 end
 
@@ -519,11 +519,17 @@ function Card:draw()
         end
     end
 
-    -- gc_setColor(ModColor[self.id])
+    -- Debug
+    -- if not self.upright then gc_rotate(3.1416) end
+    -- gc_setColor(ModData.color[self.id])
     -- gc.rectangle('fill', 260, -350, -60, 60)
     -- gc_setColor(1, 1, 1)
-    -- gc_setLineWidth(2)
+    -- gc.setLineWidth(2)
     -- GC.mRect('line', 0, 0, 260 * 2, 350 * 2)
+    -- FONT.set(30)
+    -- gc.print(self.upright and self.id or "r" .. self.id, -260, -450)
+    -- gc.print("r = " .. MATH.round(self.r / 3.1416 * 180), -260, -420)
+
     gc_pop()
 end
 
