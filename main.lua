@@ -197,6 +197,7 @@ STAT = {
     fullscreen = true,
     syscursor = false,
     bg = true,
+    bgBrightness = 5,
     bgm = true,
     sfx = true,
 }
@@ -331,30 +332,44 @@ end
 function ZENITHA.globalEvent.keyDown(key, isRep)
     if isRep then return end
     if key == 'f12' then
+        MSG.clear()
         MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
     elseif key == 'f11' then
         STAT.fullscreen = not STAT.fullscreen
+        MSG.clear()
         MSG('dark', STAT.fullscreen and "Fullscreen" or "Window Mode", 1)
         love.window.setFullscreen(STAT.fullscreen)
     elseif key == 'f10' then
         STAT.syscursor = not STAT.syscursor
+        MSG.clear()
         MSG('dark', STAT.syscursor and "Star Force OFF" or "Star Force ON", 1)
         ApplySettings()
     elseif key == 'f9' then
         STAT.bg = not STAT.bg
+        MSG.clear()
         MSG('dark', STAT.bg and "Background ON" or "Background OFF", 1)
     elseif key == 'f8' then
+        if STAT.bgBrightness < 100 then
+            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 100)
+            MSG.clear()
+            MSG('dark', "Background Brightness " .. STAT.bgBrightness .. "%", 1)
+        end
+    elseif key == 'f7' then
+        if STAT.bgBrightness > 26 then
+            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 100)
+            MSG.clear()
+            MSG('dark', "Background Brightness " .. STAT.bgBrightness .. "%", 1)
+        end
+    elseif key == 'f6' then
         STAT.bgm = not STAT.bgm
+        MSG.clear()
         MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
-    elseif key == 'f7' then
+    elseif key == 'f5' then
         STAT.sfx = not STAT.sfx
+        MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
-    elseif key == 'f6' then
-        -- IDK
-    elseif key == 'f5' then
-        -- IDK
     end
 end
 

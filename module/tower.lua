@@ -306,7 +306,7 @@ function scene.draw()
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
         local bgFloor = GAME.getBgFloor()
-        local bgAlpha = GAME.gigaspeed and .35 * (1 + GigaSpeed.bgAlpha) or .5
+        local bgAlpha = (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * STAT.bgBrightness / 100
         if bgFloor < 10 then
             gc_setColor(1, 1, 1, bgAlpha)
             local bottom = Floors[bgFloor - 1].top
@@ -373,7 +373,8 @@ function scene.draw()
         gc_setColor(
             MATH.lLerp(floorColors[1], t),
             MATH.lLerp(floorColors[2], t),
-            MATH.lLerp(floorColors[3], t)
+            MATH.lLerp(floorColors[3], t),
+            STAT.bgBrightness / 100
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
@@ -883,7 +884,7 @@ scene.widgetList = {
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
-            F10: large cursor    F11: fullscreen
+            F5/F6: audio    F7/F8: brightness    F9: background    F10: cursor    F11: fullscreen
 
             Redesign by MrZ, backgrounds reconstructed by DJ Asriel
             Origin design and assets are from TETR.IO, by osk team:
