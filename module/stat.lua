@@ -13,6 +13,10 @@ local textColor = { COLOR.HEX("54B06D") }
 local scoreColor = { COLOR.HEX("B0FFC0") }
 local setup = { stencil = true, card }
 
+local function calculateRating()
+    return "-----"
+end
+
 local sawMap = {
     { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
     { 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0 },
@@ -133,7 +137,7 @@ function RefreshProfile()
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
     GC.line(7, 90, 370 - 7, 90)
     FONT.set(50)
-    t50:set("-----")
+    t50:set(calculateRating())
     GC.setColor(scoreColor)
     GC.draw(t50, 370 / 2, 24, 0, 1, 1, t50:getWidth() / 2)
     GC.setAlpha(.6)
@@ -261,6 +265,9 @@ end
 
 function scene.update(dt)
     SCN.scenes.tower.update(dt)
+    for _, W in next, SCN.scenes.tower.widgetList do
+        W:update(dt)
+    end
 end
 
 function scene.draw()
