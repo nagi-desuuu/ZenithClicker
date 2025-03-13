@@ -698,7 +698,6 @@ end
 
 function GAME.refreshCurrentCombo()
     TEXTS.mod:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
-    GAME.hardMode = M.EX > 0 or not not TABLE.findAll(M, 2)
 end
 
 function GAME.refreshLayout()
@@ -1309,8 +1308,8 @@ function GAME.finish(reason)
     GAME.setGigaspeedAnim(false)
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
-    GAME.refreshPBText()
     GAME.refreshCurrentCombo()
+    GAME.refreshPBText()
 
     if unlockDuo then
         Cards.DP.lock = true
