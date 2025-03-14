@@ -191,6 +191,7 @@ end
 local KBIsDown = love.keyboard.isDown
 local MSIsDown = love.mouse.isDown
 function scene.update(dt)
+    if dt > .26 then dt = .26 end
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
     GAME.lifeShow2 = MATH.expApproach(GAME.lifeShow2, GAME.life2, dt * 10)
