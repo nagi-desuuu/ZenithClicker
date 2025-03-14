@@ -262,7 +262,7 @@ function RefreshProfile()
         { t = { scoreColor, "N/A" },                                                             x = 190, y = 80 },
         { t = { textColor, "1-Mod Ascent" },                                                     x = 300, y = 55 },
         { t = { textColor, "1-Mod Speedrun" },                                                   x = 300, y = 80 },
-        { t = { scoreColor, MATH.sumAll(GAME.completion) .. " / " .. maxComp },                  x = 480, y = 55 },
+        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                            x = 480, y = 55 },
         { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                       x = 480, y = 80 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
