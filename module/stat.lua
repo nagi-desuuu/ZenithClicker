@@ -13,6 +13,15 @@ local textColor = { COLOR.HEX("54B06D") }
 local scoreColor = { COLOR.HEX("B0FFC0") }
 local setup = { stencil = true, card }
 
+local function getF10Completion()
+    local s = 0
+    for i = 1, 9 do
+        local id = ModData.deck[i].id
+        if BEST.highScore[id] >= Floors[9].top then s = s + 1 end
+        if BEST.highScore['r' .. id] >= Floors[9].top then s = s + 1 end
+    end
+    return s
+end
 local function getSpeedrunCompletion()
     local s = 0
     for i = 1, 9 do
@@ -32,7 +41,7 @@ local function calculateRating()
     cr = cr + 5000 * MATH.icLerp(420, 62, STAT.minTime) ^ 0.626
 
     -- Mod Completion (3K)
-    cr = cr + 3000 * MATH.icLerp(0, 18, MATH.sumAll(GAME.completion)) ^ 0.626
+    cr = cr + 3000 * MATH.icLerp(0, 18, getF10Completion()) ^ 0.626
 
     -- Mod Speedrun (2K)
     cr = cr + 2000 * MATH.icLerp(0, 18, getSpeedrunCompletion()) ^ 0.626
