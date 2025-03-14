@@ -78,23 +78,24 @@ local function dblMidDraw(obj, x, y)
 end
 function RefreshProfile()
     ---@diagnostic disable
-    local baseColor = TABLE.copy(baseColor)
-    local areaColor = TABLE.copy(areaColor)
-    local titleColor = TABLE.copy(titleColor)
+    local pnlColor = TABLE.copy(baseColor)
+    local boxColor = TABLE.copy(areaColor)
+    local lblColor = TABLE.copy(titleColor)
     local textColor = TABLE.copy(textColor)
     local scoreColor = TABLE.copy(scoreColor)
+    ---@diagnostic enable
 
     if GAME.anyRev then
-        baseColor[1], baseColor[2] = baseColor[2], baseColor[1]
-        areaColor[1], areaColor[2] = areaColor[2], areaColor[1]
-        titleColor[1], titleColor[2] = titleColor[2], titleColor[1]
+        pnlColor[1], pnlColor[2] = pnlColor[2], pnlColor[1]
+        boxColor[1], boxColor[2] = boxColor[2], boxColor[1]
+        lblColor[1], lblColor[2] = lblColor[2], lblColor[1]
         textColor[1], textColor[2] = textColor[2], textColor[1]
         scoreColor[1], scoreColor[2] = scoreColor[2], scoreColor[1]
     end
 
     GC.setCanvas(setup)
     GC.origin()
-    GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
+    GC.clear(pnlColor[1], pnlColor[2], pnlColor[3], 0)
 
     local t30 = GC.newText(FONT.get(30))
     local t50 = GC.newText(FONT.get(50))
@@ -104,13 +105,13 @@ function RefreshProfile()
     GC.draw(TEXTURE.banner, bannerQuad, 0, 10, 0, 1200 / 512, 150 / 256)
 
     -- Main panel & frame
-    GC.setColor(baseColor)
+    GC.setColor(pnlColor)
     -- base
     GC.rectangle('fill', 0, 720, 1200, -560)
     -- deco
     GC.draw(saw, sawQuad, 0, 720 - 560, 0, 7.2, 7.2, 0, 3)
     -- top ribbon
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 210, 1200, 60)
     -- bottom ribbon
     GC.rectangle('fill', 0, 720, 1200, -90)
@@ -151,7 +152,7 @@ function RefreshProfile()
 
     -- Time
     GC.ucs_move('m', 1065, 165)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, 110, 40, 5)
     GC.setColor(1, 1, 1)
     FONT.set(30)
@@ -167,10 +168,10 @@ function RefreshProfile()
 
     -- Introduction
     GC.ucs_move('m', 25, 280)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, 1150, 80)
     FONT.set(30)
-    GC.setColor(titleColor)
+    GC.setColor(lblColor)
     GC.print("ABOUT  ME", 7, 2, 0, .8)
     GC.setColor(textColor)
     GC.print(STAT.aboutme, 15, 35, 0, .8)
@@ -182,10 +183,10 @@ function RefreshProfile()
 
     -- Rating
     GC.ucs_move('m', 25, 370)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
-    GC.setColor(titleColor)
+    GC.setColor(lblColor)
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
     GC.line(7, bh - 30, bw - 7, bh - 30)
     t30:set("CALCULATED FROM CAREER")
@@ -210,10 +211,10 @@ function RefreshProfile()
 
     -- Height
     GC.ucs_move('m', 412.5, 370)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
-    GC.setColor(titleColor)
+    GC.setColor(lblColor)
     GC.print("MAX  ALTITUDE", 7, 2, 0, .8)
     GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(textColor)
@@ -229,10 +230,10 @@ function RefreshProfile()
 
     -- Speedrun
     GC.ucs_move('m', 800, 370)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
-    GC.setColor(titleColor)
+    GC.setColor(lblColor)
     GC.print("FASTEST  SPEEDRUN", 7, 2, 0, .8)
     GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(textColor)
@@ -245,10 +246,10 @@ function RefreshProfile()
 
     -- Career
     GC.ucs_move('m', 25, 500)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, 570, bh)
     FONT.set(30)
-    GC.setColor(titleColor)
+    GC.setColor(lblColor)
     GC.print("CAREER", 7, 2, 0, .8)
     GC.setColor(1, 1, 1)
     local maxComp = TABLE.countAll(GAME.completion, 0) == 9 and 9 or 18
@@ -268,10 +269,10 @@ function RefreshProfile()
 
     -- Full stats
     GC.ucs_move('m', 605, 500)
-    GC.setColor(areaColor)
+    GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, 570, bh)
     FONT.set(30)
-    GC.setColor(titleColor)
+    GC.setColor(lblColor)
     GC.print("FULL  STATS", 7, 2, 0, .8)
     for _, l in next, {
         { k = "Game",   v = { scoreColor, STAT.totalGame },                                   x = 26,  y = 30 },
