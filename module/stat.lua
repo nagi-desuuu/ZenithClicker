@@ -31,20 +31,21 @@ local function getSpeedrunCompletion()
     end
     return s
 end
+local function norm(x, k) return 1 + (x - 1) / (k * x + 1) end
 local function calculateRating()
     local cr = 0
 
     -- Best Height (10K)
-    cr = cr + 10000 * MATH.icLerp(50, 6200, STAT.maxHeight) ^ 0.26
+    cr = cr + 10000 * norm(MATH.icLerp(50, 6200, STAT.maxHeight), 6.2)
 
     -- Best Time (5K)
-    cr = cr + 5000 * MATH.icLerp(420, 62, STAT.minTime) ^ 0.626
+    cr = cr + 5000 * norm(MATH.icLerp(420, 75, STAT.minTime), -.5)
 
     -- Mod Completion (3K)
-    cr = cr + 3000 * MATH.icLerp(0, 18, getF10Completion()) ^ 0.626
+    cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
 
     -- Mod Speedrun (2K)
-    cr = cr + 2000 * MATH.icLerp(0, 18, getSpeedrunCompletion()) ^ 0.626
+    cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
 
     -- Achievement (5K)
     -- TODO
@@ -221,7 +222,7 @@ function RefreshProfile()
     t30:set(STAT.heightDate)
     GC.mDraw(t30, bw / 2, 105, 0, .75)
     GC.setColor(scoreColor)
-    t50:set(STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m")
+    t50:set(STAT.maxHeight <= 0 and "---" or tostring(STAT.maxHeight))
     dblMidDraw(t50, bw / 2, bh / 2 - 4)
     GC.setColor(textColor)
     t30:set("M")
@@ -254,16 +255,16 @@ function RefreshProfile()
     GC.setColor(1, 1, 1)
     local maxComp = TABLE.countAll(GAME.completion, 0) == 9 and 9 or 18
     for _, l in next, {
-        { t = { textColor, "Best Altitude" },                                                    x = 26,  y = 30 },
-        { t = { textColor, "Best Speedrun" },                                                    x = 26,  y = 55 },
-        { t = { textColor, "Achievements" },                                                     x = 26,  y = 80 },
-        { t = { scoreColor, STAT.maxHeight <= 0 and "---" or STAT.maxHeight .. "m" },            x = 190, y = 30 },
-        { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" }, x = 190, y = 55 },
-        { t = { scoreColor, "N/A" },                                                             x = 190, y = 80 },
-        { t = { textColor, "1-Mod Ascent" },                                                     x = 300, y = 55 },
-        { t = { textColor, "1-Mod Speedrun" },                                                   x = 300, y = 80 },
-        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                            x = 480, y = 55 },
-        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                       x = 480, y = 80 },
+        { t = { textColor, "Best Altitude" },                                                     x = 26,  y = 30 },
+        { t = { textColor, "Best Speedrun" },                                                     x = 26,  y = 55 },
+        { t = { textColor, "Achievements" },                                                      x = 26,  y = 80 },
+        { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 190, y = 30 },
+        { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 190, y = 55 },
+        { t = { scoreColor, "N/A" },                                                              x = 190, y = 80 },
+        { t = { textColor, "1-Mod Ascent" },                                                      x = 300, y = 55 },
+        { t = { textColor, "1-Mod Speedrun" },                                                    x = 300, y = 80 },
+        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                             x = 480, y = 55 },
+        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                        x = 480, y = 80 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
 
