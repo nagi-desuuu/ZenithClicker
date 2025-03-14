@@ -504,7 +504,7 @@ function WIDGET._prototype.button:draw()
 
     -- Drawable
     gc.setColor(self.textColor)
-    WIDGET._alignDraw(self, self._text, 0, 0, nil, 1, 1 - 2 * GAME.revTimer)
+    WIDGET._alignDraw(self, self._text, 0, 0, 0, 1.2, 1.2 - 2.4 * GAME.revTimer)
 
     gc.pop()
 end

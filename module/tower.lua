@@ -833,7 +833,7 @@ scene.widgetList = {
         pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
         color = { .15, .15, .15 },
         sound_hover = 'menutap',
-        fontSize = 35, text = "    BACK", textColor = 'DL',
+        fontSize = 30, text = "    BACK", textColor = 'DL',
         onClick = function()
             if GAME.playing then
                 if TASK.lock('sure_forfeit', 2.6) then
@@ -855,7 +855,7 @@ scene.widgetList = {
         pos = { 0, 0 }, x = 60, y = 220, w = 160, h = 60,
         color = { .1, .26, .15 },
         sound_hover = 'menutap',
-        fontSize = 35, text = "    STAT", textColor = 'lG',
+        fontSize = 30, text = "    STAT", textColor = { .42, .83, .48 },
         onClick = function()
             love.keypressed('tab')
             love.keyreleased('tab')
@@ -867,7 +867,7 @@ scene.widgetList = {
         color = { .35, .12, .05 },
         textColor = TextColor,
         sound_hover = 'menuhover',
-        fontSize = 90, text = "START",
+        fontSize = 70, text = "START",
         onClick = function(k)
             if k ~= 3 then
                 GAME[GAME.playing and 'commit' or 'start']()
@@ -880,7 +880,7 @@ scene.widgetList = {
         color = 'DR',
         sound_hover = 'menutap',
         sound_release = 'menuclick',
-        fontSize = 40, text = "RESET", textColor = 'dR',
+        fontSize = 30, text = "RESET", textColor = 'dR',
         onClick = function(k)
             if k ~= 3 then
                 if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
@@ -892,7 +892,7 @@ scene.widgetList = {
         name = 'hint', type = 'hint',
         pos = { 1, 0 }, x = -50, y = 120, w = 80, cornerR = 40,
         color = TextColor,
-        fontSize = 60, text = "?",
+        fontSize = 50, text = "?",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 20,

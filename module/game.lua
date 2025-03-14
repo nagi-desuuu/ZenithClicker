@@ -772,19 +772,23 @@ function GAME.refreshPBText()
 end
 
 function GAME.refreshRev()
-    local numberRev = false
+    local hasRev = false
     for _, C in ipairs(Cards) do
         if M[C.id] == 2 then
-            numberRev = true
+            hasRev = true
             break
         end
     end
-    if numberRev ~= GAME.anyRev then
-        GAME.anyRev = numberRev
-        if not GAME.anyRev then
-            GAME.revDeckSkin = false
-        end
-        local s, e = GAME.revTimer, numberRev and 1 or 0
+    if hasRev ~= GAME.anyRev then
+        GAME.anyRev = hasRev
+
+        local W = SCN.scenes.tower.widgetList.stat
+        W.fillColor[1], W.fillColor[2] = W.fillColor[2], W.fillColor[1]
+        W.textColor[1], W.textColor[2] = W.textColor[2], W.textColor[1]
+
+        if not hasRev then GAME.revDeckSkin = false end
+
+        local s, e = GAME.revTimer, hasRev and 1 or 0
         TWEEN.new(function(t)
             t = MATH.lerp(s, e, t)
             GAME.revTimer = t
@@ -795,6 +799,7 @@ function GAME.refreshRev()
             ShadeColor[2] = MATH.lerp(.15, 0, t)
             ShadeColor[3] = MATH.lerp(.0, 0, t)
         end):setUnique('revSwitched'):setDuration(.26):run()
+
         GAME.updateBgm('revSwitched')
     end
 end
