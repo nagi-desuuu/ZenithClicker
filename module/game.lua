@@ -1239,14 +1239,24 @@ function GAME.finish(reason)
     local unlockDuo
     if GAME.totalQuest > 2.6 then
         if GAME.floor >= 10 then
-            if TABLE.count(GAME.completion, 0) == 9 then
+            local unlockRev
+            for k, v in next, M do
+                if v > GAME.completion[k] then
+                    if GAME.completion[k] == 0 then
+                        if k == 'DP' then
+                            unlockDuo = true
+                        else
+                            unlockRev = true
+                        end
+                    end
+                    GAME.completion[k] = v
+                end
+            end
+            if unlockRev then
                 MSG.clear()
-                MSG('dark', "REVERSED MOD unlocked!\nActivate with right click", 6.26)
+                MSG('dark', "New REVERSED MOD unlocked!\nTry right clicking card with star", 6.26)
                 SFX.play('notify')
             end
-            local duoWasCompleted = GAME.completion.DP
-            for k, v in next, M do GAME.completion[k] = max(GAME.completion[k], v) end
-            unlockDuo = duoWasCompleted == 0 and GAME.completion.DP > 0
         end
 
         -- Statistics
