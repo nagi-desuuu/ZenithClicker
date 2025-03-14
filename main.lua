@@ -194,9 +194,9 @@ STAT = {
     aboutme = "Click the Zenith!",
     maxFloor = 1,
     maxHeight = 0,
-    heightDate = "DATE LOST",
+    heightDate = "NO DATE",
     minTime = 26 * 60,
-    timeDate = "DATE LOST",
+    timeDate = "NO DATE",
 
     totalGame = 0,
     totalTime = 0,
@@ -211,7 +211,7 @@ STAT = {
     fullscreen = true,
     syscursor = false,
     bg = true,
-    bgBrightness = 5,
+    bgBrightness = 60,
     bgm = true,
     sfx = true,
 }
@@ -662,15 +662,15 @@ if STAT.maxHeight == 0 then STAT.maxHeight = math.max(STAT.maxHeight, (TABLE.max
 if STAT.minTime == 26 * 60 then STAT.minTime = math.min(STAT.minTime, (TABLE.minAll(BEST.speedrun))) end
 do
     -- Auto fixing
-    local realBestHeight = TABLE.maxAll(BEST.highScore)
+    local realBestHeight = math.max(TABLE.maxAll(BEST.highScore), 0)
     if STAT.maxHeight > realBestHeight then
         STAT.maxHeight = realBestHeight
-        STAT.heightDate = "DATE LOST"
+        STAT.heightDate = "NO DATE"
     end
-    local realBestTime = TABLE.minAll(BEST.speedrun)
+    local realBestTime = math.min(TABLE.minAll(BEST.speedrun), 26 * 60)
     if STAT.minTime < realBestTime then
         STAT.minTime = realBestTime
-        STAT.timeDate = "DATE LOST"
+        STAT.timeDate = "NO DATE"
     end
 end
 GAME.refreshLockState()
