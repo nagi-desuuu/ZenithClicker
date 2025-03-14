@@ -13,6 +13,15 @@ local textColor = { COLOR.HEX("54B06D") }
 local scoreColor = { COLOR.HEX("B0FFC0") }
 local setup = { stencil = true, card }
 
+local function getSpeedrunCompletion()
+    local s = 0
+    for i = 1, 9 do
+        local id = ModData.deck[i].id
+        if BEST.speedrun[id] < 1e26 then s = s + 1 end
+        if BEST.speedrun['r' .. id] < 1e26 then s = s + 1 end
+    end
+    return s
+end
 local function calculateRating()
     local cr = 0
 
@@ -26,13 +35,7 @@ local function calculateRating()
     cr = cr + 3000 * MATH.icLerp(0, 18, MATH.sumAll(GAME.completion)) ^ 0.626
 
     -- Mod Speedrun (2K)
-    local s = 0
-    for i = 1, 9 do
-        local id = ModData.deck[i].id
-        if BEST.speedrun[id] < 1e26 then s = s + 1 end
-        if BEST.speedrun['r' .. id] < 1e26 then s = s + 1 end
-    end
-    cr = cr + 2000 * MATH.icLerp(0, 18, s) ^ 0.626
+    cr = cr + 2000 * MATH.icLerp(0, 18, getSpeedrunCompletion()) ^ 0.626
 
     -- Achievement (5K)
     -- TODO
@@ -162,6 +165,8 @@ function RefreshProfile()
     GC.setColor(titleColor)
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
     GC.line(7, bh - 30, bw - 7, bh - 30)
+    t30:set("CALCULATED FROM CAREER")
+    GC.mDraw(t30, bw / 2, 105, 0, .7)
     -- Number
     local rating = calculateRating()
     t50:set(tostring(rating))
@@ -218,38 +223,46 @@ function RefreshProfile()
     -- Career
     GC.ucs_move('m', 25, 500)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 570, 120)
+    GC.rectangle('fill', 0, 0, 570, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("CAREER", 7, 2, 0, .8)
-    FONT.set(50)
-    GC.setColor(scoreColor)
-    -- TODO
+    GC.setColor(1, 1, 1)
+    for _, l in next, {
+        { t = { textColor, "Best Altitude" },                          x = 26,  y = 30 },
+        { t = { textColor, "Best Speedrun" },                          x = 26,  y = 55 },
+        { t = { textColor, "Achievements" },                           x = 26,  y = 80 },
+        { t = { scoreColor, MATH.round(STAT.maxHeight) .. "m" },       x = 190, y = 30 },
+        { t = { scoreColor, MATH.round(STAT.minTime) .. "s" },         x = 190, y = 55 },
+        { t = { scoreColor, "N/A" },                                   x = 190, y = 80 },
+        { t = { textColor, "1-Mod Ascent" },                           x = 300, y = 55 },
+        { t = { textColor, "1-Mod Speedrun" },                         x = 300, y = 80 },
+        { t = { scoreColor, MATH.sumAll(GAME.completion) .. " / 18" }, x = 480, y = 55 },
+        { t = { scoreColor, getSpeedrunCompletion() .. " / 18" },      x = 480, y = 80 },
+    } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
 
     -- Full stats
     GC.ucs_move('m', 605, 500)
     GC.setColor(areaColor)
-    GC.rectangle('fill', 0, 0, 570, 120)
+    GC.rectangle('fill', 0, 0, 570, bh)
     FONT.set(30)
     GC.setColor(titleColor)
     GC.print("FULL  STATS", 7, 2, 0, .8)
-    local l = {
-        { "Game",   { scoreColor, STAT.totalGame },                                   x = 26,  y = 35 },
-        { "Ascent", { scoreColor, STAT.totalF10 },                                    x = 26,  y = 60 },
-        { "Giga",   { scoreColor, STAT.totalGiga },                                   x = 26,  y = 85 },
-        { "Flip",   { scoreColor, STAT.totalFlip },                                   x = 196, y = 35 },
-        { "Quest",  { scoreColor, STAT.totalQuest },                                  x = 196, y = 60 },
-        { "Attack", { scoreColor, STAT.totalAttack },                                 x = 196, y = 85 },
-        { "Floor",  { scoreColor, STAT.totalFloor },                                  x = 380, y = 60 },
-        { "Height", { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 85 },
-    }
-    for i = 1, #l do
-        local v = l[i]
+    for _, l in next, {
+        { k = "Game",   v = { scoreColor, STAT.totalGame },                                   x = 26,  y = 30 },
+        { k = "Ascent", v = { scoreColor, STAT.totalF10 },                                    x = 26,  y = 55 },
+        { k = "Giga",   v = { scoreColor, STAT.totalGiga },                                   x = 26,  y = 80 },
+        { k = "Flip",   v = { scoreColor, STAT.totalFlip },                                   x = 196, y = 30 },
+        { k = "Quest",  v = { scoreColor, STAT.totalQuest },                                  x = 196, y = 55 },
+        { k = "Attack", v = { scoreColor, STAT.totalAttack },                                 x = 196, y = 80 },
+        { k = "Floor",  v = { scoreColor, STAT.totalFloor },                                  x = 380, y = 55 },
+        { k = "Height", v = { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 80 },
+    } do
         GC.setColor(textColor)
-        GC.print(v[1], v.x, v.y, 0, .75)
+        GC.print(l.k, l.x, l.y, 0, .75)
         GC.setColor(1, 1, 1)
-        GC.print(v[2], v.x + 80, v.y, 0, .75)
+        GC.print(l.v, l.x + 80, l.y, 0, .75)
     end
     GC.ucs_back()
 
