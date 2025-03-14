@@ -121,7 +121,7 @@ function Card:setActive(auto, key)
                 GAME.addXP(1)
             end
         elseif self.touchCount == 2 then
-            if not (M.AS > 0 and auto) then
+            if M.AS == 0 or not auto then
                 GAME.fault = true
             end
         end

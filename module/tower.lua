@@ -188,8 +188,7 @@ function scene.keyUp(key)
     end
 end
 
-local KBIsDown = love.keyboard.isDown
-local MSIsDown = love.mouse.isDown
+local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
 function scene.update(dt)
     if dt > .26 then dt = .26 end
     GAME.update(dt)
