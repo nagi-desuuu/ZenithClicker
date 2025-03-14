@@ -779,7 +779,7 @@ function scene.overDraw()
         gc_move('m', 0, 126 * (1 - C.float))
         gc_setColor(ShadeColor)
         gc_setAlpha(.7)
-        gc_rectangle('fill', -840 / 2, -145, 840, 120, 10)
+        gc_rectangle('fill', -888 / 2, -145, 888, 120, 10)
         if GAME.anyRev and M[infoID] == 2 then
             setFont(70)
             gc_push('transform')
