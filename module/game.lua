@@ -610,12 +610,12 @@ function GAME.upFloor()
     if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
     if GAME.floor == 10 then
         local roundTime = MATH.roundUnit(GAME.time, .001)
-        if GAME.time < STAT.minTime then
-            STAT.minTime = roundTime
-            STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
-            SaveStat()
-        end
         if GAME.gigaspeed then
+            if GAME.time < STAT.minTime then
+                STAT.minTime = roundTime
+                STAT.timeDate = os.date("%y.%m.%d %H:%M%p")
+                SaveStat()
+            end
             GAME.gigaTime = GAME.time
             GAME.setGigaspeedAnim(false, true)
             local t = BEST.speedrun[GAME.comboStr]
