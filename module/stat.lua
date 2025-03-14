@@ -77,6 +77,21 @@ local function dblMidDraw(obj, x, y)
     GC.mDraw(obj, x, y + 2.6)
 end
 function RefreshProfile()
+    ---@diagnostic disable
+    local baseColor = TABLE.copy(baseColor)
+    local areaColor = TABLE.copy(areaColor)
+    local titleColor = TABLE.copy(titleColor)
+    local textColor = TABLE.copy(textColor)
+    local scoreColor = TABLE.copy(scoreColor)
+
+    if GAME.anyRev then
+        baseColor[1], baseColor[2] = baseColor[2], baseColor[1]
+        areaColor[1], areaColor[2] = areaColor[2], areaColor[1]
+        titleColor[1], titleColor[2] = titleColor[2], titleColor[1]
+        textColor[1], textColor[2] = textColor[2], textColor[1]
+        scoreColor[1], scoreColor[2] = scoreColor[2], scoreColor[1]
+    end
+
     GC.setCanvas(setup)
     GC.origin()
     GC.clear(baseColor[1], baseColor[2], baseColor[3], 0)
@@ -105,14 +120,14 @@ function RefreshProfile()
     GC.setColor(scoreColor)
     GC.printf("↗  VIEW SOURCE FILE", 0, 640, 1200, 'center')
     -- bottom dark
-    GC.setColor(.04, .16, .08)
+    GC.setColor(0, 0, 0, .3)
     GC.rectangle('fill', 0, 720, 1200, -3)
     -- right dark
-    GC.setColor(.08, .2, .1)
+    GC.setColor(0, 0, 0, .15)
     GC.rectangle('fill', 1200, 720, -3, -560)
     GC.draw(TEXTURE.transition, 1200, 720 - 560, -1.5708, .626, -3)
     -- left light
-    GC.setColor(.26, .42, .32)
+    GC.setColor(1, 1, 1, .15)
     GC.rectangle('fill', 0, 720, 3, -560)
     GC.draw(TEXTURE.transition, 0, 720 - 560, -1.5708, .626, 3)
 
@@ -292,13 +307,6 @@ function scene.load()
     end)
 
     RefreshProfile()
-
-    local W = scene.widgetList.link
-    W.y = GAME.anyRev and -210 or 210
-    W:resetPos()
-    W = scene.widgetList.close
-    W.y = GAME.anyRev and 196 or -196
-    W:resetPos()
 end
 
 function scene.keyDown(key, isRep)
@@ -341,7 +349,7 @@ function scene.draw()
         GC.replaceTransform(SCR.xOy_m)
         GC.setColor(1, 1, 1, cardShow)
         local k = .9 + cardShow * .1
-        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67 * (GAME.anyRev and -1 or 1))
+        GC.mDraw(card, 0, 0, 0, k * .67, k ^ 26 * .67)
     end
 end
 

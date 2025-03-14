@@ -130,10 +130,10 @@ TEXTURE = IMG.init(TEXTURE, true)
 
 local fontNotLoaded = MATH.roll(.62)
 FONT.load {
-    tnr = "assets/Times New Roman.ttf",
-    din = "assets/DINPro-Medium.otf",
+    serif = "assets/AbhayaLibre-Regular.ttf",
+    sans = "assets/DINPro-Medium.otf",
 }
-FONT.setDefaultFont(fontNotLoaded and 'tnr' or 'din')
+FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 TEXTS = { -- Font size can only be 30 and 50 here !!!
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
@@ -175,17 +175,8 @@ if fontNotLoaded then
                 break
             end
         end
-        FONT.setDefaultFont('din')
-        local sep = (TEXTS.mod:getFont():getHeight() + TEXTS.title:getFont():getHeight()) / 2
-        for _, text in next, TEXTS do text:setFont(FONT.get(text:getFont():getHeight() < sep and 30 or 50)) end
-        for _, quest in next, GAME.quests do quest.name:setFont(FONT.get(70)) end
-        TEXTS.height:setFont(FONT.get(30))
-        TEXTS.time:setFont(FONT.get(30))
-        TEXTS.gigatime:setFont(FONT.get(50))
-        for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
-        for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
-        if SCN.cur == 'stat' then RefreshProfile() end
-        MSG.clear()
+        FONT.setDefaultFont('sans')
+        ReloadTexts()
     end)
 end
 
@@ -333,6 +324,19 @@ function ApplySettings()
     ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or starCursor
     BGM.setVol(STAT.bgm and 1 or 0)
     SFX.setVol(STAT.sfx and 1 or 0)
+end
+
+function ReloadTexts()
+    local sep = (TEXTS.mod:getFont():getHeight() + TEXTS.title:getFont():getHeight()) / 2
+    for _, text in next, TEXTS do text:setFont(FONT.get(text:getFont():getHeight() < sep and 30 or 50)) end
+    for _, quest in next, GAME.quests do quest.name:setFont(FONT.get(70)) end
+    TEXTS.height:setFont(FONT.get(30))
+    TEXTS.time:setFont(FONT.get(30))
+    TEXTS.gigatime:setFont(FONT.get(50))
+    for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
+    for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
+    if SCN.cur == 'stat' then RefreshProfile() end
+    MSG.clear()
 end
 
 love.mouse.setVisible(false)

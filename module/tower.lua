@@ -242,7 +242,7 @@ local rankColor = {
     { 1,  .8, .5 },
     { .6, 1,  .8 },
     { .4, .9, 1 },
-    { 1,  .6, 1 },
+    { 1,  .7, 1 },
 }
 local floorColors = TABLE.transpose {
     { COLOR.HEX '792B12' }, -- F1
