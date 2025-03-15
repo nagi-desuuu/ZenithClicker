@@ -36,9 +36,9 @@ end
 AboutText = GC.newText(FONT.get(70))
 local lines = {}
 local nameColor = {
-    z = { .4, .8, 1 },
-    ocelot = { 1, .3, .5 },
-    asrial = { .5, 1, .3 },
+    z = { .5, .8, 1 },
+    ocelot = { 1, .6, .8 },
+    asrial = { .7, 1, .5 },
 }
 
 local function addText(text, x, y, scale, wraplimit)
@@ -70,13 +70,13 @@ addText({ COLOR.O, "THE TEAM" }, 0, 410, .3)
 
 addText({ nameColor.z, "MRZ" }, 0, 450, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
-addText({ COLOR.LD, "Programming, Game Design, General Development, Test" }, 0, 510, .2)
+addText({ COLOR.LD, "Programming, Game Design, General Development, Testing" }, 0, 510, .2)
 
 addText({ nameColor.ocelot, "DOKTOROCELOT" }, 160, 550, .5)
 addText({ COLOR.LD, "Audio, Music" }, 160, 590, .26)
 
 addText({ nameColor.asrial, "DJ  ASRIEL" }, -160, 550, .5)
-addText({ COLOR.LD, "Test & Background Reconstruct" }, -160, 590, .26)
+addText({ COLOR.LD, "Testing & Background Reconstruction" }, -160, 590, .26)
 
 table.insert(lines, 640)
 
