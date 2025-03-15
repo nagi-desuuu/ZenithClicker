@@ -927,8 +927,11 @@ scene.widgetList = {
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
 
-            F5/F6: Audio    F7/F8: Background brightness    F9: Background style
-            F10: Cursor style    F11: Fullscreen
+            F5/F6: Audio volume -/+
+            F7/F8: Background brightness -/+
+            F9: Switch LQ/HQ Background
+            F10: Cursor style
+            F11: Fullscreen
         ]],
     }
 }
