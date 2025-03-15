@@ -13,7 +13,8 @@ Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
 Redesigned by MrZ  
 Backgrounds reconstructed by DJ Asriel  
-D-Din-Pro (Font) by Adrian Frutigеr
+D-Din-Pro (Font) by Adrian Frutigеr  
+AbhayaLibre-Regular (Font) by Mooniak
 
 ## How to play
 
