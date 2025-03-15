@@ -100,6 +100,16 @@ local function keyPress(key)
         local W = scene.widgetList.stat
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
+    elseif key == 'f1' then
+        if GAME.playing then
+            SFX.play('no')
+        else
+            SFX.play('menuhit1')
+            SCN.go('about', 'none')
+        end
+        local W = scene.widgetList.about
+        W._pressTime = W._pressTimeMax * 2
+        W._hoverTime = W._hoverTimeMax
     elseif key == '\\' then
         if not GAME.playing then
             local unlocked
@@ -302,7 +312,7 @@ local reviveQuad = {
 local reviveMove = { -155, -147, -154 }
 local reviveRot = { -.095, .15, -.17 }
 
-function scene.draw()
+function DrawBG()
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
         local bgFloor = GAME.getBgFloor()
@@ -378,6 +388,10 @@ function scene.draw()
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
+end
+
+function scene.draw()
+    DrawBG()
 
     -- Wind Particles
     if GAME.height <= 1650 then
@@ -862,6 +876,17 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
+        name = 'about', type = 'button',
+        pos = { 0, 0 }, x = 60, y = 300, w = 160, h = 60,
+        color = 'lD',
+        sound_hover = 'menutap',
+        fontSize = 30, text = "   ABOUT", textColor = 'LD',
+        onClick = function()
+            love.keypressed('f1')
+            love.keyreleased('f1')
+        end,
+    },
+    WIDGET.new {
         name = 'start', type = 'button',
         pos = { .5, .5 }, y = -170, w = 800, h = 200,
         color = { .35, .12, .05 },
@@ -902,7 +927,6 @@ scene.widgetList = {
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
 
-            F1: About
             F3/F4: Update name/about-me with clipboard text
             F5/F6: Audio    F7/F8: Background brightness    F9: Background style
             F10: Cursor style    F11: Fullscreen

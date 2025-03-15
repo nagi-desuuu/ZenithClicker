@@ -157,6 +157,8 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     forfeit    = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
     credit     = GC.newText(FONT.get(30), "All assets from TETR.IO"),
+
+    aboutTitle = GC.newText(FONT.get(50), "ABOUT"),
 }
 if fontNotLoaded then
     TASK.new(function()
@@ -169,7 +171,7 @@ if fontNotLoaded then
                 MSG('dark', "A DARK FORCE INTERRUPTED THE FONT LOADING")
                 return
             end
-            if GAME.mod.DP > 0 then
+            if SCN.cur=='about' then
                 TASK.yieldT(0.26)
                 SFX.play('staffspam')
                 break
@@ -285,9 +287,10 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
+SCN.add('joining', require 'module/joining')
 SCN.add('tower', require 'module/tower')
 SCN.add('stat', require 'module/stat')
-SCN.add('joining', require 'module/joining')
+SCN.add('about', require 'module/about')
 ZENITHA.setFirstScene('joining')
 
 local gc = love.graphics
@@ -336,6 +339,7 @@ function ReloadTexts()
     for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
     for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
     if SCN.cur == 'stat' then RefreshProfile() end
+    AboutText:setFont(FONT.get(70))
     MSG.clear()
 end
 
@@ -460,16 +464,6 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             until true
             SFX.play('staffwarning')
         end
-    elseif key == 'f1' then
-        MSG.clear()
-        MSG('dark', STRING.trimIndent [[
-            Redesigned by MrZ
-            Backgrounds reconstructed by DJ Asriel
-
-            Origin design and assets are from TETR.IO, by osk team:
-            Musics & Sounds by Dr.Ocelot
-            Arts by Largeonions & S. Zhang & Lauren Sheng & Ricman
-        ]])
     end
 end
 

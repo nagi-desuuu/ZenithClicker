@@ -296,7 +296,7 @@ function RefreshProfile()
 end
 
 function scene.load()
-    TASK.lock('stat_no_quit')
+    TASK.lock('no_back')
     maskAlpha, cardShow = 0, 0
     TWEEN.new(function(t)
         maskAlpha = t
@@ -304,7 +304,7 @@ function scene.load()
         TWEEN.new(function(t)
             cardShow = t
         end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
-            TASK.unlock('stat_no_quit')
+            TASK.unlock('no_back')
         end)
     end)
 
@@ -313,7 +313,7 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' and TASK.lock('stat_no_quit') then
+    if key == 'escape' and TASK.lock('no_back') then
         SFX.play('menuclick')
         TWEEN.tag_kill('stat_in')
         TWEEN.new(function(t)
@@ -323,7 +323,7 @@ function scene.keyDown(key, isRep)
                 maskAlpha = 1 - t
             end):setDuration(.26):run():setOnFinish(function()
                 SCN.back('none')
-                TASK.unlock('stat_no_quit')
+                TASK.unlock('no_back')
             end)
         end)
     end
