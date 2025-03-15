@@ -80,6 +80,13 @@ local function keyPress(key)
         SFX.play('menuclick')
         if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
         GAME.cancelAll()
+    elseif key == 'x' or key == 'c' then
+        if M.NH == 2 then
+            SFX.play('no')
+            return true
+        end
+        GAME.nixPrompt('keep_no_keyboard')
+        scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, key == 'x' and 1 or 2)
     elseif key == 'space' then
         if M.NH == 2 and M.AS == 0 then
             SFX.play('no')
