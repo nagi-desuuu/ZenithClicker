@@ -71,7 +71,7 @@ saw = GC.load(saw)
 saw:setFilter('nearest', 'nearest')
 saw:setWrap('repeat', 'repeat')
 local sawQuad = GC.newQuad(0, 0, 180, 3, saw)
-local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.banner)
+local bannerQuad = GC.newQuad(0, 220, 512, 256, TEXTURE.logo)
 local function dblMidDraw(obj, x, y)
     GC.mDraw(obj, x, y)
     GC.setAlpha(.626)
@@ -103,7 +103,7 @@ function RefreshProfile()
 
     -- Banner
     GC.setColor(.42, .42, .42)
-    GC.draw(TEXTURE.banner, bannerQuad, 0, 10, 0, 1200 / 512, 150 / 256)
+    GC.draw(TEXTURE.logo, bannerQuad, 0, 10, 0, 1200 / 512, 150 / 256)
 
     -- Main panel & frame
     GC.setColor(pnlColor)

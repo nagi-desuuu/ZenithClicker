@@ -116,7 +116,7 @@ TEXTURE = {
         assets 'rank/x.png',
         assets 'rank/x+.png',
     },
-    banner = assets 'icon.png',
+    logo = assets 'icon.png',
     avatar = assets 'avatar.png',
     clicker = assets 'clicker.png',
 }
