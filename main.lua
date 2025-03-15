@@ -157,9 +157,6 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     slogan_rEX  = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     forfeit     = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
     credit      = GC.newText(FONT.get(30), "All assets from TETR.IO"),
-
-    aboutTitle  = GC.newText(FONT.get(50), "ABOUT"),
-    aboutThanks = GC.newText(FONT.get(30), "THANK YOU FOR PLAYING ZENITH CLICKER!"),
 }
 if fontNotLoaded then
     TASK.new(function()
@@ -339,6 +336,7 @@ function ReloadTexts()
     TEXTS.gigatime:setFont(FONT.get(50))
     for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
     for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
+    for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     if SCN.cur == 'stat' then RefreshProfile() end
     AboutText:setFont(FONT.get(70))
     MSG.clear()

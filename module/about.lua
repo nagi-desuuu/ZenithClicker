@@ -9,6 +9,16 @@ function scene.load()
     TASK.lock('no_back', 0.26)
 end
 
+function scene.mouseMove(_, _, _, dy)
+    if love.mouse.isDown(1, 2) then
+        scroll = MATH.clamp(scroll - dy, 0, 100)
+    end
+end
+
+function scene.touchMove(_, _, _, dy)
+    scroll = MATH.clamp(scroll - dy, 0, 100)
+end
+
 function scene.keyDown(key, isRep)
     if isRep then return true end
     if key == 'escape' and not TASK.getLock('no_back') then
