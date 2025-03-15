@@ -255,16 +255,16 @@ function RefreshProfile()
     GC.setColor(1, 1, 1)
     local maxComp = TABLE.countAll(GAME.completion, 0) == 9 and 9 or 18
     for _, l in next, {
-        { t = { textColor, "Best Altitude" },                                                     x = 26,  y = 30 },
-        { t = { textColor, "Best Speedrun" },                                                     x = 26,  y = 55 },
-        { t = { textColor, "Achievements" },                                                      x = 26,  y = 80 },
-        { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 190, y = 30 },
-        { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 190, y = 55 },
-        { t = { scoreColor, "N/A" },                                                              x = 190, y = 80 },
-        { t = { textColor, "1-Mod Ascent" },                                                      x = 300, y = 55 },
-        { t = { textColor, "1-Mod Speedrun" },                                                    x = 300, y = 80 },
-        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                             x = 480, y = 55 },
-        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                        x = 480, y = 80 },
+        { t = { textColor, "Best Altitude" },                                                     x = 26,  y = 33 },
+        { t = { textColor, "Best Speedrun" },                                                     x = 26,  y = 58 },
+        { t = { textColor, "Achievements" },                                                      x = 26,  y = 83 },
+        { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 190, y = 33 },
+        { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 190, y = 58 },
+        { t = { scoreColor, "N/A" },                                                              x = 190, y = 83 },
+        { t = { textColor, "1-Mod Ascent" },                                                      x = 300, y = 58 },
+        { t = { textColor, "1-Mod Speedrun" },                                                    x = 300, y = 83 },
+        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                             x = 480, y = 58 },
+        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                        x = 480, y = 83 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
 
@@ -276,14 +276,14 @@ function RefreshProfile()
     GC.setColor(lblColor)
     GC.print("FULL  STATS", 7, 2, 0, .8)
     for _, l in next, {
-        { k = "Game",   v = { scoreColor, STAT.totalGame },                                   x = 26,  y = 30 },
-        { k = "Ascent", v = { scoreColor, STAT.totalF10 },                                    x = 26,  y = 55 },
-        { k = "Giga",   v = { scoreColor, STAT.totalGiga },                                   x = 26,  y = 80 },
-        { k = "Flip",   v = { scoreColor, STAT.totalFlip },                                   x = 196, y = 30 },
-        { k = "Quest",  v = { scoreColor, STAT.totalQuest },                                  x = 196, y = 55 },
-        { k = "Attack", v = { scoreColor, STAT.totalAttack },                                 x = 196, y = 80 },
-        { k = "Floor",  v = { scoreColor, STAT.totalFloor },                                  x = 380, y = 55 },
-        { k = "Height", v = { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 80 },
+        { k = "Game",   v = { scoreColor, STAT.totalGame },                                   x = 26,  y = 33 },
+        { k = "Ascent", v = { scoreColor, STAT.totalF10 },                                    x = 26,  y = 58 },
+        { k = "Giga",   v = { scoreColor, STAT.totalGiga },                                   x = 26,  y = 83 },
+        { k = "Flip",   v = { scoreColor, STAT.totalFlip },                                   x = 196, y = 33 },
+        { k = "Quest",  v = { scoreColor, STAT.totalQuest },                                  x = 196, y = 58 },
+        { k = "Attack", v = { scoreColor, STAT.totalAttack },                                 x = 196, y = 83 },
+        { k = "Floor",  v = { scoreColor, STAT.totalFloor },                                  x = 380, y = 58 },
+        { k = "Height", v = { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 83 },
     } do
         GC.setColor(textColor)
         GC.print(l.k, l.x, l.y, 0, .75)

@@ -112,7 +112,7 @@ function scene.update(dt)
 end
 
 function scene.draw()
-    DrawBG()
+    DrawBG(26)
 
     GC.replaceTransform(SCR.xOy_u)
     GC.translate(0, 100 - scroll1)

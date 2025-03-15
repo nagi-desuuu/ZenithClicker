@@ -319,11 +319,11 @@ local reviveQuad = {
 local reviveMove = { -155, -147, -154 }
 local reviveRot = { -.095, .15, -.17 }
 
-function DrawBG()
+function DrawBG(brightness)
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
         local bgFloor = GAME.getBgFloor()
-        local bgAlpha = (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * STAT.bgBrightness / 100
+        local bgAlpha = (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * brightness / 100
         if bgFloor < 10 then
             gc_setColor(1, 1, 1, bgAlpha)
             local bottom = Floors[bgFloor - 1].top
@@ -391,14 +391,14 @@ function DrawBG()
             MATH.lLerp(floorColors[1], t),
             MATH.lLerp(floorColors[2], t),
             MATH.lLerp(floorColors[3], t),
-            STAT.bgBrightness / 100
+            brightness / 100
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
 end
 
 function scene.draw()
-    DrawBG()
+    DrawBG(STAT.bgBrightness)
 
     -- Wind Particles
     if GAME.height <= 1650 then

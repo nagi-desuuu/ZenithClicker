@@ -135,28 +135,28 @@ FONT.load {
 }
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 TEXTS = { -- Font size can only be 30 and 50 here !!!
-    mod         = GC.newText(FONT.get(30)),
-    title       = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
-    load        = GC.newText(FONT.get(50), "JOINING ROOM..."),
-    pb          = GC.newText(FONT.get(50)),
-    sr          = GC.newText(FONT.get(50)),
-    endHeight   = GC.newText(FONT.get(50)),
-    endTime     = GC.newText(FONT.get(30)),
-    prevPB      = GC.newText(FONT.get(50), "PB"),
-    height      = GC.newText(FONT.get(30)),
-    time        = GC.newText(FONT.get(30)),
-    chain       = GC.newText(FONT.get(50)),
-    b2b         = GC.newText(FONT.get(30), "B2B x"),
-    gigaspeed   = GC.newText(FONT.get(50), {
+    mod        = GC.newText(FONT.get(30)),
+    title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
+    load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
+    pb         = GC.newText(FONT.get(50)),
+    sr         = GC.newText(FONT.get(50)),
+    endHeight  = GC.newText(FONT.get(50)),
+    endTime    = GC.newText(FONT.get(30)),
+    prevPB     = GC.newText(FONT.get(50), "PB"),
+    height     = GC.newText(FONT.get(30)),
+    time       = GC.newText(FONT.get(30)),
+    chain      = GC.newText(FONT.get(50)),
+    b2b        = GC.newText(FONT.get(30), "B2B x"),
+    gigaspeed  = GC.newText(FONT.get(50), {
         COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
         COLOR.K, "A", COLOR.G, "S", COLOR.J, "P",
         COLOR.C, "E", COLOR.S, "E", COLOR.B, "D" }),
-    gigatime    = GC.newText(FONT.get(50)),
-    slogan      = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
-    slogan_EX   = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
-    slogan_rEX  = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
-    forfeit     = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
-    credit      = GC.newText(FONT.get(30), "All assets from TETR.IO"),
+    gigatime   = GC.newText(FONT.get(50)),
+    slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
+    slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
+    slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
+    forfeit    = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
+    credit     = GC.newText(FONT.get(30), "All assets from TETR.IO"),
 }
 if fontNotLoaded then
     TASK.new(function()
