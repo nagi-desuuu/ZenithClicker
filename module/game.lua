@@ -593,7 +593,7 @@ function GAME.upFloor()
     end
     if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
 
-    local duration = GAME.floor == 10 and 8.72 or 4.2
+    local duration = GAME.floor >= 10 and 8.72 or 4.2
     TEXT:add {
         text = "Floor",
         x = 160, y = 290, k = 1.6, fontSize = 30,
@@ -611,7 +611,7 @@ function GAME.upFloor()
     }
     if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
     if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
-    if GAME.floor == 10 then
+    if GAME.floor >= 10 then
         local roundTime = MATH.roundUnit(GAME.time, .001)
         if GAME.gigaspeed then
             if GAME.time < STAT.minTime then
@@ -1321,17 +1321,16 @@ function GAME.finish(reason)
         else
             TEXTS.endFloor:set("     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
-        TEXTS.endResult:set(([[
-            Time: $1
-            Quests: $2
-            Attack: $3 ($4 eff)
-            Bonus: $5m ($6%)
-        ]]):repD(
-            STRING.time_simp(GAME.time),
-            GAME.totalQuest,
-            GAME.totalAttack, MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01),
-            MATH.roundUnit(GAME.heightBonus, .1), MATH.roundUnit(GAME.heightBonus / GAME.height * 100, .1)
-        ):trimIndent())
+        TEXTS.endResult:set({
+            COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
+            COLOR.LD, GAME.gigaTime and "  (F10 " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
+            COLOR.L, "Quests  " .. GAME.totalQuest,
+            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s)\n",
+            COLOR.L, "Attack  " .. GAME.totalAttack,
+            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
+            COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
+            COLOR.LD, "  (" .. MATH.roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%)\n",
+        })
         GAME.refreshResultModIcon()
     else
         TEXTS.endHeight:set("")
@@ -1411,7 +1410,7 @@ function GAME.update(dt)
             for i = 1, #e, 2 do
                 GAME[e[i]] = GAME[e[i]] + e[i + 1]
             end
-            if GAME.floor == 10 then GAME.updateBgm('ingame') end
+            if GAME.floor >= 10 then GAME.updateBgm('ingame') end
             GAME.fatigue = GAME.fatigue + 1
             local duration = 5
             if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
