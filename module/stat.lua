@@ -414,7 +414,7 @@ scene.widgetList = {
         name = 'hint1', type = 'hint',
         pos = { .5, .5 }, x = -260, y = -200, w = 260, h = 100,
         color = COLOR.X,
-        labelPos = 'topRight',
+        labelPos = 'top',
         floatFontSize = 20,
         floatText = "F1: Replace username with clipboard text",
     },
@@ -430,7 +430,7 @@ scene.widgetList = {
         name = 'link', type = 'hint',
         pos = { .5, .5 }, x = 0, y = 210, w = 800, h = 60,
         color = COLOR.X,
-        labelPos = 'topRight',
+        labelPos = 'top',
         floatFontSize = 20,
         floatText = "Open github repo with browser",
         onPress = function()
