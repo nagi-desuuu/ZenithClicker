@@ -34,9 +34,10 @@ local function addText(text, x, y, scale, wraplimit)
     AboutText:addf(text, w, 'center', x - w / 2 * scale, y, 0, scale)
 end
 
-addText({ COLOR.L, "Zenith Clicker" }, 0, 10)
-addText({ COLOR.L, "BY MrZ" }, 0, 100, .5)
-addText({ COLOR.L, string.rep("EXAMPLE TEXT ", 12) }, 0, 180, .3)
+addText("Zenith Clicker", 0, 10)
+addText("BY MrZ", 0, 100, .5)
+addText(string.rep("EXAMPLE TEXT ", 12), 0, 180, .3)
+addText({COLOR.lO,"THE TEAM"}, 0, 320, .3)
 -- TODO
 
 --[[
