@@ -1316,7 +1316,8 @@ function GAME.finish(reason)
             local s = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
             if GAME.gigaTime then s = s .. "   in " .. STRING.time_simp(GAME.gigaTime) end
             local l = s:atomize()
-            for i = #l, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / #l), GAME.gigaTime and .6 or .2, 1) }) end
+            local len=#l
+            for i = len, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
             TEXTS.endFloor:set(l)
         else
             TEXTS.endFloor:set("     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
