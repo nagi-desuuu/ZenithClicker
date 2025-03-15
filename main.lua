@@ -400,69 +400,6 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
-    elseif key == 'f3' then
-        MSG.clear()
-        if TASK.forceLock('sure_rename', 2.6) then
-            SFX.play('notify')
-            MSG('dark', "Press F3 again to rename your account with text in clipboard")
-        else
-            local newName = love.system.getClipboardText()
-            repeat
-                if type(newName) ~= 'string' then
-                    MSG('dark', "No data in clipboard")
-                    break
-                end
-                newName = newName:upper()
-                if #newName < 3 or #newName > 16 or newName:find('[^A-Z0-9_%-]') then
-                    MSG('dark', "New name can only be 3~16 characters with A-Z, 0-9, _")
-                    break
-                end
-                if newName == STAT.uid then
-                    MSG('dark', "New name is the same as old one")
-                    break
-                end
-                if newName:sub(1, 4) == 'ANON' then
-                    MSG('dark', "New name can't be ANON")
-                    break
-                end
-                STAT.uid = newName
-                SaveStat()
-                SFX.play('supporter')
-                MSG('dark', "Name changed to " .. STAT.uid)
-                if SCN.cur == 'stat' then RefreshProfile() end
-                return
-            until true
-            SFX.play('staffwarning')
-        end
-    elseif key == 'f4' then
-        MSG.clear()
-        if TASK.forceLock('sure_reabout', 2.6) then
-            SFX.play('notify')
-            MSG('dark', "Press F4 again to change your 'about me' text with text in clipboard")
-        else
-            local newText = love.system.getClipboardText()
-            repeat
-                if type(newText) ~= 'string' then
-                    MSG('dark', "No data in clipboard")
-                    break
-                end
-                if #newText < 1 or #newText > 260 or newText:find('[^\32-\126]') then
-                    MSG('dark', "New text can only be 1~260 characters with visiable ASCII characters")
-                    break
-                end
-                if newText == STAT.aboutme then
-                    MSG('dark', "New text is the same as old one")
-                    break
-                end
-                STAT.aboutme = newText
-                SaveStat()
-                SFX.play('supporter')
-                MSG('dark', "About text updated")
-                if SCN.cur == 'stat' then RefreshProfile() end
-                return
-            until true
-            SFX.play('staffwarning')
-        end
     end
 end
 

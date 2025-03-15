@@ -927,7 +927,6 @@ scene.widgetList = {
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
 
-            F3/F4: Update name/about-me with clipboard text
             F5/F6: Audio    F7/F8: Background brightness    F9: Background style
             F10: Cursor style    F11: Fullscreen
         ]],
