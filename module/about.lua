@@ -36,9 +36,9 @@ end
 AboutText = GC.newText(FONT.get(70))
 local lines = {}
 local nameColor = {
-    z = { .5, .8, 1 },
-    ocelot = { 1, .6, .8 },
-    asrial = { .7, 1, .5 },
+    z = { COLOR.HEX "80CCFF" },
+    ocelot = { COLOR.HEX "FF99CC" },
+    asrial = { COLOR.HEX "DDFF80" },
 }
 
 local function addText(text, x, y, scale, wraplimit)

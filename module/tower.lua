@@ -505,11 +505,13 @@ function scene.draw()
         gc_draw(GAME.resultRevSB, 380, 168, 0, .9)
         gc_draw(GAME.resultSB, 380, 168, 0, .9)
         gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8, 1.8)
-        gc_mDraw(TEXTS.endTime, 0, 204)
+        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
+        gc_mDraw(TEXTS.endFloor, 0, 204)
+        gc_draw(TEXTS.endResult, -540, 95, 0, .8)
         gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8, 1.8)
-        gc_mDraw(TEXTS.endTime, 0, 201)
+        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
+        gc_mDraw(TEXTS.endFloor, 0, 201)
+        gc_draw(TEXTS.endResult, -540, 93, 0, .8)
     end
 end
 

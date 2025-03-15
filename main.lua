@@ -140,8 +140,9 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
     sr         = GC.newText(FONT.get(50)),
+    endResult  = GC.newText(FONT.get(30)),
     endHeight  = GC.newText(FONT.get(50)),
-    endTime    = GC.newText(FONT.get(30)),
+    endFloor   = GC.newText(FONT.get(30)),
     prevPB     = GC.newText(FONT.get(50), "PB"),
     height     = GC.newText(FONT.get(30)),
     time       = GC.newText(FONT.get(30)),
@@ -202,6 +203,7 @@ STAT = {
     totalTime = 0,
     totalQuest = 0,
     totalHeight = 0,
+    totalBonus = 0,
     totalFloor = 0,
     totalFlip = 0,
     totalAttack = 0,
@@ -480,6 +482,7 @@ function Daemon_Beat()
     local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184
     local t2, step2 = 0, 2 * 60 / 184 / 4
+    local exLastVol = 0
     while true do
         local T = BGM.tell()
         ThrobAlpha.card = math.max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
@@ -502,12 +505,12 @@ function Daemon_Beat()
         if T > t2 + step2 then
             t2 = t2 + step2
             if GAME.mod.EX > 0 and not SCN.swapping then
-                if GAME.anyRev then
-                    BGM.set('expert', 'volume', MATH.rand(.7, 1), 0)
-                else
-                    local pick = MATH.roll(MATH.interpolate(1, .26, 10, .9, GAME.floor))
-                    BGM.set('expert', 'volume', pick and MATH.rand(.4, .7) or 0, pick and 0 or .1)
-                end
+                local r = math.random()
+                local f = GAME.floor
+                r = 1 + (r - 1) / (f * r + 1)
+                r = MATH.clamp(r, exLastVol - (26 - f) * .02, exLastVol + (26 - f) * .02)
+                BGM.set('expert', 'volume', r, r > exLastVol and .0626 or .26)
+                exLastVol = r
             end
         end
         coroutine.yield()
@@ -536,7 +539,7 @@ if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
 if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
-
+if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
 local oldVer = BEST.version
 if BEST.version == nil then
     for k in next, BEST.highScore do

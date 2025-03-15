@@ -282,8 +282,9 @@ function RefreshProfile()
         { k = "Flip",   v = { scoreColor, STAT.totalFlip },                                   x = 196, y = 33 },
         { k = "Quest",  v = { scoreColor, STAT.totalQuest },                                  x = 196, y = 58 },
         { k = "Attack", v = { scoreColor, STAT.totalAttack },                                 x = 196, y = 83 },
-        { k = "Floor",  v = { scoreColor, STAT.totalFloor },                                  x = 380, y = 58 },
-        { k = "Height", v = { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 83 },
+        { k = "Floor",  v = { scoreColor, STAT.totalFloor },                                  x = 380, y = 33 },
+        { k = "Height", v = { scoreColor, floor(STAT.totalHeight * .001), textColor, " km" }, x = 380, y = 58 },
+        { k = "Bonus",  v = { scoreColor, floor(STAT.totalBonus * .001), textColor, " km" },  x = 380, y = 83 },
     } do
         GC.setColor(textColor)
         GC.print(l.k, l.x, l.y, 0, .75)

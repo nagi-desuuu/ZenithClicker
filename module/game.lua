@@ -46,6 +46,7 @@ local ins, rem = table.insert, table.remove
 ---@field fatigue number
 ---@field height number
 ---@field heightBuffer number
+---@field heightBonus number
 ---@field life number
 ---@field dmgTimer number
 ---@field chain number
@@ -518,7 +519,9 @@ function GAME.takeDamage(dmg, reason, toAlly)
 end
 
 function GAME.addHeight(h)
-    GAME.heightBuffer = GAME.heightBuffer + h * GAME.rank / 4
+    h = h * GAME.rank / 4
+    GAME.heightBonus = GAME.heightBonus + h
+    GAME.heightBuffer = GAME.heightBuffer + h
 end
 
 function GAME.addXP(xp)
@@ -1162,6 +1165,7 @@ function GAME.start()
     GAME.fatigue = 1
     GAME.height = 0
     GAME.heightBuffer = 0
+    GAME.heightBonus = 0
     GAME.life = 20
     GAME.fullHealth = 20
     GAME.dmgTimer = GAME.dmgDelay
@@ -1271,6 +1275,7 @@ function GAME.finish(reason)
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
         STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
+        STAT.totalBonus = MATH.roundUnit(STAT.totalBonus + GAME.heightBonus, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then
@@ -1307,19 +1312,31 @@ function GAME.finish(reason)
         end
 
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
-        if GAME.gigaTime then
-            local l = STRING.atomize("F10: " .. Floors[10].name .. "   in " .. STRING.time_simp(GAME.gigaTime))
-            for i = #l, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / #l), .42, 1) }) end
-            ins(l, 1, COLOR.LL)
-            ins(l, 2, STRING.time_simp(GAME.time) .. "     ")
-            TEXTS.endTime:set(l)
+        if GAME.gigaspeedEntered then
+            local s = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
+            if GAME.gigaTime then s = s .. "   in " .. STRING.time_simp(GAME.gigaTime) end
+            local l = s:atomize()
+            for i = #l, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / #l), GAME.gigaTime and .6 or .2, 1) }) end
+            TEXTS.endFloor:set(l)
         else
-            TEXTS.endTime:set(STRING.time_simp(GAME.time) .. "     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
+            TEXTS.endFloor:set("     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
+        TEXTS.endResult:set(([[
+            Time: $1
+            Quests: $2
+            Attack: $3 ($4 eff)
+            Bonus: $5m ($6%)
+        ]]):repD(
+            STRING.time_simp(GAME.time),
+            GAME.totalQuest,
+            GAME.totalAttack, MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01),
+            MATH.roundUnit(GAME.heightBonus, .1), MATH.roundUnit(GAME.heightBonus / GAME.height * 100, .1)
+        ):trimIndent())
         GAME.refreshResultModIcon()
     else
         TEXTS.endHeight:set("")
-        TEXTS.endTime:set("")
+        TEXTS.endFloor:set("")
+        TEXTS.endResult:set("")
         GAME.resultSB:clear()
         GAME.resultRevSB:clear()
     end
