@@ -324,7 +324,7 @@ function DrawBG(brightness)
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
         local bgFloor = GAME.getBgFloor()
-        local bgAlpha = (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * brightness / 100
+        local bgAlpha = GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75
         if bgFloor < 10 then
             gc_setColor(1, 1, 1, bgAlpha)
             local bottom = Floors[bgFloor - 1].top
@@ -404,11 +404,12 @@ function DrawBG(brightness)
         gc_setColor(
             MATH.lLerp(floorColors[1], t),
             MATH.lLerp(floorColors[2], t),
-            MATH.lLerp(floorColors[3], t),
-            brightness / 100
+            MATH.lLerp(floorColors[3], t)
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
+    gc_setColor(0, 0, 0, 1 - brightness / 100)
+    gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 end
 
 function scene.draw()
