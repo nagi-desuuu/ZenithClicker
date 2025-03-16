@@ -71,13 +71,13 @@ addText({ COLOR.O, "THE TEAM" }, 0, 410, .3)
 
 addText({ nameColor.z, "MRZ" }, 0, 450, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
-addText({ COLOR.LD, "Programming, Game Design, General Development, Testing" }, 0, 510, .2)
+addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .2)
 
 addText({ nameColor.asrial, "DJ  ASRIEL" }, -320, 550, .5)
-addText({ COLOR.LD, "Testing & Background Reconstruction" }, -320, 590, .26)
+addText({ COLOR.LD, "BACKGROUND RECONSTRUCTION" }, -320, 590, .26)
 
 addText({ nameColor.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
-addText({ COLOR.LD, "Audio & Music" }, 0, 590, .26)
+addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 590, .26)
 
 addText({ nameColor.osk, "OSK" }, 320, 550, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER..." }, 320, 590, .26)
