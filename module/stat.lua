@@ -327,59 +327,6 @@ function scene.keyDown(key, isRep)
                 TASK.unlock('no_back')
             end)
         end)
-    elseif key == 'f1' then
-        MSG.clear()
-        local newName = love.system.getClipboardText()
-        repeat
-            if type(newName) ~= 'string' then
-                MSG('dark', "No data in clipboard")
-                break
-            end
-            newName = newName:upper()
-            if #newName < 3 or #newName > 16 or newName:find('[^A-Z0-9_%-]') then
-                MSG('dark', "New name can only be 3~16 characters with A-Z, 0-9, _")
-                break
-            end
-            if newName == STAT.uid then
-                MSG('dark', "New name is the same as old one")
-                break
-            end
-            if newName:sub(1, 4) == 'ANON' then
-                MSG('dark', "New name can't be ANON")
-                break
-            end
-            STAT.uid = newName
-            SaveStat()
-            SFX.play('supporter')
-            MSG('dark', "Name changed to " .. STAT.uid)
-            if SCN.cur == 'stat' then RefreshProfile() end
-            return
-        until true
-        SFX.play('staffwarning')
-    elseif key == 'f2' then
-        MSG.clear()
-        local newText = love.system.getClipboardText()
-        repeat
-            if type(newText) ~= 'string' then
-                MSG('dark', "No data in clipboard")
-                break
-            end
-            if #newText < 1 or #newText > 260 or newText:find('[^\32-\126]') then
-                MSG('dark', "New text can only be 1~260 characters with visiable ASCII characters")
-                break
-            end
-            if newText == STAT.aboutme then
-                MSG('dark', "New text is the same as old one")
-                break
-            end
-            STAT.aboutme = newText
-            SaveStat()
-            SFX.play('supporter')
-            MSG('dark', "About text updated")
-            if SCN.cur == 'stat' then RefreshProfile() end
-            return
-        until true
-        SFX.play('staffwarning')
     end
     ZENITHA.setCursorVis(true)
     return true
@@ -411,20 +358,93 @@ end
 
 scene.widgetList = {
     WIDGET.new {
-        name = 'hint1', type = 'hint',
+        name = 'changeName', type = 'hint',
         pos = { .5, .5 }, x = -260, y = -200, w = 260, h = 100,
         color = COLOR.X,
         labelPos = 'top',
         floatFontSize = 20,
-        floatText = "F1: Replace username with clipboard text",
+        floatText = "Click to replace username with clipboard text",
+        onPress = function()
+            MSG.clear()
+            local newName = love.system.getClipboardText()
+            if type(newName) ~= 'string' or #newName == 0 then
+                MSG('dark', "No data in clipboard")
+                return
+            end
+            newName = newName:trim()
+            if TASK.lock('changeName', 2.6) then
+                SFX.play('notify')
+                MSG('dark', "Change name to '" .. newName .. "'?\nClick again to confirm", 2.6)
+                return
+            end
+            TASK.unlock('changeName')
+            repeat
+                newName = newName:upper()
+                if #newName < 3 or #newName > 16 or newName:find('[^A-Z0-9_%-]') then
+                    MSG('dark', "New name can only be 3~16 characters with A-Z, 0-9, -, _")
+                    break
+                end
+                if newName == STAT.uid then
+                    MSG('dark', "New name is the same as old one")
+                    break
+                end
+                if newName:sub(1, 4) == 'ANON-' or newName:sub(1, 4) == 'ANON_' then
+                    MSG('dark', "New name can't be ANON")
+                    break
+                end
+                STAT.uid = newName
+                SaveStat()
+                SFX.play('supporter')
+                MSG('dark', "Name changed to " .. STAT.uid)
+                if SCN.cur == 'stat' then RefreshProfile() end
+                return
+            until true
+            SFX.play('staffwarning')
+        end
     },
     WIDGET.new {
-        name = 'hint2', type = 'hint',
+        name = 'changeAboutme', type = 'hint',
         pos = { .5, .5 }, x = 0, y = -26, w = 780, h = 60,
         color = COLOR.X,
         labelPos = 'topRight',
         floatFontSize = 20,
-        floatText = "F2: Replace about-me with clipboard text",
+        floatText = "Click to replace about-me with clipboard text",
+        onPress = function()
+            MSG.clear()
+            local newText = love.system.getClipboardText()
+            if type(newText) ~= 'string' or #newText == 0 then
+                MSG('dark', "No data in clipboard")
+                return
+            end
+            newText = newText:trim()
+            if TASK.lock('changeAboutme', 2.6) then
+                SFX.play('notify')
+                MSG('dark', "Change about-me text?\nClick again to confirm", 2.6)
+                return
+            end
+            TASK.unlock('changeAboutme')
+            repeat
+                if type(newText) ~= 'string' then
+                    MSG('dark', "No data in clipboard")
+                    break
+                end
+                if #newText < 1 or #newText > 260 or newText:find('[^\32-\126]') then
+                    MSG('dark', "New text can only be 1~260 characters with visiable ASCII characters")
+                    break
+                end
+                if newText == STAT.aboutme then
+                    MSG('dark', "New text is the same as old one")
+                    break
+                end
+                STAT.aboutme = newText
+                SaveStat()
+                SFX.play('supporter')
+                MSG('dark', "About text updated")
+                if SCN.cur == 'stat' then RefreshProfile() end
+                return
+            until true
+            SFX.play('staffwarning')
+        end,
     },
     WIDGET.new {
         name = 'link', type = 'hint',
