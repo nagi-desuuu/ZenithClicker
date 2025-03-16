@@ -248,6 +248,7 @@ end
 
 TextColor = { .7, .5, .3 }
 ShadeColor = { .3, .15, 0 }
+ComboColor = {}
 local shortcut = ('QWERTYUIO'):atomize()
 local rankColor = {
     [0] = { 1, 1, 1, .26 },
@@ -345,12 +346,15 @@ function DrawBG(brightness)
                 gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h * MATH.interpolate(0, -.5, -640, .5, quadStartH), 0, BgScale)
             end
         else
-            -- Fading Base
-            gc_setColor(0, 0, GAME.bgH > 1900 and 0 or MATH.interpolate(1650, .2, 1900, 0, GAME.bgH))
-            gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
-
-            -- Transition at Bottom
+            -- Space color
             if GAME.bgH < 2500 then
+                -- Top
+                if GAME.bgH < 1900 then
+                    gc_setColor(0, 0, MATH.interpolate(1650, .2, 1900, 0, GAME.bgH))
+                    gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+                end
+
+                -- Bottom
                 local t = MATH.iLerp(1650, 2500, GAME.bgH)
                 gc_setColor(
                     MATH.lLerp(f10colors[1], t),
@@ -358,10 +362,20 @@ function DrawBG(brightness)
                     MATH.lLerp(f10colors[3], t),
                     .626 * (1 - t)
                 )
+                gc_draw(TEXTURE.transition, 0, SCR.h, -1.5708, SCR.h / 128, SCR.w)
+            elseif ComboColor[1] then
+                -- Vacuum
+                local t = GAME.time % 1
+                gc_setColor(
+                    MATH.lLerp(ComboColor[1], t),
+                    MATH.lLerp(ComboColor[2], t),
+                    MATH.lLerp(ComboColor[3], t),
+                    MATH.icLerp(2500, 6200, GAME.bgH) * .355
+                )
+                gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
             end
-            gc_draw(TEXTURE.transition, 0, SCR.h, -1.5708, SCR.h / 128, SCR.w)
 
-            -- Space
+            -- Bodies
             gc_setBlendMode('add', 'alphamultiply')
             gc_setColor(1, 1, 1, .8)
             gc_draw(StarPS, SCR.w / 2, SCR.h / 2 + GAME.bgH * 2 * BgScale)

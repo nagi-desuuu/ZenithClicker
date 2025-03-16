@@ -134,6 +134,10 @@ FONT.load {
     sans = "assets/DINPro-Medium.otf",
 }
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
+
+BG.add('black', { draw = GC.clear })
+BG.set('black')
+
 TEXTS = { -- Font size can only be 30 and 50 here !!!
     mod        = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),

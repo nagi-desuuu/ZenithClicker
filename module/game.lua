@@ -1199,6 +1199,19 @@ function GAME.start()
     GAME.totalAttack = 0
 
     GAME.refreshModIcon()
+    TABLE.clear(ComboColor)
+    for k, v in next, M do
+        if v > 0 then
+            local c = TABLE.copy(ModData.color[k])
+            c[4] = nil
+            ins(ComboColor, c)
+        end
+    end
+    if #ComboColor > 0 then
+        TABLE.shuffle(ComboColor)
+        ins(ComboColor, TABLE.copy(ComboColor[1]))
+        TABLE.transpose(ComboColor)
+    end
 
     GAME.upFloor()
 
@@ -1316,7 +1329,7 @@ function GAME.finish(reason)
             local s = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
             if GAME.gigaTime then s = s .. "   in " .. STRING.time_simp(GAME.gigaTime) end
             local l = s:atomize()
-            local len=#l
+            local len = #l
             for i = len, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
             TEXTS.endFloor:set(l)
         else
@@ -1369,11 +1382,11 @@ end
 
 function GAME.update(dt)
     if GAME.playing then
-        -- if love.keyboard.isDown('x') then
-        --     GAME.addHeight(dt * 260)
-        -- elseif love.keyboard.isDown('c') then
-        --     GAME.addXP(dt * 42)
-        -- end
+        if love.keyboard.isDown('[') then
+            GAME.addHeight(dt * 260)
+        elseif love.keyboard.isDown(']') then
+            GAME.addXP(dt * 42)
+        end
 
         GAME.time = GAME.time + dt
         if GAME.gigaspeed then
