@@ -30,15 +30,16 @@ function scene.keyDown(key, isRep)
 end
 
 function scene.wheelMove(_, dy)
-    scroll = MATH.clamp(scroll - dy * 42, 0, 100)
+    scroll = MATH.clamp(scroll - dy * 42, 0, 420)
 end
 
 AboutText = GC.newText(FONT.get(70))
 local lines = {}
 local nameColor = {
     z = { COLOR.HEX "80CCFF" },
-    ocelot = { COLOR.HEX "FF99CC" },
     asrial = { COLOR.HEX "DDFF80" },
+    ocelot = { COLOR.HEX "FF99CC" },
+    osk = { COLOR.HEX "DD99FF" },
 }
 
 local function addText(text, x, y, scale, wraplimit)
@@ -72,11 +73,15 @@ addText({ nameColor.z, "MRZ" }, 0, 450, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
 addText({ COLOR.LD, "Programming, Game Design, General Development, Testing" }, 0, 510, .2)
 
-addText({ nameColor.ocelot, "DOKTOROCELOT" }, 160, 550, .5)
-addText({ COLOR.LD, "Audio, Music" }, 160, 590, .26)
+addText({ nameColor.asrial, "DJ  ASRIEL" }, -320, 550, .5)
+addText({ COLOR.LD, "Testing & Background Reconstruction" }, -320, 590, .26)
 
-addText({ nameColor.asrial, "DJ  ASRIEL" }, -160, 550, .5)
-addText({ COLOR.LD, "Testing & Background Reconstruction" }, -160, 590, .26)
+addText({ nameColor.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
+addText({ COLOR.LD, "Audio & Music" }, 0, 590, .26)
+
+addText({ nameColor.osk, "OSK" }, 320, 550, .5)
+addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER..." }, 320, 590, .26)
+addText({ COLOR.LD, "of the Origial Game: TETR.IO" }, 320, 610, .2)
 
 table.insert(lines, 640)
 
