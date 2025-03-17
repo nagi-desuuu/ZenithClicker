@@ -157,7 +157,7 @@ function RefreshProfile()
     GC.rectangle('fill', 0, 0, 110, 40, 5)
     GC.setColor(1, 1, 1)
     FONT.set(30)
-    GC.mStr(STAT.totalTime <= 36000 and
+    GC.mStr(STAT.totalTime <= 60000 and
         { scoreColor, floor(STAT.totalTime / 60), textColor, "min" }
         or { scoreColor, floor(STAT.totalTime / 3600), textColor, "H" },
         55, 0)
