@@ -294,6 +294,7 @@ end
 SCN.add('joining', require 'module/joining')
 SCN.add('tower', require 'module/tower')
 SCN.add('stat', require 'module/stat')
+SCN.add('conf', require 'module/conf')
 SCN.add('about', require 'module/about')
 ZENITHA.setFirstScene('joining')
 
@@ -434,7 +435,7 @@ function WIDGET._prototype.button:draw()
 
     -- Highlight
     if self._hoverTime > 0 then
-        gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .16)
+        gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .0626)
         GC.mRect('fill', 0, 0, w - 3, h - 3)
     end
 

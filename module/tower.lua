@@ -112,6 +112,16 @@ local function keyPress(key)
             SFX.play('no')
         else
             SFX.play('menuhit1')
+            SCN.go('conf', 'none')
+        end
+        local W = scene.widgetList.conf
+        W._pressTime = W._pressTimeMax * 2
+        W._hoverTime = W._hoverTimeMax
+    elseif key == 'f2' then
+        if GAME.playing then
+            SFX.play('no')
+        else
+            SFX.play('menuhit1')
             SCN.go('about', 'none')
         end
         local W = scene.widgetList.about
@@ -483,7 +493,8 @@ function scene.draw()
     gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 12.6, -3, 0, 1)
     gc_draw(TEXTURE.transition, 800 + 1586 / 2, panelH - 303, 1.5708, 12.6, 3, 0, 1)
     gc_setColor(TextColor)
-    gc_mRect('fill', 800, panelH - 303 - 2, 1586 + 6, 4)
+    gc_setAlpha(.626)
+    gc_mRect('fill', 800, panelH - 303, 1586 + 6, -3)
 
     -- Chain Counter
     if GAME.playing and GAME.chain >= 4 then
@@ -785,9 +796,11 @@ function scene.overDraw()
         gc_setColor(ShadeColor)
         gc_rectangle('fill', -1300, -d, 2600, 70)
         gc_setColor(TextColor)
-        gc_rectangle('fill', -1300, 70 - d, 2600, 4)
+        gc_setAlpha(.626)
+        gc_rectangle('fill', -1300, 70 - d, 2600, 3)
         gc_replaceTransform(SCR.xOy_ul)
         local h = TEXTS.title:getHeight()
+        gc_setColor(TextColor)
         gc_draw(TEXTS.title, MATH.lerp(-181, 10, exT), h / 2 - d, 0, 1, 1 - 2 * revT, 0, h / 2)
         gc_replaceTransform(SCR.xOy_ur)
         gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
@@ -868,7 +881,7 @@ end
 scene.widgetList = {
     WIDGET.new {
         name = 'back', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
+        pos = { 0, 0 }, x = 60, y = 140 - 10 * 0, w = 160, h = 60,
         color = { .15, .15, .15 },
         sound_hover = 'menutap',
         fontSize = 30, text = "    BACK", textColor = 'DL',
@@ -890,24 +903,35 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'stat', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 220, w = 160, h = 60,
-        color = { .1, .26, .15 },
+        pos = { 0, 0 }, x = 60, y = 220 - 10 * 1, w = 160, h = 60,
+        color = { COLOR.HEX '1F4E2C' },
         sound_hover = 'menutap',
-        fontSize = 30, text = "    STAT", textColor = { .42, .83, .48 },
+        fontSize = 30, text = "    STAT", textColor = { COLOR.HEX '73E284' },
         onClick = function()
             love.keypressed('tab')
             love.keyreleased('tab')
         end,
     },
     WIDGET.new {
+        name = 'conf', type = 'button',
+        pos = { 0, 0 }, x = 60, y = 300 - 10 * 2, w = 160, h = 60,
+        color = { COLOR.HEX '28385D' },
+        sound_hover = 'menutap',
+        fontSize = 30, text = "   CONF", textColor = { COLOR.HEX '7591FF' },
+        onClick = function()
+            love.keypressed('f1')
+            love.keyreleased('f1')
+        end,
+    },
+    WIDGET.new {
         name = 'about', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 300, w = 160, h = 60,
+        pos = { 0, 0 }, x = 60, y = 380 - 10 * 3, w = 160, h = 60,
         color = 'lD',
         sound_hover = 'menutap',
         fontSize = 30, text = "   ABOUT", textColor = 'LD',
         onClick = function()
-            love.keypressed('f1')
-            love.keyreleased('f1')
+            love.keypressed('f2')
+            love.keyreleased('f2')
         end,
     },
     WIDGET.new {

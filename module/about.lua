@@ -4,7 +4,10 @@ local scene = {}
 local scroll = 0
 local scroll1 = 0
 
-local nameColor = {
+local color = {
+    D = { COLOR.HEX '1F1F1F' },
+    L = { COLOR.HEX '656565' },
+
     z = { COLOR.HEX "80CCFF" },
     asrial = { COLOR.HEX "DDFF80" },
     ocelot = { COLOR.HEX "FF99CC" },
@@ -39,17 +42,17 @@ table.insert(lines, 387)
 
 addText({ COLOR.O, "THE TEAM" }, 0, 410, .3)
 
-addText({ nameColor.z, "MRZ" }, 0, 450, .5)
+addText({ color.z, "MRZ" }, 0, 450, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
 addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .2)
 
-addText({ nameColor.asrial, "DJ  ASRIEL" }, -320, 550, .5)
+addText({ color.asrial, "DJ  ASRIEL" }, -320, 550, .5)
 addText({ COLOR.LD, "BACKGROUND RECONSTRUCTION" }, -320, 590, .26)
 
-addText({ nameColor.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
+addText({ color.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
 addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 590, .26)
 
-addText({ nameColor.osk, "OSK" }, 320, 550, .5)
+addText({ color.osk, "OSK" }, 320, 550, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER..." }, 320, 590, .26)
 addText({ COLOR.LD, "of the Origial Game: TETR.IO" }, 320, 610, .2)
 
@@ -70,9 +73,9 @@ table.insert(lines, 800)
 
 addText({
     COLOR.O, "GAME ICON BY ",
-    nameColor.asrial, "DJ Asriel ",
+    color.asrial, "DJ Asriel ",
     COLOR.O, "& ",
-    nameColor.z, "MrZ"
+    color.z, "MrZ"
 }, 0, 826, .32)
 
 addText({
@@ -144,23 +147,25 @@ function scene.draw()
 
     -- Top bar & title
     GC.replaceTransform(SCR.xOy_u)
-    GC.setColor(COLOR.D)
+    GC.setColor(color.D)
     GC.rectangle('fill', -1300, 0, 2600, 70)
-    GC.setColor(COLOR.lD)
-    GC.rectangle('fill', -1300, 70, 2600, 4)
+    GC.setColor(color.L)
+    GC.setAlpha(.626)
+    GC.rectangle('fill', -1300, 70, 2600, 3)
     GC.replaceTransform(SCR.xOy_ul)
-    GC.setColor(COLOR.LD)
+    GC.setColor(color.L)
     FONT.set(50)
     GC.print("ABOUT", 15, 0)
 
     -- Bottom bar & thanks
     GC.replaceTransform(SCR.xOy_d)
-    GC.setColor(COLOR.D)
+    GC.setColor(color.D)
     GC.rectangle('fill', -1300, 0, 2600, -50)
-    GC.setColor(COLOR.lD)
-    GC.rectangle('fill', -1300, -50, 2600, -4)
+    GC.setColor(color.L)
+    GC.setAlpha(.626)
+    GC.rectangle('fill', -1300, -50, 2600, -3)
     GC.replaceTransform(SCR.xOy_dl)
-    GC.setColor(COLOR.LD)
+    GC.setColor(color.L)
     FONT.set(30)
     GC.print("THANK YOU FOR PLAYING ZENITH CLICKER!", 15, -45)
 end
