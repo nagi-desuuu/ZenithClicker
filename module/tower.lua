@@ -915,9 +915,9 @@ scene.widgetList = {
     WIDGET.new {
         name = 'conf', type = 'button',
         pos = { 0, 0 }, x = 60, y = 300 - 10 * 2, w = 160, h = 60,
-        color = { COLOR.HEX '28385D' },
+        color = { COLOR.HEX '253355' },
         sound_hover = 'menutap',
-        fontSize = 30, text = "   CONF", textColor = { COLOR.HEX '7591FF' },
+        fontSize = 30, text = "   CONF", textColor = { COLOR.HEX '869EFF' },
         onClick = function()
             love.keypressed('f1')
             love.keyreleased('f1')
@@ -926,9 +926,9 @@ scene.widgetList = {
     WIDGET.new {
         name = 'about', type = 'button',
         pos = { 0, 0 }, x = 60, y = 380 - 10 * 3, w = 160, h = 60,
-        color = 'lD',
+        color = { COLOR.HEX '383838' },
         sound_hover = 'menutap',
-        fontSize = 30, text = "   ABOUT", textColor = 'LD',
+        fontSize = 30, text = "   ABOUT", textColor = { COLOR.HEX '707070' },
         onClick = function()
             love.keypressed('f2')
             love.keyreleased('f2')

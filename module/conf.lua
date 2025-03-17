@@ -58,7 +58,7 @@ function scene.draw()
     GC.replaceTransform(SCR.xOy_dl)
     GC.setColor(color.L)
     FONT.set(30)
-    GC.print("TWEAK YOUR SETTINGS FOR A BETTER CLICKING EXPERIENCE", 15, -45)
+    GC.print("TWEAK YOUR SETTINGS FOR A BETTER CLICKING EXPERIENCE", 15, -45, 0, .85, 1)
 end
 
 scene.widgetList = {

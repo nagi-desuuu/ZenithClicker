@@ -271,6 +271,13 @@ end
 
 function GAME.anim_setMenuHide(t)
     GAME.uiHide = t
+    local w = SCN.scenes.tower.widgetList
+    w.stat.x = MATH.cLerp(60, -80, t * 1.6 - .6)
+    w.stat:resetPos()
+    w.conf.x = MATH.cLerp(60, -80, t * 1.6 - .3)
+    w.conf:resetPos()
+    w.about.x = MATH.cLerp(60, -80, t * 1.6 - .0)
+    w.about:resetPos()
     MSG.setSafeY(75 * (1 - GAME.uiHide))
 end
 

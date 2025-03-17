@@ -167,7 +167,7 @@ function scene.draw()
     GC.replaceTransform(SCR.xOy_dl)
     GC.setColor(color.L)
     FONT.set(30)
-    GC.print("THANK YOU FOR PLAYING ZENITH CLICKER!", 15, -45)
+    GC.print("THANK YOU FOR PLAYING ZENITH CLICKER!", 15, -45, 0, .85, 1)
 end
 
 scene.widgetList = {
