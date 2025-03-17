@@ -870,8 +870,8 @@ function GAME.commit()
     if #GAME.quests == 0 then return end
 
     local hand = TABLE.sort(GAME.getHand(false))
-    local q1 = GAME.quests[1].combo
-    local q2 = M.DP > 0 and GAME.quests[2].combo
+    local q1 = TABLE.sort(GAME.quests[1].combo)
+    local q2 = M.DP > 0 and TABLE.sort(GAME.quests[2].combo)
 
     if GAME.currentTask then
         GAME.incrementPrompt('commit')
@@ -919,10 +919,11 @@ function GAME.commit()
         end
     end
 
-    local correct
-    if TABLE.equal(hand, TABLE.sort(q1)) then
+    local correct, dblCorrect
+    if TABLE.equal(hand, q1) then
         correct = 1
-    elseif q2 and TABLE.equal(hand, TABLE.sort(q2)) then
+        dblCorrect = q2 and TABLE.equal(hand, q2)
+    elseif q2 and TABLE.equal(hand, q2) then
         correct = 2
         GAME.incrementPrompt('pass_second')
     end
@@ -940,7 +941,7 @@ function GAME.commit()
             end
         end
 
-        GAME.heal(GAME.dmgHeal)
+        GAME.heal((dblCorrect and 3 or 1) * GAME.dmgHeal)
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
@@ -1030,6 +1031,10 @@ function GAME.commit()
                 end
             end
         end
+        if dblCorrect then
+            attack = attack * 3
+            xp = xp * 3
+        end
         if GAME.chain >= 4 then
             TEXTS.chain:set(tostring(GAME.chain))
         end
@@ -1070,16 +1075,19 @@ function GAME.commit()
         GAME.cancelBurn()
         GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
-        GAME.genQuest()
-        rem(GAME.quests, correct)
-        local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
-        if #combo >= 4 then
-            SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + (TABLE.find(combo, 'DH') and 1 or 0), 1, 0, M.GV)
+        for i = dblCorrect and 2 or 1, 1, -1 do
+            local p = dblCorrect and i or correct
+            GAME.genQuest()
+            rem(GAME.quests, p)
+            local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
+            if #combo >= 4 then
+                SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + (TABLE.find(combo, 'DH') and 1 or 0), 1, 0, M.GV)
+            end
+            GAME.questReady()
+            GAME.totalQuest = GAME.totalQuest + 1
         end
-        GAME.questReady()
-        GAME.totalQuest = GAME.totalQuest + 1
 
-        if M.DP > 0 and correct == 2 then
+        if M.DP > 0 and (correct == 2 or dblCorrect) then
             if GAME.swapControl() then
                 SFX.play('party_ready', 1, 0, M.GV)
             end

@@ -373,8 +373,8 @@ Fatigue = {
         { time = 320,  event = { 'reviveCount', 260 },         text = "GOODBYE.",                                   desc = "NO REVIVE" },
         { time = 360,  event = { 'dmgHeal', 1 }, --[[ 1.5 ]]   text = "\"I MISS YOU\"",                             desc = "Heal+++",       color = 'lO' },
         { time = 380,  event = { 'dmgHeal', 1 }, --[[ 2.5 ]]   text = "MAYBE IT CAN STILL WORK_?",                  desc = "Heal+",         color = 'lO' },
-        { time = 400,  event = { 'dmgTimeMul', -.6 },          text = "GOODBYE.",                                   desc = "TimerSpeed++++" },
-        { time = 1e99, text = "" },
+        { time = 400,  event = { 'dmgTimeMul', -.5 },          text = "GOODBYE.",                                   desc = "TimerSpeed++++" },
+        { time = 1e99, text = "" }, -- Total: dmgTimeMul-70%
     },
 }
 -- My formatter doesn't work if there's "…" inside
