@@ -402,6 +402,7 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
+        SFX.play('menuclick')
     end
 end
 

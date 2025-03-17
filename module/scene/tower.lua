@@ -968,7 +968,7 @@ scene.widgetList = {
         fontSize = 50, text = "?",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
-        floatFontSize = 20,
+        floatFontSize = 30,
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Select required tarots to send players to scale the tower.
             The higher the tower, the more tricky players will come!

@@ -26,7 +26,7 @@ function scene.keyDown(key, isRep)
 end
 
 function scene.draw()
-    DrawBG(26)
+    DrawBG(STAT.bgBrightness)
 
     GC.replaceTransform(SCR.xOy_u)
 
@@ -201,7 +201,7 @@ scene.widgetList = {
         type = 'checkBox',
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
-        textColor = clr.T, text = "BGM (F5)",
+        textColor = clr.T, text = "BGM  (F5)",
         x = 200 + 55, y = 150 + 250,
         disp = function() return STAT.bgm end,
         code = function()
@@ -213,7 +213,7 @@ scene.widgetList = {
         type = 'checkBox',
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
-        textColor = clr.T, text = "SFX (F6)",
+        textColor = clr.T, text = "SFX  (F6)",
         x = 200 + 55, y = 150 + 310,
         disp = function() return STAT.sfx end,
         code = function()
@@ -240,7 +240,7 @@ scene.widgetList = {
         type = 'checkBox',
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
-        textColor = clr.T, text = "FANCY BACKGROUND (F9)",
+        textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
         x = 200 + 55, y = 150 + 520,
         disp = function() return STAT.bg end,
         code = function() STAT.bg = not STAT.bg end,
@@ -249,7 +249,7 @@ scene.widgetList = {
         type = 'checkBox',
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
-        textColor = clr.T, text = "STAR FORCE (F10)",
+        textColor = clr.T, text = "STAR FORCE  (F10)",
         x = 200 + 55, y = 150 + 580,
         disp = function() return not STAT.syscursor end,
         code = function()
@@ -261,7 +261,7 @@ scene.widgetList = {
         type = 'checkBox',
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
-        textColor = clr.T, text = "FULLSCREEN (F11)",
+        textColor = clr.T, text = "FULLSCREEN  (F11)",
         x = 200 + 55, y = 150 + 640,
         disp = function() return STAT.fullscreen end,
         code = function()
