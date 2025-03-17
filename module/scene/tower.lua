@@ -928,7 +928,7 @@ scene.widgetList = {
         pos = { 0, 0 }, x = 60, y = 380 - 10 * 3, w = 160, h = 60,
         color = { COLOR.HEX '383838' },
         sound_hover = 'menutap',
-        fontSize = 30, text = "   ABOUT", textColor = { COLOR.HEX '707070' },
+        fontSize = 30, text = "   ABOUT", textColor = { COLOR.HEX '909090' },
         onClick = function()
             love.keypressed('f2')
             love.keyreleased('f2')
@@ -974,12 +974,6 @@ scene.widgetList = {
             The higher the tower, the more tricky players will come!
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
-
-            F5/F6: Audio volume -/+
-            F7/F8: Background brightness -/+
-            F9: Switch LQ/HQ Background
-            F10: Cursor style
-            F11: Fullscreen
         ]],
     }
 }

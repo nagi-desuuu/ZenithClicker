@@ -4,7 +4,7 @@ local scene = {}
 local scroll = 0
 local scroll1 = 0
 
-local color = {
+local clr = {
     D = { COLOR.HEX '1F1F1F' },
     L = { COLOR.HEX '656565' },
 
@@ -42,17 +42,17 @@ table.insert(lines, 387)
 
 addText({ COLOR.O, "THE TEAM" }, 0, 410, .3)
 
-addText({ color.z, "MRZ" }, 0, 450, .5)
+addText({ clr.z, "MRZ" }, 0, 450, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
 addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .2)
 
-addText({ color.asrial, "DJ  ASRIEL" }, -320, 550, .5)
+addText({ clr.asrial, "DJ  ASRIEL" }, -320, 550, .5)
 addText({ COLOR.LD, "BACKGROUND RECONSTRUCTION" }, -320, 590, .26)
 
-addText({ color.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
+addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
 addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 590, .26)
 
-addText({ color.osk, "OSK" }, 320, 550, .5)
+addText({ clr.osk, "OSK" }, 320, 550, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER..." }, 320, 590, .26)
 addText({ COLOR.LD, "of the Origial Game: TETR.IO" }, 320, 610, .2)
 
@@ -73,9 +73,9 @@ table.insert(lines, 800)
 
 addText({
     COLOR.O, "GAME ICON BY ",
-    color.asrial, "DJ Asriel ",
+    clr.asrial, "DJ Asriel ",
     COLOR.O, "& ",
-    color.z, "MrZ"
+    clr.z, "MrZ"
 }, 0, 826, .32)
 
 addText({
@@ -147,25 +147,25 @@ function scene.draw()
 
     -- Top bar & title
     GC.replaceTransform(SCR.xOy_u)
-    GC.setColor(color.D)
+    GC.setColor(clr.D)
     GC.rectangle('fill', -1300, 0, 2600, 70)
-    GC.setColor(color.L)
+    GC.setColor(clr.L)
     GC.setAlpha(.626)
     GC.rectangle('fill', -1300, 70, 2600, 3)
     GC.replaceTransform(SCR.xOy_ul)
-    GC.setColor(color.L)
+    GC.setColor(clr.L)
     FONT.set(50)
     GC.print("ABOUT", 15, 0)
 
     -- Bottom bar & thanks
     GC.replaceTransform(SCR.xOy_d)
-    GC.setColor(color.D)
+    GC.setColor(clr.D)
     GC.rectangle('fill', -1300, 0, 2600, -50)
-    GC.setColor(color.L)
+    GC.setColor(clr.L)
     GC.setAlpha(.626)
     GC.rectangle('fill', -1300, -50, 2600, -3)
     GC.replaceTransform(SCR.xOy_dl)
-    GC.setColor(color.L)
+    GC.setColor(clr.L)
     FONT.set(30)
     GC.print("THANK YOU FOR PLAYING ZENITH CLICKER!", 15, -45, 0, .85, 1)
 end

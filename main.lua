@@ -291,11 +291,11 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
-SCN.add('joining', require 'module/joining')
-SCN.add('tower', require 'module/tower')
-SCN.add('stat', require 'module/stat')
-SCN.add('conf', require 'module/conf')
-SCN.add('about', require 'module/about')
+SCN.add('joining', require 'module/scene/joining')
+SCN.add('tower', require 'module/scene/tower')
+SCN.add('stat', require 'module/scene/stat')
+SCN.add('conf', require 'module/scene/conf')
+SCN.add('about', require 'module/scene/about')
 ZENITHA.setFirstScene('joining')
 
 local gc = love.graphics
@@ -343,6 +343,7 @@ function ReloadTexts()
     TEXTS.gigatime:setFont(FONT.get(50))
     for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
     for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
+    for _, W in next, SCN.scenes.conf.widgetList do W:reset() end
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     if SCN.cur == 'stat' then RefreshProfile() end
     AboutText:setFont(FONT.get(70))
@@ -373,29 +374,23 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
     elseif key == 'f11' then
         STAT.fullscreen = not STAT.fullscreen
-        MSG.clear()
-        MSG('dark', STAT.fullscreen and "Fullscreen" or "Window Mode", 1)
         love.window.setFullscreen(STAT.fullscreen)
     elseif key == 'f10' then
         STAT.syscursor = not STAT.syscursor
-        MSG.clear()
-        MSG('dark', STAT.syscursor and "Star Force OFF" or "Star Force ON", 1)
         ApplySettings()
     elseif key == 'f9' then
         STAT.bg = not STAT.bg
-        MSG.clear()
-        MSG('dark', STAT.bg and "Background ON" or "Background OFF", 1)
     elseif key == 'f8' then
         if STAT.bgBrightness < 100 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 100)
             MSG.clear()
-            MSG('dark', "Background Brightness " .. STAT.bgBrightness .. "%", 1)
+            MSG('dark', STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f7' then
         if STAT.bgBrightness > 26 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 100)
             MSG.clear()
-            MSG('dark', "Background Brightness " .. STAT.bgBrightness .. "%", 1)
+            MSG('dark', STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f6' then
         STAT.bgm = not STAT.bgm
@@ -410,9 +405,24 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
     end
 end
 
+WIDGET.setDefaultOption {
+    checkBox = {
+        w = 40,
+        labelPos = 'right',
+        labelDist = 8,
+        lineWidth = 2,
+        sound_on = 'menuclick',
+        sound_off = 'menuclick',
+    },
+    slider = {
+        lineWidth = 2,
+        _approachSpeed = 1e99,
+    },
+}
+
 function WIDGET._prototype.button:draw()
     gc.push('transform')
-    gc.translate(self._x, self.pos[1] ~= .5 and self._y or self._y + DeckPress)
+    gc.translate(self._x, self.pos and self.pos[1] ~= .5 and self._y or self._y + DeckPress)
 
     if self._pressTime > 0 then
         gc.scale(1 - self._pressTime / self._pressTimeMax * .0626)
@@ -423,7 +433,7 @@ function WIDGET._prototype.button:draw()
     local frameC = self.frameColor
 
     -- Background
-    gc.setColor(fillC[1], fillC[2], fillC[3], fillC[4])
+    gc.setColor(fillC)
     GC.mRect('fill', 0, 0, w, h)
 
     -- Frame
@@ -444,6 +454,72 @@ function WIDGET._prototype.button:draw()
     WIDGET._alignDraw(self, self._text, 0, 0, 0, 1.2, 1.2 - 2.4 * GAME.revTimer)
 
     gc.pop()
+end
+
+function WIDGET._prototype.checkBox:draw()
+    gc.push('transform')
+    gc.translate(self._x, self._y)
+    local w = self.w
+
+    gc.setLineWidth(self.lineWidth)
+    if self.disp() then
+        -- Active
+        gc.setColor(self.frameColor)
+        GC.mRect('fill', 0, 0, w, w, 2)
+        gc.setColor(0, 0, 0, .42)
+        gc.line(-w / 2, w / 2, w / 2, w / 2, w / 2, -w / 2)
+        gc.setColor(1, 1, 1, .62)
+        gc.line(-w / 2, w / 2, -w / 2, -w / 2, w / 2, -w / 2)
+        gc.setLineWidth(self.lineWidth * 2)
+        gc.setLineJoin('bevel')
+        gc.setColor(1, 1, 1)
+        gc.line(-w * .355, 0, 0, w * .355, w * .355, -w * .355)
+    else
+        -- Background
+        gc.setColor(self.fillColor)
+        GC.mRect('fill', 0, 0, w, w, 2)
+        gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .0626)
+        GC.mRect('fill', 0, 0, w, w, 2)
+        gc.setColor(0, 0, 0, .626)
+        gc.line(-w / 2, w / 2, -w / 2, -w / 2, w / 2, -w / 2)
+        gc.setColor(1, 1, 1, .0626)
+        gc.line(-w / 2, w / 2, w / 2, w / 2, w / 2, -w / 2)
+    end
+
+    -- Drawable
+    local x2, y2 = w * .5 + self.labelDist, 0
+    gc.setColor(self.textColor)
+    WIDGET._alignDraw(self, self._text, x2, y2, nil, self.textScale)
+    gc.pop()
+end
+
+function WIDGET._prototype.slider:draw()
+    local x, y = self._x, self._y
+    local x2 = x + self.w
+    local rangeL, rangeR = self._rangeL, self._rangeR
+
+    local frameC = self.frameColor
+
+    -- Axis
+    gc.setColor(frameC)
+    gc.setLineWidth(self.lineWidth * 2)
+    gc.line(x, y, x2, y)
+
+    local fillC = self.fillColor
+
+    -- Block
+    local pos = MATH.clamp(self._pos, rangeL, rangeR)
+    local cx = x + self.w * (pos - rangeL) / self._rangeWidth
+    local bw, bh = 26, 30
+    GC.ucs_move('m', cx, y)
+    gc.setColor(fillC)
+    GC.mRect('fill', 0, 0, bw, bh, self.cornerR)
+    gc.setLineWidth(self.lineWidth)
+    gc.setColor(0, 0, 0, .26)
+    gc.line(-bw / 2, bh / 2, bw / 2, bh / 2, bw / 2, -bh / 2)
+    gc.setColor(1, 1, 1, .1)
+    gc.line(-bw / 2, bh / 2, -bw / 2, -bh / 2, bw / 2, -bh / 2)
+    GC.ucs_back()
 end
 
 -- Mouse Holding daemon
