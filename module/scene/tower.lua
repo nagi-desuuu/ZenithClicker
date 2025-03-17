@@ -403,8 +403,8 @@ function DrawBG(brightness)
             end
 
             -- Cover
-            if GAME.floorTime < 4.2 then
-                gc_setColor(.5, .5, .5, MATH.interpolate(0, 1, 4.2, 0, GAME.floorTime))
+            if GAME.floorTime < 2.6 then
+                gc_setColor(.5, .5, .5, 1 - GAME.floorTime / 2.6)
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
             end
         end
