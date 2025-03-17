@@ -4,37 +4,6 @@ local scene = {}
 local scroll = 0
 local scroll1 = 0
 
-function scene.load()
-    scroll, scroll1 = 0, -620
-    TASK.lock('no_back', 0.26)
-end
-
-function scene.mouseMove(_, _, _, dy)
-    if love.mouse.isDown(1, 2) then
-        scroll = MATH.clamp(scroll - dy, 0, 100)
-    end
-end
-
-function scene.touchMove(_, _, _, dy)
-    scroll = MATH.clamp(scroll - dy, 0, 100)
-end
-
-function scene.keyDown(key, isRep)
-    if isRep then return true end
-    if key == 'escape' and not TASK.getLock('no_back') then
-        SFX.play('menuclick')
-        SCN.back('none')
-    end
-    ZENITHA.setCursorVis(true)
-    return true
-end
-
-function scene.wheelMove(_, dy)
-    scroll = MATH.clamp(scroll - dy * 42, 0, 420)
-end
-
-AboutText = GC.newText(FONT.get(70))
-local lines = {}
 local nameColor = {
     z = { COLOR.HEX "80CCFF" },
     asrial = { COLOR.HEX "DDFF80" },
@@ -42,10 +11,11 @@ local nameColor = {
     osk = { COLOR.HEX "DD99FF" },
 }
 
+AboutText = GC.newText(FONT.get(70))
+local lines = {}
+
 local function addText(text, x, y, scale, wraplimit)
-    if type(text) == 'string' then
-        text = { COLOR.L, text }
-    end
+    if type(text) == 'string' then text = { COLOR.L, text } end
     scale = scale or 1
     local w = (wraplimit or 900) / scale
     AboutText:addf(text, w, 'center', x - w / 2 * scale, y, 0, scale)
@@ -111,6 +81,35 @@ addText({
     COLOR.O, "& ",
     COLOR.L, "Mooniak (AbhayaLibre)"
 }, 0, 870, .32)
+
+function scene.load()
+    scroll, scroll1 = 0, -620
+    TASK.lock('no_back', 0.26)
+end
+
+function scene.mouseMove(_, _, _, dy)
+    if love.mouse.isDown(1, 2) then
+        scroll = MATH.clamp(scroll - dy, 0, 100)
+    end
+end
+
+function scene.touchMove(_, _, _, dy)
+    scroll = MATH.clamp(scroll - dy, 0, 100)
+end
+
+function scene.keyDown(key, isRep)
+    if isRep then return true end
+    if key == 'escape' and not TASK.getLock('no_back') then
+        SFX.play('menuclick')
+        SCN.back('none')
+    end
+    ZENITHA.setCursorVis(true)
+    return true
+end
+
+function scene.wheelMove(_, dy)
+    scroll = MATH.clamp(scroll - dy * 42, 0, 120)
+end
 
 function scene.update(dt)
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
