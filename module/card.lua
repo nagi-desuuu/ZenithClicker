@@ -478,23 +478,23 @@ function Card:draw()
             local x = lerp(155, 0, t)
             local y = lerp(-370, -330, t)
             local cr = lerp(.16, .42, t)
-            local comp = completion[self.id] == 2
+            local revMastery = completion[self.id] == 2
             local ang = -t * 6.2832
             gc_scale(abs(1 / self.kx * self.ky), 1)
             -- Base star
             if self.upright then
-                if comp then
+                if revMastery then
                     gc_setColor(.5, .5, .5)
-                    gc_blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    gc_blurCircle(blur, -x, -y, cr * 260)
                     gc_setColor(1, 1, 1)
-                    gc_mDraw(img, lerp(35, 0, t) - x, -y, ang, lerp(.16, .42, t))
+                    gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
                 end
                 gc_setColor(.5, .5, .5)
                 gc_blurCircle(blur, x, y, cr * 260)
                 gc_setColor(1, 1, 1)
                 gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             else
-                if comp then
+                if revMastery then
                     gc_setColor(.2, .2, .2)
                     gc_blurCircle(blur, -x, -y, cr * 260)
                     gc_setColor(1, .7 + .15 * sin(love.timer.getTime() * 62 + self.x), .2)
@@ -507,11 +507,11 @@ function Card:draw()
             end
             -- Float star
             if not self.active then
-                if comp then
+                if revMastery then
                     gc_setColor(.5, .5, .5, t)
-                    gc_blurCircle(blur, lerp(35, 0, t) - x, -y, cr * 260)
+                    gc_blurCircle(blur, -x, -y, cr * 260)
                     gc_setColor(1, 1, 1, t)
-                    gc_mDraw(TEXTURE.star1, lerp(35, 0, t) - x, -y, ang, lerp(.16, .42, t))
+                    gc_mDraw(TEXTURE.star1, -x, -y, ang, lerp(.16, .42, t))
                     gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
                 else
                     gc_setColor(1, 1, 1, t)
