@@ -69,7 +69,7 @@ ModData = {
         EX = "FEAR, OPPRESSION, AND LIMITLESS AMBITION.",
         NH = "A DETACHMENT FROM EVEN THAT WHICH IS MODERATE.",
         MS = "IN A RIGGED GAME, YOUR MIND IS THE ONLY FAIR ADVANTAGE.",
-        GV = "THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE.",
+        GV = "IN RETROSPEC, THE GROUND YOU STOOD ON NEVER EXISTED IN THE FIRST PLACE.",
         VL = "STRENGTH ISN'T NECESSARY FOR THOSE WITH NOTHING TO LOSE.",
         DH = "NO MORE SECOND CHANCES.",
         IN = "NEVER UNDERESTIMATE BLIND FAITH.",
@@ -163,7 +163,7 @@ ComboData = {
     { set = 'EX    MS    VL DH         ', name = "divine mastery",            basic = true },
     { set = '   NH                AS   ', name = "the starving artist",       basic = true },
     { set = 'EX          VL       AS   ', name = "the con artist",            basic = true },
-    { set = 'EX                      DP', name = "trained profesionals",      basic = true },
+    { set = 'EX                      DP', name = "trained professionals",     basic = true },
     { set = 'EX    MS                  ', name = "block rationing",           basic = true },
 
     { set = '      MS          IN      ', name = "scrambled rainbow" },

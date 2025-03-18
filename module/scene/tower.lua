@@ -9,9 +9,9 @@ local MD = ModData
 local scene = {}
 
 local function switchVisitor(bool)
-    if not GAME.playing and GAME.zenithTraveller ~= bool and STAT.bg then
+    if not GAME.playing and GAME.zenithTraveler ~= bool and STAT.bg then
         SFX.play(bool and 'pause_start' or 'pause_retry')
-        GAME.zenithTraveller = bool
+        GAME.zenithTraveler = bool
         love.mouse.setRelativeMode(bool)
         ZENITHA.setCursorVis(not bool)
         for _, W in next, scene.widgetList do
@@ -169,7 +169,7 @@ local function keyPress(key)
 end
 
 function scene.mouseMove(x, y, _, dy)
-    if GAME.zenithTraveller then
+    if GAME.zenithTraveler then
         GAME.height = MATH.clamp(GAME.height +
             dy / 260 *
             (M.VL + 1) *
@@ -185,7 +185,7 @@ end
 
 local cancelNextClick
 function scene.mouseDown(x, y, k)
-    if GAME.zenithTraveller then return switchVisitor(false) end
+    if GAME.zenithTraveler then return switchVisitor(false) end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then
         switchVisitor(true)
@@ -203,7 +203,7 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseClick(x, y, k)
-    if GAME.zenithTraveller then return end
+    if GAME.zenithTraveler then return end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return end
     if cancelNextClick then
@@ -216,7 +216,7 @@ function scene.mouseClick(x, y, k)
 end
 
 function scene.wheelMove(_, dy)
-    if GAME.zenithTraveller and M.NH < 2 then
+    if GAME.zenithTraveler and M.NH < 2 then
         GAME.height = MATH.clamp(GAME.height -
             dy *
             (M.VL + 1) *
@@ -235,7 +235,7 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 local cancelNextKeyClick
 function scene.keyDown(key)
-    if GAME.zenithTraveller then
+    if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
             switchVisitor(false)
         end
@@ -252,7 +252,7 @@ function scene.keyDown(key)
 end
 
 function scene.keyUp(key)
-    if GAME.zenithTraveller then return end
+    if GAME.zenithTraveler then return end
     if cancelNextKeyClick then
         cancelNextKeyClick = false
         return
@@ -264,7 +264,7 @@ end
 
 local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
 function scene.update(dt)
-    if GAME.zenithTraveller and M.EX == 2 then
+    if GAME.zenithTraveler and M.EX == 2 then
         local f = GAME.getBgFloor()
         GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
     end
@@ -456,7 +456,7 @@ function DrawBG(brightness)
             end
 
             -- Cover
-            local f10CoverAlpha = GAME.zenithTraveller and MATH.icLerp(1660, 1650, GAME.bgH) or 1 - GAME.floorTime / 2.6
+            local f10CoverAlpha = GAME.zenithTraveler and MATH.icLerp(1660, 1650, GAME.bgH) or 1 - GAME.floorTime / 2.6
             if f10CoverAlpha > 0 then
                 gc_setColor(.5, .5, .5, f10CoverAlpha)
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
@@ -477,7 +477,7 @@ function DrawBG(brightness)
 end
 
 function scene.draw()
-    if GAME.zenithTraveller then
+    if GAME.zenithTraveler then
         DrawBG(100)
         return
     else
@@ -612,7 +612,7 @@ local questStyleDP = {
     { k = 0.7, y = 25 },
 }
 function scene.overDraw()
-    if GAME.zenithTraveller then return end
+    if GAME.zenithTraveler then return end
 
     -- Current combo
     if M.IN < 2 or not GAME.playing then

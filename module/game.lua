@@ -104,7 +104,7 @@ local GAME = {
     currentTask = false, ---@type false | ReviveTask
     lastFlip = false,
 
-    zenithTraveller = false,
+    zenithTraveler = false,
 }
 
 GAME.playing = false
@@ -1252,7 +1252,7 @@ end
 
 ---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
-    SCN.scenes.tower.widgetList.hint:setVisible(not GAME.zenithTraveller)
+    SCN.scenes.tower.widgetList.hint:setVisible(not GAME.zenithTraveler)
     MSG.clear()
 
     SFX.play(
