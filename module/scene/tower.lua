@@ -233,7 +233,7 @@ function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
 
 function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
-local cancelNextPress
+local cancelNextKeyClick
 function scene.keyDown(key)
     if GAME.zenithTraveller then
         if key == 'escape' or key == '\\' or key == 'space' then
@@ -243,7 +243,7 @@ function scene.keyDown(key)
         if M.EX == 0 then
             keyPress(key)
             if M.EX > 0 then
-                cancelNextPress = true
+                cancelNextKeyClick = true
             end
         end
         ZENITHA.setCursorVis(true)
@@ -253,8 +253,8 @@ end
 
 function scene.keyUp(key)
     if GAME.zenithTraveller then return end
-    if cancelNextPress then
-        cancelNextPress = false
+    if cancelNextKeyClick then
+        cancelNextKeyClick = false
         return
     end
     if M.EX > 0 then
@@ -299,6 +299,9 @@ function scene.update(dt)
         if GAME.forfeitTimer > 1 then
             SFX.play('detonate2')
             GAME.finish('forfeit')
+            if M.EX > 0 then
+                cancelNextKeyClick = true
+            end
         end
     else
         if GAME.forfeitTimer > 0 then
