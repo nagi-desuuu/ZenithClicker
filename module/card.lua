@@ -210,7 +210,7 @@ function Card:setActive(auto, key)
             BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
             BGM.set('piano2', 'volume', M.DP > 0 and .626 or 0, .26)
         end
-        SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithVisitor and M.NH ~= 2)
+        SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveller and M.NH ~= 2)
         if revOn or wasRev then GAME.refreshRev() end
         GAME.hardMode = M.EX > 0 or GAME.anyRev
         GAME.refreshPBText()

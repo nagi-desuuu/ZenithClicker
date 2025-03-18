@@ -304,7 +304,7 @@ local pressValue = 0
 
 CursorProgress = 0
 local function starCursor(x, y)
-    if GAME.zenithVisitor then return end
+    if GAME.zenithTraveller then return end
     GC.translate(x, y)
     GC.scale(1.42)
     GC.rotate(MATH.lerp(-.626, -1.2, pressValue))
@@ -380,7 +380,7 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         STAT.syscursor = not STAT.syscursor
         ApplySettings()
     elseif key == 'f9' then
-        if not GAME.zenithVisitor then
+        if not GAME.zenithTraveller then
             STAT.bg = not STAT.bg
         end
     elseif key == 'f8' then
