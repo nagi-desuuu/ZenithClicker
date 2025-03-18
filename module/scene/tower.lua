@@ -5,6 +5,9 @@ local abs = math.abs
 local M = GAME.mod
 local MD = ModData
 
+local cancelNextClick
+local cancelNextKeyClick
+
 ---@type Zenitha.Scene
 local scene = {}
 
@@ -168,6 +171,11 @@ local function keyPress(key)
     end
 end
 
+function scene.load()
+    cancelNextClick = true
+    cancelNextKeyClick = true
+end
+
 function scene.mouseMove(x, y, _, dy)
     if GAME.zenithTraveler then
         GAME.height = MATH.clamp(GAME.height +
@@ -183,7 +191,6 @@ function scene.mouseMove(x, y, _, dy)
     end
 end
 
-local cancelNextClick
 function scene.mouseDown(x, y, k)
     if GAME.zenithTraveler then return switchVisitor(false) end
     GAME.nixPrompt('keep_no_mouse')
@@ -233,7 +240,6 @@ function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
 
 function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
-local cancelNextKeyClick
 function scene.keyDown(key)
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
