@@ -160,7 +160,13 @@ end
 
 function scene.mouseMove(x, y, _, dy)
     if GAME.zenithVisitor then
-        GAME.height = MATH.clamp(GAME.height - dy / 26, 0, STAT.maxHeight)
+        GAME.height = MATH.clamp(GAME.height +
+            dy / 260 *
+            (M.VL + 1) *
+            (M.EX > 0 and 2.6 or 6.2) *
+            (M.AS > 0 and -1 or 1), 0,
+            STAT.maxHeight
+        )
     else
         GAME.nixPrompt('keep_no_mouse')
         mouseMove(x, y)
@@ -200,8 +206,14 @@ function scene.mouseClick(x, y, k)
 end
 
 function scene.wheelMove(_, dy)
-    if GAME.zenithVisitor then
-        GAME.height = MATH.clamp(GAME.height + dy * 10, 0, STAT.maxHeight)
+    if GAME.zenithVisitor and M.NH < 2 then
+        GAME.height = MATH.clamp(GAME.height -
+            dy *
+            (M.VL + 1) *
+            (M.EX > 0 and 2.6 or 6.2) *
+            (M.AS > 0 and -1 or 1), 0,
+            STAT.maxHeight
+        )
     end
 end
 
@@ -242,6 +254,10 @@ end
 
 local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
 function scene.update(dt)
+    if GAME.zenithVisitor and M.EX == 2 then
+        local f = GAME.getBgFloor()
+        GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
+    end
     if dt > .26 then dt = .26 end
     GAME.update(dt)
     GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
