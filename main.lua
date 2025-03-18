@@ -331,7 +331,7 @@ function ApplySettings()
     love.mouse.setVisible(STAT.syscursor)
     ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or starCursor
     BGM.setVol(STAT.bgm and 1 or 0)
-    SFX.setVol(STAT.sfx and 1 or 0)
+    SFX.setVol(STAT.sfx and .7 or 0)
 end
 
 function ReloadTexts()
