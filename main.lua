@@ -229,6 +229,7 @@ STAT = {
     totalGame = 0,
     totalTime = 0,
     totalQuest = 0,
+    totalPerfect = 0,
     totalHeight = 0,
     totalBonus = 0,
     totalFloor = 0,
@@ -652,6 +653,7 @@ TABLE.update(BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
 if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
 if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
+if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
 local oldVer = BEST.version
 if BEST.version == nil then
     for k in next, BEST.highScore do

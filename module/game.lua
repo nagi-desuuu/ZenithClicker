@@ -18,6 +18,7 @@ local ins, rem = table.insert, table.remove
 ---@field comboStr string
 ---@field totalFlip number
 ---@field totalQuest number
+---@field totalPerfect number
 ---@field totalAttack number
 ---
 ---@field dmgHeal number
@@ -1049,6 +1050,8 @@ function GAME.commit()
                     SFX.play('b2bcharge_4', .8)
                 end
             end
+
+            GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
         end
         if dblCorrect then
             attack = attack * 3
@@ -1223,6 +1226,7 @@ function GAME.start()
     -- Statistics
     GAME.totalFlip = 0
     GAME.totalQuest = 0
+    GAME.totalPerfect = 0
     GAME.totalAttack = 0
 
     GAME.refreshModIcon()
@@ -1313,6 +1317,7 @@ function GAME.finish(reason)
         STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .001)
         STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
+        STAT.totalPerfect = STAT.totalPerfect + GAME.totalPerfect
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
         STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
         STAT.totalBonus = MATH.roundUnit(STAT.totalBonus + GAME.heightBonus, .01)
@@ -1366,7 +1371,8 @@ function GAME.finish(reason)
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
             COLOR.LD, GAME.gigaTime and "  (F10 " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
             COLOR.L, "Quests  " .. GAME.totalQuest,
-            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s)\n",
+            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s ",
+            MATH.round(GAME.totalPerfect / GAME.totalQuest * 100) .. "%)\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
             COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
