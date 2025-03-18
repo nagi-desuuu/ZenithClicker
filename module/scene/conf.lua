@@ -6,7 +6,19 @@ local clr = {
     L = { COLOR.HEX '4D67A6' },
     T = { COLOR.HEX '6F82AC' },
     LT = { COLOR.HEX 'B0CCEB' },
+    cbFill = { COLOR.HEX '0B0E17' },
+    cbFrame = { COLOR.HEX '6A82A7' },
 }
+local colorRev = false
+
+function scene.load()
+    if GAME.anyRev ~= colorRev then
+        colorRev = GAME.anyRev
+        for _, C in next, clr do
+            C[1], C[3] = C[3], C[1]
+        end
+    end
+end
 
 -- function scene.unload()
 --     SaveStat()
@@ -184,8 +196,8 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'checkBox',
-        fillColor = { COLOR.HEX '0B0E17' },
-        frameColor = { COLOR.HEX '6A82A7' },
+        fillColor = clr.cbFill,
+        frameColor = clr.cbFrame,
         textColor = clr.T, text = "BGM  (F5)",
         x = 350 + 55, y = 150 + 250,
         disp = function() return STAT.bgm end,
@@ -196,8 +208,8 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'checkBox',
-        fillColor = { COLOR.HEX '0B0E17' },
-        frameColor = { COLOR.HEX '6A82A7' },
+        fillColor = clr.cbFill,
+        frameColor = clr.cbFrame,
         textColor = clr.T, text = "SFX  (F6)",
         x = 350 + 55, y = 150 + 310,
         disp = function() return STAT.sfx end,
@@ -223,8 +235,8 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'checkBox',
-        fillColor = { COLOR.HEX '0B0E17' },
-        frameColor = { COLOR.HEX '6A82A7' },
+        fillColor = clr.cbFill,
+        frameColor = clr.cbFrame,
         textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
         x = 350 + 55, y = 150 + 520,
         disp = function() return STAT.bg end,
@@ -232,8 +244,8 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'checkBox',
-        fillColor = { COLOR.HEX '0B0E17' },
-        frameColor = { COLOR.HEX '6A82A7' },
+        fillColor = clr.cbFill,
+        frameColor = clr.cbFrame,
         textColor = clr.T, text = "STAR FORCE  (F10)",
         x = 350 + 55, y = 150 + 580,
         disp = function() return not STAT.syscursor end,
@@ -244,8 +256,8 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'checkBox',
-        fillColor = { COLOR.HEX '0B0E17' },
-        frameColor = { COLOR.HEX '6A82A7' },
+        fillColor = clr.cbFill,
+        frameColor = clr.cbFrame,
         textColor = clr.T, text = "FULLSCREEN  (F11)",
         x = 350 + 55, y = 150 + 640,
         disp = function() return STAT.fullscreen end,

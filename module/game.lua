@@ -797,13 +797,16 @@ function GAME.refreshRev()
     if hasRev ~= GAME.anyRev then
         GAME.anyRev = hasRev
 
-        for _,W in next,{
-            SCN.scenes.tower.widgetList.stat,
-            SCN.scenes.tower.widgetList.achv,
-        } do
-            W.fillColor[1], W.fillColor[2] = W.fillColor[2], W.fillColor[1]
-            W.textColor[1], W.textColor[2] = W.textColor[2], W.textColor[1]
-        end
+        local W
+        W = SCN.scenes.tower.widgetList.stat
+        W.fillColor[1], W.fillColor[2] = W.fillColor[2], W.fillColor[1]
+        W.textColor[1], W.textColor[2] = W.textColor[2], W.textColor[1]
+        W = SCN.scenes.tower.widgetList.achv
+        W.fillColor[1], W.fillColor[2] = W.fillColor[2], W.fillColor[1]
+        W.textColor[1], W.textColor[2] = W.textColor[2], W.textColor[1]
+        W = SCN.scenes.tower.widgetList.conf
+        W.fillColor[1], W.fillColor[3] = W.fillColor[3], W.fillColor[1]
+        W.textColor[1], W.textColor[3] = W.textColor[3], W.textColor[1]
 
         if not hasRev then GAME.revDeckSkin = false end
 
