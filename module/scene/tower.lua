@@ -364,9 +364,9 @@ local TextColor = TextColor
 local ShadeColor = ShadeColor
 local bgQuad = GC.newQuad(0, 0, 0, 0, 0, 0)
 local reviveQuad = {
-    GC.newQuad(0, 0, 1042, 296, TEXTURE.revive),
-    GC.newQuad(0, 355, 1042, 342, TEXTURE.revive),
-    GC.newQuad(0, 740, 1042, 354, TEXTURE.revive),
+    GC.newQuad(0, 0, 1042, 296, TEXTURE.revive.norm),
+    GC.newQuad(0, 355, 1042, 342, TEXTURE.revive.norm),
+    GC.newQuad(0, 740, 1042, 354, TEXTURE.revive.norm),
 }
 local reviveMove = { -155, -147, -154 }
 local reviveRot = { -.095, .15, -.17 }
@@ -707,7 +707,7 @@ function scene.overDraw()
         -- Lock
         gc_translate(allyDie and 1150 or 450, 450)
         gc_setColor(1, 1, 1)
-        local texture = M.DP < 2 and TEXTURE.revive or allyDie and TEXTURE.revive_rev_right or TEXTURE.revive_rev_left
+        local texture = TEXTURE.revive[M.DP < 2 and 'norm' or allyDie and 'rev_right' or 'rev_left']
         local taskID
         for i = #GAME.reviveTasks, 1, -1 do
             gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4)

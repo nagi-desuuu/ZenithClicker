@@ -141,7 +141,7 @@ function RefreshProfile()
     GC.setColor(1, 1, 1)
     GC.stc_setComp()
     GC.stc_rect(30, 0, 120, 120, 6)
-    GC.draw(TEXTURE.avatar, 20, 0, 0, 130 / TEXTURE.avatar:getWidth())
+    GC.draw(TEXTURE.stat.avatar, 20, 0, 0, 130 / TEXTURE.stat.avatar:getWidth())
     GC.stc_stop()
 
     -- ID
@@ -165,7 +165,7 @@ function RefreshProfile()
 
     -- Clicker
     GC.setColor(1, 1, 1)
-    GC.mDraw(TEXTURE.clicker, 970, 182, 0, .626)
+    GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
 
     -- Introduction
     GC.ucs_move('m', 25, 280)
@@ -205,7 +205,7 @@ function RefreshProfile()
     local rank =
         STAT.totalTime / 60 + STAT.totalFloor / 9 + STAT.totalGiga / 2 <= 62 and 0 or
         MATH.clamp(math.ceil(rating / 1400), 1, 18)
-    local rankIcon = TEXTURE.rank[rank]
+    local rankIcon = TEXTURE.stat.rank[rank]
     GC.setColor(1, 1, 1)
     GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
     GC.ucs_back()

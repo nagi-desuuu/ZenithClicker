@@ -125,7 +125,13 @@ function scene.draw()
     GC.translate(0, 100 - scroll1)
 
     GC.setColor(1, 1, 1)
-    GC.mDraw(TEXTURE.logo, -170, 100, 0, 0.3)
+    if GAME.mod.EX == 1 then
+        GC.mDraw(TEXTURE.logo_old, -170, 100, 0, .5)
+    elseif GAME.mod.EX == 2 then
+        GC.mDraw(TEXTURE.logo_old, -170, 100, 0, .5, -.5)
+    else
+        GC.mDraw(TEXTURE.logo, -170, 100, 0, 0.3)
+    end
     GC.draw(AboutText)
 
     GC.setColor(1, 1, 1, .2)
