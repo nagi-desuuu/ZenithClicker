@@ -8,6 +8,18 @@ local MD = ModData
 ---@type Zenitha.Scene
 local scene = {}
 
+local function switchVisitor(bool)
+    if not GAME.playing and GAME.zenithVisitor ~= bool and STAT.bg then
+        SFX.play(bool and 'pause_start' or 'pause_retry')
+        GAME.zenithVisitor = bool
+        love.mouse.setRelativeMode(bool)
+        ZENITHA.setCursorVis(not bool)
+        for _, W in next, scene.widgetList do
+            W:setVisible(not bool)
+        end
+    end
+end
+
 local function MouseOnCard(x, y)
     if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
         return FloatOnCard
@@ -69,10 +81,7 @@ local function keyPress(key)
             end
         end
     elseif key == 'z' then
-        if M.NH == 2 then
-            SFX.play('no')
-            return true
-        end
+        if M.NH == 2 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.reset
         W._pressTime = W._pressTimeMax * 2
@@ -81,17 +90,11 @@ local function keyPress(key)
         if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
         GAME.cancelAll()
     elseif key == 'x' or key == 'c' then
-        if M.NH == 2 then
-            SFX.play('no')
-            return true
-        end
+        if M.NH == 2 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, key == 'x' and 1 or 2)
     elseif key == 'space' then
-        if M.NH == 2 and M.AS == 0 then
-            SFX.play('no')
-            return true
-        end
+        if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.start
         W._pressTime = W._pressTimeMax * 2
@@ -155,15 +158,23 @@ local function keyPress(key)
     end
 end
 
-function scene.mouseMove(x, y)
-    GAME.nixPrompt('keep_no_mouse')
-    mouseMove(x, y)
+function scene.mouseMove(x, y, _, dy)
+    if GAME.zenithVisitor then
+        GAME.height = MATH.clamp(GAME.height - dy / 26, 0, STAT.maxHeight)
+    else
+        GAME.nixPrompt('keep_no_mouse')
+        mouseMove(x, y)
+    end
 end
 
 local cancelNextClick
 function scene.mouseDown(x, y, k)
+    if GAME.zenithVisitor then return switchVisitor(false) end
     GAME.nixPrompt('keep_no_mouse')
-    if k == 3 then return true end
+    if k == 3 then
+        switchVisitor(true)
+        return true
+    end
     if M.EX == 0 then
         SFX.play('move')
         mousePress(x, y, k)
@@ -176,6 +187,7 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseClick(x, y, k)
+    if GAME.zenithVisitor then return end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return end
     if cancelNextClick then
@@ -187,6 +199,12 @@ function scene.mouseClick(x, y, k)
     end
 end
 
+function scene.wheelMove(_, dy)
+    if GAME.zenithVisitor then
+        GAME.height = MATH.clamp(GAME.height + dy * 10, 0, STAT.maxHeight)
+    end
+end
+
 function scene.touchMove(x, y) scene.mouseMove(x, y) end
 
 function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
@@ -195,17 +213,24 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 local cancelNextPress
 function scene.keyDown(key)
-    if M.EX == 0 then
-        keyPress(key)
-        if M.EX > 0 then
-            cancelNextPress = true
+    if GAME.zenithVisitor then
+        if key == 'escape' or key == '\\' or key == 'space' then
+            switchVisitor(false)
         end
+    else
+        if M.EX == 0 then
+            keyPress(key)
+            if M.EX > 0 then
+                cancelNextPress = true
+            end
+        end
+        ZENITHA.setCursorVis(true)
     end
-    ZENITHA.setCursorVis(true)
     return true
 end
 
 function scene.keyUp(key)
+    if GAME.zenithVisitor then return end
     if cancelNextPress then
         cancelNextPress = false
         return
@@ -334,9 +359,8 @@ function DrawBG(brightness)
     gc_replaceTransform(SCR.origin)
     if STAT.bg then
         local bgFloor = GAME.getBgFloor()
-        local bgAlpha = GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75
         if bgFloor < 10 then
-            gc_setColor(1, 1, 1, bgAlpha)
+            gc_setColor(1, 1, 1)
             local bottom = Floors[bgFloor - 1].top
             local top = Floors[bgFloor].top
             local bg = TEXTURE.towerBG[bgFloor]
@@ -403,8 +427,9 @@ function DrawBG(brightness)
             end
 
             -- Cover
-            if GAME.floorTime < 2.6 then
-                gc_setColor(.5, .5, .5, 1 - GAME.floorTime / 2.6)
+            local f10CoverAlpha = GAME.zenithVisitor and MATH.icLerp(1660, 1650, GAME.bgH) or 1 - GAME.floorTime / 2.6
+            if f10CoverAlpha > 0 then
+                gc_setColor(.5, .5, .5, f10CoverAlpha)
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
             end
         end
@@ -418,12 +443,18 @@ function DrawBG(brightness)
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
-    gc_setColor(0, 0, 0, 1 - brightness / 100)
+    gc_setColor(0, 0, 0, 1 - (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * brightness / 100)
     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 end
 
 function scene.draw()
-    DrawBG(STAT.bgBrightness)
+    if GAME.zenithVisitor then
+        DrawBG(100)
+        return
+    else
+        DrawBG(STAT.bgBrightness)
+    end
+
 
     -- Wind Particles
     if GAME.height <= 1650 then
@@ -552,6 +583,8 @@ local questStyleDP = {
     { k = 0.7, y = 25 },
 }
 function scene.overDraw()
+    if GAME.zenithVisitor then return end
+
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)

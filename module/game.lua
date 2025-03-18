@@ -35,7 +35,6 @@ local ins, rem = table.insert, table.remove
 ---@field time number
 ---@field gigaTime false | number
 ---@field questTime number
----@field floorTime number
 ---@field rank number
 ---@field xp number
 ---@field rankupLast boolean
@@ -103,6 +102,8 @@ local GAME = {
     reviveTasks = {}, ---@type ReviveTask[]
     currentTask = false, ---@type false | ReviveTask
     lastFlip = false,
+
+    zenithVisitor = false,
 }
 
 GAME.playing = false
@@ -110,6 +111,7 @@ GAME.fullHealth = 20
 GAME.life = 0
 GAME.life2 = 0
 GAME.time = 0
+GAME.floorTime = 2.6
 GAME.floor = 1
 GAME.rank = 1
 GAME.xp = 0
@@ -1243,7 +1245,7 @@ end
 
 ---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
-    SCN.scenes.tower.widgetList.hint:setVisible(true)
+    SCN.scenes.tower.widgetList.hint:setVisible(not GAME.zenithVisitor)
     MSG.clear()
 
     SFX.play(
