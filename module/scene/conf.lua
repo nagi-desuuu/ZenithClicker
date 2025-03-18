@@ -95,7 +95,7 @@ scene.widgetList = {
         sound_release = 'menuclick',
         onClick = function()
             MSG.clear()
-            local newName = love.system.getClipboardText()
+            local newName = CLIPBOARD.get()
             if type(newName) ~= 'string' or #newName == 0 then
                 MSG('dark', "No data in clipboard")
                 return
@@ -140,7 +140,7 @@ scene.widgetList = {
         sound_release = 'menuclick',
         onClick = function()
             MSG.clear()
-            local newText = love.system.getClipboardText()
+            local newText = CLIPBOARD.get()
             if type(newText) ~= 'string' or #newText == 0 then
                 MSG('dark', "No data in clipboard")
                 return
