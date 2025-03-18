@@ -87,7 +87,6 @@ addText({
 
 function scene.load()
     scroll, scroll1 = 0, -620
-    TASK.lock('no_back', 0.26)
 end
 
 function scene.mouseMove(_, _, _, dy)
@@ -102,7 +101,7 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' and not TASK.getLock('no_back') then
+    if key == 'escape' or key == 'f2' then
         SFX.play('menuclick')
         SCN.back('none')
     end

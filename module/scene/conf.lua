@@ -8,17 +8,13 @@ local clr = {
     LT = { COLOR.HEX 'B0CCEB' },
 }
 
-function scene.load()
-    TASK.lock('no_back', 0.26)
-end
-
 -- function scene.unload()
 --     SaveStat()
 -- end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' and not TASK.getLock('no_back') then
+    if key == 'escape' or key == 'f1' then
         SFX.play('menuclick')
         SCN.back('none')
     end

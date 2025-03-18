@@ -10,7 +10,6 @@ local clr = {
 local colorRev = false
 
 function scene.load()
-    TASK.lock('no_back', 0.26)
     if GAME.anyRev ~= colorRev then
         colorRev = GAME.anyRev
         for _, C in next, clr do
@@ -21,7 +20,7 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if (key == 'escape' or key == 'tab') and not TASK.getLock('no_back') then
+    if key == 'escape' or key == 'tab' then
         SFX.play('menuclick')
         SCN.back('none')
     end
