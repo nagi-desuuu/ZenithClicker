@@ -158,7 +158,7 @@ FONT.load {
 }
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 
-BG.add('black', { draw = GC.clear })
+BG.add('black', { draw = function() GC.clear(0, 0, 0) end })
 BG.set('black')
 
 TEXTS = { -- Font size can only be 30 and 50 here !!!
