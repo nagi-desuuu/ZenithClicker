@@ -59,6 +59,7 @@ local ins, rem = table.insert, table.remove
 local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
+    anyRev = false,
     revTimer = 0,
     revDeckSkin = false,
     uiHide = 0,

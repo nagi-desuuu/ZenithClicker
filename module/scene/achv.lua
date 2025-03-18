@@ -7,9 +7,16 @@ local clr = {
     T = { COLOR.HEX '6FAC82' },
     LT = { COLOR.HEX 'CCEBB0' },
 }
+local colorRev = false
 
 function scene.load()
     TASK.lock('no_back', 0.26)
+    if GAME.anyRev ~= colorRev then
+        colorRev = GAME.anyRev
+        for _, C in next, clr do
+            C[1], C[2] = C[2], C[1]
+        end
+    end
 end
 
 function scene.keyDown(key, isRep)
@@ -52,7 +59,7 @@ function scene.draw()
     GC.replaceTransform(SCR.xOy_m)
     GC.setColor(clr.L)
     FONT.set(70)
-    GC.print("WIP", -130, -130,.26,2.6)
+    GC.print("WIP", -130, -130, .26, 2.6)
 end
 
 scene.widgetList = {
