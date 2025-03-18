@@ -733,7 +733,6 @@ function scene.overDraw()
             if GAME.rankupLast then
                 if GAME.xpLockLevel < 5 then
                     gc_setLineWidth(2)
-                    gc_setAlpha(.8 - GAME.xpLockLevel * .15)
                     gc_mRect('line', 800, 965, 210, 26)
                 end
             else
