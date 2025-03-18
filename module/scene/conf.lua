@@ -41,7 +41,7 @@ function scene.draw()
         end
     end
 
-    local w, h = 1200, 700
+    local w, h = 900, 700
     GC.replaceTransform(SCR.xOy)
     GC.ucs_move('m', 800 - w / 2, 500 - h / 2)
     GC.setColor(clr.D)
@@ -55,18 +55,18 @@ function scene.draw()
 
     -- Brightness Slider Components
     GC.setColor(0, 0, 0, .26)
-    GC.mRect('fill', 600, 450, 1160, 65, 5)
-    GC.mRect('fill', 1110, 450, 123, 48, 3)
+    GC.mRect('fill', w / 2, 450, w - 40, 65, 5)
+    GC.mRect('fill', w - 90, 450, 123, 48, 3)
     FONT.set(30)
     GC.setColor(clr.T)
     GC.print("BG  BRIGHTNESS", 40, 430)
     GC.setAlpha(.42)
-    GC.print("BRIGHT", 970, 455, 0, .5)
+    GC.print("BRIGHT", w - 230, 455, 0, .5)
     GC.print("DARK", 326, 455, 0, .5)
     GC.setColor(clr.T)
-    GC.mStr(STAT.bgBrightness, 1100, 430)
+    GC.mStr(STAT.bgBrightness, w - 100, 430)
     GC.setColor(clr.L)
-    GC.print("%", 1140, 430, 0, .85, 1)
+    GC.print("%", w - 60, 430, 0, .85, 1)
 
     -- Top bar & title
     GC.replaceTransform(SCR.xOy_u)
@@ -99,11 +99,11 @@ scene.widgetList = {
         text = "ACCOUNT",
         color = clr.T,
         fontSize = 50,
-        x = 200 + 30, y = 150 + 50,
+        x = 350 + 30, y = 150 + 50,
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
-        x = 200 + 220, y = 150 + 112, w = 360, h = 50,
+        x = 350 + 220, y = 150 + 112, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = 'LS', text = "CHANGE USERNAME",
         sound_hover = 'menutap',
@@ -148,7 +148,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
-        x = 200 + 620, y = 150 + 112, w = 360, h = 50,
+        x = 350 + 620, y = 150 + 112, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = 'LS', text = "CHANGE ABOUT-ME",
         sound_hover = 'menutap',
@@ -195,14 +195,14 @@ scene.widgetList = {
         text = "AUDIO",
         color = clr.T,
         fontSize = 50,
-        x = 200 + 30, y = 150 + 190,
+        x = 350 + 30, y = 150 + 190,
     },
     WIDGET.new {
         type = 'checkBox',
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
         textColor = clr.T, text = "BGM  (F5)",
-        x = 200 + 55, y = 150 + 250,
+        x = 350 + 55, y = 150 + 250,
         disp = function() return STAT.bgm end,
         code = function()
             STAT.bgm = not STAT.bgm
@@ -214,7 +214,7 @@ scene.widgetList = {
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
         textColor = clr.T, text = "SFX  (F6)",
-        x = 200 + 55, y = 150 + 310,
+        x = 350 + 55, y = 150 + 310,
         disp = function() return STAT.sfx end,
         code = function()
             STAT.sfx = not STAT.sfx
@@ -226,11 +226,11 @@ scene.widgetList = {
         text = "VIDEO",
         color = clr.T,
         fontSize = 50,
-        x = 200 + 30, y = 150 + 380,
+        x = 350 + 30, y = 150 + 380,
     },
     WIDGET.new {
         type = 'slider',
-        x = 200 + 240 + 85, y = 150 + 450, w = 700,
+        x = 350 + 240 + 85, y = 150 + 450, w = 400,
         axis = { 30, 100, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.bgBrightness end,
@@ -241,7 +241,7 @@ scene.widgetList = {
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
         textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
-        x = 200 + 55, y = 150 + 520,
+        x = 350 + 55, y = 150 + 520,
         disp = function() return STAT.bg end,
         code = function() STAT.bg = not STAT.bg end,
     },
@@ -250,7 +250,7 @@ scene.widgetList = {
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
         textColor = clr.T, text = "STAR FORCE  (F10)",
-        x = 200 + 55, y = 150 + 580,
+        x = 350 + 55, y = 150 + 580,
         disp = function() return not STAT.syscursor end,
         code = function()
             STAT.syscursor = not STAT.syscursor
@@ -262,7 +262,7 @@ scene.widgetList = {
         fillColor = { COLOR.HEX '0B0E17' },
         frameColor = { COLOR.HEX '6A82A7' },
         textColor = clr.T, text = "FULLSCREEN  (F11)",
-        x = 200 + 55, y = 150 + 640,
+        x = 350 + 55, y = 150 + 640,
         disp = function() return STAT.fullscreen end,
         code = function()
             STAT.fullscreen = not STAT.fullscreen
