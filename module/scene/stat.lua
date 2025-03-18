@@ -314,7 +314,7 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' and TASK.lock('no_back') then
+    if (key == 'escape' or key == '`') and TASK.lock('no_back') then
         SFX.play('menuclick')
         TWEEN.tag_kill('stat_in')
         TWEEN.new(function(t)

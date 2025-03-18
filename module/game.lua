@@ -274,11 +274,13 @@ end
 function GAME.anim_setMenuHide(t)
     GAME.uiHide = t
     local w = SCN.scenes.tower.widgetList
-    w.stat.x = MATH.cLerp(60, -80, t * 1.6 - .6)
+    w.stat.x = MATH.cLerp(60, -90, t * 1.5 - .5)
     w.stat:resetPos()
-    w.conf.x = MATH.cLerp(60, -80, t * 1.6 - .3)
+    w.achv.x = MATH.cLerp(60, -90, t * 1.5)
+    w.achv:resetPos()
+    w.conf.x = MATH.cLerp(-60, 90, t * 1.5 - .5)
     w.conf:resetPos()
-    w.about.x = MATH.cLerp(60, -80, t * 1.6 - .0)
+    w.about.x = MATH.cLerp(-60, 90, t * 1.5)
     w.about:resetPos()
     MSG.setSafeY(75 * (1 - GAME.uiHide))
 end
@@ -794,9 +796,13 @@ function GAME.refreshRev()
     if hasRev ~= GAME.anyRev then
         GAME.anyRev = hasRev
 
-        local W = SCN.scenes.tower.widgetList.stat
-        W.fillColor[1], W.fillColor[2] = W.fillColor[2], W.fillColor[1]
-        W.textColor[1], W.textColor[2] = W.textColor[2], W.textColor[1]
+        for _,W in next,{
+            SCN.scenes.tower.widgetList.stat,
+            SCN.scenes.tower.widgetList.achv,
+        } do
+            W.fillColor[1], W.fillColor[2] = W.fillColor[2], W.fillColor[1]
+            W.textColor[1], W.textColor[2] = W.textColor[2], W.textColor[1]
+        end
 
         if not hasRev then GAME.revDeckSkin = false end
 

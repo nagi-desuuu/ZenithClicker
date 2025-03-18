@@ -123,7 +123,20 @@ TEXTURE = {
             assets 'rank/x+.png',
         },
         achievement = {
-
+            frame = {
+                [-1] = assets 'achievements/frames/issued.png',
+                [0] = assets 'achievements/frames/none.png',
+                assets 'achievements/frames/bronze.png',
+                assets 'achievements/frames/silver.png',
+                assets 'achievements/frames/gold.png',
+                assets 'achievements/frames/platinum.png',
+                assets 'achievements/frames/diamond.png',
+            },
+            glint_1 = assets 'achievements/glint-a.png',
+            glint_2 = assets 'achievements/glint-b.png',
+            glint_3 = assets 'achievements/glint-c.png',
+            competitive = assets 'achievements/competitive.png',
+            hidden = assets 'achievements/hidden.png',
         },
     },
 
@@ -304,6 +317,7 @@ end
 SCN.add('joining', require 'module/scene/joining')
 SCN.add('tower', require 'module/scene/tower')
 SCN.add('stat', require 'module/scene/stat')
+SCN.add('achv', require 'module/scene/achv')
 SCN.add('conf', require 'module/scene/conf')
 SCN.add('about', require 'module/scene/about')
 ZENITHA.setFirstScene('joining')
@@ -457,15 +471,15 @@ function WIDGET._prototype.button:draw()
     gc.setColor(.2 + frameC[1] * .8, .2 + frameC[2] * .8, .2 + frameC[3] * .8)
     gc.line(-w / 2, h / 2 + 1.5, -w / 2, -h / 2, w / 2 - 1.5, -h / 2)
 
+    -- Drawable
+    gc.setColor(self.textColor)
+    WIDGET._alignDraw(self, self._text, 0, 0, 0, 1.2, 1.2 - 2.4 * GAME.revTimer)
+
     -- Highlight
     if self._hoverTime > 0 then
         gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .0626)
         GC.mRect('fill', 0, 0, w - 3, h - 3)
     end
-
-    -- Drawable
-    gc.setColor(self.textColor)
-    WIDGET._alignDraw(self, self._text, 0, 0, 0, 1.2, 1.2 - 2.4 * GAME.revTimer)
 
     gc.pop()
 end
@@ -492,8 +506,6 @@ function WIDGET._prototype.checkBox:draw()
         -- Background
         gc.setColor(self.fillColor)
         GC.mRect('fill', 0, 0, w, w, 2)
-        gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .0626)
-        GC.mRect('fill', 0, 0, w, w, 2)
         gc.setColor(0, 0, 0, .626)
         gc.line(-w / 2, w / 2, -w / 2, -w / 2, w / 2, -w / 2)
         gc.setColor(1, 1, 1, .0626)
@@ -504,6 +516,11 @@ function WIDGET._prototype.checkBox:draw()
     local x2, y2 = w * .5 + self.labelDist, 0
     gc.setColor(self.textColor)
     WIDGET._alignDraw(self, self._text, x2, y2, nil, self.textScale)
+
+    -- Highlight
+    gc.setColor(1, 1, 1, self._hoverTime / self._hoverTimeMax * .0626)
+    GC.mRect('fill', 0, 0, w, w, 2)
+
     gc.pop()
 end
 

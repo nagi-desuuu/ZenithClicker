@@ -100,7 +100,7 @@ local function keyPress(key)
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
         GAME[GAME.playing and 'commit' or 'start']();
-    elseif key == 'tab' then
+    elseif key == '`' then
         if GAME.playing then
             SFX.play('no')
         else
@@ -108,6 +108,16 @@ local function keyPress(key)
             SCN.go('stat', 'none')
         end
         local W = scene.widgetList.stat
+        W._pressTime = W._pressTimeMax * 2
+        W._hoverTime = W._hoverTimeMax
+    elseif key == 'tab' then
+        if GAME.playing then
+            SFX.play('no')
+        else
+            SFX.play('menuhit1')
+            SCN.go('achv', 'none')
+        end
+        local W = scene.widgetList.achv
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
     elseif key == 'f1' then
@@ -929,7 +939,7 @@ end
 scene.widgetList = {
     WIDGET.new {
         name = 'back', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 140 - 10 * 0, w = 160, h = 60,
+        pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
         color = { .15, .15, .15 },
         sound_hover = 'menutap',
         fontSize = 30, text = "    BACK", textColor = 'DL',
@@ -951,10 +961,21 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'stat', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 220 - 10 * 1, w = 160, h = 60,
+        pos = { 0, 0 }, x = 60, y = 230, w = 160, h = 60,
         color = { COLOR.HEX '1F4E2C' },
         sound_hover = 'menutap',
         fontSize = 30, text = "    STAT", textColor = { COLOR.HEX '73E284' },
+        onClick = function()
+            love.keypressed('`')
+            love.keyreleased('`')
+        end,
+    },
+    WIDGET.new {
+        name = 'achv', type = 'button',
+        pos = { 0, 0 }, x = 60, y = 320, w = 160, h = 60,
+        color = { COLOR.HEX '1F4E2C' },
+        sound_hover = 'menutap',
+        fontSize = 30, text = "    ACHV", textColor = { COLOR.HEX '73E284' },
         onClick = function()
             love.keypressed('tab')
             love.keyreleased('tab')
@@ -962,10 +983,10 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'conf', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 300 - 10 * 2, w = 160, h = 60,
+        pos = { 1, 0 }, x = -60, y = 230, w = 160, h = 60,
         color = { COLOR.HEX '253355' },
         sound_hover = 'menutap',
-        fontSize = 30, text = "   CONF", textColor = { COLOR.HEX '869EFF' },
+        fontSize = 30, text = "CONF   ", textColor = { COLOR.HEX '869EFF' },
         onClick = function()
             love.keypressed('f1')
             love.keyreleased('f1')
@@ -973,10 +994,10 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'about', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 380 - 10 * 3, w = 160, h = 60,
+        pos = { 1, 0 }, x = -60, y = 320, w = 160, h = 60,
         color = { COLOR.HEX '383838' },
         sound_hover = 'menutap',
-        fontSize = 30, text = "   ABOUT", textColor = { COLOR.HEX '909090' },
+        fontSize = 30, text = "ABOUT ", textColor = { COLOR.HEX '909090' },
         onClick = function()
             love.keypressed('f2')
             love.keyreleased('f2')

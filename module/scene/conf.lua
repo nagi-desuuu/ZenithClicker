@@ -5,6 +5,7 @@ local clr = {
     D = { COLOR.HEX '191E31' },
     L = { COLOR.HEX '4D67A6' },
     T = { COLOR.HEX '6F82AC' },
+    LT = { COLOR.HEX 'B0CCEB' },
 }
 
 function scene.load()
@@ -28,19 +29,7 @@ end
 function scene.draw()
     DrawBG(STAT.bgBrightness)
 
-    GC.replaceTransform(SCR.xOy_u)
-
-    if love.keyboard.isDown('space') then
-        GC.setColor(1, 1, 0)
-        FONT.set(30)
-        for x = -600, 600 - 100, 100 do
-            for y = 0, 600 - 100, 100 do
-                GC.rectangle('line', x, y, 100, 100)
-                GC.print(x .. ',' .. y, x + 2.6, y, 0, .355)
-            end
-        end
-    end
-
+    -- Panel
     local w, h = 900, 700
     GC.replaceTransform(SCR.xOy)
     GC.ucs_move('m', 800 - w / 2, 500 - h / 2)
@@ -80,7 +69,7 @@ function scene.draw()
     FONT.set(50)
     GC.print("CONFIG", 15, 0)
 
-    -- Bottom bar & thanks
+    -- Bottom bar & text
     GC.replaceTransform(SCR.xOy_d)
     GC.setColor(clr.D)
     GC.rectangle('fill', -1300, 0, 2600, -50)
@@ -105,7 +94,7 @@ scene.widgetList = {
         name = 'changeName', type = 'button',
         x = 350 + 220, y = 150 + 112, w = 360, h = 50,
         color = clr.L,
-        fontSize = 30, textColor = 'LS', text = "CHANGE USERNAME",
+        fontSize = 30, textColor = clr.LT, text = "CHANGE USERNAME",
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
@@ -150,7 +139,7 @@ scene.widgetList = {
         name = 'changeAboutme', type = 'button',
         x = 350 + 620, y = 150 + 112, w = 360, h = 50,
         color = clr.L,
-        fontSize = 30, textColor = 'LS', text = "CHANGE ABOUT-ME",
+        fontSize = 30, textColor = clr.LT, text = "CHANGE ABOUT-ME",
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
