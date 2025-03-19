@@ -13,7 +13,8 @@ local scene = {}
 
 local function switchVisitor(bool)
     if not GAME.playing and GAME.zenithTraveler ~= bool and STAT.bg then
-        SFX.play(bool and 'pause_start' or 'pause_retry')
+        cancelNextClick, cancelNextKeyClick = true, true
+        SFX.play(bool and 'pause_exit' or 'pause_start')
         GAME.zenithTraveler = bool
         love.mouse.setRelativeMode(bool)
         ZENITHA.setCursorVis(not bool)
