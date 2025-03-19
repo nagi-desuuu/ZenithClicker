@@ -260,7 +260,7 @@ ComboData = {
     { set = 'EX          VL DH         ', name = "the mad lord" },
     { set = 'EX          VL DH IN      ', name = "corruption" },
     { set = 'EX          VL DH IN AS   ', name = "reverse quintuple threat" },
-    { set = 'EX       GV               ', name = "inviticus" },
+    { set = 'EX       GV               ', name = "invictus" },
     { set = 'EX       GV          AS   ', name = "master of the t" },
     { set = 'EX       GV       IN      ', name = "the super gm (grandmaster)" },
     { set = 'EX       GV       IN AS   ', name = "mastermind" },
