@@ -1374,7 +1374,7 @@ function GAME.finish(reason)
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalFlip / GAME.time, .01) .. "/s)\n",
             COLOR.L, "Quest  " .. GAME.totalQuest,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
-            GAME.totalPerfect .. " Perf)\n",
+            MATH.roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
             COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
