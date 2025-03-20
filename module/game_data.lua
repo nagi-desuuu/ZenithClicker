@@ -166,6 +166,8 @@ ComboData = {
     { set = 'EX                      DP', name = "trained professionals",     basic = true },
     { set = 'EX    MS                  ', name = "block rationing",           basic = true },
 
+    -- TODO: rev combos for achievements
+
     { set = '      MS          IN      ', name = "scrambled rainbow" },
     { set = 'EX NH                AS   ', name = "positioning master" },
 
@@ -262,7 +264,7 @@ ComboData = {
     { set = 'EX          VL DH IN AS   ', name = "reverse quintuple threat" },
     { set = 'EX       GV               ', name = "invictus" },
     { set = 'EX       GV          AS   ', name = "master of the t" },
-    { set = 'EX       GV       IN      ', name = "the super gm (grandmaster)" },
+    { set = 'EX       GV       IN      ', name = "the super gm" },
     { set = 'EX       GV       IN AS   ', name = "mastermind" },
     { set = 'EX       GV    DH         ', name = "the daredevil" },
     { set = 'EX       GV VL            ', name = "relaxation" },
