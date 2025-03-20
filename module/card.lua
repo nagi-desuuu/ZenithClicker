@@ -5,6 +5,7 @@ local sign, lerp = MATH.sign, MATH.lerp
 local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
 
 local M = GAME.mod
+local Cards = Cards
 
 ---@class Card
 ---@field burn false | number
@@ -403,8 +404,10 @@ function Card:draw()
     if not playing and not self.upright then gc_rotate(3.1416) end
     gc_scale(abs(self.size * self.kx), self.size * self.ky)
 
-    -- Fake 3D
     if self == Cards[FloatOnCard] then
+        -- EX scale
+        if M.EX > 0 and love.mouse.isDown(1, 2) then gc_scale(.9) end
+        -- Fake 3D
         local dx, dy = (MX - self.x) / (260 * self.size), (MY - self.y) / (350 * self.size)
         local d = (abs(dx) - abs(dy)) * .026
         gc_scale(min(1, 1 - d), min(1, 1 + d))
