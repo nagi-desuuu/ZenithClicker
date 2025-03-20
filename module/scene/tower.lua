@@ -539,8 +539,7 @@ function scene.draw()
     -- Mod icons
     if GAME.uiHide > 0 then
         gc_setColor(1, 1, 1, GAME.uiHide)
-        gc_draw(GAME.iconRevSB, 1490, 350)
-        gc_draw(GAME.iconSB, 1490, 350)
+        gc_draw(GAME.modIB, 1490, 350)
     end
 
     -- Card Panel
@@ -595,8 +594,7 @@ function scene.draw()
         gc_replaceTransform(SCR.xOy_u)
         gc_translate(0, -3.2 * GAME.uiHide * 70)
         gc_setColor(1, 1, 1)
-        gc_draw(GAME.resultRevSB, 400, 168, 0, .9)
-        gc_draw(GAME.resultSB, 400, 168, 0, .9)
+        gc_draw(GAME.resIB, 400, 168, 0, .9)
         gc_setColor(COLOR.D)
         gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 204)

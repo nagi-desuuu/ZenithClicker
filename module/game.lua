@@ -69,10 +69,8 @@ local GAME = {
     lifeShow = 0,
     lifeShow2 = 0,
     prevPB = -260,
-    iconSB = GC.newSpriteBatch(TEXTURE.icon.ingame),
-    iconRevSB = GC.newSpriteBatch(TEXTURE.icon.ingame_rev),
-    resultSB = GC.newSpriteBatch(TEXTURE.icon.result),
-    resultRevSB = GC.newSpriteBatch(TEXTURE.icon.result_rev),
+    modIB = GC.newSpriteBatch(TEXTURE.modIcon),
+    resIB = GC.newSpriteBatch(TEXTURE.modIcon),
 
     completion = { -- 0=locked, 1=unlocked, 2=mastered
         EX = 0,
@@ -678,39 +676,45 @@ function GAME.refreshRPC()
     TASK.lock('RPC_update', 1.6)
 end
 
+local modIconPos = {
+    { -2, -2 }, { -2, 0 }, { -1, -1 }, { -1, 1 },
+    { 0,  -2 }, { 0, 0 }, { 1, -1 }, { 1, 1 },
+    { 2, -2 }, { 2, 0 }, { 3, -1 }, { 3, 1 },
+}
+
 function GAME.refreshModIcon()
-    GAME.iconSB:clear()
-    GAME.iconRevSB:clear()
+    GAME.modIB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     local r = 35
-    local x, y = -2, -2
-    for i, m in next, hand do
-        local q = TEXTURE.icon.quad
-        if #m == 2 then
-            GAME.iconSB:add(q.ingame[m], x * r, y * r, 0, .5, .5, 128 * .5, 128 * .5)
-        else
-            GAME.iconRevSB:add(q.ingame_rev[m:sub(2)], x * r, y * r, 0, .42, .42, 219 * .5, 219 * .5)
+    for x = 3, 2, -1 do
+        for i = #hand, 1, -1 do
+            if #hand[i] == x then
+                GAME.modIB:add(
+                    TEXTURE.modQuad_ig[hand[i]],
+                    modIconPos[i][1] * r, modIconPos[i][2] * r,
+                    0, x == 3 and .4 or .28, nil, 219 * .5, 219 * .5
+                )
+            end
         end
-        if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end
     end
 end
 
 function GAME.refreshResultModIcon()
-    GAME.resultSB:clear()
-    GAME.resultRevSB:clear()
+    GAME.resIB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     local r = 35
-    local x, y = -2, -2
-    for i, m in next, hand do
-        local q = TEXTURE.icon.quad
-        if #m == 2 then
-            GAME.resultSB:add(q.result[m], x * r, y * r, 0, .3, .3, 183 * .5, 183 * .5)
-        else
-            GAME.resultRevSB:add(q.result_rev[m:sub(2)], x * r, y * r, 0, .33, .33, 183 * .5, 183 * .5)
+    for x = 3, 2, -1 do
+        for i = #hand, 1, -1 do
+            if #hand[i] == x then
+                GAME.resIB:add(
+                    TEXTURE.modQuad_res[hand[i]],
+                    modIconPos[i][1] * r, modIconPos[i][2] * r,
+                    0, x == 3 and .36 or .3, nil, 183 * .5, 183 * .5
+                )
+            end
         end
-        if i % 2 == 1 then y = y + 2 else x, y = x + 1, y - 3 + (i % 4) end
     end
 end
 
@@ -1385,8 +1389,7 @@ function GAME.finish(reason)
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
         TEXTS.endResult:set("")
-        GAME.resultSB:clear()
-        GAME.resultRevSB:clear()
+        GAME.resIB:clear()
     end
 
     GAME.setGigaspeedAnim(false)
