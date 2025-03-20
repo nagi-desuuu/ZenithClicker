@@ -549,23 +549,13 @@ function WIDGET._prototype.slider:draw()
     GC.ucs_back()
 end
 
--- Mouse Holding daemon
-function Daemon_Cursor()
-    while true do
-        local dt = coroutine.yield()
-        if love.mouse.isDown(1, 2) then
-            pressValue = 1
-        else
-            pressValue = MATH.expApproach(pressValue, 0, dt * 12)
-        end
-    end
-end
-
 -- Muisc syncing daemon
-function Daemon_Sync()
+-- DiscordRPC syncing daemon
+DiscordState = {}
+function Daemon_Slow()
+    TASK.yieldT(1)
     local lib = BGM._srcLib
     local set = BgmSets.all
-    coroutine.yield()
     local length = BGM.getDuration()
     while true do
         local t0 = lib[set[1]].source:tell()
@@ -579,6 +569,10 @@ function Daemon_Sync()
                 obj.source:seek(math.max(T, 0))
             end
         end
+        if DiscordState.needUpdate and not TASK.getLock('RPC_update') then
+            DiscordState.needUpdate = nil
+            DiscordRPC.update(DiscordState)
+        end
         TASK.yieldT(1)
     end
 end
@@ -586,7 +580,8 @@ end
 -- Throb tranpaency daemon
 -- Messy position daemon
 -- Expert guitar randomization daemon
-function Daemon_Beat()
+-- Mouse holding animation daemon
+function Daemon_Fast()
     local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184
     local t2, step2 = 0, 2 * 60 / 184 / 4
@@ -621,17 +616,15 @@ function Daemon_Beat()
                 exLastVol = r
             end
         end
-        coroutine.yield()
-    end
-end
 
-DiscordState = {}
-function Daemon_DiscordRPC()
-    while true do
-        TASK.yieldT(1)
-        if DiscordState.needUpdate and not TASK.getLock('RPC_update') then
-            DiscordState.needUpdate = nil
-            DiscordRPC.update(DiscordState)
+        local dt = coroutine.yield()
+
+        if not STAT.syscursor then
+            if love.mouse.isDown(1, 2) then
+                pressValue = 1
+            else
+                pressValue = MATH.expApproach(pressValue, 0, dt * 12)
+            end
         end
     end
 end

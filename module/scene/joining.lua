@@ -20,10 +20,8 @@ function scene.update(dt)
             BGM.load(FILE.load('module/bgm_data.lua', '-luaon'))
             SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
             GAME.updateBgm('init')
-            TASK.new(Daemon_Cursor)
-            TASK.new(Daemon_Sync)
-            TASK.new(Daemon_Beat)
-            TASK.new(Daemon_DiscordRPC)
+            TASK.new(Daemon_Slow)
+            TASK.new(Daemon_Fast)
             ---@diagnostic disable-next-line
             local _ = TEXTURE.panel.glass_a, TEXTURE.panel.glass_b, TEXTURE.panel.throb_a, TEXTURE.panel.throb_b
             for i = 1, 10 do _ = TEXTURE.towerBG[i] end
