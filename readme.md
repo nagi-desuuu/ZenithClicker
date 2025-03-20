@@ -21,3 +21,21 @@ AbhayaLibre-Regular (Font) by Mooniak
 > **By Community, may not accurate**
 
 [work in progress]
+
+## Design draft of Cliker League (Probably won't be implemented)
+
+**Main idea**: Sending mod effect to opponent
+
+Two players start the run same with single player.
+
+**Sending Buffer**: your attacks will be turned into time (1 atk = 1 sec) and stored in this buffer.  
+When it's not increasing for 3 seconds or taking time-damage, all times will be send to opponent.
+
+The last card you activated is the effect which you will send.
+
+**Cancelling**: Before sending `effect-time` to opponent, it will try to cancel the same effect you are carrying first, with a 2x multiplier.  
+So you cannot force opponent EX if you have EX already.
+
+**Sending**: After Cancelling, if there's extra time remain, your opponent will receive it.
+
+Game ends when one of the players lose all HP.
