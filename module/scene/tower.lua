@@ -193,6 +193,7 @@ function scene.mouseMove(x, y, _, dy)
 end
 
 function scene.mouseDown(x, y, k)
+    cancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then
@@ -242,6 +243,7 @@ function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
 function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
 function scene.keyDown(key)
+    cancelNextKeyClick = false
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
             switchVisitor(false)
