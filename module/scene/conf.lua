@@ -34,11 +34,32 @@ function scene.keyDown(key, isRep)
     return true
 end
 
+-- Panel size
+local w, h = 900, 800
+local baseX, baseY = (1600 - w) / 2, (1000 - h) / 2
+
+local function drawSliderComponents(y, title, t1, t2, value)
+    GC.ucs_move('m', 0, y)
+    GC.setColor(0, 0, 0, .26)
+    GC.mRect('fill', w / 2, 0, w - 40, 65, 5)
+    GC.mRect('fill', w - 90, 0, 123, 48, 3)
+    FONT.set(30)
+    GC.setColor(clr.T)
+    GC.print(title, 40, -20, 0, .85, 1)
+    GC.setAlpha(.42)
+    GC.print(t1, 326, 5, 0, .5)
+    GC.print(t2, w - 230, 5, 0, .5)
+    GC.setColor(clr.T)
+    GC.mStr(value, w - 100, -20)
+    GC.setColor(clr.L)
+    GC.print("%", w - 60, -20, 0, .85, 1)
+    GC.ucs_back()
+end
+
 function scene.draw()
     DrawBG(STAT.bgBrightness)
 
     -- Panel
-    local w, h = 900, 800
     GC.replaceTransform(SCR.xOy)
     GC.ucs_move('m', 800 - w / 2, 500 - h / 2)
     GC.setColor(clr.D)
@@ -50,39 +71,9 @@ function scene.draw()
     GC.setColor(1, 1, 1, .04)
     GC.rectangle('fill', 0, 3, 3, h + 3)
 
-    -- Card Brightness Slider
-    GC.ucs_move('m', 0, 450)
-    GC.setColor(0, 0, 0, .26)
-    GC.mRect('fill', w / 2, 0, w - 40, 65, 5)
-    GC.mRect('fill', w - 90, 0, 123, 48, 3)
-    FONT.set(30)
-    GC.setColor(clr.T)
-    GC.print("CARD  BRIGHTNESS", 40, -20)
-    GC.setAlpha(.42)
-    GC.print("BRIGHT", w - 230, 5, 0, .5)
-    GC.print("DARK", 326, 5, 0, .5)
-    GC.setColor(clr.T)
-    GC.mStr(STAT.cardBrightness, w - 100, -20)
-    GC.setColor(clr.L)
-    GC.print("%", w - 60, -20, 0, .85, 1)
-    GC.ucs_back()
-
-    -- BG Brightness Slider
-    GC.ucs_move('m', 0, 530)
-    GC.setColor(0, 0, 0, .26)
-    GC.mRect('fill', w / 2, 0, w - 40, 65, 5)
-    GC.mRect('fill', w - 90, 0, 123, 48, 3)
-    FONT.set(30)
-    GC.setColor(clr.T)
-    GC.print("BG  BRIGHTNESS", 40, -20)
-    GC.setAlpha(.42)
-    GC.print("BRIGHT", w - 230, 5, 0, .5)
-    GC.print("DARK", 326, 5, 0, .5)
-    GC.setColor(clr.T)
-    GC.mStr(STAT.bgBrightness, w - 100, -20)
-    GC.setColor(clr.L)
-    GC.print("%", w - 60, -20, 0, .85, 1)
-    GC.ucs_back()
+    -- Sliders
+    drawSliderComponents(450, "CARD  BRIGHTNESS", "DARK", "BRIGHT", STAT.cardBrightness)
+    drawSliderComponents(520, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
 
     -- Top bar & title
     GC.replaceTransform(SCR.xOy_u)
@@ -115,11 +106,11 @@ scene.widgetList = {
         text = "ACCOUNT",
         color = clr.T,
         fontSize = 50,
-        x = 350 + 30, y = 100 + 50,
+        x = baseX + 30, y = baseY + 50,
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
-        x = 350 + 220, y = 100 + 112, w = 360, h = 50,
+        x = baseX + 220, y = baseY + 112, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE USERNAME",
         sound_hover = 'menutap',
@@ -164,7 +155,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
-        x = 350 + 620, y = 100 + 112, w = 360, h = 50,
+        x = baseX + 620, y = baseY + 112, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE ABOUT-ME",
         sound_hover = 'menutap',
@@ -211,14 +202,14 @@ scene.widgetList = {
         text = "AUDIO",
         color = clr.T,
         fontSize = 50,
-        x = 350 + 30, y = 100 + 190,
+        x = baseX + 30, y = baseY + 190,
     },
     WIDGET.new {
         type = 'checkBox',
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "BGM  (F3)",
-        x = 350 + 55, y = 100 + 250,
+        x = baseX + 55, y = baseY + 250,
         disp = function() return STAT.bgm end,
         code = function()
             STAT.bgm = not STAT.bgm
@@ -230,7 +221,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "SFX  (F4)",
-        x = 350 + 55, y = 100 + 310,
+        x = baseX + 55, y = baseY + 310,
         disp = function() return STAT.sfx end,
         code = function()
             STAT.sfx = not STAT.sfx
@@ -242,30 +233,32 @@ scene.widgetList = {
         text = "VIDEO",
         color = clr.T,
         fontSize = 50,
-        x = 350 + 30, y = 100 + 380,
+        x = baseX + 30, y = baseY + 380,
     },
     WIDGET.new {
         type = 'slider',
-        x = 350 + 240 + 85, y = 100 + 450, w = 400,
+        x = baseX + 240 + 85, y = baseY + 450, w = 400,
         axis = { 80, 100, 5 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.cardBrightness end,
         code = function(value) STAT.cardBrightness = value end,
+        sound_drag = 'rotate',
     },
     WIDGET.new {
         type = 'slider',
-        x = 350 + 240 + 85, y = 100 + 530, w = 400,
+        x = baseX + 240 + 85, y = baseY + 520, w = 400,
         axis = { 30, 100, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.bgBrightness end,
         code = function(value) STAT.bgBrightness = value end,
+        sound_drag = 'rotate',
     },
     WIDGET.new {
         type = 'checkBox',
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
-        x = 350 + 55, y = 100 + 600,
+        x = baseX + 55, y = baseY + 580,
         disp = function() return STAT.bg end,
         code = function() STAT.bg = not STAT.bg end,
     },
@@ -274,7 +267,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "STAR FORCE  (F10)",
-        x = 350 + 55, y = 100 + 660,
+        x = baseX + 55, y = baseY + 640,
         disp = function() return not STAT.syscursor end,
         code = function()
             STAT.syscursor = not STAT.syscursor
@@ -286,7 +279,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "FULLSCREEN  (F11)",
-        x = 350 + 55, y = 100 + 720,
+        x = baseX + 55, y = baseY + 700,
         disp = function() return STAT.fullscreen end,
         code = function()
             STAT.fullscreen = not STAT.fullscreen
