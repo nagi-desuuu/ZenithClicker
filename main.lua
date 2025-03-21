@@ -415,12 +415,12 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             MSG.clear()
             MSG('dark', STAT.bgBrightness .. "%", 1)
         end
-    elseif key == 'f6' then
+    elseif key == 'f5' then
         STAT.bgm = not STAT.bgm
         MSG.clear()
         MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
-    elseif key == 'f5' then
+    elseif key == 'f6' then
         STAT.sfx = not STAT.sfx
         MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
