@@ -235,8 +235,9 @@ STAT = {
 
     fullscreen = true,
     syscursor = false,
-    bg = true,
+    cardBrightness = 90,
     bgBrightness = 60,
+    bg = true,
     bgm = true,
     sfx = true,
 }
@@ -407,25 +408,37 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         if STAT.bgBrightness < 100 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 100)
             MSG.clear()
-            MSG('dark', STAT.bgBrightness .. "%", 1)
+            MSG('dark', "BG " .. STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f7' then
-        if STAT.bgBrightness > 26 then
+        if STAT.bgBrightness > 30 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 100)
             MSG.clear()
-            MSG('dark', STAT.bgBrightness .. "%", 1)
+            MSG('dark', "BG " .. STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f5' then
-        STAT.bgm = not STAT.bgm
-        MSG.clear()
-        MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
-        ApplySettings()
+        if STAT.cardBrightness > 80 then
+            STAT.cardBrightness = MATH.clamp(STAT.cardBrightness - 5, 80, 100)
+            MSG.clear()
+            MSG('dark', "Card " .. STAT.cardBrightness .. "%", 1)
+        end
     elseif key == 'f6' then
+        if STAT.cardBrightness < 100 then
+            STAT.cardBrightness = MATH.clamp(STAT.cardBrightness + 5, 80, 100)
+            MSG.clear()
+            MSG('dark', "Card " .. STAT.cardBrightness .. "%", 1)
+        end
+    elseif key == 'f4' then
         STAT.sfx = not STAT.sfx
         MSG.clear()
         MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
         SFX.play('menuclick')
+    elseif key == 'f3' then
+        STAT.bgm = not STAT.bgm
+        MSG.clear()
+        MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
+        ApplySettings()
     end
 end
 
