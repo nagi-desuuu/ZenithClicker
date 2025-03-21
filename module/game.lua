@@ -20,6 +20,7 @@ local ins, rem = table.insert, table.remove
 ---@field totalQuest number
 ---@field totalPerfect number
 ---@field totalAttack number
+---@field rankTimer integer[]
 ---
 ---@field dmgHeal number
 ---@field dmgWrong number
@@ -1232,6 +1233,7 @@ function GAME.start()
     GAME.totalQuest = 0
     GAME.totalPerfect = 0
     GAME.totalAttack = 0
+    GAME.rankTimer = TABLE.new(0, 15)
 
     GAME.refreshModIcon()
     TABLE.clear(ComboColor)
@@ -1371,6 +1373,10 @@ function GAME.finish(reason)
         else
             TEXTS.endFloor:set("     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
+
+        local maxCSP = {}
+        for i = 1, 15 do ins(maxCSP, { i < 15 and i or "^15", GAME.rankTimer[i] }) end
+        table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
         TEXTS.endResult:set({
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
             COLOR.LD, GAME.gigaTime and "  (F10 " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
@@ -1379,6 +1385,9 @@ function GAME.finish(reason)
             COLOR.L, "Quest  " .. GAME.totalQuest,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
             MATH.roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
+            COLOR.L, "Speed  " .. MATH.roundUnit(GAME.height / GAME.time, .1) .. "m/s",
+            COLOR.LD, "  (" .. maxCSP[1][1] .. "#" .. MATH.roundUnit(maxCSP[1][2], .1) .. "s, ",
+            maxCSP[2][1] .. "#" .. MATH.roundUnit(maxCSP[2][2], .1) .. "s)\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
             COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
@@ -1427,6 +1436,10 @@ function GAME.update(dt)
         -- end
 
         GAME.time = GAME.time + dt
+
+        local r = min(GAME.rank, 15)
+        GAME.rankTimer[r] = GAME.rankTimer[r] + dt
+
         if GAME.gigaspeed then
             TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
                 floor(GAME.time / 60),
