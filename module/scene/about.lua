@@ -59,7 +59,7 @@ addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
 addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 590, .26)
 
 addText({ clr.garbo, "GARBO" }, 320, 550, .5)
-addText({ COLOR.LD, "GAME & WORLD DESIGN" }, 320, 590, .26)
+addText({ COLOR.LD, "GAME & WORLD DESIGN..." }, 320, 590, .26)
 addText({ COLOR.LD, "of the Origial Game: TETR.IO" }, 320, 610, .2)
 
 table.insert(lines, 640)
