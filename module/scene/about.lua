@@ -10,6 +10,7 @@ local clr = {
 
     z = { COLOR.HEX "80CCFF" },
     asrial = { COLOR.HEX "DDFF80" },
+    garbo = { COLOR.HEX "3A67DB" },
     ocelot = { COLOR.HEX "FF99CC" },
     osk = { COLOR.HEX "DD99FF" },
 }
@@ -42,18 +43,23 @@ table.insert(lines, 387)
 
 addText({ COLOR.O, "THE TEAM" }, 0, 410, .3)
 
-addText({ clr.z, "MRZ" }, 0, 450, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
-addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .2)
+addText({ clr.z, "MRZ" }, -180, 450, .5)
+addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, -180, 490, .26)
+addText({ COLOR.LD, "Programming, Game Design, General Development" }, -180, 510, .2)
 
-addText({ clr.asrial, "DJ  ASRIEL" }, -320, 550, .5)
-addText({ COLOR.LD, "BACKGROUND RECONSTRUCTION" }, -320, 590, .26)
+addText({ clr.asrial, "DJ  ASRIEL" }, 180, 450, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 180, 490, .26)
+addText({ COLOR.LD, "Background Reconstruction" }, 180, 510, .2)
+
+addText({ clr.osk, "OSK" }, -320, 550, .5)
+addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER..." }, -320, 590, .26)
+addText({ COLOR.LD, "of the Origial Game: TETR.IO" }, -320, 610, .2)
 
 addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
 addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 590, .26)
 
-addText({ clr.osk, "OSK" }, 320, 550, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER..." }, 320, 590, .26)
+addText({ clr.garbo, "GARBO" }, 320, 550, .5)
+addText({ COLOR.LD, "GAME & WORLD DESIGN" }, 320, 590, .26)
 addText({ COLOR.LD, "of the Origial Game: TETR.IO" }, 320, 610, .2)
 
 table.insert(lines, 640)
