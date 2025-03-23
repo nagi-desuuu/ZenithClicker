@@ -1311,7 +1311,7 @@ function GAME.finish(reason)
             end
             if unlockRev then
                 MSG.clear()
-                MSG('dark', "New REVERSED MOD unlocked!\nTry right clicking card with star", 6.26)
+                MSG('dark', "New REVERSED MOD unlocked!\nActivate card with star using right click", 6.26)
                 SFX.play('notify')
             end
         end
