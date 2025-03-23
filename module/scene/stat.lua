@@ -241,8 +241,11 @@ function RefreshProfile()
     t30:set(STAT.timeDate)
     GC.mDraw(t30, bw / 2, 105, 0, .75)
     GC.setColor(scoreColor)
-    t50:set(STAT.minTime >= 1560 and "---" or STRING.time(STAT.minTime))
+    t50:set(STAT.minTime >= 1560 and "---" or tostring(STAT.minTime))
     dblMidDraw(t50, bw / 2, bh / 2 - 4)
+    GC.setColor(textColor)
+    t30:set("S")
+    dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     GC.ucs_back()
 
     -- Career

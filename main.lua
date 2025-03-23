@@ -161,7 +161,6 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
-    sr         = GC.newText(FONT.get(50)),
     endResult  = GC.newText(FONT.get(30)),
     endHeight  = GC.newText(FONT.get(50)),
     endFloor   = GC.newText(FONT.get(30)),

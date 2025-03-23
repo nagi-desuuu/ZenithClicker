@@ -872,8 +872,6 @@ function scene.overDraw()
         gc_draw(TEXTS.title, MATH.lerp(-181, 10, exT), h / 2 - d, 0, 1, 1 - 2 * revT, 0, h / 2)
         gc_replaceTransform(SCR.xOy_ur)
         gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
-        gc_replaceTransform(SCR.xOy_u)
-        gc_draw(TEXTS.sr, 0, -d, 0, 1, 1, TEXTS.sr:getWidth() / 2, 0)
         gc_replaceTransform(SCR.xOy_dl)
         gc_translate(0, DeckPress + d)
         if revT > 0 then
