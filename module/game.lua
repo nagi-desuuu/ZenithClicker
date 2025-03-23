@@ -1375,7 +1375,7 @@ function GAME.finish(reason)
         end
 
         local maxCSP = {}
-        for i = 1, 15 do ins(maxCSP, { i < 15 and i or "^15", GAME.rankTimer[i] }) end
+        for i = 1, 15 do ins(maxCSP, { i < 15 and i or "15+", GAME.rankTimer[i] }) end
         table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
         TEXTS.endResult:set({
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
@@ -1386,8 +1386,9 @@ function GAME.finish(reason)
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
             MATH.roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
             COLOR.L, "Speed  " .. MATH.roundUnit(GAME.height / GAME.time, .1) .. "m/s",
-            COLOR.LD, "  (" .. maxCSP[1][1] .. "#" .. MATH.roundUnit(maxCSP[1][2], .1) .. "s, ",
-            maxCSP[2][1] .. "#" .. MATH.roundUnit(maxCSP[2][2], .1) .. "s)\n",
+            COLOR.LD, "  (",
+            MATH.roundUnit(maxCSP[1][2], .1) .. "s@" .. maxCSP[1][1], ", ",
+            MATH.roundUnit(maxCSP[2][2], .1) .. "s@" .. maxCSP[2][1], ")\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
             COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
