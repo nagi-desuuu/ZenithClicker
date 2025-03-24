@@ -743,12 +743,12 @@ function GAME.refreshLayout()
             else
                 C.tx = selX
             end
-            C.ty = baseY - (C.active and 35 or 0) - (i == FloatOnCard and 55 or 0)
+            C.ty = baseY - (C.active and 45 or 0) - (i == FloatOnCard and 55 or 0)
         end
     else
         for i, C in ipairs(Cards) do
             C.tx = 800 + (i - 5) * baseDist
-            C.ty = baseY - (C.active and 35 or 0) - (i == FloatOnCard and 55 or 0)
+            C.ty = baseY - (C.active and 45 or 0) - (i == FloatOnCard and 55 or 0)
         end
     end
 end
