@@ -417,15 +417,18 @@ function Card:draw()
     end
 
     -- Draw card
-    local b = STAT.cardBrightness / 100
-    gc_setColor(b, b, b)
+    if self.burn then
+        gc_setColor(
+            self.burn and (
+                GAME.time % .16 < .08 and COLOR.LF
+                or COLOR.lY
+            ) or COLOR.LL
+        )
+    else
+        local b = STAT.cardBrightness / 100
+        gc_setColor(b, b, b)
+    end
     gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
-    gc_setColor(
-        self.burn and (
-            GAME.time % .16 < .08 and COLOR.LF
-            or COLOR.lY
-        ) or COLOR.LL
-    )
     if img2 then
         gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
