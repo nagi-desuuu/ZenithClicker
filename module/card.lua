@@ -121,10 +121,8 @@ function Card:setActive(auto, key)
             if self.isCorrect == 1 and not GAME.hardMode then
                 GAME.addXP(1)
             end
-        elseif self.touchCount == 2 then
-            if M.AS == 0 or not auto then
-                GAME.fault = true
-            end
+        elseif not GAME.fault and self.touchCount >= 2 and not auto and not self.burn then
+            GAME.fault = true
         end
         if M.DP > 0 and not auto and self.id == 'DP' and self.active then
             if GAME.swapControl() then
