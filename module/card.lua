@@ -113,16 +113,16 @@ function Card:setActive(auto, key)
     self.active = not self.active
     local revOn
     if GAME.playing then
-        self.touchCount = self.touchCount + 1
         if not auto then
+            self.touchCount = self.touchCount + 1
             GAME.totalFlip = GAME.totalFlip + 1
-        end
-        if self.touchCount == 1 then
-            if self.isCorrect == 1 and not GAME.hardMode then
-                GAME.addXP(1)
+            if self.touchCount == 1 then
+                if self.isCorrect == 1 and not GAME.hardMode then
+                    GAME.addXP(1)
+                end
+            elseif not GAME.fault and not self.burn then
+                GAME.fault = true
             end
-        elseif not GAME.fault and self.touchCount >= 2 and not auto and not self.burn then
-            GAME.fault = true
         end
         if M.DP > 0 and not auto and self.id == 'DP' and self.active then
             if GAME.swapControl() then
