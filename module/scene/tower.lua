@@ -566,29 +566,43 @@ function scene.draw()
 
     -- Chain Counter
     if GAME.playing and GAME.chain >= 4 then
+        local c = GAME.chain
         local bounce = .26 / (26 * GAME.questTime + 1)
-        local k = MATH.clampInterpolate(6, .7, 26, 2, GAME.chain)
+        local k = MATH.clampInterpolate(6, .7, 26, 2, c)
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
         gc_draw(TEXTS.b2b, x, 216)
         if GAME.fault then
-            gc_setColor(.62, .62, .62, GAME.chain < 8 and .26 or 1)
-        else
+            gc_setColor(.62, .62, .62, c < 8 and .26 or 1)
+        elseif M.AS < 2 then
             gc_setColor(COLOR.HSL(
-                26 / (GAME.chain + 22) + 1.3, 1,
-                MATH.icLerp(-260, 420, GAME.chain),
-                GAME.chain < 8 and .26 or 1
+                26 / (c + 22) + 1.3, 1,
+                MATH.icLerp(-260, 420, c),
+                c < 8 and .26 or 1
+            ))
+        else
+            gc_setColor(COLOR.HSV(
+                MATH.clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
+                c < 5 and .26 or 1
             ))
         end
         gc_blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         gc_setAlpha(1)
         gc_draw(TEXTS.b2b, x, 214)
-        gc_setColor(COLOR.L)
-        gc_strokeDraw('full', k * 2, TEXTS.chain, 326, 270, 0, k, 1.1 * k,
-            TEXTS.chain:getWidth() / 2, TEXTS.chain:getHeight() / 2)
-        gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.chain, 326, 270, 0, k, 1.1 * k)
+        local t = M.AS < 2 and TEXTS.chain or TEXTS.chain2
+        if M.AS < 2 then
+            if c >= 8 then
+                gc_setColor(COLOR.L)
+                gc_strokeDraw('full', k * 2, t, 326, 268, 0, k, k, t:getWidth() / 2, t:getHeight() / 2)
+                gc_setColor(COLOR.D)
+            end
+            gc_mDraw(t, 326, 268, 0, k)
+        else
+            k = k * 1.2
+            if c >= 5 then gc_setColor(COLOR.L) end
+            gc_mDraw(t, 326, 270, 0, k)
+        end
     end
 
     --- Result

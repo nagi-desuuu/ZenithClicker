@@ -1069,7 +1069,7 @@ function GAME.commit()
             xp = xp * 3
         end
         if GAME.chain >= 4 then
-            TEXTS.chain:set(tostring(GAME.chain))
+            TEXTS[M.AS == 2 and 'chain2' or 'chain']:set(tostring(GAME.chain))
         end
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)

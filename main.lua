@@ -150,6 +150,7 @@ local fontNotLoaded = MATH.roll(.62)
 FONT.load {
     serif = "assets/AbhayaLibre-Regular.ttf",
     sans = "assets/DINPro-Medium.otf",
+    led = "assets/UniDreamLED.ttf",
 }
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 
@@ -168,6 +169,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     height     = GC.newText(FONT.get(30)),
     time       = GC.newText(FONT.get(30)),
     chain      = GC.newText(FONT.get(50)),
+    chain2     = GC.newText(FONT.get(50, 'led')),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
     gigaspeed  = GC.newText(FONT.get(50), {
         COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
@@ -362,6 +364,7 @@ function ReloadTexts()
     TEXTS.height:setFont(FONT.get(30))
     TEXTS.time:setFont(FONT.get(30))
     TEXTS.gigatime:setFont(FONT.get(50))
+    TEXTS.chain2:setFont(FONT.get(50, 'led'))
     for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
     for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
     for _, W in next, SCN.scenes.conf.widgetList do W:reset() end
