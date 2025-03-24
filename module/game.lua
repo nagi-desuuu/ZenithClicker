@@ -1044,6 +1044,9 @@ function GAME.commit()
             SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
             if correct == 1 then
                 attack = attack + 1
+                if M.AS == 2 and GAME.chain >= 4 then
+                    attack = attack + 1
+                end
                 xp = xp + 3
                 GAME.chain = GAME.chain + 1
                 if GAME.chain < 4 then
