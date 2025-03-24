@@ -590,7 +590,7 @@ function scene.draw()
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         gc_setAlpha(1)
         gc_draw(TEXTS.b2b, x, 214)
-        local t = M.AS < 2 and TEXTS.chain or TEXTS.chain2
+        local t = TEXTS[M.AS < 2 and 'chain' or 'chain2']
         if M.AS < 2 then
             if c >= 8 then
                 gc_setColor(COLOR.L)
@@ -599,9 +599,8 @@ function scene.draw()
             end
             gc_mDraw(t, 326, 268, 0, k)
         else
-            k = k * 1.2
             if c >= 5 then gc_setColor(COLOR.L) end
-            gc_mDraw(t, 326, 270, 0, k)
+            gc_draw(t, 326, 270, 0, k)
         end
     end
 

@@ -1069,7 +1069,21 @@ function GAME.commit()
             xp = xp * 3
         end
         if GAME.chain >= 4 then
-            TEXTS[M.AS == 2 and 'chain2' or 'chain']:set(tostring(GAME.chain))
+            if M.AS < 2 then
+                TEXTS.chain:set(tostring(GAME.chain))
+            else
+                TEXTS.chain2:clear()
+                local s = tostring(GAME.chain)
+                local i = 0
+                for c in string.gmatch(s, ".") do
+                    i = i + 1
+                    TEXTS.chain2:addf(
+                        c, 260, 'center',
+                        32 * (i - #s / 2 - .5), 0,
+                        MATH.rand(-.12, .12), 1.4, 1.4, 129, 26
+                    )
+                end
+            end
         end
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
