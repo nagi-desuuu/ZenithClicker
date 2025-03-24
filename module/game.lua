@@ -1075,6 +1075,7 @@ function GAME.commit()
                 TEXTS.chain2:clear()
                 local s = tostring(GAME.chain)
                 local i = 0
+                if s:sub(1, 1) == '1' then i = i - .35 end
                 for c in string.gmatch(s, ".") do
                     i = i + 1
                     TEXTS.chain2:addf(
