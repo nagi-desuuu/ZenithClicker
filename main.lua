@@ -394,8 +394,11 @@ end
 function ZENITHA.globalEvent.keyDown(key, isRep)
     if isRep then return end
     if key == 'f12' then
-        MSG.clear()
-        MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!")
+        if TASK.lock('dev') then
+            MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!", 6.26)
+        else
+            ZENITHA.setDevMode(not ZENITHA.getDevMode() and 1 or false)
+        end
     elseif key == 'f11' then
         STAT.fullscreen = not STAT.fullscreen
         love.window.setFullscreen(STAT.fullscreen)
