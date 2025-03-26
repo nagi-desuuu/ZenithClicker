@@ -225,7 +225,11 @@ function Card:setActive(auto, key)
         local postfix = revOn and '_reverse' or ''
         SFX.play('card_select' .. postfix, 1, 0,
             key and MATH.clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
-        SFX.play('card_tone_' .. ModData.name[self.id] .. postfix, GAME.playing and .8 + GAME.floor * .02 or 1, 0, M.GV)
+        SFX.play(
+            'card_tone_' .. ModData.name[self.id] .. postfix,
+            GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1,
+            0, M.GV
+        )
         if revOn then
             self:revJump()
         elseif not noSpin then
