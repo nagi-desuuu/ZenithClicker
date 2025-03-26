@@ -236,7 +236,7 @@ function scene.wheelMove(_, dy)
     end
 end
 
-function scene.touchMove(x, y) scene.mouseMove(x, y) end
+function scene.touchMove(x, y, dx, dy) scene.mouseMove(x, y, dx, dy) end
 
 function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
 
