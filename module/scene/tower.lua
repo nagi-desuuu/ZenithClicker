@@ -2,6 +2,10 @@ local max, min = math.max, math.min
 local sin, cos = math.sin, math.cos
 local abs = math.abs
 
+local distance, clamp = MATH.distance, MATH.clamp
+local interpolate, clampInterpolate = MATH.interpolate, MATH.clampInterpolate
+local lerp, iLerp, cLerp, icLerp, lLerp = MATH.lerp, MATH.iLerp, MATH.cLerp, MATH.icLerp, MATH.lLerp
+
 local M = GAME.mod
 local MD = ModData
 
@@ -31,7 +35,7 @@ local function MouseOnCard(x, y)
     local cid, dist = 0, 1e99
     for j = 1, #Cards do
         if Cards[j]:mouseOn(x, y) then
-            local dist2 = MATH.distance(x, y, Cards[j].x, Cards[j].y)
+            local dist2 = distance(x, y, Cards[j].x, Cards[j].y)
             if dist2 < dist then
                 dist = dist2
                 cid = j
@@ -179,7 +183,7 @@ end
 
 function scene.mouseMove(x, y, _, dy)
     if GAME.zenithTraveler then
-        GAME.height = MATH.clamp(GAME.height +
+        GAME.height = clamp(GAME.height +
             dy / 260 *
             (M.VL + 1) *
             (M.EX > 0 and 2.6 or 6.2) *
@@ -226,7 +230,7 @@ end
 
 function scene.wheelMove(_, dy)
     if GAME.zenithTraveler and M.NH < 2 then
-        GAME.height = MATH.clamp(GAME.height -
+        GAME.height = clamp(GAME.height -
             dy *
             (M.VL + 1) *
             (M.EX > 0 and 2.6 or 6.2) *
@@ -272,6 +276,7 @@ function scene.keyUp(key)
 end
 
 local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
+local expApproach = MATH.expApproach
 function scene.update(dt)
     if GAME.zenithTraveler and M.EX == 2 then
         local f = GAME.getBgFloor()
@@ -279,9 +284,9 @@ function scene.update(dt)
     end
     if dt > .26 then dt = .26 end
     GAME.update(dt)
-    GAME.lifeShow = MATH.expApproach(GAME.lifeShow, GAME.life, dt * 10)
-    GAME.lifeShow2 = MATH.expApproach(GAME.lifeShow2, GAME.life2, dt * 10)
-    GAME.bgH = MATH.expApproach(GAME.bgH, GAME.height, dt * 2.6)
+    GAME.lifeShow = expApproach(GAME.lifeShow, GAME.life, dt * 10)
+    GAME.lifeShow2 = expApproach(GAME.lifeShow2, GAME.life2, dt * 10)
+    GAME.bgH = expApproach(GAME.bgH, GAME.height, dt * 2.6)
     if DeckPress > 0 then
         DeckPress = DeckPress - dt
     end
@@ -301,9 +306,9 @@ function scene.update(dt)
     end
     if GAME.playing and (KBIsDown('escape') or MSIsDown(3)) then
         GAME.forfeitTimer = GAME.forfeitTimer +
-            dt * MATH.clampInterpolate(6, 2.6, 12, 1, min(GAME.totalQuest, GAME.time))
+            dt * clampInterpolate(6, 2.6, 12, 1, min(GAME.totalQuest, GAME.time))
         if TASK.lock('forfeit_sfx', .0872) then
-            SFX.play('detonate1', MATH.clampInterpolate(0, .4, 1, .6, GAME.forfeitTimer))
+            SFX.play('detonate1', clampInterpolate(0, .4, 1, .6, GAME.forfeitTimer))
         end
         if GAME.forfeitTimer > 1 then
             SFX.play('detonate2')
@@ -403,35 +408,35 @@ function DrawBG(brightness)
             local top = Floors[bgFloor].top
             local bg = TEXTURE.towerBG[bgFloor]
             local w, h = bg:getDimensions()
-            local quadStartH = MATH.interpolate(bottom, h, top, 0, GAME.bgH) - 640
+            local quadStartH = interpolate(bottom, h, top, 0, GAME.bgH) - 640
             bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
             gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BgScale)
             if bgFloor == 9 then
                 if GAME.bgH > 1562 then
-                    gc_setColor(.5, .5, .5, MATH.interpolate(1562, 0, 1650, 1, GAME.bgH))
+                    gc_setColor(.5, .5, .5, interpolate(1562, 0, 1650, 1, GAME.bgH))
                     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
                 end
             elseif quadStartH < 0 then
                 bg = TEXTURE.towerBG[bgFloor + 1]
                 w, h = bg:getDimensions()
                 bgQuad:setViewport(0, h - 640, 1024, 640, w, h)
-                gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h * MATH.interpolate(0, -.5, -640, .5, quadStartH), 0, BgScale)
+                gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h * interpolate(0, -.5, -640, .5, quadStartH), 0, BgScale)
             end
         else
             -- Space color
             if GAME.bgH < 2500 then
                 -- Top
                 if GAME.bgH < 1900 then
-                    gc_setColor(0, 0, MATH.interpolate(1650, .2, 1900, 0, GAME.bgH))
+                    gc_setColor(0, 0, interpolate(1650, .2, 1900, 0, GAME.bgH))
                     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
                 end
 
                 -- Bottom
-                local t = MATH.iLerp(1650, 2500, GAME.bgH)
+                local t = iLerp(1650, 2500, GAME.bgH)
                 gc_setColor(
-                    MATH.lLerp(f10colors[1], t),
-                    MATH.lLerp(f10colors[2], t),
-                    MATH.lLerp(f10colors[3], t),
+                    lLerp(f10colors[1], t),
+                    lLerp(f10colors[2], t),
+                    lLerp(f10colors[3], t),
                     .626 * (1 - t)
                 )
                 gc_draw(TEXTURE.transition, 0, SCR.h, -1.5708, SCR.h / 128, SCR.w)
@@ -439,10 +444,10 @@ function DrawBG(brightness)
                 -- Vacuum
                 local t = GAME.time % 1
                 gc_setColor(
-                    MATH.lLerp(ComboColor[1], t),
-                    MATH.lLerp(ComboColor[2], t),
-                    MATH.lLerp(ComboColor[3], t),
-                    MATH.icLerp(2500, 6200, GAME.bgH) * .355
+                    lLerp(ComboColor[1], t),
+                    lLerp(ComboColor[2], t),
+                    lLerp(ComboColor[3], t),
+                    icLerp(2500, 6200, GAME.bgH) * .355
                 )
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
             end
@@ -459,13 +464,13 @@ function DrawBG(brightness)
                 gc_setColor(1, 1, 1)
                 local bg = TEXTURE.towerBG[10]
                 local w, h = bg:getDimensions()
-                local quadStartH = MATH.interpolate(1650, h, 1700, 0, GAME.bgH) - 640
+                local quadStartH = interpolate(1650, h, 1700, 0, GAME.bgH) - 640
                 bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
                 gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BgScale)
             end
 
             -- Cover
-            local f10CoverAlpha = GAME.zenithTraveler and MATH.icLerp(1660, 1650, GAME.bgH) or 1 - GAME.floorTime / 2.6
+            local f10CoverAlpha = GAME.zenithTraveler and icLerp(1660, 1650, GAME.bgH) or 1 - GAME.floorTime / 2.6
             if f10CoverAlpha > 0 then
                 gc_setColor(.5, .5, .5, f10CoverAlpha)
                 gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
@@ -473,11 +478,11 @@ function DrawBG(brightness)
         end
     else
         local top = Floors[GAME.floor].top
-        local t = MATH.icLerp(1, 10, GAME.floor + MATH.clampInterpolate(top - 50, 0, top, 1, GAME.height))
+        local t = icLerp(1, 10, GAME.floor + clampInterpolate(top - 50, 0, top, 1, GAME.height))
         gc_setColor(
-            MATH.lLerp(floorColors[1], t),
-            MATH.lLerp(floorColors[2], t),
-            MATH.lLerp(floorColors[3], t)
+            lLerp(floorColors[1], t),
+            lLerp(floorColors[2], t),
+            lLerp(floorColors[3], t)
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
@@ -507,15 +512,15 @@ function scene.draw()
             WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, 0, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
         end
         gc_setColor(1, 1, 1, GAME.uiHide *
-            MATH.clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
-            MATH.cLerp(.62, 1, abs(dh * 26))
+            clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
+            cLerp(.62, 1, abs(dh * 26))
         )
         gc_draw(WindBatch)
     end
 
     -- Previous PB Line
     gc_replaceTransform(SCR.xOy_r)
-    local over = MATH.clampInterpolate(-15, 0, 5, 1, GAME.height - GAME.prevPB)
+    local over = clampInterpolate(-15, 0, 5, 1, GAME.height - GAME.prevPB)
     local y = -26 * (GAME.prevPB - GAME.bgH)
     gc_setColor(1, .8 + over * .2, over * 1, 1 - over * .626)
     gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
@@ -568,7 +573,7 @@ function scene.draw()
     if GAME.playing and GAME.chain >= 4 then
         local c = GAME.chain
         local bounce = .26 / (26 * GAME.questTime + 1)
-        local k = MATH.clampInterpolate(6, .7, 26, 2, c)
+        local k = clampInterpolate(6, .7, 26, 2, c)
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
         gc_draw(TEXTS.b2b, x, 216)
@@ -577,12 +582,12 @@ function scene.draw()
         elseif M.AS < 2 then
             gc_setColor(COLOR.HSL(
                 26 / (c + 22) + 1.3, 1,
-                MATH.icLerp(-260, 420, c),
+                icLerp(-260, 420, c),
                 c < 8 and .26 or 1
             ))
         else
             gc_setColor(COLOR.HSV(
-                MATH.clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
+                clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
                 c < 5 and .26 or 1
             ))
         end
@@ -882,7 +887,7 @@ function scene.overDraw()
         gc_replaceTransform(SCR.xOy_ul)
         local h = TEXTS.title:getHeight()
         gc_setColor(TextColor)
-        gc_draw(TEXTS.title, MATH.lerp(-181, 10, exT), h / 2 - d, 0, 1, 1 - 2 * revT, 0, h / 2)
+        gc_draw(TEXTS.title, lerp(-181, 10, exT), h / 2 - d, 0, 1, 1 - 2 * revT, 0, h / 2)
         gc_replaceTransform(SCR.xOy_ur)
         gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
         gc_replaceTransform(SCR.xOy_dl)

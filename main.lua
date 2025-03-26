@@ -597,24 +597,34 @@ end
 -- Expert guitar randomization daemon
 -- Mouse holding animation daemon
 function Daemon_Fast()
+    local max = math.max
+    local hsv = COLOR.HSV
+    local yield = coroutine.yield
+    local msIsDown = love.mouse.isDown
+    local expApproach = MATH.expApproach
+
     local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184
     local t2, step2 = 0, 2 * 60 / 184 / 4
     local exLastVol = 0
     while true do
         local T = BGM.tell()
-        ThrobAlpha.card = math.max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
+        ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
         ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
         ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
 
-        GigaSpeed.r, GigaSpeed.g, GigaSpeed.b = COLOR.HSV(T / bar % 1, .626, 1)
-        GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
+        if GigaSpeed.alpha > 0 then
+            GigaSpeed.r, GigaSpeed.g, GigaSpeed.b = hsv(T / bar % 1, .626, 1)
+            GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
+        end
 
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1
-            for i = 1, 9 do
-                Cards[i].visY = GAME.mod.MS * math.random(-4, 4)
+            if GAME.mod.MS == 0 then
+                for i = 1, 9 do Cards[i].visY = 0 end
+            else
+                for i = 1, 9 do Cards[i].visY = GAME.mod.MS * math.random(-4, 4) end
             end
             GAME.refreshLayout()
         end
@@ -632,14 +642,10 @@ function Daemon_Fast()
             end
         end
 
-        local dt = coroutine.yield()
+        local dt = yield()
 
         if not STAT.syscursor then
-            if love.mouse.isDown(1, 2) then
-                pressValue = 1
-            else
-                pressValue = MATH.expApproach(pressValue, 0, dt * 12)
-            end
+            pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
         end
     end
 end
