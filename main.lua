@@ -168,6 +168,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     prevPB     = GC.newText(FONT.get(50), "PB"),
     height     = GC.newText(FONT.get(30)),
     time       = GC.newText(FONT.get(30)),
+    rank       = GC.newText(FONT.get(30)),
     chain      = GC.newText(FONT.get(50)),
     chain2     = GC.newText(FONT.get(50, 'led')),
     b2b        = GC.newText(FONT.get(30), "B2B x"),

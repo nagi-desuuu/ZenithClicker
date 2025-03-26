@@ -826,9 +826,12 @@ function scene.overDraw()
         gc_strokeDraw('full', 1, TEXTS.height, 800, 978, 0, 1, 1, wid / 2, hgt / 2)
         wid, hgt = TEXTS.time:getDimensions()
         gc_strokeDraw('full', 2, TEXTS.time, 375, 978, 0, 1, 1, wid / 2, hgt / 2)
+        wid, hgt = TEXTS.rank:getDimensions()
+        gc_strokeDraw('full', 1, TEXTS.rank, 1027, 990, 0, .626, .626, wid / 2, hgt / 2)
 
         gc_setColor(COLOR.L)
         gc_mDraw(TEXTS.time, 375, 978)
+        gc_mDraw(TEXTS.rank, 1027, 990, 0, .626)
         if GAME.DPlock then
             gc_setColor(GAME.time % .9 > .45 and COLOR.R or COLOR.D)
         end

@@ -596,6 +596,7 @@ function GAME.addXP(xp)
         GAME.xp = 4 * GAME.rank
     end
     if GAME.rank ~= oldRank then
+        TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
         if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[GAME.floor] then
@@ -1253,6 +1254,7 @@ function GAME.start()
     GAME.questTime = 0
     GAME.floorTime = 0
     GAME.rank = 1
+    TEXTS.rank:set("R-1")
     GAME.xp = 0
     GAME.rankupLast = false
     GAME.xpLockLevel = 5
@@ -1595,6 +1597,7 @@ function GAME.update(dt)
                             SFX.play('zenith_speedrun_end')
                             SFX.play('zenith_speedrun_end')
                         end
+                        TEXTS.rank:set("R-" .. GAME.rank)
                         SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                     end
                 end
