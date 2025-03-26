@@ -16,6 +16,9 @@ function scene.load()
             C[1], C[2] = C[2], C[1]
         end
     end
+    if SYSTEM == 'Web' and TASK.lock('web_warn') then
+        MSG('dark', "Long-term play in the browser is not recommended, use desktop version instead. Thanks!", 12.6)
+    end
 end
 
 function scene.keyDown(key, isRep)
