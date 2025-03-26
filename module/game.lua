@@ -20,6 +20,7 @@ local ins, rem = table.insert, table.remove
 ---@field totalQuest number
 ---@field totalPerfect number
 ---@field totalAttack number
+---@field peakRank number
 ---@field rankTimer integer[]
 ---
 ---@field dmgHeal number
@@ -596,6 +597,7 @@ function GAME.addXP(xp)
         GAME.xp = 4 * GAME.rank
     end
     if GAME.rank ~= oldRank then
+        GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
@@ -1297,6 +1299,7 @@ function GAME.start()
     GAME.totalQuest = 0
     GAME.totalPerfect = 0
     GAME.totalAttack = 0
+    GAME.peakRank = 1
     GAME.rankTimer = TABLE.new(0, 15)
 
     GAME.refreshModIcon()
