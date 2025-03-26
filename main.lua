@@ -243,9 +243,9 @@ STAT = {
     sfx = true,
 }
 
-function SaveBest() love.filesystem.write('best.luaon', TABLE.dumpDeflate(BEST)) end
+function SaveBest() love.filesystem.write('best.luaon', 'return' .. TABLE.dumpDeflate(BEST)) end
 
-function SaveStat() love.filesystem.write('stat.luaon', TABLE.dumpDeflate(STAT)) end
+function SaveStat() love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDeflate(STAT)) end
 
 MX, MY = 0, 0
 

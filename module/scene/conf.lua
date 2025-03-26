@@ -72,8 +72,8 @@ function scene.draw()
     GC.rectangle('fill', 0, 3, 3, h + 3)
 
     -- Sliders
-    drawSliderComponents(450, "CARD  BRIGHTNESS", "DARK", "BRIGHT", STAT.cardBrightness)
-    drawSliderComponents(520, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
+    drawSliderComponents(500, "CARD  BRIGHTNESS", "DARK", "BRIGHT", STAT.cardBrightness)
+    drawSliderComponents(570, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
 
     -- Top bar & title
     GC.replaceTransform(SCR.xOy_u)
@@ -118,7 +118,7 @@ scene.widgetList = {
         onClick = function()
             MSG.clear()
             local newName = CLIPBOARD.get()
-            if type(newName) ~= 'string' or #newName == 0 then
+            if #newName == 0 then
                 MSG('dark', "No data in clipboard")
                 return
             end
@@ -155,7 +155,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
-        x = baseX + 620, y = baseY + 112, w = 360, h = 50,
+        x = baseX + 610, y = baseY + 112, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE ABOUT-ME",
         sound_hover = 'menutap',
@@ -163,7 +163,7 @@ scene.widgetList = {
         onClick = function()
             MSG.clear()
             local newText = CLIPBOARD.get()
-            if type(newText) ~= 'string' or #newText == 0 then
+            if #newText == 0 then
                 MSG('dark', "No data in clipboard")
                 return
             end
@@ -198,18 +198,75 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
+        name = 'export', type = 'button',
+        x = baseX + 220, y = baseY + 182, w = 360, h = 50,
+        color = clr.L,
+        fontSize = 30, textColor = clr.LT, text = "EXPORT PROGRESS",
+        sound_hover = 'menutap',
+        sound_release = 'menuclick',
+        onClick = function()
+            MSG.clear()
+            if TASK.lock('export', 2.6) then
+                SFX.play('notify')
+                MSG('dark', "Export progress to clipboard?\nClick again to confirm", 2.6)
+                return
+            end
+            TASK.unlock('export')
+            CLIPBOARD.set(STRING.packTable(STAT) .. ',' .. STRING.packTable(BEST))
+            MSG('dark', "Progress exported!")
+            SFX.play('social_notify_minor')
+        end,
+    },
+    WIDGET.new {
+        name = 'import', type = 'button',
+        x = baseX + 610, y = baseY + 182, w = 360, h = 50,
+        color = clr.L,
+        fontSize = 30, textColor = clr.LT, text = "IMPORT PROGRESS",
+        sound_hover = 'menutap',
+        sound_release = 'menuclick',
+        onClick = function()
+            MSG.clear()
+            local data = CLIPBOARD.get()
+            if #data == 0 then
+                MSG('dark', "No data in clipboard")
+                return
+            end
+            data = data:trim()
+            if TASK.lock('import', 2.6) then
+                SFX.play('notify')
+                MSG('dark', "Import data from clipboard text?\nClick again to confirm", 2.6)
+                return
+            end
+            TASK.unlock('import')
+            local d2 = STRING.split(data, ',')
+            local suc1, res1 = pcall(STRING.unpackTable, d2[1])
+            local suc2, res2 = pcall(STRING.unpackTable, d2[2])
+            if not suc1 or not suc2 then
+                MSG('dark', "Invalid data format")
+                SFX.play('staffwarning')
+                return
+            end
+            STAT, BEST = res1, res2
+            GAME.refreshLockState()
+            SaveStat()
+            SaveBest()
+            MSG('dark', "Progress imported!")
+            SFX.play('social_notify_major')
+        end,
+    },
+    WIDGET.new {
         type = 'text', alignX = 'left',
         text = "AUDIO",
         color = clr.T,
         fontSize = 50,
-        x = baseX + 30, y = baseY + 190,
+        x = baseX + 30, y = baseY + 245,
     },
     WIDGET.new {
         type = 'checkBox',
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "BGM  (F3)",
-        x = baseX + 55, y = baseY + 250,
+        x = baseX + 55, y = baseY + 305,
         disp = function() return STAT.bgm end,
         code = function()
             STAT.bgm = not STAT.bgm
@@ -221,7 +278,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "SFX  (F4)",
-        x = baseX + 55, y = baseY + 310,
+        x = baseX + 55, y = baseY + 365,
         disp = function() return STAT.sfx end,
         code = function()
             STAT.sfx = not STAT.sfx
@@ -233,11 +290,11 @@ scene.widgetList = {
         text = "VIDEO",
         color = clr.T,
         fontSize = 50,
-        x = baseX + 30, y = baseY + 380,
+        x = baseX + 30, y = baseY + 430,
     },
     WIDGET.new {
         type = 'slider',
-        x = baseX + 240 + 85, y = baseY + 450, w = 400,
+        x = baseX + 240 + 85, y = baseY + 500, w = 400,
         axis = { 80, 100, 5 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.cardBrightness end,
@@ -246,7 +303,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'slider',
-        x = baseX + 240 + 85, y = baseY + 520, w = 400,
+        x = baseX + 240 + 85, y = baseY + 570, w = 400,
         axis = { 30, 100, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.bgBrightness end,
@@ -258,7 +315,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
-        x = baseX + 55, y = baseY + 580,
+        x = baseX + 55, y = baseY + 630,
         disp = function() return STAT.bg end,
         code = function() STAT.bg = not STAT.bg end,
     },
@@ -267,7 +324,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "STAR FORCE  (F10)",
-        x = baseX + 55, y = baseY + 640,
+        x = baseX + 55, y = baseY + 690,
         disp = function() return not STAT.syscursor end,
         code = function()
             STAT.syscursor = not STAT.syscursor
@@ -279,7 +336,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "FULLSCREEN  (F11)",
-        x = baseX + 55, y = baseY + 700,
+        x = baseX + 55, y = baseY + 750,
         disp = function() return STAT.fullscreen end,
         code = function()
             STAT.fullscreen = not STAT.fullscreen
