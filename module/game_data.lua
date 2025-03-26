@@ -218,7 +218,7 @@ ComboData = {
     { set = '   NH                AS   ', name = "the starving artist" },
     { set = '   NH             IN      ', name = "helen keller" },
     { set = '   NH             IN AS   ', name = "the blind artist" },
-    { set = '   NH          DH         ', name = "purgatory" },
+    -- { set = '   NH          DH         ', name = "purgatory" }, -- collision
     { set = '   NH          DH    AS   ', name = "shapeshifter" },
     { set = '   NH          DH IN      ', name = "blindside" },
     { set = '   NH       VL            ', name = "resistance" },
