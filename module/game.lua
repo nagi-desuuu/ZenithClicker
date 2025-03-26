@@ -312,8 +312,35 @@ function GAME.cancelBurn()
     for i = 1, #Cards do Cards[i].burn = false end
 end
 
-function GAME.shuffleCards()
-    TABLE.shuffle(Cards)
+function GAME.sortCards()
+    table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
+end
+
+function GAME.shuffleCards(maxDist)
+    local order = {}
+    for i = 1, #Cards do order[i] = i end
+
+    local r = {}
+    for i = 1, #Cards - 1 do r[i] = i end
+    TABLE.shuffle(r)
+
+    for _, p in next, r do
+        order[p], order[p + 1] = order[p + 1], order[p]
+        local illegal
+        for j = 1, #order do
+            if abs(order[j] - j) > maxDist then
+                illegal = true
+                break
+            end
+        end
+        if illegal then
+            order[p], order[p + 1] = order[p + 1], order[p]
+        end
+    end
+
+    for i = 1, #order do Cards[i].tempOrder = order[i] end
+    table.sort(Cards, function(a, b) return a.tempOrder < b.tempOrder end)
+
     GAME.refreshLayout()
 end
 
@@ -596,7 +623,14 @@ end
 function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
-    if M.MS == 2 or M.MS == 1 and GAME.floor % 3 == 2 then GAME.shuffleCards() end
+    if GAME.floor > 1 then
+        if M.MS == 1 and GAME.floor % 3 == 2 then
+            GAME.sortCards()
+            GAME.shuffleCards(1)
+        elseif M.MS == 2 then
+            GAME.shuffleCards(GAME.floor)
+        end
+    end
     if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
     local F = Floors[GAME.floor]
     local e = F.event
@@ -1175,15 +1209,19 @@ end
 local function task_startSpin()
     for _, C in ipairs(Cards) do if C.active then C:setActive(true) end end
     for _, C in ipairs(Cards) do
-        if C.lock then
-            C.lock = false
-            C:flick()
-        else
-            C:spin()
+        C.lock = false
+        if M.MS == 0 then
+            if C.lock then
+                C:flick()
+            else
+                C:spin()
+            end
+            TASK.yieldT(.01)
         end
-        TASK.yieldT(.01)
     end
-    if M.MS > 0 then GAME.shuffleCards() end
+    if M.MS > 0 then
+        GAME.shuffleCards(M.MS)
+    end
 end
 function GAME.start()
     if TASK.getLock('cannotStart') then
@@ -1296,7 +1334,7 @@ function GAME.finish(reason)
         'shatter', .8
     )
 
-    table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
+    GAME.sortCards()
     for _, C in ipairs(Cards) do
         if (M[C.id] > 0) ~= C.active then
             C:setActive(true)
