@@ -782,7 +782,7 @@ function scene.overDraw()
 
         -- Thruster
         local rank = GAME.DPlock and 1 or GAME.rank
-        gc_setColor(rankColor[rank - 1] or COLOR.L)
+        gc_setColor(rankColor[rank - 1] or COLOR.dL)
         gc_setLineWidth(6)
         gc_mRect('line', 800, 965, 420, 26)
         if not GAME.DPlock then
