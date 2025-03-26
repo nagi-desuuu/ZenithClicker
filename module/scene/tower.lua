@@ -148,20 +148,6 @@ local function keyPress(key)
         local W = scene.widgetList.about
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
-    elseif key == '\\' then
-        if not GAME.playing then
-            local unlocked
-            for i = 1, #Cards - 1 do
-                if Cards[i].lock then
-                    Cards[i].lock = false
-                    unlocked = true
-                    Cards[i]:flick()
-                end
-            end
-            if unlocked then
-                SFX.play('purchase_start')
-            end
-        end
     elseif M.AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
         local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
         if C then
