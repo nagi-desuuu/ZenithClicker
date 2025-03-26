@@ -181,7 +181,10 @@ function GAME.getComboName(list, extend, ingame)
         ins(fstr, MD.noun[list[len]])
         if M.NH == 2 then
             for i = 1, #fstr, 2 do
-                fstr[i] = COLOR.L
+                fstr[i] = TABLE.copy(fstr[i])
+                for j = 1, 3 do
+                    fstr[i][j] = fstr[i][j] * .626 + .374
+                end
             end
         elseif M.IN > 0 then
             local r = rnd(0, 3)
