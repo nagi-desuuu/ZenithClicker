@@ -326,8 +326,9 @@ local gc = love.graphics
 local pressValue = 0
 
 CursorProgress = 0
+CursorHide = true
 local function starCursor(x, y)
-    if GAME.zenithTraveler then return end
+    if CursorHide or GAME.zenithTraveler then return end
     GC.translate(x, y)
     GC.scale(1.42)
     GC.rotate(MATH.lerp(-.626, -1.2, pressValue))

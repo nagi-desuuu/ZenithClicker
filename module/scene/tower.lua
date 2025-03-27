@@ -47,7 +47,16 @@ local function MouseOnCard(x, y)
     end
 end
 
+local function setMouseVisible(bool)
+    if STAT.syscursor then
+        love.mouse.setVisible(bool)
+    else
+        CursorHide = not bool
+    end
+end
+
 local function mouseMove(x, y)
+    setMouseVisible(true)
     MX, MY = x, y
     local new = MouseOnCard(x, y)
     if FloatOnCard ~= new then
@@ -60,6 +69,7 @@ local function mouseMove(x, y)
 end
 
 local function mousePress(x, y, k)
+    setMouseVisible(true)
     mouseMove(x, y)
     local C = Cards[FloatOnCard]
     if C then
@@ -149,11 +159,16 @@ local function keyPress(key)
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
     elseif M.AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
-        local C = Cards[#key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)]
+        local i = #key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)
+        local C = Cards[i]
         if C then
             if GAME.playing or not C.lock then
                 GAME.nixPrompt('keep_no_keyboard')
                 C:setActive()
+                setMouseVisible(false)
+                FloatOnCard = i
+                MX, MY = C.x, C.y
+                GAME.refreshLayout()
             else
                 C:flick()
                 SFX.play('no')
