@@ -82,8 +82,27 @@ local function mousePress(x, y, k)
     end
 end
 
+local keyMap = {}
+for i = 1, 9 do keyMap['' .. i] = i end
+for n, k in next, ("qwertyuio"):atomize() do keyMap[k] = n end
+for n, k in next, ("asdfghjkl"):atomize() do keyMap[k] = n end
 local function keyPress(key)
-    if key == 'escape' then
+    if keyMap[key] and (M.AS > 0 or (not GAME.playing and keyMap[key] == 8)) then
+        local C = Cards[keyMap[key]]
+        if C then
+            if GAME.playing or not C.lock then
+                GAME.nixPrompt('keep_no_keyboard')
+                C:setActive()
+                setMouseVisible(false)
+                FloatOnCard = keyMap[key]
+                MX, MY = C.x, C.y
+                GAME.refreshLayout()
+            else
+                C:flick()
+                SFX.play('no')
+            end
+        end
+    elseif key == 'escape' then
         if not GAME.playing then
             local W = scene.widgetList.back
             W._pressTime = W._pressTimeMax * 2
@@ -158,22 +177,6 @@ local function keyPress(key)
         local W = scene.widgetList.about
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
-    elseif M.AS > 0 or (not GAME.playing and (key == 'k' or key == 'i')) then
-        local i = #key == 1 and ("asdfghjkl"):find(key, nil, true) or ("qwertyuio"):find(key, nil, true)
-        local C = Cards[i]
-        if C then
-            if GAME.playing or not C.lock then
-                GAME.nixPrompt('keep_no_keyboard')
-                C:setActive()
-                setMouseVisible(false)
-                FloatOnCard = i
-                MX, MY = C.x, C.y
-                GAME.refreshLayout()
-            else
-                C:flick()
-                SFX.play('no')
-            end
-        end
     end
 end
 
