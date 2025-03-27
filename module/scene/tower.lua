@@ -92,10 +92,10 @@ local function keyPress(key)
         if C then
             if GAME.playing or not C.lock then
                 GAME.nixPrompt('keep_no_keyboard')
-                C:setActive()
-                setMouseVisible(false)
                 FloatOnCard = keyMap[key]
-                MX, MY = C.x, C.y
+                setMouseVisible(false)
+                MX, MY = C.x + math.random(-126, 126), C.y + math.random(-260, 260)
+                C:setActive()
                 GAME.refreshLayout()
             else
                 C:flick()
