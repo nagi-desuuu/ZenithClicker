@@ -118,6 +118,7 @@ GAME.floor = 1
 GAME.rank = 1
 GAME.xp = 0
 GAME.height = 0
+GAME.chain = 0
 
 local M = GAME.mod
 local MD = ModData
@@ -1109,20 +1110,34 @@ function GAME.commit()
             xp = xp * 3
         end
         if GAME.chain >= 4 then
+            if GAME.chain == 4 then
+                for i = 1, 3 do
+                    SparkPS[i]:reset()
+                    SparkPS[i]:setEmissionRate(0)
+                end
+            elseif GAME.chain % 8 == 0 then
+                for i = 1, 3 do
+                    SparkPS[i]:setEmissionRate(GAME.chain ^ .5 * .42 + math.random() * .5)
+                end
+            end
             if M.AS < 2 then
                 TEXTS.chain:set(tostring(GAME.chain))
             else
                 if GAME.chain <= 26 then
-                    if GAME.chain == 4 then WoundPS:reset() end
+                    if GAME.chain == 4 then
+                        WoundPS:reset()
+                    end
                     local r = MATH.clampInterpolate(4, 26, 26, 62, GAME.chain)
                     WoundPS:setEmissionArea('uniform', r, r, 0, false)
                 end
-                if GAME.chain % 4 == 0 and GAME.chain <= 100 then
-                    local s = 1 + GAME.chain / 200
-                    ---@diagnostic disable-next-line
-                    WoundPS:setSizes(0, 1 * s, .9 * s, .8 * s, .7 * s, .6 * s, .42 * s)
+                if GAME.chain % 4 == 0 then
+                    if GAME.chain <= 100 then
+                        local s = 1 + GAME.chain / 200
+                        ---@diagnostic disable-next-line
+                        WoundPS:setSizes(0, 1 * s, .9 * s, .8 * s, .7 * s, .6 * s, .42 * s)
+                    end
                 end
-                WoundPS:setEmissionRate(MATH.clampInterpolate(4, 2.6, 62, 6.26, GAME.chain))
+                WoundPS:setEmissionRate(MATH.clampInterpolate(16, 1, 2600, 6.26, GAME.chain ^ 2))
                 WoundPS:setLinearDamping(MATH.clampInterpolate(4, 1.2, 42, 0.626, GAME.chain))
 
                 TEXTS.chain2:clear()

@@ -304,7 +304,10 @@ function scene.update(dt)
 
     StarPS:moveTo(0, -GAME.bgH * 2 * BgScale)
     StarPS:update(dt)
-    WoundPS:update(dt)
+    if GAME.chain >= 4 then
+        WoundPS:update(dt)
+        for i = 1, 3 do SparkPS[i]:update(dt) end
+    end
 
     for i = 1, #Cards do
         Cards[i]:update(dt)
@@ -580,29 +583,47 @@ function scene.draw()
         local bounce = .26 / (26 * GAME.questTime + 1)
         local k = clampInterpolate(6, .7, 26, 2, c)
         local x = 255 - 100 * (.5 * k + bounce)
+
+        -- Shade of "B2B x"
         gc_setColor(COLOR.D)
         gc_draw(TEXTS.b2b, x, 216)
+        local r, g, b, a
         if GAME.fault then
             local l = M.AS < 2 and .62 or .42
-            gc_setColor(l, l, l, c < 8 and .26 or 1)
+            r, g, b, a = l, l, l, c < 8 and .26 or 1
         elseif M.AS < 2 then
-            gc_setColor(COLOR.HSL(
+            r, g, b, a = COLOR.HSL(
                 26 / (c + 22) + 1.3, 1,
                 icLerp(-260, 420, c),
                 c < 8 and .26 or 1
-            ))
+            )
         else
-            gc_setColor(0, 0, 0)
-            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
-            gc_setColor(COLOR.HSV(
+            r, g, b, a = COLOR.HSV(
                 clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
                 .16
-            ))
+            )
+            gc_setColor(0, 0, 0)
+            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         end
+
+        -- Spike ball
+        gc_setColor(r, g, b, a)
         gc_blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
-        gc_setAlpha(1)
+
+        -- Spark
+        if M.AS < 2 then
+            gc_setColor(r, g, b)
+        else
+            gc_setColor(.6 + r * .4, .6 + g * .4, .6 + b * .4)
+        end
+        for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
+
+        -- "B2B x"
+        gc_setColor(r, g, b)
         gc_draw(TEXTS.b2b, x, 214)
+
+        -- Number
         local t = TEXTS[M.AS < 2 and 'chain' or 'chain2']
         if M.AS < 2 then
             if c >= 8 then
@@ -612,16 +633,16 @@ function scene.draw()
             end
             gc_mDraw(t, 326, 268, 0, k)
         else
-            gc_setAlpha(1)
             gc_draw(WoundPS, 326, 266)
+
             if not GAME.fault then
-                gc_setAlpha(.26 + .1 * math.sin(GAME.time * 4.2))
+                gc_setColor(r, g, b, .26 + .1 * math.sin(GAME.time * 4.2))
                 gc_setBlendMode('add')
-                gc_strokeDraw('full', 3.55 * k, t, 326, 266, 0, k)
+                gc_strokeDraw('full', 3.55 * k, t, 326, 268, 0, k)
                 gc_setBlendMode('alpha')
             end
             gc_setColor(COLOR.L)
-            gc_draw(t, 326, 266, 0, k)
+            gc_draw(t, 326, 268, 0, k)
         end
     end
 

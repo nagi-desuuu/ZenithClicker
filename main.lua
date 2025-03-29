@@ -92,6 +92,11 @@ TEXTURE = {
         rev_left = assets 'revive/rev_left.png',
         rev_right = assets 'revive/rev_right.png',
     },
+    spark = {
+        assets 'particle/spark1.png',
+        assets 'particle/spark2.png',
+        assets 'particle/spark3.png',
+    },
 
     stat = {
         avatar = assets 'stat/avatar.png',
@@ -291,12 +296,23 @@ WoundPS = GC.newParticleSystem(GC.load { w = 16, h = 16,
     { 'setCL', 0, 0, 0 },
     { 'fRect', 1, 1, 14, 14 },
 }, 32)
-WoundPS:setEmissionArea('uniform', 42, 42, 0, false)
+WoundPS:setEmissionArea('uniform', 42, 42, 0)
 WoundPS:setParticleLifetime(2.6, 6.2)
 WoundPS:setSpread(6.28)
 WoundPS:setSpeed(26, 42)
 ---@diagnostic disable-next-line
 WoundPS:setColors(COLOR.LX, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.LX)
+
+
+SparkPS = {}
+for i = 1, 3 do
+    local ps = GC.newParticleSystem(TEXTURE.spark[i])
+    ps:setParticleLifetime(.26, .62)
+    ps:setEmissionArea('ellipse', 62, 62, 0)
+    ---@diagnostic disable-next-line
+    ps:setColors(COLOR.L, COLOR.LX)
+    SparkPS[i] = ps
+end
 
 BgScale = 1
 BgmSets = {
