@@ -1313,7 +1313,7 @@ function GAME.start()
     GAME.totalPerfect = 0
     GAME.totalAttack = 0
     GAME.peakRank = 1
-    GAME.rankTimer = TABLE.new(0, 15)
+    GAME.rankTimer = TABLE.new(0, 16)
 
     GAME.refreshModIcon()
     TABLE.clear(ComboColor)
@@ -1457,7 +1457,7 @@ function GAME.finish(reason)
         end
 
         local maxCSP = {}
-        for i = 1, 15 do ins(maxCSP, { i < 15 and i or "15+", GAME.rankTimer[i] }) end
+        for i = 1, #GAME.rankTimer do ins(maxCSP, { i < 16 and i or "16+", GAME.rankTimer[i] }) end
         table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
         TEXTS.endResult:set({
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
@@ -1520,7 +1520,7 @@ function GAME.update(dt)
 
         GAME.time = GAME.time + dt
 
-        local r = min(GAME.rank, 15)
+        local r = min(GAME.rank, 16)
         GAME.rankTimer[r] = GAME.rankTimer[r] + dt
 
         if GAME.gigaspeed then
