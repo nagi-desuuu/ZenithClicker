@@ -208,6 +208,9 @@ function RefreshProfile()
     local rankIcon = TEXTURE.stat.rank[rank]
     GC.setColor(1, 1, 1)
     GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
+    -- Progress Bar
+    GC.setColor(textColor)
+    GC.line(7, bh - 30, MATH.lerp(7, bw - 7, rating % 1400 / (rank < 18 and 1400 or 1200)), bh - 30)
     GC.ucs_back()
 
     -- Height
