@@ -232,7 +232,7 @@ ComboData = {
     { set = '   NH    GV    DH         ', name = "damnation" },
     { set = '   NH    GV    DH    AS   ', name = "backbar" },
     { set = '   NH    GV    DH IN AS   ', name = "cheat code" },
-    { set = '   NH    GV VL            ', name = "trational" },
+    { set = '   NH    GV VL            ', name = "traditional" },
     { set = '   NH    GV VL    IN      ', name = "the black hole" },
     { set = '   NH    GV VL DH         ', name = "nephalem" },
     { set = '   NH    GV VL DH    AS   ', name = "demonic possesion" },
@@ -491,3 +491,5 @@ RevivePrompts = {
     { rank = { 4, 6 }, prompt = 'keep_no_imperfect',    target = 14,  short = "No imperfect 14s",        text = "Don't imperfect\nfor 14 seconds",             cond = F6 },
     { rank = { 3, 5 }, prompt = 'keep_no_reset',        target = 16,  short = "No reset 16s",            text = "Don't reset\nfor 16 seconds" },
 }
+
+Achievement={}
