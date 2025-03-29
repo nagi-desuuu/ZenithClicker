@@ -285,6 +285,19 @@ StarPS:setRotation(0, 6.26)
 StarPS:setEmissionRate(12)
 ---@diagnostic disable-next-line
 StarPS:setColors(COLOR.LX, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.LX)
+
+WoundPS = GC.newParticleSystem(GC.load { w = 16, h = 16,
+    { 'clear', 1, 1, 1 },
+    { 'setCL', 0, 0, 0 },
+    { 'fRect', 1, 1, 14, 14 },
+}, 32)
+WoundPS:setEmissionArea('uniform', 42, 42, 0, false)
+WoundPS:setParticleLifetime(2.6, 6.2)
+WoundPS:setSpread(6.28)
+WoundPS:setSpeed(26, 42)
+---@diagnostic disable-next-line
+WoundPS:setColors(COLOR.LX, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.L, COLOR.LX)
+
 BgScale = 1
 BgmSets = {
     all = {

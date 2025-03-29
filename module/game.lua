@@ -1112,6 +1112,19 @@ function GAME.commit()
             if M.AS < 2 then
                 TEXTS.chain:set(tostring(GAME.chain))
             else
+                if GAME.chain <= 26 then
+                    if GAME.chain == 4 then WoundPS:reset() end
+                    local r = MATH.clampInterpolate(4, 26, 26, 62, GAME.chain)
+                    WoundPS:setEmissionArea('uniform', r, r, 0, false)
+                end
+                if GAME.chain % 4 == 0 and GAME.chain <= 100 then
+                    local s = 1 + GAME.chain / 200
+                    ---@diagnostic disable-next-line
+                    WoundPS:setSizes(0, 1 * s, .9 * s, .8 * s, .7 * s, .6 * s, .42 * s)
+                end
+                WoundPS:setEmissionRate(MATH.clampInterpolate(4, 2.6, 62, 6.26, GAME.chain))
+                WoundPS:setLinearDamping(MATH.clampInterpolate(4, 1.2, 42, 0.626, GAME.chain))
+
                 TEXTS.chain2:clear()
                 local s = tostring(GAME.chain)
                 local i = 0

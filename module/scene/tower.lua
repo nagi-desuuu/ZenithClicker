@@ -304,6 +304,7 @@ function scene.update(dt)
 
     StarPS:moveTo(0, -GAME.bgH * 2 * BgScale)
     StarPS:update(dt)
+    WoundPS:update(dt)
 
     for i = 1, #Cards do
         Cards[i]:update(dt)
@@ -611,6 +612,8 @@ function scene.draw()
             end
             gc_mDraw(t, 326, 268, 0, k)
         else
+            gc_setAlpha(1)
+            gc_draw(WoundPS, 326, 266)
             if not GAME.fault then
                 gc_setAlpha(.26 + .1 * math.sin(GAME.time * 4.2))
                 gc_setBlendMode('add')
