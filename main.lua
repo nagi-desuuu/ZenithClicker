@@ -244,6 +244,8 @@ STAT = {
     sfx = true,
 }
 
+ACHV = {}
+
 function SaveBest() love.filesystem.write('best.luaon', 'return' .. TABLE.dumpDeflate(BEST)) end
 
 function SaveStat() love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDeflate(STAT)) end

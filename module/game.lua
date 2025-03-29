@@ -1121,7 +1121,7 @@ function GAME.commit()
                     TEXTS.chain2:addf(
                         c, 260, 'center',
                         32 * (i - #s / 2 - .5), 0,
-                        MATH.rand(-.12, .12), 1.4, 1.4, 129, 26
+                        MATH.rand(-.12, .12), 1.26, 1.26, 129, 26
                     )
                 end
             end
