@@ -1352,6 +1352,8 @@ function GAME.finish(reason)
         C.burn = false
         C.charge = 0
     end
+    FloatOnCard = false
+    GAME.refreshLayout()
 
     GAME.playing = false
     GAME.life, GAME.life2 = 0, 0
