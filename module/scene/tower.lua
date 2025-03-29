@@ -581,24 +581,23 @@ function scene.draw()
         local x = 255 - 100 * (.5 * k + bounce)
         gc_setColor(COLOR.D)
         gc_draw(TEXTS.b2b, x, 216)
-        local r, g, b, a
         if GAME.fault then
-            r, g, b, a = .62, .62, .62, c < 8 and .26 or 1
+            local l = M.AS < 2 and .62 or .42
+            gc_setColor(l, l, l, c < 8 and .26 or 1)
         elseif M.AS < 2 then
-            r, g, b, a = COLOR.HSL(
+            gc_setColor(COLOR.HSL(
                 26 / (c + 22) + 1.3, 1,
                 icLerp(-260, 420, c),
                 c < 8 and .26 or 1
-            )
+            ))
         else
             gc_setColor(0, 0, 0)
             gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
-            r, g, b, a = COLOR.HSV(
+            gc_setColor(COLOR.HSV(
                 clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
                 .16
-            )
+            ))
         end
-        gc_setColor(r, g, b, a)
         gc_blurCircle(-.26, 326, 270, 100 * k)
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
         gc_setAlpha(1)
@@ -612,10 +611,14 @@ function scene.draw()
             end
             gc_mDraw(t, 326, 268, 0, k)
         else
-            gc_setAlpha(.26 + .12 * math.sin(GAME.time * 4.2))
-            gc_strokeDraw('full', 4.2 * k, t, 326, 270, 0, k)
+            if not GAME.fault then
+                gc_setAlpha(.26 + .1 * math.sin(GAME.time * 4.2))
+                gc_setBlendMode('add')
+                gc_strokeDraw('full', 3.55 * k, t, 326, 266, 0, k)
+                gc_setBlendMode('alpha')
+            end
             gc_setColor(COLOR.L)
-            gc_draw(t, 326, 270, 0, k)
+            gc_draw(t, 326, 266, 0, k)
         end
     end
 
