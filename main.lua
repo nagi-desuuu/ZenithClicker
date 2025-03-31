@@ -151,12 +151,12 @@ end
 TEXTURE.transition = GC.load(transition)
 TEXTURE = IMG.init(TEXTURE, true)
 
-local fontNotLoaded = MATH.roll(.62)
 FONT.load {
     serif = "assets/AbhayaLibre-Regular.ttf",
     sans = "assets/DINPro-Medium.otf",
     led = "assets/UniDreamLED.ttf",
 }
+local fontNotLoaded = MATH.roll(.62)
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 
 BG.add('black', { draw = function() GC.clear(0, 0, 0) end })

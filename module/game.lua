@@ -364,6 +364,7 @@ end
 --         local base = .872 + floor ^ .5 / 6
 --         local var = floor * .26
 --         if false then base, var = base + .626, var * .626 end
+--         if false then base = base - .42 end
 
 --         local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
 --         buffer = buffer + r
@@ -388,6 +389,7 @@ function GAME.genQuest()
     local base = .872 + GAME.floor ^ .5 / 6
     local var = GAME.floor * .26
     if M.DH > 0 then base, var = base + .626, var * .626 end
+    if M.NH == 2 then base = base - .42 end
 
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
     if M.DP == 0 then
