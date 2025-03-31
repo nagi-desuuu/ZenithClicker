@@ -234,7 +234,7 @@ scene.widgetList = {
             data = data:trim()
             if TASK.lock('import', 2.6) then
                 SFX.play('notify')
-                MSG('dark', "Import data from clipboard text?\nClick again to confirm", 2.6)
+                MSG('dark', "Import data from clipboard text?\nCurrent progress will be lost forever!\nClick again to confirm", 2.6)
                 return
             end
             TASK.unlock('import')
