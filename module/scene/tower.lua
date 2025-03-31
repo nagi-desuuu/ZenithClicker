@@ -612,11 +612,7 @@ function scene.draw()
         gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
 
         -- Spark
-        if M.AS < 2 then
-            gc_setColor(r, g, b)
-        else
-            gc_setColor(.6 + r * .4, .6 + g * .4, .6 + b * .4)
-        end
+        gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
         for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
 
         -- "B2B x"
