@@ -185,7 +185,7 @@ function GAME.getComboName(list, extend, ingame)
             for i = 1, #fstr, 2 do
                 fstr[i] = TABLE.copy(fstr[i])
                 for j = 1, 3 do
-                    fstr[i][j] = fstr[i][j] * .626 + .374
+                    fstr[i][j] = fstr[i][j] * .7 + .26
                 end
             end
         elseif M.IN > 0 then
@@ -778,6 +778,7 @@ function GAME.refreshLayout()
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
     local dodge = M.VL == 0 and 260 or 220
     local baseY = 726 + 15 * M.GV
+    local float = M.NH < 2
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
         for i = 1, #Cards do
@@ -791,12 +792,12 @@ function GAME.refreshLayout()
             else
                 C.tx = selX
             end
-            C.ty = baseY - (C.active and 45 or 0) - (i == FloatOnCard and 55 or 0)
+            C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
         end
     else
         for i, C in ipairs(Cards) do
             C.tx = 800 + (i - 5) * baseDist
-            C.ty = baseY - (C.active and 45 or 0) - (i == FloatOnCard and 55 or 0)
+            C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
         end
     end
 end
