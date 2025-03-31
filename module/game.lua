@@ -206,15 +206,22 @@ function GAME.getComboName(list, extend, ingame)
         if len == 1 then return MD.noun[list[1]] end
 
         -- Super Set
-        if not GAME.anyRev and len >= 7 then
+        if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
+            local mp = #table.concat(list) - #list
+            if mp >= 8 then return RevComboData[min(mp, #RevComboData)] end
+        elseif len >= 7 then
             return
-                len == 7 and [["SWAMP WATER LITE"]] or
-                len == 8 and [["SWAMP WATER"]] or
-                len == 9 and [["SWAMP WATER PRO"]] or
-                [["SWAMP WATER X"]]
-        elseif GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
-            local weight = #table.concat(list) - #list
-            if weight >= 8 then return RevComboData[min(weight, #RevComboData)] end
+                GAME.anyRev and (
+                    len == 7 and [["SWAMP WATER LITE+"]] or
+                    len == 8 and [["SWAMP WATER+"]] or
+                    len == 9 and [["SWAMP WATER PRO+"]] or
+                    [["SWAMP WATER X+"]]
+                ) or (
+                    len == 7 and [["SWAMP WATER LITE"]] or
+                    len == 8 and [["SWAMP WATER"]] or
+                    len == 9 and [["SWAMP WATER PRO"]] or
+                    [["SWAMP WATER X"]]
+                )
         end
 
         -- Normal Combo
