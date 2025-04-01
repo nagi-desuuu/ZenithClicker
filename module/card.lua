@@ -241,6 +241,7 @@ function Card:setActive(auto, key)
 end
 
 function Card:flip()
+    TWEEN.tag_kill('shake' .. self.id)
     self.front = not self.front
     local s, e = self.kx, self.front and 1 or -1
     local rs = self.r % 6.2832
@@ -251,6 +252,7 @@ function Card:flip()
 end
 
 function Card:spin()
+    TWEEN.tag_kill('shake' .. self.id)
     local animFunc, ease
     local re = (GAME.playing or self.upright) and 0 or 3.1416
     if M.IN ~= 1 then
@@ -286,12 +288,14 @@ end
 
 local bounceEase = { 'linear', 'inQuad' }
 function Card:bounce(height, duration)
+    TWEEN.tag_kill('shake' .. self.id)
     TWEEN.new(function(t)
         self.y = self.ty + t * (t - 1) * height
     end):setUnique('bounce_' .. self.id):setEase(bounceEase):setDuration(duration):run()
 end
 
 function Card:revJump()
+    TWEEN.tag_kill('shake' .. self.id)
     TWEEN.new(function(t)
         t = t * (t - 1) * 4
         self.y = self.ty + t * 355
@@ -341,11 +345,13 @@ function Card:revJump()
 end
 
 function Card:shake()
+    local tag = 'shake' .. self.id
+    TWEEN.tag_kill(tag)
     self.r = MATH.coin(-.26, .26)
     local s, e = self.r, 0
     TWEEN.new(function(t)
         self.r = lerp(s, e, t)
-    end):setUnique('shake_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
+    end):setTag(tag):setEase('OutBack'):setDuration(0.26):run()
 end
 
 function Card:flick()
