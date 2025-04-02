@@ -155,16 +155,16 @@ ModData = {
 
 ComboData = {
     -------- EX NH MS GV VL DH IN AS DP --------
-    { set = '   NH    GV               ', name = "a modern classic",          basic = true },
-    { set = '   NH MS       DH         ', name = "deadlock",                  basic = true },
-    { set = '      MS       DH    AS   ', name = "the escape artist",         basic = true },
-    { set = '         GV       IN      ', name = "the grandmaster",           basic = true },
-    { set = 'EX NH          DH         ', name = "emperor's decadence",       basic = true },
-    { set = 'EX    MS    VL DH         ', name = "divine mastery",            basic = true },
-    { set = '   NH                AS   ', name = "the starving artist",       basic = true },
-    { set = 'EX          VL       AS   ', name = "the con artist",            basic = true },
-    { set = 'EX                      DP', name = "trained professionals",     basic = true },
-    { set = 'EX    MS                  ', name = "block rationing",           basic = true },
+    { set = '   NH    GV               ', name = "a modern classic",        basic = true },
+    { set = '   NH MS       DH         ', name = "deadlock",                basic = true },
+    { set = '      MS       DH    AS   ', name = "the escape artist",       basic = true },
+    { set = '         GV       IN      ', name = "the grandmaster",         basic = true },
+    { set = 'EX NH          DH         ', name = "emperor's decadence",     basic = true },
+    { set = 'EX    MS    VL DH         ', name = "divine mastery",          basic = true },
+    { set = '   NH                AS   ', name = "the starving artist",     basic = true },
+    { set = 'EX          VL       AS   ', name = "the con artist",          basic = true },
+    { set = 'EX                      DP', name = "trained professionals",   basic = true },
+    { set = 'EX    MS                  ', name = "block rationing",         basic = true },
 
     -- TODO: rev combos for achievements
 
@@ -492,4 +492,82 @@ RevivePrompts = {
     { rank = { 3, 5 }, prompt = 'keep_no_reset',        target = 16,  short = "No reset 16s",            text = "Don't reset\nfor 16 seconds" },
 }
 
-Achievement={}
+Achievements = {
+    -- Single Mod
+    EX = { "The Emperor", "HFD with EX", [[A display of power for those willing to bear its burden.]] },
+    NH = { "Temperance", "HFD with NH", [[Use each piece as they come and embrace the natural flow of stacking.]] },
+    MS = { "Wheel of Fortune", "HFD with MS", [[The only constant in life is change.]] },
+    GV = { "The Tower", "HFD with GV", [[What will you do when it all comes crumbling down?]] },
+    VL = { "Strength", "HFD with VL", [[Match great obstacles with greater determination.]] },
+    DH = { "The Devil", "HFD with DH", [[Redifine your limits or succumb to his chains.]] },
+    IN = { "The Hermit", "HFD with IN", [[When the outside world fails you, trust the voice within to light a path.]] },
+    AS = { "The Magician", "HFD with AS", [[Inspiration is nothing short of magic.]] },
+    DP = { "The Lovers", "HFD with DP", [[Love, and resign yourself to the fate of another.]] },
+    rEX = { "The Tyrant", "HFD with rEX", [[Fear, oppression, and limitless ambition.]] },
+    rNH = { "Asceticism", "HFD with rNH", [[A detachment from even that which is moderate.]] },
+    rMS = { "Loaded Dice", "HFD with rMS", [[In a rigged game, your mind is the only fair advantage.]] },
+    rGV = { "Freefall", "HFD with rGV", [[In retrospect, the ground you stood on never existed in the first place.]] },
+    rVL = { "Last Stand", "HFD with rVL", [[Strength isn't necessary for those with nothing to lose.]] },
+    rDH = { "Damnation", "HFD with rDH", [[No more second chances.]] },
+    rIN = { "The Exile", "HFD with rIN", [[Never underestimate blind faith.]] },
+    rAS = { "The Warlock", "HFD with rAS", [[Into realms beyond heaven and earth.]] },
+    rDP = { "Bleeding Hearts", "HFD with rDP", [[Even as we bleed, we keep holding on…]] },
+
+    -- Mod Combo
+    NH_GV = { "A Modern Classic", "HFD with NH GV", [[Times were different back then...]] },
+    NH_MS_DH = { "Deadlock", "HFD with NH MS DH", [["Escape has become a distant dream, yet still we struggle..."]] },
+    MS_DH_AS = { "The Escape Artist", "HFD with MS DH AS", [["An impossible situation! A daring illusionist! Will he make it out alive?"]] },
+    GV_IN = { "The Grandmaster", "HFD with GV IN", [[When the world descends into chaos, the grandmaster remains at peace.]] },
+    EX_NH_DH = { "Emperor's Decadence", "HFD with EX NH DH", [[The Devil's lesson in humility.]] },
+    EX_MS_VL_DH = { "Divine Mastery", "HFD with EX MS VL DH", [[The universe is yours.]] },
+    NH_AS = { "The Starving Artist", "HFD with NH AS", [[Creativity cultivated trough limitation.]] },
+    EX_VL_AS = { "The Con Artist", "HFD with EX VL AS", [[Would the perfect lie not be an art worthy of admiration?]] },
+    EX_DP = { "Trained Professionals", "HFD with EX DP", [[Partners in expertise.]] },
+    EX_MS = { "Block Rationing", "HFD with EX MS", [[Adversity favors the resourceful.]] },
+
+    -- Swamp Water Series
+    SWLite = { "Swamp Water Lite", "HFD with 7 mods", [[Comes in... 36 different flavors!]] },
+    SW = { "Swamp Water", "HFD with 8 mods", [[The worst of all worlds.]] },
+    SWPro = { "Swamp Water Pro", "HFD with 9 mods", [[How did you find someone as insane as you to do it together?]] },
+
+    -- General
+    Zenith_Explorer = { "Zenith Explorer", "HFD", [[Uncover the mysteries of the Zenith Tower.]] },
+    Zenith_Speedrun = { "Zenith Speedrun", "Reach F10 AFAP while retaining GIGASPEED (nomod)", [[F10 Hyper%]] },
+    Supercharged = { "Supercharged", "Highest Back-to-Back chain discovered (nomod)", [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]] },
+    The_Responsible_One = { "The Responsible One", "Highest amount of revivals performed in a single duo run", [["Could you please stop dying?"]] },
+    Guardian_Angel = { "Guardian Angel", "Highest altitude to perform a successful revive at", [[An angel's intervention.]] },
+    Talentless = { "Talentless", "HFD with AS but mouse-only", [[Reaching deep down but coming back empty every time.]] },
+
+    -- Activity
+    lovers_promise = { "Lover's Promise", "Highest altitude reached with DP on Valentine's / White / Black Day / Double Seventh Festival", [[The impossible promise of an eternity just like this moment.]] },
+
+
+
+    -- Rev Swamp Water Series
+    blight = { "Blight", "HFD with 8+ mod points (F4/6/8/9/10)", [[The world starts withering...]] },
+    desolation = { "Desolation", "HFD with 9+ mod points (F4/6/8/9/10)", [[Vitality has faded from the world's palette...]] },
+    havoc = { "Havoc", "HFD with 10+ mod points (F3/5/8/9/10)", [[The world is in chaos...]] },
+    pandemonium = { "Pandemonium", "HFD with 11+ mod points (F2/4/7/8/9)", [[Several realms began to collide...]] },
+    inferno = { "Inferno", "HFD with 12+ mod points (F2/4/6/7/8)", [[Everything is burning and melting...]] },
+    purgatory = { "Purgatory", "HFD with 13+ mod points (F1/3/5/6/7)", [[Nobody knows their destination...]] },
+    perdition = { "Perdition", "HFD with 14+ mod points (F1/3/4/5/6)", [[There's no way back...]] },
+    cataclysm = { "Cataclysm", "HFD with 15+ mod points (F1/2/3/4/5)", [[The real disaster is yet to come...]] },
+    annihilation = { "Annihilation", "HFD with 16+ mod points (F1/2/3/4)", [[The whole universe is trembling...]] },
+    armageddon = { "Armageddon", "HFD with 17+ mod points (F1/2/3)", [[Big crunch is real...]] },
+    abyss = { "Abyss", "HFD with 18 mod points (F1/2)", [[.]] },
+
+    -- Swamp Water Series
+    SWLiteP = { "Swamp Water Lite+", "HFD with 1 rev + 6 mods", "?" },
+    SWP = { "Swamp Water+", "HFD with 1 rev + 7 mods", "?" },
+    SWProP = { "Swamp Water Pro+", "HFD with 1 rev + 8 mods", "?" },
+
+    -- Other Mod Combos
+    -- TODO
+
+    -- Issued
+    -- TODO
+}
+
+for _, achv in next, Achievements do
+    achv[2] = achv[2]:gsub("HFD", "Highest floor discovered")
+end

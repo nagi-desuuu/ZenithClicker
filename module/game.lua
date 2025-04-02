@@ -53,7 +53,7 @@ local ins, rem = table.insert, table.remove
 ---@field dmgTimer number
 ---@field chain number
 ---@field gigaspeed boolean
----@field gigaspeedEntered boolean
+---@field gigaspeedEntered false | number
 ---
 ---@field onAlly boolean
 ---@field life2 number
@@ -625,7 +625,7 @@ function GAME.setGigaspeedAnim(on, finish)
     GAME.gigaspeed = on
     local s = GigaSpeed.alpha
     if on then
-        GAME.gigaspeedEntered = true
+        GAME.gigaspeedEntered = GAME.floor
         TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 1, t) end)
             :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)

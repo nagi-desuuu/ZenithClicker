@@ -197,6 +197,7 @@ if fontNotLoaded then
                 TASK.yieldT(0.26)
                 SFX.play('staffsilence')
                 MSG('dark', "A DARK FORCE INTERRUPTED THE FONT LOADING")
+                IssueAchv('dark_force')
                 return
             end
             if SCN.cur == 'about' then
@@ -254,6 +255,25 @@ ACHV = {}
 function SaveBest() love.filesystem.write('best.luaon', 'return' .. TABLE.dumpDeflate(BEST)) end
 
 function SaveStat() love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDeflate(STAT)) end
+
+function SaveAchv() love.filesystem.write('achv.luaon', 'return' .. TABLE.dumpDeflate(ACHV)) end
+
+function IssueAchv(tag)
+    if not ACHV[tag] then
+        ACHV[tag] = 0
+        -- TODO
+        SFX.play('achievement_1', .7, 0, GAME.mod.VL)
+        -- SaveAchv()
+    end
+end
+
+function SubmitAchv()
+    -- TODO
+    SFX.play('achievement_1', .7, 0, GAME.mod.VL)
+    -- SFX.play('achievement_2', .7, 0, GAME.mod.VL)
+    -- SFX.play('achievement_3', .7, 0, GAME.mod.VL)
+    -- SaveAchv()
+end
 
 MX, MY = 0, 0
 
@@ -638,6 +658,7 @@ function Daemon_Fast()
     local yield = coroutine.yield
     local msIsDown = love.mouse.isDown
     local expApproach = MATH.expApproach
+    local M = GAME.mod
 
     local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184
@@ -657,10 +678,10 @@ function Daemon_Fast()
         if T < t1 then t1 = -.1 end
         if T > t1 + step1 then
             t1 = t1 + step1
-            if GAME.mod.MS == 0 then
+            if M.MS == 0 then
                 for i = 1, 9 do Cards[i].visY = 0 end
             else
-                for i = 1, 9 do Cards[i].visY = GAME.mod.MS * math.random(-4, 4) end
+                for i = 1, 9 do Cards[i].visY = M.MS * math.random(-4, 4) end
             end
             GAME.refreshLayout()
         end
@@ -668,7 +689,7 @@ function Daemon_Fast()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if GAME.mod.EX > 0 and not SCN.swapping then
+            if M.EX > 0 and not SCN.swapping then
                 local r = math.random()
                 local f = GAME.floor
                 r = 1 + (r - 1) / (f * r + 1)
@@ -696,6 +717,7 @@ end
 if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
+TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon -canskip') or NONE)
 if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
 if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
 if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end

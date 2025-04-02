@@ -25,6 +25,7 @@ local function switchVisitor(bool)
         for _, W in next, scene.widgetList do
             W:setVisible(not bool)
         end
+        IssueAchv('zenith_traveler')
     end
 end
 

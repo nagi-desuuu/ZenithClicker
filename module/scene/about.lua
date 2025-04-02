@@ -91,7 +91,9 @@ addText({
     COLOR.L, "Mooniak (AbhayaLibre)"
 }, 0, 870, .32)
 
+local timer
 function scene.load()
+    timer = 0
     SetMouseVisible(true)
     scroll, scroll1 = 0, -620
 end
@@ -121,6 +123,12 @@ function scene.wheelMove(_, dy)
 end
 
 function scene.update(dt)
+    if timer < 26 then
+        timer = timer + dt
+        if timer > 26 then
+            IssueAchv('respectful')
+        end
+    end
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
 end
 

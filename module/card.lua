@@ -334,6 +334,7 @@ function Card:revJump()
                             C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
                         end
                     end
+                    IssueAchv('somersault')
                 end
             end
         end)

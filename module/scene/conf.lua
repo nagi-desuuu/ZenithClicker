@@ -149,6 +149,7 @@ scene.widgetList = {
                 SFX.play('supporter')
                 MSG('dark', "Name changed to " .. STAT.uid)
                 if SCN.cur == 'stat' then RefreshProfile() end
+                IssueAchv('identity')
                 return
             until true
             SFX.play('staffwarning')
@@ -193,6 +194,7 @@ scene.widgetList = {
                 SFX.play('supporter')
                 MSG('dark', "About text updated")
                 if SCN.cur == 'stat' then RefreshProfile() end
+                IssueAchv('identity')
                 return
             until true
             SFX.play('staffwarning')
