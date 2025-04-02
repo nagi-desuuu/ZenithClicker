@@ -36,10 +36,10 @@ local function calculateRating()
     local cr = 0
 
     -- Best Height (10K)
-    cr = cr + 10000 * norm(MATH.icLerp(50, 6200, STAT.maxHeight), 6.2)
+    cr = cr + 10000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
 
     -- Best Time (5K)
-    cr = cr + 5000 * norm(MATH.icLerp(420, 75, STAT.minTime), -.5)
+    cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
 
     -- Mod Completion (3K)
     cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
