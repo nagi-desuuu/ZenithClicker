@@ -92,6 +92,7 @@ addText({
 }, 0, 870, .32)
 
 function scene.load()
+    SetMouseVisible(true)
     scroll, scroll1 = 0, -620
 end
 

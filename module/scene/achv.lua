@@ -10,6 +10,7 @@ local clr = {
 local colorRev = false
 
 function scene.load()
+    SetMouseVisible(true)
     if GAME.anyRev ~= colorRev then
         colorRev = GAME.anyRev
         for _, C in next, clr do

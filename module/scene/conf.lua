@@ -12,6 +12,7 @@ local clr = {
 local colorRev = false
 
 function scene.load()
+    SetMouseVisible(true)
     if GAME.anyRev ~= colorRev then
         colorRev = GAME.anyRev
         for _, C in next, clr do
@@ -234,7 +235,9 @@ scene.widgetList = {
             data = data:trim()
             if TASK.lock('import', 2.6) then
                 SFX.play('notify')
-                MSG('dark', "Import data from clipboard text?\nCurrent progress will be lost forever!\nClick again to confirm", 2.6)
+                MSG('dark',
+                    "Import data from clipboard text?\nCurrent progress will be lost forever!\nClick again to confirm",
+                    2.6)
                 return
             end
             TASK.unlock('import')

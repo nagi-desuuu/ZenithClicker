@@ -190,10 +190,10 @@ function RefreshProfile()
     GC.setColor(lblColor)
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
     GC.line(7, bh - 30, bw - 7, bh - 30)
-    t30:set("CALCULATED FROM CAREER")
-    GC.mDraw(t30, bw / 2, 105, 0, .7)
     -- Number
     local rating = calculateRating()
+    t30:set(rating == 25000 and "YOU ARE THE VERY BEST!" or "CALCULATED FROM CAREER")
+    GC.mDraw(t30, bw / 2, 105, 0, .7)
     t50:set(tostring(rating))
     GC.setColor(scoreColor)
     dblMidDraw(t50, bw / 2, bh / 2 - 4)
@@ -307,6 +307,7 @@ function RefreshProfile()
 end
 
 function scene.load()
+    SetMouseVisible(true)
     TASK.lock('no_back')
     maskAlpha, cardShow = 0, 0
     TWEEN.new(function(t)

@@ -47,7 +47,7 @@ local function MouseOnCard(x, y)
     end
 end
 
-local function setMouseVisible(bool)
+function SetMouseVisible(bool)
     if STAT.syscursor then
         love.mouse.setVisible(bool)
     else
@@ -56,7 +56,7 @@ local function setMouseVisible(bool)
 end
 
 local function mouseMove(x, y)
-    setMouseVisible(true)
+    SetMouseVisible(true)
     MX, MY = x, y
     local new = MouseOnCard(x, y)
     if FloatOnCard ~= new then
@@ -69,7 +69,7 @@ local function mouseMove(x, y)
 end
 
 local function mousePress(x, y, k)
-    setMouseVisible(true)
+    SetMouseVisible(true)
     mouseMove(x, y)
     local C = Cards[FloatOnCard]
     if C then
@@ -93,7 +93,7 @@ local function keyPress(key)
             if GAME.playing or not C.lock then
                 GAME.nixPrompt('keep_no_keyboard')
                 FloatOnCard = keyMap[key]
-                setMouseVisible(false)
+                SetMouseVisible(false)
                 MX, MY = C.x + math.random(-126, 126), C.y + math.random(-260, 260)
                 C:setActive()
                 GAME.refreshLayout()
@@ -384,13 +384,13 @@ local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
-    w = 256, h = 256,
-    { 'move',   128,  128 },
-    { 'fCirc',  0,    0,  90, 4 },
+    w = 128, h = 128,
+    { 'move',   64,   64 },
+    { 'fCirc',  0,    0, 45, 4 },
     { 'rotate', .5236 },
-    { 'fCirc',  0,    0,  90, 4 },
+    { 'fCirc',  0,    0, 45, 4 },
     { 'rotate', .5236 },
-    { 'fCirc',  0,    0,  90, 4 },
+    { 'fCirc',  0,    0, 45, 4 },
 }
 
 local TEXTURE = TEXTURE
@@ -580,13 +580,10 @@ function scene.draw()
     -- Chain Counter
     if GAME.playing and GAME.chain >= 4 then
         local c = GAME.chain
-        local bounce = .26 / (26 * GAME.questTime + 1)
+        local _t = GAME.questTime
+        local bk = _t < .12 and 1 + 62 * _t * (.12 - _t) or 1
         local k = clampInterpolate(6, .7, 26, 2, c)
-        local x = 255 - 100 * (.5 * k + bounce)
 
-        -- Shade of "B2B x"
-        gc_setColor(COLOR.D)
-        gc_draw(TEXTS.b2b, x, 216)
         local r, g, b, a
         if GAME.fault then
             local l = M.AS < 2 and .62 or .42
@@ -603,42 +600,46 @@ function scene.draw()
                 .16
             )
             gc_setColor(0, 0, 0)
-            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
+            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
         end
 
         -- Spike ball
         gc_setColor(r, g, b, a)
         gc_blurCircle(-.26, 326, 270, 100 * k)
-        gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6 * k, .5 * k + bounce)
+        gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
 
         -- Spark
         gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
         for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
 
         -- "B2B x"
+        local x = 255 - 50 * k * bk
+        gc_setColor(COLOR.D)
+        gc_draw(TEXTS.b2b, x, 216)
         gc_setColor(r, g, b)
         gc_draw(TEXTS.b2b, x, 214)
 
         -- Number
-        local t = TEXTS[M.AS < 2 and 'chain' or 'chain2']
+        local chain = TEXTS[M.AS < 2 and 'chain' or 'chain2']
         if M.AS < 2 then
             if c >= 8 then
                 gc_setColor(COLOR.L)
-                gc_strokeDraw('full', k * 2, t, 326, 268, 0, k, k, t:getWidth() / 2, t:getHeight() / 2)
+                gc_strokeDraw('full', k * 2, chain, 326, 268, 0, k * bk, nil,
+                    chain:getWidth() / 2, chain:getHeight() / 2)
                 gc_setColor(COLOR.D)
             end
-            gc_mDraw(t, 326, 268, 0, k)
+            gc_mDraw(chain, 326, 268, 0, k * bk)
         else
             gc_draw(WoundPS, 326, 266)
 
             if not GAME.fault then
                 gc_setColor(r, g, b, .26 + .1 * math.sin(GAME.time * 4.2))
                 gc_setBlendMode('add')
-                gc_strokeDraw('full', 3.55 * k, t, 326, 268, 0, k)
+                gc_strokeDraw('full', 3.55 * k, chain, 326, 268, 0, k * bk)
                 gc_setBlendMode('alpha')
             end
             gc_setColor(COLOR.L)
-            gc_draw(t, 326, 268, 0, k)
+            gc_draw(chain, 326, 268, 0, k * bk)
         end
     end
 
