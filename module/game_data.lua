@@ -528,7 +528,6 @@ Achievements = {
     -- Swamp Water Series
     SWLite = { "Swamp Water Lite", "HFD with 7 mods", [[Comes in... 36 different flavors!]] },
     SW = { "Swamp Water", "HFD with 8 mods", [[The worst of all worlds.]] },
-    SWPro = { "Swamp Water Pro", "HFD with 9 mods", [[How did you find someone as insane as you to do it together?]] },
 
     -- General
     Zenith_Explorer = { "Zenith Explorer", "HFD", [[Uncover the mysteries of the Zenith Tower.]] },
@@ -557,9 +556,10 @@ Achievements = {
     abyss = { "Abyss", "HFD with 18 mod points (F1/2)", [[.]] },
 
     -- Swamp Water Series
-    SWLiteP = { "Swamp Water Lite+", "HFD with 1 rev + 6 mods", "?" },
-    SWP = { "Swamp Water+", "HFD with 1 rev + 7 mods", "?" },
-    SWProP = { "Swamp Water Pro+", "HFD with 1 rev + 8 mods", "?" },
+    SWPro = { "Swamp Water Pro", "HFD with 9 mods", [[How did you find someone as insane as you to do it together?]] },
+    SWLiteP = { "Swamp Water Lite+", "HFD with 7+ mods, including 1 rev", [[Comes in...... 252 different flavors?]] },
+    SWP = { "Swamp Water+", "HFD with 8+ mods, including 1 rev", [[Less choices but still a lot to try.]] },
+    SWProP = { "Swamp Water Pro+", "HFD with 9 mods, including 1 rev", [[The cup is about to overflow!]] },
 
     -- Other Mod Combos
     -- TODO
@@ -569,5 +569,5 @@ Achievements = {
 }
 
 for _, achv in next, Achievements do
-    achv[2] = achv[2]:gsub("HFD", "Highest floor discovered")
+    achv[2] = achv[2]:gsub("HFD", "Highest floor discovered"):gsub("AFAP", "as fast as possible")
 end
