@@ -398,7 +398,7 @@ function GAME.genQuest()
             r = r - (GAME.atkBuffer - 8)
             GAME.atkBuffer = 8
         end
-        GAME.atkBuffer = max(GAME.atkBuffer - max(GAME.floor / 3, 2), 0)
+        GAME.atkBuffer = max(GAME.atkBuffer - (M.DH == 1 and max(GAME.floor / 2.6, 2.6) or max(GAME.floor / 3, 2)), 0)
     end
 
     local pool = TABLE.copyAll(MD.weight)
