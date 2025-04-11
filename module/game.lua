@@ -728,24 +728,31 @@ function GAME.refreshRPC()
 end
 
 local modIconPos = {
-    { -2, -2 }, { -2, 0 }, { -1, -1 }, { -1, 1 },
-    { 0,  -2 }, { 0, 0 }, { 1, -1 }, { 1, 1 },
-    { 2, -2 }, { 2, 0 }, { 3, -1 }, { 3, 1 },
+    { -2, -1.5 }, { -2, 0.5 }, { -1, -0.5 }, { -1, 1.5 },
+    { 0,  -1.5 }, { 0, 0.5 }, { 1, -0.5 }, { 1, 1.5 },
+    { 2, -1.5 }, { 2, 0.5 }, { 3, -0.5 }, { 3, 1.5 },
 }
 
 function GAME.refreshModIcon()
     GAME.modIB:clear()
     local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
-    local r = 35
-    for x = 3, 2, -1 do
-        for i = #hand, 1, -1 do
-            if #hand[i] == x then
-                GAME.modIB:add(
-                    TEXTURE.modQuad_ig[hand[i]],
-                    modIconPos[i][1] * r, modIconPos[i][2] * r,
-                    0, x == 3 and .4 or .28, nil, 219 * .5, 219 * .5
-                )
+    if #hand == 1 then
+        GAME.modIB:add(
+            TEXTURE.modQuad_ig[hand[1]], 0, 0,
+            0, #hand[1] == 3 and .626 or .5, nil, 219 * .5, 219 * .5
+        )
+    else
+        table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+        local r = 35
+        for x = 3, 2, -1 do
+            for i = #hand, 1, -1 do
+                if #hand[i] == x then
+                    GAME.modIB:add(
+                        TEXTURE.modQuad_ig[hand[i]],
+                        modIconPos[i][1] * r, modIconPos[i][2] * r,
+                        0, x == 3 and .4 or .28, nil, 219 * .5, 219 * .5
+                    )
+                end
             end
         end
     end
@@ -754,16 +761,23 @@ end
 function GAME.refreshResultModIcon()
     GAME.resIB:clear()
     local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
-    local r = 35
-    for x = 3, 2, -1 do
-        for i = #hand, 1, -1 do
-            if #hand[i] == x then
-                GAME.resIB:add(
-                    TEXTURE.modQuad_res[hand[i]],
-                    modIconPos[i][1] * r, modIconPos[i][2] * r,
-                    0, x == 3 and .36 or .3, nil, 183 * .5, 183 * .5
-                )
+    if #hand == 1 then
+        GAME.resIB:add(
+            TEXTURE.modQuad_res[hand[1]], 0, 0,
+            0, #hand[1] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
+        )
+    else
+        table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+        local r = 35
+        for x = 3, 2, -1 do
+            for i = #hand, 1, -1 do
+                if #hand[i] == x then
+                    GAME.resIB:add(
+                        TEXTURE.modQuad_res[hand[i]],
+                        modIconPos[i][1] * r, modIconPos[i][2] * r,
+                        0, x == 3 and .36 or .3, nil, 183 * .5, 183 * .5
+                    )
+                end
             end
         end
     end
