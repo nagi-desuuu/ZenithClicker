@@ -701,6 +701,9 @@ function Daemon_Fast()
 
         local dt = yield()
 
+        if GAME.revDeckSkin and SYSTEM ~= 'Web' then
+            GAME.bgX = GAME.bgX + dt * GAME.bgXdir * (62 + 2.6 * GAME.rank)
+        end
         if not STAT.syscursor then
             pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
         end

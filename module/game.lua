@@ -80,6 +80,8 @@ local GAME = {
     revTimer = 0,
     revDeckSkin = false,
     uiHide = 0,
+    bgX = 0,
+    bgXdir = 0,
     bgH = 0,
     bgLastH = 0,
     lifeShow = 0,
@@ -895,10 +897,14 @@ function GAME.refreshRev()
         W.fillColor[1], W.fillColor[3] = W.fillColor[3], W.fillColor[1]
         W.textColor[1], W.textColor[3] = W.textColor[3], W.textColor[1]
 
-        if not hasRev then GAME.revDeckSkin = false end
+        if not hasRev then
+            GAME.revDeckSkin = false
+        end
 
         local s, e = GAME.revTimer, hasRev and 1 or 0
+        local x = (GAME.bgX + 1024) % 2048 - 1024
         TWEEN.new(function(t)
+            GAME.bgX = MATH.lerp(x, 0, t)
             t = MATH.lerp(s, e, t)
             GAME.revTimer = t
             TextColor[1] = MATH.lerp(.7, .62, t)

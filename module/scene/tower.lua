@@ -418,7 +418,7 @@ function DrawBG(brightness)
             local bg = TEXTURE.towerBG[bgFloor]
             local w, h = bg:getDimensions()
             local quadStartH = interpolate(bottom, h, top, 0, GAME.bgH) - 640
-            bgQuad:setViewport(0, quadStartH, 1024, 640, w, h)
+            bgQuad:setViewport(GAME.bgX, quadStartH, 1024, 640, w, h)
             gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h / 2, 0, BgScale)
             if bgFloor == 9 then
                 if GAME.bgH > 1562 then
@@ -428,7 +428,7 @@ function DrawBG(brightness)
             elseif quadStartH < 0 then
                 bg = TEXTURE.towerBG[bgFloor + 1]
                 w, h = bg:getDimensions()
-                bgQuad:setViewport(0, h - 640, 1024, 640, w, h)
+                bgQuad:setViewport(GAME.bgX, h - 640, 1024, 640, w, h)
                 gc_mDrawQ(bg, bgQuad, SCR.w / 2, SCR.h * interpolate(0, -.5, -640, .5, quadStartH), 0, BgScale)
             end
         else
@@ -1108,7 +1108,7 @@ scene.widgetList = {
         floatFontSize = 50,
         floatCornerR = 26,
         floatText = "Coming Soon!",
-        onPress=function()
+        onPress = function()
             -- TODO: auto select daily combo
         end,
     },

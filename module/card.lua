@@ -218,7 +218,10 @@ function Card:setActive(auto, key)
     end
     GAME.refreshCurrentCombo()
     GAME.refreshLayout()
-    if auto then return end
+    if auto then
+        if self.active and revOn then self:revJump() end
+        return
+    end
 
     -- Sound and animation
     if self.active then
@@ -323,6 +326,7 @@ function Card:revJump()
                     t = 2.6,
                 })
                 GAME.revDeckSkin = true
+                GAME.bgXdir = MATH.coin(-1, 1)
             else
                 SFX.play('spin')
                 if currentState == 0 then
