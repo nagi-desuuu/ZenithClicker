@@ -164,6 +164,8 @@ BG.set('black')
 
 TEXTS = { -- Font size can only be 30 and 50 here !!!
     mod        = GC.newText(FONT.get(30)),
+    mpPreview  = GC.newText(FONT.get(30)),
+    zpPreview  = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
@@ -802,6 +804,7 @@ GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
 ApplySettings()
 GAME.refreshCursor()
+GAME.refreshCurrentCombo()
 
 -- Test
 TASK.new(function()

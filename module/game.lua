@@ -89,6 +89,8 @@ local GAME = {
     prevPB = -260,
     modIB = GC.newSpriteBatch(TEXTURE.modIcon),
     resIB = GC.newSpriteBatch(TEXTURE.modIcon),
+    comboMP = 0,
+    comboZP = 1,
 
     completion = { -- 0=locked, 1=unlocked, 2=mastered
         EX = 0,
@@ -162,6 +164,33 @@ function GAME.getHand(real)
     return list
 end
 
+---@param list string[]
+function GAME.getComboMP(list)
+    return #table.concat(list) - #list
+end
+
+---@param list string[]
+function GAME.getComboZP(list)
+    local m = TABLE.getValueSet(list)
+    local zp = 1
+
+    if m.EX then zp = zp * 1.20 elseif m.rEX then zp = zp * (1.8 + .05 * (#list - 1)) end
+    if m.NH then zp = zp * 1.05 elseif m.rNH then zp = zp * 1.3 end
+    if m.MS then zp = zp * 1.10 elseif m.rMS then zp = zp * 1.5 end
+    if m.GV then zp = zp * 1.05 elseif m.rGV then zp = zp * (1.1 + .02 * (#list - 1)) end
+    if m.VL then zp = zp * 1.05 elseif m.rVL then zp = zp * (1.1 + .02 * (#list - 1)) end
+    if m.DH then zp = zp * 1.10 elseif m.rDH then zp = zp * 1.5 end
+    if m.IN then zp = zp * 1.05 elseif m.rIN then zp = zp * (1.3 + .15 * (m.NH == 2 and (m.DP == 0 and 2 or 1) or 0)) end
+    if m.AS then zp = zp * 0.80 elseif m.rAS then zp = zp * 1.0 end
+    if m.DP then zp = zp * 0.95 elseif m.rDP then zp = zp * 1.6 end
+
+    local hardCnt = STRING.count(table.concat(list), "r")
+    if m.EX then hardCnt = hardCnt + 1 end
+    if hardCnt >= 2 then zp = zp * 0.98 ^ (hardCnt - 1) end
+
+    return zp
+end
+
 ---@param list string[] OVERWRITE!!!
 ---@param extend? boolean use extended combo lib from community
 ---@param ingame? boolean return a color-string table instead
@@ -223,7 +252,7 @@ function GAME.getComboName(list, extend, ingame)
 
         -- Super Set
         if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
-            local mp = #table.concat(list) - #list
+            local mp = GAME.getComboMP(list)
             if mp >= 8 then return RevComboData[min(mp, #RevComboData)] end
         elseif len >= 7 then
             return
@@ -820,6 +849,12 @@ end
 
 function GAME.refreshCurrentCombo()
     TEXTS.mod:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
+    if not GAME.playing then
+        GAME.comboMP = GAME.getComboMP(GAME.getHand(true))
+        GAME.comboZP = GAME.getComboZP(GAME.getHand(true))
+        TEXTS.mpPreview:set(GAME.comboMP.." MP")
+        TEXTS.zpPreview:set(("%.2fx ZP"):format(GAME.comboZP))
+    end
 end
 
 function GAME.refreshLayout()

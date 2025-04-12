@@ -681,6 +681,14 @@ function scene.overDraw()
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
+        if not GAME.playing then
+            gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2.6)
+            gc_draw(TEXTS.zpPreview, 1370, 275 + DeckPress, 0, 1, 1, TEXTS.zpPreview:getWidth())
+            if GAME.comboMP >= 6 then
+                gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))
+                gc_draw(TEXTS.mpPreview, 1370, 235 + DeckPress, 0, 1, 1, TEXTS.mpPreview:getWidth())
+            end
+        end
         if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(love.timer.getTime() * 2.6)) end
         local k = min(1, 760 / TEXTS.mod:getWidth())
         gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, 0, k)
