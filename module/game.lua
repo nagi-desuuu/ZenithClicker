@@ -1465,7 +1465,7 @@ function GAME.finish(reason)
                 if GAME.anyRev then t = t:gsub(" ", "+ ", 1) end
                 TEXT:add {
                     text = t,
-                    x = 800, y = 226, k = 2.6, fontSize = 60,
+                    x = 800, y = 226, k = 2.26, fontSize = 70,
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lC', duration = 6.2,
                 }
@@ -1473,7 +1473,7 @@ function GAME.finish(reason)
             elseif GAME.floor >= 2 then
                 TEXT:add {
                     text = "PERSONAL BEST",
-                    x = 800, y = 226, k = 3, fontSize = 60,
+                    x = 800, y = 226, k = 2.6, fontSize = 70,
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lY', duration = 6.2,
                 }

@@ -1096,7 +1096,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'hint', type = 'hint',
-        pos = { 1, 0 }, x = -50, y = 120, w = 80, cornerR = 40,
+        pos = { 1, 0 }, x = -50, y = 126, w = 80, cornerR = 40,
         color = TextColor,
         fontSize = 50, text = "?",
         sound_hover = 'menutap',
