@@ -707,11 +707,11 @@ function Daemon_Fast()
         end
 
         if GAME.revDeckSkin and SYSTEM ~= 'Web' then
-            if M.NH > 0 then dt = dt * .26 end
+            if M.NH > 0 then dt = dt * (1 - M.NH * .42) end
+            if M.AS > 0 then dt = dt * (1 + M.AS) end
             t = t + dt
             local v = dt * GAME.bgXdir * (26 + 2.6 * GAME.rank)
             if M.GV > 0 then v = v * (.62 + M.GV * 2.6 * math.sin(t * 2.6 * (M.GV - .5))) end
-            if M.AS > 0 then v = v * (1 + M.AS * .5) end
             GAME.bgX = GAME.bgX + v
         end
     end
