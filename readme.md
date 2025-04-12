@@ -16,11 +16,35 @@ Backgrounds reconstructed by DJ Asriel
 D-Din-Pro (Font) by Adrian Frutigеr  
 AbhayaLibre-Regular (Font) by Mooniak
 
-## How to play
+## Some todos (Will be implemented)
 
-> **By Community, may not accurate**
+### Achievements
 
-[work in progress]
+Same as tetr.io, but with more interesting contents!
+
+Progress will be tracked in career, contribute to CR.
+
+### Zenith points (ZP)
+
+Earn `Altitude*Difficulty` each game, where `Difficulty` is calculated from a complex formula.
+
+`Difficulty` is designed to approach the real difficulty of a mod combo and encourage playing with different mod sets.
+
+Total ZP is soft-capped, `newZP = max(ZP, ZP*99% + earnedZP)`
+
+Total ZP will be recorded in career, contribute to CR.
+
+Total ZP decay by 1% each day
+
+### Daily Challenge
+
+A random generated combo for each day, try to harvest most ZP in single run!
+
+260% ZP gained with daily combo. (doesn't affect highscore)
+
+Highscore will be recorded in career, contribute to CR.
+
+Highscore decay by 6.26% each day.
 
 ## Design draft of Cliker League (Probably won't be implemented)
 
