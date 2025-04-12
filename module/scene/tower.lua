@@ -1100,9 +1100,9 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'daily', type = 'hint',
-        pos = { 1, 0 }, x = -226, y = 126, w = 240, h = 80, cornerR = 40,
+        pos = { 1, 0 }, x = -200, y = 126, w = 200, h = 80, cornerR = 40,
         color = TextColor,
-        fontSize = 30, text = "Daily Challenge",
+        fontSize = 30, text = "Daily Chall.",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 50,

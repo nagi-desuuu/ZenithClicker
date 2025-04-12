@@ -15,50 +15,64 @@ local ins, rem = table.insert, table.remove
 ---@field progObj love.Text
 
 ---@class Game
+---@field playing boolean
+---
+---@field prevPB number
 ---@field comboStr string
 ---@field totalFlip number
 ---@field totalQuest number
 ---@field totalPerfect number
 ---@field totalAttack number
+---@field heightBonus number
 ---@field peakRank number
 ---@field rankTimer integer[]
 ---
+---@field time number
+---@field gigaTime false | number
+---@field questTime number
+---@field floorTime number
+---
+---@field rank number
+---@field xp number
+---@field rankupLast boolean
+---@field xpLockLevel number
+---@field xpLockTimer number
+---
+---@field floor number
+---@field height number
+---@field heightBuffer number
+---@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string}[]
+---@field fatigue number
+---
+---@field queueLen number
+---@field maxComboSize number
+---@field extraComboBase number
+---@field extraComboVar number
 ---@field dmgHeal number
 ---@field dmgWrong number
 ---@field dmgWrongExtra number
 ---@field dmgTime number
 ---@field dmgDelay number
 ---@field dmgCycle number
----@field queueLen number
 ---
----@field gravDelay false | number
----@field gravTimer false | number
----
----@field playing boolean
----@field time number
----@field gigaTime false | number
----@field questTime number
----@field rank number
----@field xp number
----@field rankupLast boolean
----@field xpLockLevel number
----@field xpLockTimer number
----@field floor number
----@field fatigueSet {time:number, event:table, text:string, desc:string}[]
----@field fatigue number
----@field height number
----@field heightBuffer number
----@field heightBonus number
 ---@field life number
+---@field fullHealth number
 ---@field dmgTimer number
 ---@field chain number
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered false | number
+---@field atkBuffer number
+---
+---@field gravDelay false | number
+---@field gravTimer false | number
 ---
 ---@field onAlly boolean
 ---@field life2 number
 ---@field maxRank number
+---@field reviveCount number
+---@field currentTask ReviveTask |false
 ---@field DPlock boolean
+---@field lastFlip number | false
 local GAME = {
     forfeitTimer = 0,
     exTimer = 0,
@@ -287,6 +301,7 @@ end
 function GAME.anim_setMenuHide(t)
     GAME.uiHide = t
     local w = SCN.scenes.tower.widgetList
+    ---@cast w -nil
     w.stat.x = MATH.cLerp(60, -90, t * 1.5 - .5)
     w.stat:resetPos()
     w.achv.x = MATH.cLerp(60, -90, t * 1.5)
@@ -386,12 +401,9 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .872 + GAME.floor ^ .5 / 6
-    local var = GAME.floor * .26
-    if M.DH > 0 then base, var = base + .626, var * .626 end
-    if M.NH == 2 then base = base - .42 end
-
-    local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
+    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraComboBase + MATH.icLerp(6200, 10000, GAME.height)
+    local var = GAME.floor * .26 * GAME.extraComboVar
+    local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxComboSize)
     if M.DP == 0 then
         GAME.atkBuffer = GAME.atkBuffer + r
         if GAME.atkBuffer > 8 then
@@ -402,6 +414,7 @@ function GAME.genQuest()
     end
 
     local pool = TABLE.copyAll(MD.weight)
+    if M.DH == 2 then pool.DP = pool.DP * .5 end
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then pool[lastQ.combo[1]] = nil end
     for _ = 1, MATH.clamp(MATH.roundRnd(r), 1, 5) do
@@ -494,7 +507,7 @@ function GAME.incrementPrompt(prompt, value)
             TASK.lock('noIncrementSFX', 0.026)
         end
         if t.progress >= t.target then
-            GAME.currentTask = TABLE.next(GAME.reviveTasks, GAME.currentTask)
+            GAME.currentTask = TABLE.next(GAME.reviveTasks, GAME.currentTask) or false
             if GAME.currentTask then
                 SFX.play('boardlock_clear')
             else
@@ -1221,7 +1234,9 @@ function GAME.commit()
             rem(GAME.quests, p)
             local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
             if #combo >= 4 then
-                SFX.play('garbagewindup_' .. (#combo == 4 and 1 or 3) + (TABLE.find(combo, 'DH') and 1 or 0), 1, 0, M.GV)
+                local pwr = #combo * 2 - 7
+                if TABLE.find(combo, 'DH') then pwr = pwr + 1 end
+                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 4), 1, 0, M.GV)
             end
             GAME.questReady()
             GAME.totalQuest = GAME.totalQuest + 1
@@ -1292,34 +1307,54 @@ function GAME.start()
     SFX.play('menuconfirm', .8)
     SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
 
-    GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    GAME.playing = true
+
+    -- Statistics
     GAME.prevPB = BEST.highScore[GAME.comboStr]
     if GAME.prevPB == 0 then GAME.prevPB = -260 end
-    GAME.playing = true
-    GAME.dmgHeal = 2
-    GAME.dmgWrong = 1
-    GAME.dmgTime = 2
-    GAME.dmgTimeMul = 1
-    GAME.dmgDelay = 15
-    GAME.dmgCycle = 5
-    GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
+    GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    GAME.totalFlip = 0
+    GAME.totalQuest = 0
+    GAME.totalPerfect = 0
+    GAME.totalAttack = 0
+    GAME.heightBonus = 0
+    GAME.peakRank = 1
+    GAME.rankTimer = TABLE.new(0, 16)
 
+    -- Time
     GAME.time = 0
     GAME.gigaTime = false
     GAME.questTime = 0
     GAME.floorTime = 0
+
+    -- Rank
     GAME.rank = 1
     TEXTS.rank:set("R-1")
     GAME.xp = 0
     GAME.rankupLast = false
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
+
+    -- Floor
     GAME.floor = 0
-    GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
-    GAME.fatigue = 1
     GAME.height = 0
     GAME.heightBuffer = 0
-    GAME.heightBonus = 0
+    GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
+    GAME.fatigue = 1
+
+    -- Params
+    GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
+    GAME.maxComboSize = M.DH == 2 and 3 or 4
+    GAME.extraComboBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and -.42 or 0)
+    GAME.extraComboVar = (M.DH > 0 and .626 or 1)
+    GAME.dmgHeal = 2
+    GAME.dmgWrong = 1
+    GAME.dmgTime = 2
+    GAME.dmgTimeMul = 1
+    GAME.dmgDelay = 15
+    GAME.dmgCycle = 5
+
+    -- Player
     GAME.life = 20
     GAME.fullHealth = 20
     GAME.dmgTimer = GAME.dmgDelay
@@ -1346,14 +1381,6 @@ function GAME.start()
         GAME.life2 = 10
         GAME.fullHealth = 10
     end
-
-    -- Statistics
-    GAME.totalFlip = 0
-    GAME.totalQuest = 0
-    GAME.totalPerfect = 0
-    GAME.totalAttack = 0
-    GAME.peakRank = 1
-    GAME.rankTimer = TABLE.new(0, 16)
 
     GAME.refreshModIcon()
     TABLE.clear(ComboColor)
@@ -1494,7 +1521,7 @@ function GAME.finish(reason)
             for i = len, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
             TEXTS.endFloor:set(l)
         else
-            TEXTS.endFloor:set("     F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
+            TEXTS.endFloor:set("F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
 
         local maxCSP = {}
