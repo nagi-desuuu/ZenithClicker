@@ -582,8 +582,17 @@ function scene.draw()
     gc_setAlpha(.626)
     gc_mRect('fill', 800, panelH - 303, 1586 + 6, -3)
 
-    -- Chain Counter
-    if GAME.playing and GAME.chain >= 4 then
+    -- MP & ZP Preview
+    if not GAME.playing then
+        gc_setColor(TextColor)
+        gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2.6)
+        gc_draw(TEXTS.zpPreview, 1370, 275, 0, 1, 1, TEXTS.zpPreview:getWidth())
+        if GAME.comboMP >= 6 then
+            gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))
+            gc_draw(TEXTS.mpPreview, 1370, 235, 0, 1, 1, TEXTS.mpPreview:getWidth())
+        end
+    elseif GAME.chain >= 4 then
+        -- Chain Counter
         local c = GAME.chain
         local _t = GAME.questTime
         local bk = _t < .12 and 1 + 62 * _t * (.12 - _t) or 1
@@ -681,14 +690,6 @@ function scene.overDraw()
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
-        if not GAME.playing then
-            gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2.6)
-            gc_draw(TEXTS.zpPreview, 1370, 275 + DeckPress, 0, 1, 1, TEXTS.zpPreview:getWidth())
-            if GAME.comboMP >= 6 then
-                gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))
-                gc_draw(TEXTS.mpPreview, 1370, 235 + DeckPress, 0, 1, 1, TEXTS.mpPreview:getWidth())
-            end
-        end
         if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(love.timer.getTime() * 2.6)) end
         local k = min(1, 760 / TEXTS.mod:getWidth())
         gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, 0, k)

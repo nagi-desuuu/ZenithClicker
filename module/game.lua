@@ -191,7 +191,7 @@ function GAME.getComboZP(list)
     return zp
 end
 
----@param list string[] OVERWRITE!!!
+---@param list string[] WILL BE SORTED!!!
 ---@param extend? boolean use extended combo lib from community
 ---@param ingame? boolean return a color-string table instead
 function GAME.getComboName(list, extend, ingame)
@@ -848,11 +848,12 @@ end
 --------------------------------------------------------------
 
 function GAME.refreshCurrentCombo()
-    TEXTS.mod:set(GAME.getComboName(GAME.getHand(not GAME.playing), M.DH == 2))
+    local hand = GAME.getHand(not GAME.playing)
+    TEXTS.mod:set(GAME.getComboName(hand, M.DH == 2))
     if not GAME.playing then
-        GAME.comboMP = GAME.getComboMP(GAME.getHand(true))
-        GAME.comboZP = GAME.getComboZP(GAME.getHand(true))
-        TEXTS.mpPreview:set(GAME.comboMP.." MP")
+        GAME.comboMP = GAME.getComboMP(hand)
+        GAME.comboZP = GAME.getComboZP(hand)
+        TEXTS.mpPreview:set(GAME.comboMP .. " MP")
         TEXTS.zpPreview:set(("%.2fx ZP"):format(GAME.comboZP))
     end
 end
