@@ -499,14 +499,23 @@ function DrawBG(brightness)
     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 end
 
+local function drawPBline(h, r)
+    gc_replaceTransform(SCR.xOy_r)
+    local over = clampInterpolate(-6, 0, 10, 1, GAME.bgH - h)
+    local y = 32 * (GAME.bgH - h)
+    gc_setColor(r, .8 + over * .2, over * 1, 1 - over * .626)
+    gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
+    gc_draw(TEXTS.prevPB, 0, y, 0, 1, 1, TEXTS.prevPB:getWidth() + 10, TEXTS.prevPB:getHeight() / 2)
+end
+
 function scene.draw()
     if GAME.zenithTraveler then
         DrawBG(100)
+        drawPBline(STAT.maxHeight, .26)
         return
     else
         DrawBG(STAT.bgBrightness)
     end
-
 
     -- Wind Particles
     if GAME.height <= 1650 then
@@ -528,12 +537,7 @@ function scene.draw()
     end
 
     -- Previous PB Line
-    gc_replaceTransform(SCR.xOy_r)
-    local over = clampInterpolate(-15, 0, 5, 1, GAME.height - GAME.prevPB)
-    local y = -26 * (GAME.prevPB - GAME.bgH)
-    gc_setColor(1, .8 + over * .2, over * 1, 1 - over * .626)
-    gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
-    gc_draw(TEXTS.prevPB, 0, y, 0, 1, 1, TEXTS.prevPB:getWidth() + 10, TEXTS.prevPB:getHeight() / 2)
+    drawPBline(GAME.prevPB, 1)
 
     local panelH = 697 + GAME.uiHide * (420 + GAME.height / 6.2)
 
@@ -1095,8 +1099,8 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
-        name = 'hint', type = 'hint',
-        pos = { 1, 0 }, x = -50, y = 126, w = 80, cornerR = 40,
+        name = 'help', type = 'hint',
+        pos = { 1, 0 }, x = -200, y = 126, w = 80, cornerR = 40,
         color = TextColor,
         fontSize = 50, text = "?",
         sound_hover = 'menutap',
