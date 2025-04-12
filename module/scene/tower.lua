@@ -1099,8 +1099,19 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
+        name = 'daily', type = 'hint',
+        pos = { 1, 0 }, x = -226, y = 126, w = 240, h = 80, cornerR = 40,
+        color = { .42, 1, .62, .626 },
+        fontSize = 30, text = "Daily Challenge",
+        sound_hover = 'menutap',
+        labelPos = 'leftBottom',
+        floatFontSize = 50,
+        floatCornerR = 26,
+        floatText = "Coming Soon!",
+    },
+    WIDGET.new {
         name = 'help', type = 'hint',
-        pos = { 1, 0 }, x = -200, y = 126, w = 80, cornerR = 40,
+        pos = { 1, 0 }, x = -50, y = 126, w = 80, cornerR = 40,
         color = TextColor,
         fontSize = 50, text = "?",
         sound_hover = 'menutap',
@@ -1112,7 +1123,7 @@ scene.widgetList = {
             There's no leaderboard, but how high can you reach?
             Space: commit    Z: reset    Esc: forfeit/quit
         ]],
-    }
+    },
 }
 
 return scene

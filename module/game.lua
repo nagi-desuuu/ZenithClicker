@@ -1287,6 +1287,7 @@ function GAME.start()
         return
     end
     SCN.scenes.tower.widgetList.help:setVisible(false)
+    SCN.scenes.tower.widgetList.daily:setVisible(false)
 
     SFX.play('menuconfirm', .8)
     SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
@@ -1385,6 +1386,7 @@ end
 ---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help:setVisible(not GAME.zenithTraveler)
+    SCN.scenes.tower.widgetList.daily:setVisible(not GAME.zenithTraveler)
     MSG.clear()
 
     SFX.play(
