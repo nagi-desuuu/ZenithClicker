@@ -1101,13 +1101,16 @@ scene.widgetList = {
     WIDGET.new {
         name = 'daily', type = 'hint',
         pos = { 1, 0 }, x = -226, y = 126, w = 240, h = 80, cornerR = 40,
-        color = { .42, 1, .62, .626 },
+        color = TextColor,
         fontSize = 30, text = "Daily Challenge",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 50,
         floatCornerR = 26,
         floatText = "Coming Soon!",
+        onPress=function()
+            -- TODO: auto select daily combo
+        end,
     },
     WIDGET.new {
         name = 'help', type = 'hint',

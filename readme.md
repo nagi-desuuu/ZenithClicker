@@ -26,15 +26,26 @@ Progress will be tracked in career, contribute to CR.
 
 ### Zenith points (ZP)
 
-Earn `Altitude*Difficulty` each game, where `Difficulty` is calculated from a complex formula.
-
-`Difficulty` is designed to approach the real difficulty of a mod combo and encourage playing with different mod sets.
+Earn `Altitude*Difficulty` each game, where Difficulty is the product of Difficulties of each mod.
 
 Total ZP is soft-capped, `newZP = max(ZP, ZP*99% + earnedZP)`
 
 Total ZP will be recorded in career, contribute to CR.
 
 Total ZP decay by 1% each day
+
+Difficulty:
+
+|   Mod    |    EX     |  NH   |  MS   |    GV     |  VL   |  DH   |    IN     |  AS   |  DP   |
+| :------: | :-------: | :---: | :---: | :-------: | :---: | :---: | :-------: | :---: | :---: |
+| Upright  |    1.2    | 1.05  |  1.1  |   1.05    | 1.05  |  1.1  |   1.05    |  0.8  | 0.95  |
+| Reversed | 1.8+.05*M |  1.3  |  1.5  | 1.1+.02*M |  1.1  |  1.5  | 1.3+.15*N |  1.0  |  1.8  |
+
+> M = (Other) Mod Count  
+> N = Preview Lost
+
+`Hard Mod Decay = 0.98`  
+applies `X-1` times, `X = number of "EX or Rev"`
 
 ### Daily Challenge
 
