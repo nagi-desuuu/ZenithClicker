@@ -409,8 +409,8 @@ local reviveRot = { -.095, .15, -.17 }
 
 function DrawBG(brightness)
     gc_replaceTransform(SCR.origin)
+    local bgFloor = GAME.getBgFloor()
     if STAT.bg then
-        local bgFloor = GAME.getBgFloor()
         if bgFloor < 10 then
             gc_setColor(1, 1, 1)
             local bottom = Floors[bgFloor - 1].top
@@ -486,8 +486,8 @@ function DrawBG(brightness)
             end
         end
     else
-        local top = Floors[GAME.floor].top
-        local t = icLerp(1, 10, GAME.floor + clampInterpolate(top - 50, 0, top, 1, GAME.height))
+        local top = Floors[bgFloor].top
+        local t = icLerp(1, 10, bgFloor + clampInterpolate(top - 50, 0, top, 1, GAME.bgH))
         gc_setColor(
             lLerp(floorColors[1], t),
             lLerp(floorColors[2], t),
