@@ -35,8 +35,8 @@ local function norm(x, k) return 1 + (x - 1) / (k * x + 1) end
 local function calculateRating()
     local cr = 0
 
-    -- Best Height (7K)
-    cr = cr + 10000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
+    -- Best Height (5K)
+    cr = cr + 5000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
 
     -- Best Time (5K)
     cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
@@ -47,9 +47,10 @@ local function calculateRating()
     -- Mod Speedrun (2K)
     cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
 
-    -- Achievement (8K)
-    -- TODO
-    cr = MATH.clamp(cr * 25000 / 17000, 0, 25000)
+    -- TODO: Achievement (5K)
+    -- TODO: Zenith Points (3K)
+    -- TODO: Daily Challenge (2K)
+    cr = MATH.clamp(cr * 25000 / 15000, 0, 25000)
 
     return MATH.round(cr)
 end

@@ -16,6 +16,29 @@ Backgrounds reconstructed by DJ Asriel
 D-Din-Pro (Font) by Adrian Frutigеr  
 AbhayaLibre-Regular (Font) by Mooniak
 
+## CR formula if you are interested in
+
+```lua
+local cr = 0
+
+-- Best Height (5K)
+cr = cr + 5000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
+
+-- Best Time (5K)
+cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
+
+-- Mod Completion (3K)
+cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
+
+-- Mod Speedrun (2K)
+cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
+
+-- TODO: Achievement (5K)
+-- TODO: Zenith Points (3K)
+-- TODO: Daily Challenge (2K)
+cr = MATH.clamp(cr * 25000 / 15000, 0, 25000)
+```
+
 ## Some todos (Will be implemented)
 
 ### Achievements
