@@ -244,7 +244,7 @@ STAT = {
     fullscreen = true,
     syscursor = false,
     cardBrightness = 90,
-    bgBrightness = 60,
+    bgBrightness = 40,
     bg = true,
     bgm = true,
     sfx = true,
@@ -463,14 +463,14 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             STAT.bg = not STAT.bg
         end
     elseif key == 'f8' then
-        if STAT.bgBrightness < 100 then
-            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 100)
+        if STAT.bgBrightness < 80 then
+            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 80)
             MSG.clear()
             MSG('dark', "BG " .. STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f7' then
         if STAT.bgBrightness > 30 then
-            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 100)
+            STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 80)
             MSG.clear()
             MSG('dark', "BG " .. STAT.bgBrightness .. "%", 1)
         end
@@ -664,6 +664,7 @@ function Daemon_Fast()
     local t1, step1 = -.1, 2 * 60 / 184
     local t2, step2 = 0, 2 * 60 / 184 / 4
     local exLastVol = 0
+    local t = 0
     while true do
         local T = BGM.tell()
         ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
@@ -701,11 +702,17 @@ function Daemon_Fast()
 
         local dt = yield()
 
-        if GAME.revDeckSkin and SYSTEM ~= 'Web' then
-            GAME.bgX = GAME.bgX + dt * GAME.bgXdir * (62 + 2.6 * GAME.rank)
-        end
         if not STAT.syscursor then
             pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
+        end
+
+        if GAME.revDeckSkin and SYSTEM ~= 'Web' then
+            if M.NH > 0 then dt = dt * .26 end
+            t = t + dt
+            local v = dt * GAME.bgXdir * (26 + 2.6 * GAME.rank)
+            if M.GV > 0 then v = v * (.62 + M.GV * 2.6 * math.sin(t * 2.6 * (M.GV - .5))) end
+            if M.AS > 0 then v = v * (1 + M.AS * .5) end
+            GAME.bgX = GAME.bgX + v
         end
     end
 end

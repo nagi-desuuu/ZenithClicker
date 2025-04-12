@@ -309,7 +309,7 @@ scene.widgetList = {
     WIDGET.new {
         type = 'slider',
         x = baseX + 240 + 85, y = baseY + 570, w = 400,
-        axis = { 30, 100, 10 },
+        axis = { 30, 80, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.bgBrightness end,
         code = function(value) STAT.bgBrightness = value end,

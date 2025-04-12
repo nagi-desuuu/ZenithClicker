@@ -495,7 +495,7 @@ function DrawBG(brightness)
         )
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
-    gc_setColor(0, 0, 0, 1 - (GAME.gigaspeed and (1 + GigaSpeed.bgAlpha) / 2 or .75) * brightness / 100)
+    gc_setColor(0, 0, 0, 1 - (GAME.gigaspeed and (.7 + GigaSpeed.bgAlpha * .6) or 1) * brightness / 100)
     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 end
 
