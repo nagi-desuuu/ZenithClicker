@@ -732,13 +732,13 @@ function Daemon_Fast()
 end
 
 -- Load data
-if FILE.getInfo('data.luaon') then
-    if not FILE.getInfo('best.luaon') then
+if FILE.exist('data.luaon') then
+    if not FILE.exist('best.luaon') then
         love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
     end
     love.filesystem.remove('data.luaon')
 end
-if FILE.getInfo('conf.luaon') then love.filesystem.remove('conf.luaon') end
+if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(BEST, FILE.load('best.luaon', '-luaon') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon') or NONE)
 TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon') or NONE)
