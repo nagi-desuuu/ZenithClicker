@@ -1,6 +1,6 @@
 local max, min = math.max, math.min
-local floor, abs = math.floor, math.abs
-local rnd = math.random
+local floor, ceil = math.floor, math.ceil
+local abs, rnd = math.abs, math.random
 
 local ins, rem = table.insert, table.remove
 
@@ -62,6 +62,7 @@ local ins, rem = table.insert, table.remove
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered false | number
 ---@field atkBuffer number
+---@field shuffleReady number | false
 ---
 ---@field gravDelay false | number
 ---@field gravTimer false | number
@@ -684,11 +685,16 @@ function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
     if GAME.floor > 1 then
-        if M.MS == 1 and GAME.floor % 3 == 2 then
-            GAME.sortCards()
-            GAME.shuffleCards(1)
+        if M.MS == 1 and Floors[GAME.floor].MSshuffle then
+            GAME.shuffleReady = 1
         elseif M.MS == 2 then
-            GAME.shuffleCards(GAME.floor)
+            GAME.shuffleReady = ceil(GAME.floor / 2)
+        end
+        if GAME.shuffleReady then
+            SFX.play('rsg_go', 1, 0, 2 + M.GV)
+            for _, C in ipairs(Cards) do
+                C:shake()
+            end
         end
     end
     if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
@@ -1308,6 +1314,11 @@ function GAME.commit()
             end
         end
 
+        if GAME.shuffleReady then
+            GAME.shuffleCards(GAME.shuffleReady)
+            GAME.shuffleReady = false
+        end
+
         return true
     else
         if GAME.currentTask then
@@ -1419,9 +1430,10 @@ function GAME.start()
     GAME.fullHealth = 20
     GAME.dmgTimer = GAME.dmgDelay
     GAME.chain = 0
-    GAME.atkBuffer = 0
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
+    GAME.atkBuffer = 0
+    GAME.shuffleReady = false
 
     -- rDP
     GAME.onAlly = false
