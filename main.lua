@@ -232,6 +232,10 @@ STAT = {
     minTime = 26 * 60,
     timeDate = "NO DATE",
 
+    zp = 0,
+    dailyHighscore = 0,
+    lastDate = false,
+
     totalGame = 0,
     totalTime = 0,
     totalQuest = 0,
@@ -768,6 +772,11 @@ if BEST.version == 166 then
     STAT.sfx = STAT.sfx and 60 or 0
     STAT.bgm = STAT.bgm and 100 or 0
     BEST.version = 167
+end
+if STAT.lastDate ~= os.date("!%y%m%d") then
+    STAT.zp = STAT.zp * .99
+    STAT.dailyHighscore = 0
+    STAT.lastDate = os.date("!%y%m%d")
 end
 if BEST.version ~= oldVer then
     SaveStat()

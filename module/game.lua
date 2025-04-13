@@ -1551,9 +1551,10 @@ function GAME.finish(reason)
         STAT.totalBonus = MATH.roundUnit(STAT.totalBonus + GAME.heightBonus, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
-        if GAME.floor >= 10 then
-            STAT.totalF10 = STAT.totalF10 + 1
-        end
+        if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
+        local zpGain = GAME.height * GAME.comboZP
+        STAT.zp = max(STAT.zp, STAT.zp * .99 + zpGain)
+        -- if ??? and zpGain >= STAT.dailyHighscore then STAT.dailyHighscore = zpGain end
         SaveStat()
 
         -- Best
