@@ -489,7 +489,7 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             MSG.clear()
             MSG('dark', "Card " .. STAT.cardBrightness .. "%", 1)
         end
-    elseif key == 'f4' then
+    elseif key == 'f3' then
         if STAT.sfx > 0 then
             TempSFX = STAT.sfx
             STAT.sfx = 0
@@ -501,7 +501,7 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         MSG('dark', STAT.sfx > 0 and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
         SFX.play('menuclick')
-    elseif key == 'f3' then
+    elseif key == 'f4' then
         if STAT.bgm > 0 then
             TempBGM = STAT.bgm
             STAT.bgm = 0
