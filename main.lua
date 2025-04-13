@@ -248,8 +248,8 @@ STAT = {
     cardBrightness = 90,
     bgBrightness = 40,
     bg = true,
-    bgm = true,
-    sfx = true,
+    sfx = 60,
+    bgm = 100,
 }
 
 ACHV = {}
@@ -408,8 +408,8 @@ end
 function ApplySettings()
     love.mouse.setVisible(STAT.syscursor)
     ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or starCursor
-    BGM.setVol(STAT.bgm and 1 or 0)
-    SFX.setVol(STAT.sfx and .626 or 0)
+    SFX.setVol(STAT.sfx / 100 * .6)
+    BGM.setVol(STAT.bgm / 100)
 end
 
 function ReloadTexts()
@@ -489,15 +489,27 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             MSG('dark', "Card " .. STAT.cardBrightness .. "%", 1)
         end
     elseif key == 'f4' then
-        STAT.sfx = not STAT.sfx
+        if STAT.sfx > 0 then
+            TempSFX = STAT.sfx
+            STAT.sfx = 0
+        else
+            STAT.sfx = TempSFX or 60
+            TempSFX = false
+        end
         MSG.clear()
-        MSG('dark', STAT.sfx and "SFX ON" or "SFX OFF", 1)
+        MSG('dark', STAT.sfx > 0 and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
         SFX.play('menuclick')
     elseif key == 'f3' then
-        STAT.bgm = not STAT.bgm
+        if STAT.bgm > 0 then
+            TempBGM = STAT.bgm
+            STAT.bgm = 0
+        else
+            STAT.bgm = TempBGM or 100
+            TempBGM = false
+        end
         MSG.clear()
-        MSG('dark', STAT.bgm and "BGM ON" or "BGM OFF", 1)
+        MSG('dark', STAT.bgm > 0 and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
     end
 end
@@ -750,6 +762,11 @@ if BEST.version == 163 then
     STAT.maxFloor = BEST.maxFloor or 1
     BEST.maxFloor = nil
     BEST.version = 166
+end
+if BEST.version == 166 then
+    STAT.sfx = STAT.sfx and 60 or 0
+    STAT.bgm = STAT.bgm and 100 or 0
+    BEST.version = 167
 end
 if BEST.version ~= oldVer then
     SaveStat()

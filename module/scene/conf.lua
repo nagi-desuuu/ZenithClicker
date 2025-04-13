@@ -73,8 +73,10 @@ function scene.draw()
     GC.rectangle('fill', 0, 3, 3, h + 3)
 
     -- Sliders
-    drawSliderComponents(500, "CARD  BRIGHTNESS", "DARK", "BRIGHT", STAT.cardBrightness)
-    drawSliderComponents(570, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
+    drawSliderComponents(300, "EFFECT VOLUME", "QUIET", "LOUD", STAT.sfx)
+    drawSliderComponents(370, "MUSIC VOLUME", "QUIET", "LOUD", STAT.bgm)
+    drawSliderComponents(495, "CARD  BRIGHTNESS", "DARK", "BRIGHT", STAT.cardBrightness)
+    drawSliderComponents(565, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
 
     -- Top bar & title
     GC.replaceTransform(SCR.xOy_u)
@@ -111,7 +113,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
-        x = baseX + 220, y = baseY + 112, w = 360, h = 50,
+        x = baseX + 220, y = baseY + 110, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE USERNAME",
         sound_hover = 'menutap',
@@ -157,7 +159,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
-        x = baseX + 610, y = baseY + 112, w = 360, h = 50,
+        x = baseX + 610, y = baseY + 110, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE ABOUT-ME",
         sound_hover = 'menutap',
@@ -202,7 +204,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'export', type = 'button',
-        x = baseX + 220, y = baseY + 182, w = 360, h = 50,
+        x = baseX + 220, y = baseY + 175, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "EXPORT PROGRESS",
         sound_hover = 'menutap',
@@ -222,7 +224,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'import', type = 'button',
-        x = baseX + 610, y = baseY + 182, w = 360, h = 50,
+        x = baseX + 610, y = baseY + 175, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "IMPORT PROGRESS",
         sound_hover = 'menutap',
@@ -264,31 +266,31 @@ scene.widgetList = {
         text = "AUDIO",
         color = clr.T,
         fontSize = 50,
-        x = baseX + 30, y = baseY + 245,
+        x = baseX + 30, y = baseY + 235,
     },
     WIDGET.new {
-        type = 'checkBox',
-        fillColor = clr.cbFill,
-        frameColor = clr.cbFrame,
-        textColor = clr.T, text = "BGM  (F3)",
-        x = baseX + 55, y = baseY + 305,
-        disp = function() return STAT.bgm end,
-        code = function()
-            STAT.bgm = not STAT.bgm
-            ApplySettings()
-        end,
-    },
-    WIDGET.new {
-        type = 'checkBox',
-        fillColor = clr.cbFill,
-        frameColor = clr.cbFrame,
-        textColor = clr.T, text = "SFX  (F4)",
-        x = baseX + 55, y = baseY + 365,
+        type = 'slider',
+        x = baseX + 240 + 85, y = baseY + 300, w = 400,
+        axis = { 0, 100, 10 },
+        frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.sfx end,
-        code = function()
-            STAT.sfx = not STAT.sfx
+        code = function(value)
+            STAT.sfx = value
             ApplySettings()
         end,
+        sound_drag = 'rotate',
+    },
+    WIDGET.new {
+        type = 'slider',
+        x = baseX + 240 + 85, y = baseY + 370, w = 400,
+        axis = { 0, 100, 10 },
+        frameColor = 'dD', fillColor = clr.D,
+        disp = function() return STAT.bgm end,
+        code = function(value)
+            STAT.bgm = value
+            ApplySettings()
+        end,
+        sound_drag = 'rotate',
     },
     WIDGET.new {
         type = 'text', alignX = 'left',
