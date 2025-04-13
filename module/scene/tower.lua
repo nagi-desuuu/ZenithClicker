@@ -585,7 +585,7 @@ function scene.draw()
     -- MP & ZP Preview
     if not GAME.playing then
         gc_setColor(TextColor)
-        gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2.6)
+        gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2)
         gc_draw(TEXTS.zpPreview, 1370, 275, 0, 1, 1, TEXTS.zpPreview:getWidth())
         if GAME.comboMP >= 6 then
             gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))

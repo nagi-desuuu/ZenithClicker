@@ -175,15 +175,15 @@ function GAME.getComboZP(list)
     local m = TABLE.getValueSet(list)
     local zp = 1
 
-    if m.EX then zp = zp * 1.20 elseif m.rEX then zp = zp * (1.8 + .05 * (#list - 1)) end
-    if m.NH then zp = zp * 1.05 elseif m.rNH then zp = zp * 1.3 end
-    if m.MS then zp = zp * 1.10 elseif m.rMS then zp = zp * 1.5 end
-    if m.GV then zp = zp * 1.05 elseif m.rGV then zp = zp * (1.1 + .02 * (#list - 1)) end
-    if m.VL then zp = zp * 1.05 elseif m.rVL then zp = zp * (1.1 + .02 * (#list - 1)) end
-    if m.DH then zp = zp * 1.10 elseif m.rDH then zp = zp * 1.5 end
-    if m.IN then zp = zp * 1.05 elseif m.rIN then zp = zp * (1.3 + .15 * (m.NH == 2 and (m.DP == 0 and 2 or 1) or 0)) end
-    if m.AS then zp = zp * 0.80 elseif m.rAS then zp = zp * 1.0 end
-    if m.DP then zp = zp * 0.95 elseif m.rDP then zp = zp * 1.6 end
+    if m.EX then zp = zp * 1.4 elseif m.rEX then zp = zp * (2.6 + .05 * (#list - 1)) end
+    if m.NH then zp = zp * 1.1 elseif m.rNH then zp = zp * 1.6 end
+    if m.MS then zp = zp * 1.2 elseif m.rMS then zp = zp * 2.0 end
+    if m.GV then zp = zp * 1.1 elseif m.rGV then zp = zp * (1.2 + .05 * (#list - 1)) end
+    if m.VL then zp = zp * 1.1 elseif m.rVL then zp = zp * (1.2 + .05 * (#list - 1)) end
+    if m.DH then zp = zp * 1.2 elseif m.rDH then zp = zp * 2 end
+    if m.IN then zp = zp * 1.1 elseif m.rIN then zp = zp * (1.5 + .4 * (m.NH == 2 and (m.DP == 0 and 1.5 or 1) or 0)) end
+    if m.AS then zp = zp * 0.8 elseif m.rAS then zp = zp * 1.0 end
+    if m.DP then zp = zp * .95 elseif m.rDP then zp = zp * 1.6 end
 
     local hardCnt = STRING.count(table.concat(list), "r")
     if m.EX then hardCnt = hardCnt + 1 end
@@ -1553,7 +1553,11 @@ function GAME.finish(reason)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
         local zpGain = GAME.height * GAME.comboZP
-        STAT.zp = max(STAT.zp, STAT.zp * .99 + zpGain)
+        STAT.zp = max(
+            STAT.zp,
+            STAT.zp <= zpGain * 60 and min(STAT.zp + zpGain, zpGain * 60) or
+            zpGain * 60 + (STAT.zp - zpGain * 60) * (39 / 40) + (zpGain * 40) * (1 / 40)
+        )
         -- if ??? and zpGain >= STAT.dailyHighscore then STAT.dailyHighscore = zpGain end
         SaveStat()
 

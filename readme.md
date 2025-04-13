@@ -51,7 +51,14 @@ Progress will be tracked in career, contribute to CR.
 
 Earn `Altitude*Difficulty` each game, where Difficulty is the product of Difficulties of each mod.
 
-Total ZP is soft-capped, `newZP = max(ZP, ZP*99% + earnedZP)`
+Total ZP is soft-capped:
+```lua
+newZP = max(
+    ZP, -- Won't drop
+    ZP<=zp*60 and min(ZP+zpGain, zpGain*60) or -- Gain full before 60*zpGain
+    zp*60+(ZP-zp*60)*(39/40)+(zp*40)*(1/40) -- Slower from 60*zpGain, slower and slower when getting close to the hard-cap (100*zpGain)
+)
+```
 
 Total ZP will be recorded in career, contribute to CR.
 
@@ -59,10 +66,10 @@ Total ZP decay by 1% each day
 
 Difficulty:
 
-|   Mod    |    EX     |  NH   |  MS   |    GV     |    VL     |  DH   |    IN     |  AS   |  DP   |
-| :------: | :-------: | :---: | :---: | :-------: | :-------: | :---: | :-------: | :---: | :---: |
-| Upright  |    1.2    | 1.05  |  1.1  |   1.05    |   1.05    |  1.1  |   1.05    |  0.8  | 0.95  |
-| Reversed | 1.8+.05*M |  1.3  |  1.5  | 1.1+.02*M | 1.1+.02*M |  1.5  | 1.3+.15*N |  1.0  |  1.6  |
+|   Mod    |    EX     |  NH   |  MS   |    GV     |    VL     |  DH   |    IN    |  AS   |  DP   |
+| :------: | :-------: | :---: | :---: | :-------: | :-------: | :---: | :------: | :---: | :---: |
+| Upright  |    1.4    |  1.1  |  1.2  |    1.1    |    1.1    |  1.2  |   1.1    |  0.8  | 0.95  |
+| Reversed | 2.6+.05*M |  1.6  |   2   | 1.2+.05*M | 1.2+.05*M |   2   | 1.6+.3*N |  1.0  |  1.6  |
 
 > M = (Other) Mod Count  
 > N = Preview Lost
