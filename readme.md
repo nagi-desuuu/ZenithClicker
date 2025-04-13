@@ -66,13 +66,13 @@ Total ZP decay by 1% each day
 
 Difficulty:
 
-|   Mod    |    EX     |  NH   |  MS   |    GV     |    VL     |  DH   |    IN    |  AS   |  DP   |
-| :------: | :-------: | :---: | :---: | :-------: | :-------: | :---: | :------: | :---: | :---: |
-| Upright  |    1.4    |  1.1  |  1.2  |    1.1    |    1.1    |  1.2  |   1.1    |  0.8  | 0.95  |
-| Reversed | 2.6+.05*M |  1.6  |   2   | 1.2+.05*M | 1.2+.05*M |   2   | 1.6+.3*N |  1.0  |  1.6  |
+|   Mod    |  EX   |  NH   |  MS   |    GV     |    VL     |     DH     |  IN   |  AS   |     DP     |
+| :------: | :---: | :---: | :---: | :-------: | :-------: | :--------: | :---: | :---: | :--------: |
+| Upright  |  1.4  |  1.1  |  1.2  |    1.1    |    1.1    |    1.2     |  1.1  | 0.85  |    0.95    |
+| Reversed |  2.6  |  1.6  |  2.0  | 1.2+.03*M | 1.2+.02*M | 1.6+.4*rIN |   X   |  1.1  | 2.2-.6*rEX |
 
 > M = (Other) Mod Count  
-> N = Preview Lost
+> X = rNH ? (DP or rDP ? 2 : 2.2) : 1.6
 
 `Hard Mod Decay = 0.98`  
 applies `X-1` times, `X = number of "EX or Rev"`
