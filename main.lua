@@ -732,16 +732,16 @@ function Daemon_Fast()
 end
 
 -- Load data
-if FILE.exist('data.luaon') then
-    if not FILE.exist('best.luaon') then
+if FILE.getInfo('data.luaon') then
+    if not FILE.getInfo('best.luaon') then
         love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
     end
     love.filesystem.remove('data.luaon')
 end
-if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
-TABLE.update(BEST, FILE.load('best.luaon', '-luaon -canskip') or NONE)
-TABLE.update(STAT, FILE.load('stat.luaon', '-luaon -canskip') or NONE)
-TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon -canskip') or NONE)
+if FILE.getInfo('conf.luaon') then love.filesystem.remove('conf.luaon') end
+TABLE.update(BEST, FILE.load('best.luaon', '-luaon') or NONE)
+TABLE.update(STAT, FILE.load('stat.luaon', '-luaon') or NONE)
+TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon') or NONE)
 if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
 if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
 if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
