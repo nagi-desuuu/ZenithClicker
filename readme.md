@@ -16,7 +16,9 @@ Backgrounds reconstructed by DJ Asriel
 D-Din-Pro (Font) by Adrian Frutigеr  
 AbhayaLibre-Regular (Font) by Mooniak
 
-## CR formula if you are interested in
+## Behind The Scene
+
+### CR formula
 
 ```lua
 local function calculateRating()
@@ -47,32 +49,7 @@ local function calculateRating()
 end
 ```
 
-## Some todos (Will be implemented)
-
-### Achievements
-
-Same as tetr.io, but with more interesting contents!
-
-Progress will be tracked in career, contribute to CR.
-
-### Zenith points (ZP)
-
-Earn `Altitude*Difficulty` each game, where Difficulty is the product of Difficulties of each mod.
-
-Total ZP is soft-capped:
-```lua
-STAT.zp = max(
-    STAT.zp, -- Won't drop
-    STAT.zp < zpEarn * 16 and min(STAT.zp + zpEarn, zpEarn * 16) or -- Gain full before 16*zpGain
-    zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10) -- Slower from 16*zpGain, slower and slower when getting close to the hard-cap (26*zpGain)
-)
-```
-
-Total ZP will be recorded in career, contribute to CR.
-
-Total ZP decays each day: `ZP *= e^(-0.026)`.
-
-Difficulty:
+### Zenith Points (ZP)
 
 |   Mod    |  EX   |  NH   |  MS   |    GV     |    VL     |     DH     |  IN   |  AS   |     DP     |
 | :------: | :---: | :---: | :---: | :-------: | :-------: | :--------: | :---: | :---: | :--------: |
@@ -82,18 +59,22 @@ Difficulty:
 > M = (Other) Mod Count  
 > X = rNH ? (DP or rDP ? 2 : 2.2) : 1.6
 
-`Hard Mode Decay = 0.99`  
+`Hard Mode Decay` = 0.99  
 applies `X-1` times, `X = number of "EX or Rev"`
 
-### Daily Challenge
+Total ZP is soft-capped:
 
-A random generated combo for each day, try to harvest most ZP in single run!
+```lua
+STAT.zp = max(
+    STAT.zp, -- Won't drop
+    STAT.zp < zpEarn * 16 and min(STAT.zp + zpEarn, zpEarn * 16) or -- Gain full before 16*zpGain
+    zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10) -- Slower from 16*zpGain, slower and slower when getting close to the hard-cap (26*zpGain)
+)
+```
 
-260% ZP gained with daily combo. (doesn't affect highscore)
+Total ZP decays ~2.6%/d. `ZP*= e^(-0.026)`
 
-Highscore will be recorded in career, contribute to CR.
-
-Highscore decays each day: `Highscore *= e^(-0.0626)`.
+Also, DC Highscore decays ~6%/d. `DC*= e^(-0.0626)`
 
 ## Design draft of Cliker League (Probably won't be implemented)
 
