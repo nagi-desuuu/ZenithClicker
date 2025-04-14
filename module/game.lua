@@ -1646,6 +1646,7 @@ function GAME.finish(reason)
     GAME.refreshLockState()
     GAME.refreshCurrentCombo()
     GAME.refreshPBText()
+    TASK.unlock('dcTimer')
 
     if unlockDuo then
         CD.DP.lock = true

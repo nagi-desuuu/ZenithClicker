@@ -340,6 +340,10 @@ function scene.update(dt)
             GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 1 or 2.6) * dt
         end
     end
+
+    if not GAME.playing and TASK.lock('dcTimer', 1) then
+        TEXTS.dcTimer:set(os.date("!%H:%M:%S", 86400 - (3600 * os.date("!%H") + 60 * os.date("!%M") + os.date("!%S"))))
+    end
 end
 
 TextColor = { .7, .5, .3 }
@@ -797,6 +801,7 @@ function scene.overDraw()
         end
     end
 
+    -- Revive Task
     local task = GAME.currentTask
     if GAME.playing and task then
         local allyDie = GAME.life2 <= 0
@@ -925,12 +930,19 @@ function scene.overDraw()
         for i = #Cards, 1, -1 do Cards[i]:draw() end
     end
 
-    -- Allspin keyboard hint
+    -- Allspin Keyboard Hint
     if M.AS > 0 then
         setFont(50)
         for i = 1, #Cards do
             gc_strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
         end
+    end
+
+    -- Daily Challenge Timer
+    if not GAME.playing then
+        gc_replaceTransform(SCR.xOy_ur)
+        gc_setColor(TextColor)
+        gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
     end
 
     -- UI
@@ -968,7 +980,7 @@ function scene.overDraw()
         gc_draw(TEXTS.credit, -5, d, 0, .872, .872, TEXTS.credit:getDimensions())
     end
 
-    -- Card info
+    -- Card Info
     if not GAME.playing and FloatOnCard then
         local C = Cards[FloatOnCard]
         local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id

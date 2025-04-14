@@ -167,6 +167,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     mpPreview  = GC.newText(FONT.get(30)),
     zpPreview  = GC.newText(FONT.get(30)),
     zpChange   = GC.newText(FONT.get(30)),
+    dcTimer    = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
