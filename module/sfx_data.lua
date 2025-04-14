@@ -188,7 +188,7 @@ return {
     -- ranklower=                   {148, 3.3},
     -- rankraise=                   {607, 9.2},
     -- ratinglower=                 {733, 2.7},
-    -- ratingraise=                 {118, 2.2},
+    ratingraise = { 118, 2.2 },
 
     -- achievement_1 = { 232, 3.65 },
     -- achievement_2 = { 312, 3.13 },

@@ -1568,7 +1568,17 @@ function GAME.finish(reason)
             zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10)
         )
         if daily then STAT.zp = min(STAT.zp + (STAT.zp - oldZP) * 1.6, 50 * zpEarn) end
-        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, STAT.zp - oldZP, daily and ", 260%" or ""))
+        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, 0, daily and ", 260%" or ""))
+        local zpGain = STAT.zp - oldZP
+        if zpGain > 0 then
+            TASK.new(function()
+                TASK.yieldT(0.626)
+                TWEEN.new(function(t)
+                    TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, zpGain * t, daily and ", 260%" or ""))
+                end):setEase('InOutCubic'):setDuration(2):run()
+                SFX.play('ratingraise', zpGain ^ .5 / 60)
+            end)
+        end
         SaveStat()
 
         -- Best
