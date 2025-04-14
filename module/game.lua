@@ -1559,10 +1559,19 @@ function GAME.finish(reason)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
+
         local oldZP, zpEarn = STAT.zp, GAME.height * GAME.comboZP
+        local daily
+        if TABLE.equal(TABLE.sort(GAME.getHand(true)), TABLE.sort(TABLE.copy(DAILY))) then
+            if zpEarn >= STAT.dailyHS then
+                STAT.dailyHS = zpEarn
+                -- TODO: send to online leaderboard
+            end
+            daily = true
+        end
         STAT.zp = updateZP(oldZP, zpEarn)
-        TEXTS.zpChange:set(("%.0f ZP   (+%.0f)"):format(zpEarn, STAT.zp - oldZP))
-        -- if ??? and zpGain >= STAT.dailyHS then STAT.dailyHS = zpGain end
+        if daily then STAT.zp = STAT.zp + (STAT.zp - oldZP) * 1.6 end
+        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, STAT.zp - oldZP, daily and ", 260%" or ""))
         SaveStat()
 
         -- Best

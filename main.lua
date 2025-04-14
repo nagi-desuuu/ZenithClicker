@@ -840,7 +840,7 @@ do
     local RNG = love.math.newRandomGenerator(math.floor(os.time() / 86400))
     for _ = 1, 26 do RNG:random() end
 
-    DAILY = { 'rEX', 'VL', 'AS' }
+    DAILY = { 'rGV', 'rIN' }
     -- TODO: generate daily combo
 end
 
