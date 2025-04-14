@@ -161,8 +161,7 @@ function Card:setActive(auto, key)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and
-            (TABLE.findAll(completion, 1) or TABLE.findAll(completion, 2))
+        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.countAll(completion, 0) < 9
         if revOn then
             if completion[self.id] == 0 then
                 revOn = false

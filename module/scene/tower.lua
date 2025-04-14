@@ -184,6 +184,15 @@ end
 function scene.load()
     cancelNextClick = true
     cancelNextKeyClick = true
+
+    local sortedDaily = TABLE.sort(TABLE.copy(DAILY),
+        function(a, b) return ModData.prio_card[a] < ModData.prio_card[b] end)
+    local str = "Today's Combo: " .. table.concat(sortedDaily, " ")
+    local rev = str:match("r%S+")
+    if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
+    str = str .. "\nTry to get more ZP in single run with this mod combo!"
+    scene.widgetList.daily.floatText = str
+    scene.widgetList.daily:reset()
 end
 
 function scene.mouseMove(x, y, _, dy)
@@ -1117,9 +1126,9 @@ scene.widgetList = {
         fontSize = 30, text = "Daily Chall.",
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
-        floatFontSize = 50,
+        floatFontSize = 30,
         floatCornerR = 26,
-        floatText = "Coming Soon!",
+        floatText = "NO DATA",
         onPress = function()
             -- TODO: auto select daily combo
         end,

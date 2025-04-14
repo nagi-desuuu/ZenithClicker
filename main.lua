@@ -836,6 +836,14 @@ ApplySettings()
 GAME.refreshCursor()
 GAME.refreshCurrentCombo()
 
+do
+    local RNG = love.math.newRandomGenerator(math.floor(os.time() / 86400))
+    for _ = 1, 26 do RNG:random() end
+
+    DAILY = { 'rEX', 'VL', 'AS' }
+    -- TODO: generate daily combo
+end
+
 -- Test
 TASK.new(function()
     for _, s in next, ([[ ]]):trim():split('%s+', true) do
