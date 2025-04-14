@@ -1646,6 +1646,7 @@ function GAME.finish(reason)
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
         TEXTS.endResult:set("")
+        TEXTS.zpChange:set("")
         GAME.resIB:clear()
     end
 
