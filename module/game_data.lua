@@ -340,12 +340,12 @@ Floors = {
 
 Fatigue = {
     normal = {
-        { time = 300,  event = { 'dmgTimeMul', -.1 },                  text = "FATIGUE SETS IN_",          desc = "TimerSpeed++" },
-        { time = 330,  event = { 'dmgCycle', -.5, 'dmgWrong', 1 },     text = "YOUR BODY GROWS WEAK_",     desc = "DmgCycle--   Damage++" },
-        { time = 360,  event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 },   text = "ALL SENSES BLUR TOGETHER_", desc = "TimerSpeed++   Heal--" },
-        { time = 390,  event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 },   text = "YOUR CONSCIOUSNESS FADES_", desc = "TimerSpeed++   Damage++" },
-        { time = 420,  event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 }, text = "THIS IS THE END.",          desc = "TimerSpeed++   DmgCycle--" },
-        { time = 480,  event = { 'maxComboSize', 1 },                  text = "FAREWELL.",                 desc = "MaxComboSize++" },
+        { time = 300,  event = { 'dmgTimeMul', -.1 },                                         text = "FATIGUE SETS IN_",          desc = "TimerSpeed++" },
+        { time = 330,  event = { 'dmgCycle', -.5, 'dmgWrong', 1 },                            text = "YOUR BODY GROWS WEAK_",     desc = "DmgCycle--   Damage++" },
+        { time = 360,  event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 },                          text = "ALL SENSES BLUR TOGETHER_", desc = "TimerSpeed++   Heal--" },
+        { time = 390,  event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 },                          text = "YOUR CONSCIOUSNESS FADES_", desc = "TimerSpeed++   Damage++" },
+        { time = 420,  event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 },                        text = "THIS IS THE END.",          desc = "TimerSpeed++   DmgCycle--" },
+        { time = 480,  event = { 'maxComboSize', 1, 'extraComboVar', 1, 'atkBufferCap', 18 }, text = "FAREWELL.",                 desc = "QuestDifficulty++++++" },
         { time = 1e99, text = "" }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
     },
     rEX = {

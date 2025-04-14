@@ -62,6 +62,7 @@ local ins, rem = table.insert, table.remove
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered false | number
 ---@field atkBuffer number
+---@field atkBufferCap number
 ---@field shuffleReady number | false
 ---
 ---@field gravDelay false | number
@@ -420,34 +421,6 @@ function GAME.shuffleCards(maxDist)
     GAME.refreshLayout()
 end
 
--- for floor = 1, 10 do -- Simulation
---     local stat = { 0, 0, 0, 0, 0 }
---     local sum = 0
---     local buffer = 0
---     for _ = 1, 10000 do
---         local base = .872 + floor ^ .5 / 6
---         local var = floor * .26
---         if false then base, var = base + .626, var * .626 end
---         if false then base = base - .42 end
-
---         local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, 5)
---         buffer = buffer + r
---         if buffer > 8 then
---             r = r - (buffer - 8)
---             buffer = 8
---         end
---         buffer = max(buffer - max(floor / 3, 2), 0)
-
---         r = MATH.clamp(MATH.roundRnd(r), 1, 5)
-
---         stat[r] = stat[r] + 1
---         sum = sum + r
---     end
---     print(("Floor %2d   %4d %4d %4d %4d %4d  E(x)=%.2f"):format(
---         floor, stat[1], stat[2], stat[3], stat[4], stat[5],
---         sum / MATH.sum(stat)))
--- end
-
 function GAME.genQuest()
     local combo = {}
     local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraComboBase + MATH.icLerp(6200, 10000, GAME.height)
@@ -455,18 +428,18 @@ function GAME.genQuest()
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxComboSize)
     if M.DP == 0 then
         GAME.atkBuffer = GAME.atkBuffer + r
-        if GAME.atkBuffer > 8 then
-            r = r - (GAME.atkBuffer - 8)
-            GAME.atkBuffer = 8
+        if GAME.atkBuffer > GAME.atkBufferCap then
+            r = r - (GAME.atkBuffer - GAME.atkBufferCap)
+            GAME.atkBuffer = GAME.atkBufferCap
         end
-        GAME.atkBuffer = max(GAME.atkBuffer - (M.DH == 1 and max(GAME.floor / 2.6, 2.6) or max(GAME.floor / 3, 2)), 0)
+        GAME.atkBuffer = max(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4)), 0)
     end
 
     local pool = TABLE.copyAll(MD.weight)
     if M.DH == 2 then pool.DP = pool.DP * .5 end
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then pool[lastQ.combo[1]] = nil end
-    for _ = 1, MATH.clamp(MATH.roundRnd(r), 1, 5) do
+    for _ = 1, MATH.clamp(MATH.roundRnd(r), 1, GAME.maxComboSize) do
         local mod = MATH.randFreqAll(pool)
         pool[mod] = nil
         ins(combo, mod)
@@ -1450,6 +1423,7 @@ function GAME.start()
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
     GAME.atkBuffer = 0
+    GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
     GAME.shuffleReady = false
 
     -- rDP
@@ -1584,7 +1558,7 @@ function GAME.finish(reason)
             STAT.zp < zpEarn * 16 and min(STAT.zp + zpEarn, zpEarn * 16) or
             zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10)
         )
-        if daily then STAT.zp = min(STAT.zp + (STAT.zp - oldZP) * 1.6, 50 * zpEarn) end
+        if daily then STAT.zp = MATH.clamp(STAT.zp + (STAT.zp - oldZP) * 1.6, STAT.zp, 50 * zpEarn) end
         TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, 0, daily and ", 260%" or ""))
         local zpGain = STAT.zp - oldZP
         if zpGain > 0 then
