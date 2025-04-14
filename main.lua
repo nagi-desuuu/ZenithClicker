@@ -778,14 +778,21 @@ if BEST.version ~= oldVer then
     SaveStat()
     SaveBest()
 end
-local today = math.floor(os.time() / 86400)
-if STAT.lastDay ~= today then
-    local days = math.max(today - STAT.lastDay, 0)
+
+local dateToday = os.date("!*t", os.time())
+local dateLastDay = os.date("!*t", STAT.lastDay)
+local time0Today = os.time({ year = dateToday.year, month = dateToday.month, day = dateToday.day })
+local time0LastDay = os.time({ year = dateLastDay.year, month = dateLastDay.month, day = dateLastDay.day })
+local dayPast = MATH.round((time0Today - time0LastDay) / 86400)
+
+if dayPast < 0 then
+    MSG('warn', "Back to the future?", 26)
+elseif MATH.between(dayPast, 1, 2600) then
     -- print("Old ZP & Daily HS", STAT.zp, STAT.dailyHS)
-    STAT.zp = MATH.expApproach(STAT.zp, 0, days * .026)
-    STAT.dailyHS = MATH.expApproach(STAT.dailyHS, 0, days * .0626)
+    STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
+    STAT.dailyHS = MATH.expApproach(STAT.dailyHS, 0, dayPast * .0626)
     -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
-    STAT.lastDay = today
+    STAT.lastDay = os.time()
 end
 
 -- Some Initialization
