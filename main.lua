@@ -166,6 +166,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     mod        = GC.newText(FONT.get(30)),
     mpPreview  = GC.newText(FONT.get(30)),
     zpPreview  = GC.newText(FONT.get(30)),
+    zpChange   = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
     pb         = GC.newText(FONT.get(50)),
@@ -234,7 +235,7 @@ STAT = {
 
     zp = 0,
     dailyHighscore = 0,
-    lastDate = false,
+    lastDay = 0,
 
     totalGame = 0,
     totalTime = 0,
@@ -773,14 +774,16 @@ if BEST.version == 166 then
     STAT.bgm = STAT.bgm and 100 or 0
     BEST.version = 167
 end
-if STAT.lastDate ~= os.date("!%y%m%d") then
-    STAT.zp = STAT.zp * .99
-    STAT.dailyHighscore = 0
-    STAT.lastDate = os.date("!%y%m%d")
-end
 if BEST.version ~= oldVer then
     SaveStat()
     SaveBest()
+end
+local today = math.floor(os.time() / 86400)
+if STAT.lastDay ~= today then
+    local days = math.max(today - STAT.lastDay, 0)
+    STAT.zp = MATH.expApproach(STAT.zp, 0, days * .026)
+    STAT.dailyHighscore = 0
+    STAT.lastDay = today
 end
 
 -- Some Initialization

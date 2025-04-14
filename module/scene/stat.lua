@@ -48,7 +48,7 @@ local function calculateRating()
     cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
 
     -- Zenith Points (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 1e6, STAT.zp), 2.6)
+    cr = cr + 3000 * norm(MATH.icLerp(0, 6.2e5, STAT.zp), 2.6)
 
     -- TODO: Achievement (5K)
     -- TODO: Daily Challenge (2K)

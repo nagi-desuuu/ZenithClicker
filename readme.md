@@ -19,24 +19,30 @@ AbhayaLibre-Regular (Font) by Mooniak
 ## CR formula if you are interested in
 
 ```lua
-local cr = 0
+local function calculateRating()
+    local cr = 0
 
--- Best Height (5K)
-cr = cr + 5000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
+    -- Best Height (5K)
+    cr = cr + 5000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
 
--- Best Time (5K)
-cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
+    -- Best Time (5K)
+    cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
 
--- Mod Completion (3K)
-cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
+    -- Mod Completion (3K)
+    cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
 
--- Mod Speedrun (2K)
-cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
+    -- Mod Speedrun (2K)
+    cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
 
--- TODO: Achievement (5K)
--- TODO: Zenith Points (3K)
--- TODO: Daily Challenge (2K)
-cr = MATH.clamp(cr * 25000 / 15000, 0, 25000)
+    -- Zenith Points (3K)
+    cr = cr + 3000 * norm(MATH.icLerp(0, 6.2e5, STAT.zp), 2.6)
+
+    -- TODO: Achievement (5K)
+    -- TODO: Daily Challenge (2K)
+    cr = MATH.clamp(cr * 25000 / 18000, 0, 25000)
+
+    return MATH.round(cr)
+end
 ```
 
 ## Some todos (Will be implemented)
@@ -53,10 +59,10 @@ Earn `Altitude*Difficulty` each game, where Difficulty is the product of Difficu
 
 Total ZP is soft-capped:
 ```lua
-newZP = max(
-    ZP, -- Won't drop
-    ZP<=zp*60 and min(ZP+zpGain, zpGain*60) or -- Gain full before 60*zpGain
-    zp*60+(ZP-zp*60)*(39/40)+(zp*40)*(1/40) -- Slower from 60*zpGain, slower and slower when getting close to the hard-cap (100*zpGain)
+STAT.zp = max(
+    STAT.zp, -- Won't drop
+    STAT.zp < zpEarn * 26 and min(STAT.zp + zpEarn, zpEarn * 26) or -- Gain full before 26*zpGain
+    zpEarn * 26 + (STAT.zp - zpEarn * 26) * (23 / 24) + (zpEarn * 24) * (1 / 24) -- Slower from 26*zpGain, slower and slower when getting close to the hard-cap (50*zpGain)
 )
 ```
 
