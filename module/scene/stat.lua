@@ -51,7 +51,7 @@ local function calculateRating()
     cr = cr + 3000 * norm(MATH.icLerp(0, 26e4, STAT.zp), 4.2)
 
     -- Daily Challenge (2K)
-    cr = cr + 2000 * norm(MATH.icLerp(0, 5000, STAT.dailyHS), 2.6)
+    cr = cr + 2000 * norm(MATH.icLerp(0, 6200, STAT.dailyHS), 2.6)
 
     -- TODO: Achievement (5K)
     cr = MATH.clamp(cr * 25000 / 20000, 0, 25000)
