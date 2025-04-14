@@ -190,7 +190,7 @@ function scene.load()
     local str = "Today's Combo: " .. table.concat(sortedDaily, " ")
     local rev = str:match("r%S+")
     if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
-    str = str .. "\nTry to get more ZP in single run with this mod combo!"
+    str = str .. "\nTry to get more ZP in single run with this mod combo!\n(Click to quick select)"
     scene.widgetList.daily.floatText = str
     scene.widgetList.daily:reset()
 end
@@ -1130,7 +1130,14 @@ scene.widgetList = {
         floatCornerR = 26,
         floatText = "NO DATA",
         onPress = function()
-            -- TODO: auto select daily combo
+            for _, C in ipairs(Cards) do
+                local cur = C.active and (C.upright and 1 or 2) or 0
+                local tar = TABLE.find(DAILY, C.id) and 1 or TABLE.find(DAILY, 'r' .. C.id) and 2 or 0
+                if cur ~= tar then
+                    if cur > 0 then C:setActive(true) end
+                    if tar > 0 then C:setActive(true, tar == 2 and 2 or 1) end
+                end
+            end
         end,
     },
     WIDGET.new {
