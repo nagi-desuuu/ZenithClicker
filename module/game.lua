@@ -476,7 +476,7 @@ function GAME.startRevive()
     if GAME.reviveCount < 260 then
         local power = min(GAME.floor + GAME.reviveCount, 17)
         local maxOut = power == 17
-        local powerList = TABLE.new(math.floor(power / 3), 3)
+        local powerList = TABLE.new(floor(power / 3), 3)
         if power % 3 == 1 then
             if power == maxOut then
                 powerList[2] = powerList[2] + 1
@@ -550,7 +550,7 @@ function GAME.incrementPrompt(prompt, value)
                 GAME.DPlock = false
             end
         end
-        t.progObj:set(math.floor(t.progress) .. "/" .. t.target)
+        t.progObj:set(floor(t.progress) .. "/" .. t.target)
     end
 end
 
@@ -562,7 +562,7 @@ function GAME.nixPrompt(prompt)
             TASK.lock('noIncrementSFX', 0.026)
         end
         t.progress = 0
-        t.progObj:set(math.floor(t.progress) .. "/" .. t.target)
+        t.progObj:set(floor(t.progress) .. "/" .. t.target)
     end
 end
 
@@ -1220,7 +1220,7 @@ function GAME.commit()
                 end
             elseif GAME.chain % 8 == 0 then
                 for i = 1, 3 do
-                    SparkPS[i]:setEmissionRate(GAME.chain ^ .5 * .42 + math.random() * .5)
+                    SparkPS[i]:setEmissionRate(GAME.chain ^ .5 * .42 + rnd() * .5)
                 end
             end
             if M.AS < 2 then
@@ -1570,7 +1570,7 @@ function GAME.finish(reason)
             daily = true
         end
         STAT.zp = updateZP(oldZP, zpEarn)
-        if daily then STAT.zp = STAT.zp + (STAT.zp - oldZP) * 1.6 end
+        if daily then STAT.zp = min(STAT.zp + (STAT.zp - oldZP) * 1.6, 50 * zpEarn) end
         TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, STAT.zp - oldZP, daily and ", 260%" or ""))
         SaveStat()
 
