@@ -244,7 +244,7 @@ return {
     -- mission_league=              {672, 11.2},
     -- mission_versus=              {397, 4.9},
     -- mission=                     {10,  6},
-    -- mmstart=                     {17,  2.5},
+    mmstart = { 17, 2.5 },
     no = { 429, 0.188 },
     notify = { 250, 0.2 },
     -- pause_continue = { 133, 1 },

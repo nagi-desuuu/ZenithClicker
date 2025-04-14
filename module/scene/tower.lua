@@ -1130,14 +1130,17 @@ scene.widgetList = {
         floatCornerR = 26,
         floatText = "NO DATA",
         onPress = function()
+            local changed
             for _, C in ipairs(Cards) do
                 local cur = C.active and (C.upright and 1 or 2) or 0
                 local tar = TABLE.find(DAILY, C.id) and 1 or TABLE.find(DAILY, 'r' .. C.id) and 2 or 0
                 if cur ~= tar then
                     if cur > 0 then C:setActive(true) end
                     if tar > 0 then C:setActive(true, tar == 2 and 2 or 1) end
+                    changed = true
                 end
             end
+            if changed then SFX.play('mmstart') end
         end,
     },
     WIDGET.new {
