@@ -781,8 +781,10 @@ end
 local today = math.floor(os.time() / 86400)
 if STAT.lastDay ~= today then
     local days = math.max(today - STAT.lastDay, 0)
+    -- print("Old ZP & Daily HS", STAT.zp, STAT.dailyHS)
     STAT.zp = MATH.expApproach(STAT.zp, 0, days * .026)
     STAT.dailyHS = MATH.expApproach(STAT.dailyHS, 0, days * .0626)
+    -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
     STAT.lastDay = today
 end
 
@@ -857,7 +859,7 @@ do
             DAILY[r2] = 'r' .. DAILY[r2]
         end
     end
-    print(table.concat(DAILY, ' '))
+    -- print(table.concat(DAILY, ' '))
 end
 
 -- Test

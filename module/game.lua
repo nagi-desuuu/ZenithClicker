@@ -141,26 +141,43 @@ GAME.chain = 0
 
 local M = GAME.mod
 local MD = ModData
+local CD = Cards
 
 --- Unsorted, like {'rEX','NH',...}
 function GAME.getHand(real)
     local list = {}
     if real then
-        for i = 1, 9 do
-            local D = ModData.deck[i]
-            local level = M[D.id]
-            if level == 1 then
-                ins(list, D.id)
-            elseif level == 2 then
-                ins(list, 'r' .. D.id)
-            end
-        end
+        -- FOR ULTIMATE SPEED
+        if M.EX > 0 then ins(list, M.EX == 1 and 'EX' or 'rEX') end
+        if M.NH > 0 then ins(list, M.NH == 1 and 'NH' or 'rNH') end
+        if M.MS > 0 then ins(list, M.MS == 1 and 'MS' or 'rMS') end
+        if M.GV > 0 then ins(list, M.GV == 1 and 'GV' or 'rGV') end
+        if M.VL > 0 then ins(list, M.VL == 1 and 'VL' or 'rVL') end
+        if M.DH > 0 then ins(list, M.DH == 1 and 'DH' or 'rDH') end
+        if M.IN > 0 then ins(list, M.IN == 1 and 'IN' or 'rIN') end
+        if M.AS > 0 then ins(list, M.AS == 1 and 'AS' or 'rAS') end
+        if M.DP > 0 then ins(list, M.DP == 1 and 'DP' or 'rDP') end
+        -- for i = 1, 9 do
+        --     local D = ModData.deck[i]
+        --     local level = M[D.id]
+        --     if level == 1 then
+        --         ins(list, D.id)
+        --     elseif level == 2 then
+        --         ins(list, 'r' .. D.id)
+        --     end
+        -- end
     else
-        for _, C in ipairs(Cards) do
-            if C.active then
-                ins(list, C.id)
+        -- FASTER
+        for i = 1, 9 do
+            if CD[i].active then
+                ins(list, CD[i].id)
             end
         end
+        -- for _, C in ipairs(Cards) do
+        --     if C.active then
+        --         ins(list, C.id)
+        --     end
+        -- end
     end
     return list
 end
@@ -368,19 +385,19 @@ function GAME.task_fatigueWarn()
 end
 
 function GAME.cancelBurn()
-    for i = 1, #Cards do Cards[i].burn = false end
+    for i = 1, #CD do CD[i].burn = false end
 end
 
 function GAME.sortCards()
-    table.sort(Cards, function(a, b) return a.initOrder < b.initOrder end)
+    table.sort(CD, function(a, b) return a.initOrder < b.initOrder end)
 end
 
 function GAME.shuffleCards(maxDist)
     local order = {}
-    for i = 1, #Cards do order[i] = i end
+    for i = 1, #CD do order[i] = i end
 
     local r = {}
-    for i = 1, #Cards - 1 do r[i] = i end
+    for i = 1, #CD - 1 do r[i] = i end
     TABLE.shuffle(r)
 
     for _, p in next, r do
@@ -397,8 +414,8 @@ function GAME.shuffleCards(maxDist)
         end
     end
 
-    for i = 1, #order do Cards[i].tempOrder = order[i] end
-    table.sort(Cards, function(a, b) return a.tempOrder < b.tempOrder end)
+    for i = 1, #order do CD[i].tempOrder = order[i] end
+    table.sort(CD, function(a, b) return a.tempOrder < b.tempOrder end)
 
     GAME.refreshLayout()
 end
@@ -467,9 +484,9 @@ function GAME.questReady()
     GAME.faultWrong = false
     GAME.dmgWrongExtra = 0
     GAME.gravTimer = false
-    for _, C in ipairs(Cards) do C.touchCount, C.isCorrect = 0, false end
-    if M.DP > 0 then for _, v in next, GAME.quests[2].combo do Cards[v].isCorrect = 2 end end
-    for _, v in next, GAME.quests[1].combo do Cards[v].isCorrect = 1 end
+    for _, C in ipairs(CD) do C.touchCount, C.isCorrect = 0, false end
+    if M.DP > 0 then for _, v in next, GAME.quests[2].combo do CD[v].isCorrect = 2 end end
+    for _, v in next, GAME.quests[1].combo do CD[v].isCorrect = 1 end
 end
 
 function GAME.startRevive()
@@ -692,7 +709,7 @@ function GAME.upFloor()
         end
         if GAME.shuffleReady then
             SFX.play('rsg_go', 1, 0, 2 + M.GV)
-            for _, C in ipairs(Cards) do
+            for _, C in ipairs(CD) do
                 C:shake()
             end
         end
@@ -872,13 +889,13 @@ function GAME.refreshLayout()
     local float = M.NH < 2
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
-        for i = 1, #Cards do
-            local C = Cards[i]
+        for i = 1, #CD do
+            local C = CD[i]
             if i < FloatOnCard then
                 C.tx = MATH.interpolate(1, baseL, FloatOnCard - 1, selX - dodge, i)
                 if C.tx ~= C.tx then C.tx = baseL end
             elseif i > FloatOnCard then
-                C.tx = MATH.interpolate(#Cards, baseR, FloatOnCard + 1, selX + dodge, i)
+                C.tx = MATH.interpolate(#CD, baseR, FloatOnCard + 1, selX + dodge, i)
                 if C.tx ~= C.tx then C.tx = baseR end
             else
                 C.tx = selX
@@ -886,7 +903,7 @@ function GAME.refreshLayout()
             C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
         end
     else
-        for i, C in ipairs(Cards) do
+        for i, C in ipairs(CD) do
             C.tx = 800 + (i - 5) * baseDist
             C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
         end
@@ -902,15 +919,15 @@ function GAME.refreshCursor()
 end
 
 function GAME.refreshLockState()
-    Cards.EX.lock = STAT.maxFloor < 9
-    Cards.NH.lock = STAT.maxFloor < 2
-    Cards.MS.lock = STAT.maxFloor < 3
-    Cards.GV.lock = STAT.maxFloor < 4
-    Cards.VL.lock = STAT.maxFloor < 5
-    Cards.DH.lock = STAT.maxFloor < 6
-    Cards.IN.lock = STAT.maxFloor < 7
-    Cards.AS.lock = STAT.maxFloor < 8
-    Cards.DP.lock = GAME.completion.DP == 0 -- Possible, try to find the way to play it
+    CD.EX.lock = STAT.maxFloor < 9
+    CD.NH.lock = STAT.maxFloor < 2
+    CD.MS.lock = STAT.maxFloor < 3
+    CD.GV.lock = STAT.maxFloor < 4
+    CD.VL.lock = STAT.maxFloor < 5
+    CD.DH.lock = STAT.maxFloor < 6
+    CD.IN.lock = STAT.maxFloor < 7
+    CD.AS.lock = STAT.maxFloor < 8
+    CD.DP.lock = GAME.completion.DP == 0 -- Possible, try to find the way to play it
 end
 
 function GAME.refreshPBText()
@@ -937,7 +954,7 @@ end
 
 function GAME.refreshRev()
     local hasRev = false
-    for _, C in ipairs(Cards) do
+    for _, C in ipairs(CD) do
         if M[C.id] == 2 then
             hasRev = true
             break
@@ -1020,10 +1037,10 @@ end
 
 function GAME.task_cancelAll(instant)
     local spinMode = not instant and M.AS > 0
-    local list = TABLE.copy(Cards, 0)
+    local list = TABLE.copy(CD, 0)
     local needFlip = {}
-    for i = 1, #Cards do
-        needFlip[i] = spinMode or Cards[i].active
+    for i = 1, #CD do
+        needFlip[i] = spinMode or CD[i].active
     end
     for i = 1, #list do
         if needFlip[i] then
@@ -1070,7 +1087,7 @@ function GAME.commit()
         end
         local maxConn = 0
         local conn = 0
-        for _, C in ipairs(Cards) do
+        for _, C in ipairs(CD) do
             if C.active then
                 conn = conn + 1
                 maxConn = max(maxConn, conn)
@@ -1278,14 +1295,14 @@ function GAME.commit()
         end
 
         if M.MS == 2 then
-            local r1 = rnd(2, #Cards - 1)
+            local r1 = rnd(2, #CD - 1)
             local r2, r3
-            repeat r2 = rnd(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #Cards)
-            repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #Cards)
+            repeat r2 = rnd(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #CD)
+            repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
             if GAME.floor <= 8 then
-                Cards[r1], Cards[r2] = Cards[r2], Cards[r1]
+                CD[r1], CD[r2] = CD[r2], CD[r1]
             else
-                Cards[r1], Cards[r2], Cards[r3] = Cards[r2], Cards[r3], Cards[r1]
+                CD[r1], CD[r2], CD[r3] = CD[r2], CD[r3], CD[r1]
             end
             GAME.refreshLayout()
         end
@@ -1351,8 +1368,8 @@ function GAME.commit()
 end
 
 local function task_startSpin()
-    for _, C in ipairs(Cards) do if C.active then C:setActive(true) end end
-    for _, C in ipairs(Cards) do
+    for _, C in ipairs(CD) do if C.active then C:setActive(true) end end
+    for _, C in ipairs(CD) do
         C.lock = false
         if M.MS == 0 then
             if C.lock then
@@ -1376,7 +1393,7 @@ function GAME.start()
     SCN.scenes.tower.widgetList.daily:setVisible(false)
 
     SFX.play('menuconfirm', .8)
-    SFX.play(Cards.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
+    SFX.play(CD.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
 
     GAME.playing = true
 
@@ -1496,7 +1513,7 @@ function GAME.finish(reason)
     )
 
     GAME.sortCards()
-    for _, C in ipairs(Cards) do
+    for _, C in ipairs(CD) do
         if (M[C.id] > 0) ~= C.active then
             C:setActive(true)
         end
@@ -1657,12 +1674,12 @@ function GAME.finish(reason)
     GAME.refreshPBText()
 
     if unlockDuo then
-        Cards.DP.lock = true
+        CD.DP.lock = true
         TASK.new(function()
             TASK.yieldT(0.42)
-            Cards.DP.lock = false
-            Cards.DP:spin()
-            Cards.DP:bounce(1200, .62)
+            CD.DP.lock = false
+            CD.DP:spin()
+            CD.DP:bounce(1200, .62)
             SFX.play('supporter')
         end)
     end
