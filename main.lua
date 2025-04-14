@@ -836,12 +836,66 @@ ApplySettings()
 GAME.refreshCursor()
 GAME.refreshCurrentCombo()
 
-do
-    local RNG = love.math.newRandomGenerator(math.floor(os.time() / 86400))
-    for _ = 1, 26 do RNG:random() end
+-- "Google search and ChatGPT my beloved (credit for adding 'already in DAILY' logic + making stuff in this part work)" - GTD
+math.randomseed(math.floor(os.time() / 86400)+2)
 
-    DAILY = { 'rGV', 'rIN' }
-    -- TODO: generate daily combo
+for _ = 1, 26 do math.random() end
+
+local value = math.random(77)
+local mods = {'EX', 'NH', 'MS', 'GV', 'VL', 'DH', 'IN', 'AS', 'DP', 'rEX', 'rNH', 'rMS', 'rGV', 'rVL', 'rDH', 'rIN', 'rAS', 'rDP'}
+local modCount = math.ceil(9 - (math.log(value) / math.log(1.62))) -- log base 1.62
+local DAILY = {}
+
+-- Get capital letters from mod
+local function getCaps(str)
+    return str:match("[A-Z]+")
+end
+
+-- Logic
+local i = 1
+while i <= modCount do
+    local reversal = math.random()
+    local r = (reversal < 0.26) and 9 or 0
+
+    local current = math.random(33)
+    local modIndex
+
+    if current < 5  then
+        modIndex = 1 + r
+    elseif current < 8 then
+        modIndex = 2 + r
+    elseif current < 10 then
+        modIndex = 3 + r
+    elseif current < 15 then
+        modIndex = 4 + r
+    elseif current < 18 then
+        modIndex = 5 + r
+    elseif current < 23 then
+        modIndex = 6 + r
+    elseif current < 27 then
+        modIndex = 7 + r
+    elseif current < 32 then
+        modIndex = 8 + r
+    else 
+        modIndex = 9 + r
+    end
+
+    local selectedMod = mods[modIndex]
+    local selectedCaps = getCaps(selectedMod)
+
+    -- Check if normal or reverse mod is in DAILY
+    local duplicate = false
+    for _, existing in ipairs(DAILY) do
+        if getCaps(existing) == selectedCaps then
+            duplicate = true
+            break
+        end
+    end
+
+    if not duplicate then
+        table.insert(DAILY, selectedMod)
+        i = i + 1
+    end
 end
 
 -- Test
