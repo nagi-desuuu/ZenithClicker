@@ -1482,13 +1482,6 @@ function GAME.start()
     GAME.updateBgm('start')
 end
 
-local function updateZP(oldZP, earn)
-    return max(
-        oldZP,
-        oldZP < earn * 26 and min(oldZP + earn, earn * 26) or
-        earn * 26 + (oldZP - earn * 26) * (23 / 24) + (earn * 24) * (1 / 24)
-    )
-end
 ---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help:setVisible(not GAME.zenithTraveler)
@@ -1569,7 +1562,11 @@ function GAME.finish(reason)
             end
             daily = true
         end
-        STAT.zp = updateZP(oldZP, zpEarn)
+        STAT.zp = max(
+            STAT.zp,
+            STAT.zp < zpEarn * 16 and min(STAT.zp + zpEarn, zpEarn * 16) or
+            zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10)
+        )
         if daily then STAT.zp = min(STAT.zp + (STAT.zp - oldZP) * 1.6, 50 * zpEarn) end
         TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, STAT.zp - oldZP, daily and ", 260%" or ""))
         SaveStat()
