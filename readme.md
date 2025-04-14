@@ -70,7 +70,7 @@ end
 
 Total ZP will be recorded in career, contribute to CR.
 
-Total ZP decay by 1% each day
+Total ZP decays each day: `ZP *= e^(-0.026)`.
 
 Difficulty:
 
@@ -82,7 +82,7 @@ Difficulty:
 > M = (Other) Mod Count  
 > X = rNH ? (DP or rDP ? 2 : 2.2) : 1.6
 
-`Hard Mod Decay = 0.98`  
+`Hard Mode Decay = 0.99`  
 applies `X-1` times, `X = number of "EX or Rev"`
 
 ### Daily Challenge
@@ -93,7 +93,7 @@ A random generated combo for each day, try to harvest most ZP in single run!
 
 Highscore will be recorded in career, contribute to CR.
 
-Highscore decay by 6.26% each day.
+Highscore decays each day: `Highscore *= e^(-0.0626)`.
 
 ## Design draft of Cliker League (Probably won't be implemented)
 

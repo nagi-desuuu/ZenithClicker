@@ -234,7 +234,7 @@ STAT = {
     timeDate = "NO DATE",
 
     zp = 0,
-    dailyHighscore = 0,
+    dailyHS = 0,
     lastDay = 0,
 
     totalGame = 0,
@@ -782,7 +782,7 @@ local today = math.floor(os.time() / 86400)
 if STAT.lastDay ~= today then
     local days = math.max(today - STAT.lastDay, 0)
     STAT.zp = MATH.expApproach(STAT.zp, 0, days * .026)
-    STAT.dailyHighscore = 0
+    STAT.dailyHS = MATH.expApproach(STAT.dailyHS, 0, days * .0626)
     STAT.lastDay = today
 end
 

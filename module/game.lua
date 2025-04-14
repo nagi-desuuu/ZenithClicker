@@ -1559,11 +1559,10 @@ function GAME.finish(reason)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
-        updateZP(STAT.zp, GAME.height * GAME.comboZP)
         local oldZP, zpEarn = STAT.zp, GAME.height * GAME.comboZP
         STAT.zp = updateZP(oldZP, zpEarn)
         TEXTS.zpChange:set(("%.0f ZP   (+%.0f)"):format(zpEarn, STAT.zp - oldZP))
-        -- if ??? and zpGain >= STAT.dailyHighscore then STAT.dailyHighscore = zpGain end
+        -- if ??? and zpGain >= STAT.dailyHS then STAT.dailyHS = zpGain end
         SaveStat()
 
         -- Best
