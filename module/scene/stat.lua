@@ -268,20 +268,20 @@ function RefreshProfile()
     GC.setColor(1, 1, 1)
     local maxComp = TABLE.countAll(GAME.completion, 0) == 9 and 9 or 18
     for _, l in next, {
-        { t = { textColor, "Zenith Points" },                                                     x = 26,  y = 33 },
-        { t = { textColor, "Achievements" },                                                      x = 26,  y = 58 },
-        { t = { textColor, "Daily Challenge" },                                                   x = 26,  y = 83 },
-        { t = { scoreColor, MATH.round(STAT.zp / 1000), textColor, " k" },                        x = 200, y = 33 },
-        { t = { scoreColor, "N/A" },                                                              x = 200, y = 58 },
-        { t = { scoreColor, MATH.round(STAT.dailyHS) },                                           x = 200, y = 83 },
+        { t = { textColor, "Achievements" },                                                      x = 26,  y = 33 },
+        { t = { textColor, "1-Mod Ascent" },                                                      x = 26,  y = 58 },
+        { t = { textColor, "1-Mod Speedrun" },                                                    x = 26,  y = 83 },
+        { t = { scoreColor, "N/A" },                                                              x = 200, y = 33 },
+        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                             x = 200, y = 58 },
+        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                        x = 200, y = 83 },
         { t = { textColor, "Best Altitude" },                                                     x = 300, y = 8 },
         { t = { textColor, "Best Speedrun" },                                                     x = 300, y = 33 },
-        { t = { textColor, "1-Mod Ascent" },                                                      x = 300, y = 58 },
-        { t = { textColor, "1-Mod Speedrun" },                                                    x = 300, y = 83 },
-        { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 480, y = 8 },
-        { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 480, y = 33 },
-        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                             x = 480, y = 58 },
-        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                        x = 480, y = 83 },
+        { t = { textColor, "Zenith Points" },                                                     x = 300, y = 58 },
+        { t = { textColor, "Daily Challenge" },                                                   x = 300, y = 83 },
+        { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 470, y = 8 },
+        { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 470, y = 33 },
+        { t = { scoreColor, MATH.round(STAT.zp / 1000), textColor, " kZP" },                      x = 470, y = 58 },
+        { t = { scoreColor, MATH.round(STAT.dailyHS), textColor, " ZP" },                         x = 470, y = 83 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
 
