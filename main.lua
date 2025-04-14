@@ -840,11 +840,11 @@ do
     math.randomseed(math.floor(os.time() / 86400))
     for _ = 1, 26 do math.random() end
 
-    local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 44 333 222
+    local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
     DAILY = {}
 
     while #DAILY < modCount do
-        local m = ModData.deck[MATH.randFreq { 4, 3, 2, 5, 3, 5, 4, 5, 2 }].id
+        local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
         if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
     end
     if MATH.roll(.26) then
