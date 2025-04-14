@@ -48,7 +48,7 @@ local function calculateRating()
     cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
 
     -- Zenith Points (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 6.2e5, STAT.zp), 2.6)
+    cr = cr + 3000 * norm(MATH.icLerp(0, 5e5, STAT.zp), 4.2)
 
     -- TODO: Achievement (5K)
     -- TODO: Daily Challenge (2K)
@@ -269,7 +269,7 @@ function RefreshProfile()
         { t = { textColor, "Zenith Points" },                                                     x = 26,  y = 33 },
         { t = { textColor, "Achievements" },                                                      x = 26,  y = 58 },
         { t = { textColor, "Daily Challenge" },                                                   x = 26,  y = 83 },
-        { t = { scoreColor, MATH.round(STAT.zp) },                                                x = 200, y = 33 },
+        { t = { scoreColor, MATH.round(STAT.zp / 1000), textColor, " k" },                        x = 200, y = 33 },
         { t = { scoreColor, "N/A" },                                                              x = 200, y = 58 },
         { t = { scoreColor, "N/A" --[[MATH.round(STAT.dailyHighscore)]] },                        x = 200, y = 83 },
         { t = { textColor, "Best Altitude" },                                                     x = 300, y = 8 },

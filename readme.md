@@ -35,7 +35,7 @@ local function calculateRating()
     cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
 
     -- Zenith Points (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 6.2e5, STAT.zp), 2.6)
+    cr = cr + 3000 * norm(MATH.icLerp(0, 5e5, STAT.zp), 4.2)
 
     -- TODO: Achievement (5K)
     -- TODO: Daily Challenge (2K)
@@ -59,11 +59,13 @@ Earn `Altitude*Difficulty` each game, where Difficulty is the product of Difficu
 
 Total ZP is soft-capped:
 ```lua
-STAT.zp = max(
-    STAT.zp, -- Won't drop
-    STAT.zp < zpEarn * 26 and min(STAT.zp + zpEarn, zpEarn * 26) or -- Gain full before 26*zpGain
-    zpEarn * 26 + (STAT.zp - zpEarn * 26) * (23 / 24) + (zpEarn * 24) * (1 / 24) -- Slower from 26*zpGain, slower and slower when getting close to the hard-cap (50*zpGain)
-)
+local function updateZP(oldZP, earn)
+    return max(
+        oldZP, -- Won't drop
+        oldZP < earn * 26 and min(oldZP + earn, earn * 26) or -- Gain full before 26*zpGain
+        earn * 26 + (oldZP - earn * 26) * (23 / 24) + (earn * 24) * (1 / 24) -- Slower from 26*zpGain, slower and slower when getting close to the hard-cap (50*zpGain)
+    )
+end
 ```
 
 Total ZP will be recorded in career, contribute to CR.
