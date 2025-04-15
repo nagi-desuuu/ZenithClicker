@@ -161,18 +161,16 @@ function Card:setActive(auto, key)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and (KBIsDown('lctrl', 'rctrl') or key == 2) and TABLE.countAll(completion, 0) < 9
-        if revOn then
-            if completion[self.id] == 0 then
-                revOn = false
-                noSpin = true
-                self.active = false
-                self:shake()
-                SFX.play('no')
-                MSG.clear()
-                MSG('dark', "Reach F10 with this mod to Unlock Reversed Mod")
-                return
-            end
+        revOn = self.active and (key == 2 or KBIsDown('lctrl', 'rctrl'))
+        if revOn and completion[self.id] == 0 then
+            revOn = false
+            noSpin = true
+            self.active = false
+            self:shake()
+            SFX.play('no')
+            MSG.clear()
+            MSG('dark', "Reach F10 with this mod first!")
+            return
         end
         local wasRev = M[self.id] == 2
         M[self.id] = self.active and (revOn and 2 or 1) or 0
