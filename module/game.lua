@@ -1405,9 +1405,9 @@ function GAME.start()
     GAME.playing = true
 
     -- Statistics
+    GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
     GAME.prevPB = BEST.highScore[GAME.comboStr]
     if GAME.prevPB == 0 then GAME.prevPB = -260 end
-    GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
     GAME.totalFlip = 0
     GAME.totalQuest = 0
     GAME.totalPerfect = 0
