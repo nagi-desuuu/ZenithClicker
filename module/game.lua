@@ -991,7 +991,7 @@ function GAME.freshLifeState()
 end
 
 function GAME.refreshDailyChallengeText()
-    TEXTS.dcBest:set(("%.0f ZP"):format(STAT.dailyBest))
+    TEXTS.dcBest:set(("%.0fm  %.0f ZP"):format(STAT.dailyBest / GAME.getComboZP(DAILY), STAT.dailyBest))
     local sortedDaily = TABLE.copy(DAILY)
     DailyAvailable = true
     for _, v in next, sortedDaily do
