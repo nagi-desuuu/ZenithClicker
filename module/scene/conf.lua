@@ -237,11 +237,11 @@ scene.widgetList = {
                 return
             end
             data = data:trim()
-            if TASK.lock('import', 2.6) then
+            if TASK.lock('import', 4.2) then
                 SFX.play('notify')
                 MSG('dark',
-                    "Import data from clipboard text?\nCurrent progress will be lost forever!\nClick again to confirm",
-                    2.6)
+                    "Import data from clipboard text?\nVersion must match, and current progress will be lost forever!\nClick again to confirm",
+                    4.2)
                 return
             end
             TASK.unlock('import')
@@ -254,6 +254,8 @@ scene.widgetList = {
                 return
             end
             STAT, BEST = res1, res2
+            setmetatable(BEST.highScore, Metatable.best_highscore)
+            setmetatable(BEST.speedrun, Metatable.best_speedrun)
             GAME.refreshLockState()
             SaveStat()
             SaveBest()

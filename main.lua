@@ -218,9 +218,13 @@ end
 local button_invis = WIDGET.newClass('button_invis', 'button')
 button_invis.draw = NULL
 
+Metatable = {
+    best_highscore = { __index = function() return 0 end },
+    best_speedrun = { __index = function() return 1e99 end },
+}
 BEST = {
-    highScore = setmetatable({}, { __index = function() return 0 end }),
-    speedrun = setmetatable({}, { __index = function() return 1e99 end }),
+    highScore = setmetatable({}, Metatable.best_highscore),
+    speedrun = setmetatable({}, Metatable.best_speedrun),
 }
 
 STAT = {
