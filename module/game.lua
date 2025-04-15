@@ -1012,7 +1012,7 @@ function GAME.refreshDailyChallengeText()
         table.sort(sortedDaily, function(a, b) return ModData.prio_card[a] < ModData.prio_card[b] end)
         local rev = str:match("r%S+")
         if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
-        str = str .. "\nTry to get more ZP in single run with this mod combo!\nClick to select"
+        str = str .. "\nTry to get more ZP in single run with this mod combo!\n(Click to select)"
     else
         str = "Oops! Today's Combo is not available for you...\nComplete more mods to unlock more contents!"
     end

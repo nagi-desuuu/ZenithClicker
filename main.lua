@@ -849,7 +849,7 @@ love.window.setFullscreen(STAT.fullscreen)
 ApplySettings()
 GAME.refreshCursor()
 
-do
+function RefreshDailyChallenge()
     math.randomseed(os.date("!%Y%m%d") + 0)
     for _ = 1, 26 do math.random() end
 
@@ -875,6 +875,7 @@ do
     end
     -- print(table.concat(DAILY, ' '))
 end
+RefreshDailyChallenge()
 
 GAME.refreshCurrentCombo()
 

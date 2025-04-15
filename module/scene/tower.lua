@@ -336,7 +336,13 @@ function scene.update(dt)
 
     if not GAME.playing and TASK.lock('dcTimer', 1) then
         local timeRemain = 86400 - (3600 * os.date("!%H") + 60 * os.date("!%M") + os.date("!%S"))
-        TEXTS.dcTimer:set(timeRemain > 0 and os.date("!%H:%M:%S", timeRemain) or "Expired")
+        timeRemain = timeRemain
+        if timeRemain <= 0 then
+            RefreshDailyChallenge()
+            GAME.refreshDailyChallengeText()
+            timeRemain = timeRemain + 86400
+        end
+        TEXTS.dcTimer:set(os.date("!%H:%M:%S", timeRemain))
     end
 end
 
