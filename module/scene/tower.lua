@@ -773,18 +773,22 @@ function scene.overDraw()
         -- Quests
         local style = M.DP == 0 and questStyle or questStyleDP
         for i = 1, #GAME.quests do
-            local t = GAME.quests[i].name
-            local kx = min(style[i].k, 1550 / t:getWidth())
+            local text = GAME.quests[i].name
+            local kx = min(style[i].k, 1550 / text:getWidth())
             local ky = max(kx, style[i].k)
             local a = 1
             if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
-                a = a * (1 - GAME.questTime * GAME.floor * .26)
-                if GAME.faultWrong then a = max(a, .355) end
+                a = clamp(
+                    a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26),
+                    GAME.faultWrong and .355 or 0, 1
+                )
             end
-            gc_setColor(.2 * a, .2 * a, .2 * a, a)
-            gc_mDraw(t, 800, style[i].y + 5, 0, kx, ky)
-            gc_setColor(1, 1, 1, a)
-            gc_mDraw(t, 800, style[i].y, 0, kx, ky)
+            if a > 0 then
+                gc_setColor(.2 * a, .2 * a, .2 * a, a)
+                gc_mDraw(text, 800, style[i].y + 5, 0, kx, ky)
+                gc_setColor(1, 1, 1, a)
+                gc_mDraw(text, 800, style[i].y, 0, kx, ky)
+            end
         end
 
         -- Damage Timer
