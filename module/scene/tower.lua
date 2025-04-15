@@ -688,6 +688,18 @@ function scene.draw()
         gc_setColor(COLOR.dL)
         gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
     end
+
+    -- Daily Challenge Timer
+    if not GAME.playing then
+        gc_replaceTransform(SCR.xOy_ur)
+        gc_setColor(TextColor)
+        gc_mDraw(TEXTS.dcBest, -200, 100, nil, .626)
+        gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
+        if DailyActived then
+            gc_setAlpha(.42 + .1 * sin(love.timer.getTime() * 6.2))
+            gc_mRect('fill', -200, 126, 200, 80, 40)
+        end
+    end
 end
 
 local questStyle = {
@@ -936,17 +948,6 @@ function scene.overDraw()
         setFont(50)
         for i = 1, #Cards do
             gc_strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
-        end
-    end
-
-    -- Daily Challenge Timer
-    if not GAME.playing then
-        gc_replaceTransform(SCR.xOy_ur)
-        gc_setColor(TextColor)
-        gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
-        if DailyActived then
-            gc_setAlpha(.26 + .26 * sin(t * 6.2))
-            gc_mRect('fill', -200, 126, 200, 80, 40)
         end
     end
 

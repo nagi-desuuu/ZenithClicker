@@ -51,7 +51,7 @@ local function calculateRating()
     cr = cr + 3000 * norm(MATH.icLerp(0, 26e4, STAT.zp), 4.2)
 
     -- Daily Challenge (2K)
-    cr = cr + 2000 * norm(MATH.icLerp(0, 6200, STAT.dailyHS), 2.6)
+    cr = cr + 2000 * norm(MATH.icLerp(0, 6200, STAT.dzp), 2.6)
 
     -- TODO: Achievement (5K)
     cr = MATH.clamp(cr * 25000 / 20000, 0, 25000)
@@ -281,7 +281,7 @@ function RefreshProfile()
         { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 470, y = 8 },
         { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 470, y = 33 },
         { t = { scoreColor, MATH.round(STAT.zp / 1000), textColor, " kZP" },                      x = 470, y = 58 },
-        { t = { scoreColor, MATH.round(STAT.dailyHS), textColor, " ZP" },                         x = 470, y = 83 },
+        { t = { scoreColor, MATH.round(STAT.dzp), textColor, " ZP" },                         x = 470, y = 83 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
 

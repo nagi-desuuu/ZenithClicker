@@ -991,6 +991,7 @@ function GAME.freshLifeState()
 end
 
 function GAME.refreshDailyChallengeText()
+    TEXTS.dcBest:set(("%.0f ZP"):format(STAT.dailyBest))
     local sortedDaily = TABLE.copy(DAILY)
     DailyAvailable = true
     for _, v in next, sortedDaily do
@@ -1579,10 +1580,9 @@ function GAME.finish(reason)
 
         local oldZP, zpEarn = STAT.zp, GAME.height * GAME.comboZP
         if DailyActived then
-            if zpEarn >= STAT.dailyHS then
-                STAT.dailyHS = zpEarn
-                -- TODO: send to online leaderboard
-            end
+            STAT.dzp = max(STAT.dzp, zpEarn)
+            STAT.dailyBest = max(STAT.dailyBest, zpEarn)
+            -- TODO: send to online leaderboard
         end
         STAT.zp = max(
             STAT.zp,

@@ -167,6 +167,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     mpPreview  = GC.newText(FONT.get(30)),
     zpPreview  = GC.newText(FONT.get(30)),
     zpChange   = GC.newText(FONT.get(30)),
+    dcBest     = GC.newText(FONT.get(30)),
     dcTimer    = GC.newText(FONT.get(30)),
     title      = GC.newText(FONT.get(50), "EXPERT QUICK PICK"),
     load       = GC.newText(FONT.get(50), "JOINING ROOM..."),
@@ -239,7 +240,8 @@ STAT = {
     timeDate = "NO DATE",
 
     zp = 0,
-    dailyHS = 0,
+    dzp = 0,
+    dailyBest = 0,
     lastDay = 0,
 
     totalGame = 0,
@@ -438,6 +440,50 @@ function ReloadTexts()
     if SCN.cur == 'stat' then RefreshProfile() end
     AboutText:setFont(FONT.get(70))
     MSG.clear()
+end
+
+function RefreshDaily()
+    local dateToday = os.date("!*t", os.time())
+    local dateLastDay = os.date("!*t", STAT.lastDay)
+    local time0Today = os.time({ year = dateToday.year, month = dateToday.month, day = dateToday.day })
+    local time0LastDay = os.time({ year = dateLastDay.year, month = dateLastDay.month, day = dateLastDay.day })
+    local dayPast = MATH.round((time0Today - time0LastDay) / 86400)
+
+    if dayPast < 0 then
+        MSG('warn', "Back to the future?", 26)
+    elseif MATH.between(dayPast, 1, 2600) then
+        -- print("Old ZP & Daily HS", STAT.zp, STAT.dailyHS)
+        STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
+        STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
+        STAT.dailyBest = 0
+        -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
+        STAT.lastDay = os.time()
+    end
+
+    math.randomseed(os.date("!%Y%m%d") + 0)
+    for _ = 1, 26 do math.random() end
+
+    local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
+    DAILY = {}
+
+    DailyActived = false
+    DailyAvailable = false
+
+    while #DAILY < modCount do
+        local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
+        if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
+    end
+    if MATH.roll(.26) then
+        if #DAILY >= 3 and MATH.roll(.62) then TABLE.popRandom(DAILY) end
+        local r = math.random(#DAILY)
+        DAILY[r] = 'r' .. DAILY[r]
+        if MATH.roll(.26) then
+            local r2 = math.random(#DAILY - 1)
+            if r2 >= r then r2 = r2 + 1 end
+            DAILY[r2] = 'r' .. DAILY[r2]
+        end
+    end
+    -- print(table.concat(DAILY, ' '))
 end
 
 love.mouse.setVisible(false)
@@ -779,6 +825,11 @@ if BEST.version == 166 then
     STAT.bgm = STAT.bgm and 100 or 0
     BEST.version = 167
 end
+if BEST.version == 167 then
+    STAT.dzp = STAT.dailyHS
+    STAT.dailyHS = nil
+    BEST.version = 168
+end
 if BEST.version ~= oldVer then
     SaveStat()
     SaveBest()
@@ -832,49 +883,6 @@ GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
 ApplySettings()
 GAME.refreshCursor()
-
-function RefreshDaily()
-    local dateToday = os.date("!*t", os.time())
-    local dateLastDay = os.date("!*t", STAT.lastDay)
-    local time0Today = os.time({ year = dateToday.year, month = dateToday.month, day = dateToday.day })
-    local time0LastDay = os.time({ year = dateLastDay.year, month = dateLastDay.month, day = dateLastDay.day })
-    local dayPast = MATH.round((time0Today - time0LastDay) / 86400)
-
-    if dayPast < 0 then
-        MSG('warn', "Back to the future?", 26)
-    elseif MATH.between(dayPast, 1, 2600) then
-        -- print("Old ZP & Daily HS", STAT.zp, STAT.dailyHS)
-        STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
-        STAT.dailyHS = MATH.expApproach(STAT.dailyHS, 0, dayPast * .0626)
-        -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
-        STAT.lastDay = os.time()
-    end
-
-    math.randomseed(os.date("!%Y%m%d") + 0)
-    for _ = 1, 26 do math.random() end
-
-    local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
-    DAILY = {}
-
-    DailyActived = false
-    DailyAvailable = false
-
-    while #DAILY < modCount do
-        local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
-        if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
-    end
-    if MATH.roll(.26) then
-        if #DAILY >= 3 and MATH.roll(.62) then TABLE.popRandom(DAILY) end
-        local r = math.random(#DAILY)
-        DAILY[r] = 'r' .. DAILY[r]
-        if MATH.roll(.26) then
-            local r2 = math.random(#DAILY - 1)
-            if r2 >= r then r2 = r2 + 1 end
-            DAILY[r2] = 'r' .. DAILY[r2]
-        end
-    end
-    -- print(table.concat(DAILY, ' '))
-end
 
 RefreshDaily()
 
