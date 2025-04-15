@@ -857,6 +857,7 @@ do
     DAILY = {}
 
     DailyActived = false
+    DailyAvailable = false
 
     while #DAILY < modCount do
         local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id

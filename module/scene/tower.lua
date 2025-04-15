@@ -185,14 +185,7 @@ function scene.load()
     cancelNextClick = true
     cancelNextKeyClick = true
 
-    local sortedDaily = TABLE.sort(TABLE.copy(DAILY),
-        function(a, b) return ModData.prio_card[a] < ModData.prio_card[b] end)
-    local str = "Today's Combo: " .. table.concat(sortedDaily, " ")
-    local rev = str:match("r%S+")
-    if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
-    str = str .. "\nTry to get more ZP in single run with this mod combo!\n(Click to quick select)"
-    scene.widgetList.daily.floatText = str
-    scene.widgetList.daily:reset()
+    GAME.refreshDailyChallengeText()
 end
 
 function scene.mouseMove(x, y, _, dy)
@@ -342,7 +335,8 @@ function scene.update(dt)
     end
 
     if not GAME.playing and TASK.lock('dcTimer', 1) then
-        TEXTS.dcTimer:set(os.date("!%H:%M:%S", 86400 - (3600 * os.date("!%H") + 60 * os.date("!%M") + os.date("!%S"))))
+        local timeRemain = 86400 - (3600 * os.date("!%H") + 60 * os.date("!%M") + os.date("!%S"))
+        TEXTS.dcTimer:set(timeRemain > 0 and os.date("!%H:%M:%S", timeRemain) or "Expired")
     end
 end
 
@@ -1146,6 +1140,7 @@ scene.widgetList = {
         floatCornerR = 26,
         floatText = "NO DATA",
         onPress = function()
+            if not DailyAvailable then return end
             local changed
             for _, C in ipairs(Cards) do
                 local cur = C.active and (C.upright and 1 or 2) or 0

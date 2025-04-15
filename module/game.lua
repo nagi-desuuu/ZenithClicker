@@ -990,6 +990,29 @@ function GAME.freshLifeState()
     end
 end
 
+function GAME.refreshDailyChallengeText()
+    local sortedDaily = TABLE.copy(DAILY)
+    DailyAvailable = true
+    for _, v in next, sortedDaily do
+        if v:find('r') and GAME.completion[v:sub(2)] == 0 then
+            DailyAvailable = false
+            break
+        end
+    end
+    local str
+    if DailyAvailable then
+        str = "Today's Combo: " .. table.concat(sortedDaily, " ")
+        table.sort(sortedDaily, function(a, b) return ModData.prio_card[a] < ModData.prio_card[b] end)
+        local rev = str:match("r%S+")
+        if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
+        str = str .. "\nTry to get more ZP in single run with this mod combo!\nClick to select"
+    else
+        str = "Oops! Today's Combo is not available for you...\nPractice more and unlock more contents!"
+    end
+    SCN.scenes.tower.widgetList.daily.floatText = str
+    SCN.scenes.tower.widgetList.daily:reset()
+end
+
 function GAME.swapControl()
     if GAME[GAME.getLifeKey(true)] > 0 then
         GAME.onAlly = not GAME.onAlly
@@ -1648,6 +1671,7 @@ function GAME.finish(reason)
     GAME.refreshCurrentCombo()
     GAME.refreshPBText()
     TASK.unlock('dcTimer')
+    GAME.refreshDailyChallengeText()
 
     if unlockDuo then
         CD.DP.lock = true
