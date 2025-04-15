@@ -338,7 +338,7 @@ function scene.update(dt)
         local timeRemain = 86400 - (3600 * os.date("!%H") + 60 * os.date("!%M") + os.date("!%S"))
         timeRemain = timeRemain
         if timeRemain <= 0 then
-            RefreshDailyChallenge()
+            RefreshDaily()
             GAME.refreshDailyChallengeText()
             timeRemain = timeRemain + 86400
         end
