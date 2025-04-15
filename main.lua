@@ -847,7 +847,7 @@ GAME.refreshCursor()
 GAME.refreshCurrentCombo()
 
 do
-    math.randomseed(math.floor(os.time() / 86400))
+    math.randomseed(os.date("!%Y%m%d") + 0)
     for _ = 1, 26 do math.random() end
 
     local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
