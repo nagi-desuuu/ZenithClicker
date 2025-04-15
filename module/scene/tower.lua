@@ -701,12 +701,13 @@ local questStyleDP = {
     { k = 0.7, y = 25 },
 }
 function scene.overDraw()
+    local t = love.timer.getTime()
     if GAME.zenithTraveler then return end
 
     -- Current combo
     if M.IN < 2 or not GAME.playing then
         gc_setColor(TextColor)
-        if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(love.timer.getTime() * 2.6)) end
+        if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
         local k = min(1, 760 / TEXTS.mod:getWidth())
         gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, 0, k)
     end
@@ -943,6 +944,10 @@ function scene.overDraw()
         gc_replaceTransform(SCR.xOy_ur)
         gc_setColor(TextColor)
         gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
+        if DailyActived then
+            gc_setAlpha(.26 + .26 * sin(t * 6.2))
+            gc_mRect('fill', -200, 126, 200, 80, 40)
+        end
     end
 
     -- UI
@@ -993,7 +998,6 @@ function scene.overDraw()
             setFont(70)
             gc_push('transform')
             gc_translate(0, -118)
-            local t = love.timer.getTime()
             gc_scale(1 + sin(t / 2.6) * .026)
             gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
             gc_strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 130, -35 + 4, 2600, 'center', 0, .9, 1)

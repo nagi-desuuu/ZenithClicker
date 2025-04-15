@@ -844,7 +844,6 @@ GAME.refreshPBText()
 love.window.setFullscreen(STAT.fullscreen)
 ApplySettings()
 GAME.refreshCursor()
-GAME.refreshCurrentCombo()
 
 do
     math.randomseed(os.date("!%Y%m%d") + 0)
@@ -852,6 +851,8 @@ do
 
     local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
     DAILY = {}
+
+    DailyActived = false
 
     while #DAILY < modCount do
         local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
@@ -869,6 +870,8 @@ do
     end
     -- print(table.concat(DAILY, ' '))
 end
+
+GAME.refreshCurrentCombo()
 
 -- Test
 TASK.new(function()
