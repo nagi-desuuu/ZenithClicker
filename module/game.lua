@@ -94,7 +94,7 @@ local GAME = {
     comboMP = 0,
     comboZP = 1,
 
-    completion = { -- 0=locked, 1=unlocked, 2=mastered
+    completion = { -- 0=not mastered, 1=mastered, 2=rev mastered
         EX = 0,
         NH = 0,
         MS = 0,
@@ -994,9 +994,16 @@ function GAME.refreshDailyChallengeText()
     local sortedDaily = TABLE.copy(DAILY)
     DailyAvailable = true
     for _, v in next, sortedDaily do
-        if v:find('r') and GAME.completion[v:sub(2)] == 0 then
-            DailyAvailable = false
-            break
+        if v:find('r') then
+            if GAME.completion[v:sub(2)] == 0 then
+                DailyAvailable = false
+                break
+            end
+        else
+            if Cards[v].lock then
+                DailyAvailable = false
+                break
+            end
         end
     end
     local str
@@ -1007,7 +1014,7 @@ function GAME.refreshDailyChallengeText()
         if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
         str = str .. "\nTry to get more ZP in single run with this mod combo!\nClick to select"
     else
-        str = "Oops! Today's Combo is not available for you...\nPractice more and unlock more contents!"
+        str = "Oops! Today's Combo is not available for you...\nComplete more mods to unlock more contents!"
     end
     SCN.scenes.tower.widgetList.daily.floatText = str
     SCN.scenes.tower.widgetList.daily:reset()
