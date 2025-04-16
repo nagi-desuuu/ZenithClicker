@@ -1590,27 +1590,27 @@ function GAME.finish(reason)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
 
-        local oldZP, zpEarn = STAT.zp, GAME.height * GAME.comboZP
+        local oldZP, zpGain = STAT.zp, GAME.height * GAME.comboZP
         if DailyActived then
-            STAT.dzp = max(STAT.dzp, zpEarn)
-            STAT.dailyBest = max(STAT.dailyBest, zpEarn)
+            STAT.dzp = max(STAT.dzp, zpGain)
+            STAT.dailyBest = max(STAT.dailyBest, zpGain)
             -- TODO: send to online leaderboard
         end
         STAT.zp = max(
             STAT.zp,
-            STAT.zp < zpEarn * 16 and min(STAT.zp + zpEarn, zpEarn * 16) or
-            zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10)
+            STAT.zp < zpGain * 16 and min(STAT.zp + zpGain, zpGain * 16) or
+            zpGain * 16 + (STAT.zp - zpGain * 16) * (9 / 10) + (zpGain * 10) * (1 / 10)
         )
-        if DailyActived then STAT.zp = MATH.clamp(STAT.zp + (STAT.zp - oldZP) * 1.6, STAT.zp, 50 * zpEarn) end
-        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, 0, DailyActived and ", 260%" or ""))
-        local zpGain = STAT.zp - oldZP
-        if zpGain > 0 then
+        if DailyActived then STAT.zp = MATH.clamp(STAT.zp + (STAT.zp - oldZP) * 1.6, STAT.zp, 50 * zpGain) end
+        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpGain, 0, DailyActived and ", 260%" or ""))
+        local zpEarn = STAT.zp - oldZP
+        if zpEarn > 0 then
             TASK.new(function()
                 TASK.yieldT(0.626)
                 TWEEN.new(function(t)
-                    TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpEarn, zpGain * t, DailyActived and ", 260%" or ""))
+                    TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpGain, zpEarn * t, DailyActived and ", 260%" or ""))
                 end):setEase('InOutCubic'):setDuration(2):run()
-                SFX.play('ratingraise', zpGain ^ .5 / 60)
+                SFX.play('ratingraise', zpEarn ^ .5 / 60)
             end)
         end
         SaveStat()

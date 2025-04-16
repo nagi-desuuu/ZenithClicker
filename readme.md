@@ -22,36 +22,19 @@ Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
 ## Behind The Scene
 
-### CR formula
+### Clicker Rating (CR)
 
-```lua
-local function calculateRating()
-    local cr = 0
+CR is calculated from:
 
-    -- Best Height (5K)
-    cr = cr + 5000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
+1. Best Height (5K)
+1. Best Time (5K)
+1. Mod Completion (3K)
+1. Mod Speedrun (2K)
+1. Zenith Point (3K)
+1. Daily Challenge (2K)
+2. Achievement (5K)
 
-    -- Best Time (5K)
-    cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
-
-    -- Mod Completion (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
-
-    -- Mod Speedrun (2K)
-    cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
-
-    -- Zenith Points (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 26e4, STAT.zp), 4.2)
-
-    -- Daily Challenge (2K)
-    cr = cr + 2000 * norm(MATH.icLerp(0, 6200, STAT.dailyHS), 2.6)
-
-    -- TODO: Achievement (5K)
-    cr = MATH.clamp(cr * 25000 / 20000, 0, 25000)
-
-    return MATH.round(cr)
-end
-```
+About the formula, see function `calculateRating()` in [/module/scene/stat.lua]
 
 ### Zenith Points (ZP)
 
@@ -66,7 +49,7 @@ end
 `Hard Mode Decay` = 0.99  
 applies `X-1` times, `X = number of "EX or Rev"`
 
-Total ZP is soft-capped:
+Total ZP is soft-capped by your skill:
 
 ```lua
 STAT.zp = max(
