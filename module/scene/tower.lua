@@ -183,7 +183,7 @@ end
 
 function scene.load()
     if SYSTEM == 'Web' and TASK.lock('web_warn') then
-        MSG('warn', "[WARNING]\nWeb version is only for trial purposes.\nYour progress can randomly lost without being saved (cannot fix)\nDownload desktop version to play more in the future, with far better performance.\nThanks you for your support!", 12.6)
+        MSG('warn', "[WARNING]\nWeb version is only for trial purposes.\nYour progress can randomly lost without being saved (cannot fix)\nDownload desktop version to play more in the future, with far better performance.\nThank you for your support!", 12.6)
     end
 
     cancelNextClick = true
