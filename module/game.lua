@@ -1152,6 +1152,7 @@ function GAME.commit()
                 GAME.nixPrompt('keep_no_imperfect')
                 GAME.nixPrompt('pass_windup_inb2b')
             end
+            if M.AS == 2 then attack = 0 end
             xp = xp + 2
             if GAME.chain < 4 then
                 SFX.play('clearline', .62)
@@ -1212,9 +1213,7 @@ function GAME.commit()
             SFX.play(MATH.roll(.626) and 'clearspin' or 'clearquad', .5)
             if correct == 1 then
                 attack = attack + 1
-                if M.AS == 2 and GAME.chain >= 4 then
-                    attack = attack + 1
-                end
+                if M.AS == 2 and GAME.chain >= 4 then attack = attack + 1 end
                 xp = xp + 3
                 GAME.chain = GAME.chain + 1
                 if GAME.chain < 4 then
