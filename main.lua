@@ -866,7 +866,7 @@ if BEST.version == 166 then
     BEST.version = 167
 end
 if BEST.version == 167 then
-    STAT.dzp = STAT.dailyHS
+    STAT.dzp = STAT.dailyHS or 0
     STAT.dailyHS = nil
     BEST.version = 168
 end
