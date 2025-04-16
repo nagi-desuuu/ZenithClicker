@@ -513,7 +513,7 @@ function RefreshDaily()
         local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
         if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
     end
-    if MATH.roll(.26) then
+    if MATH.roll(.26 + #DAILY * .0626) then
         if #DAILY >= 3 and MATH.roll(.62) then TABLE.popRandom(DAILY) end
         local r = math.random(#DAILY)
         DAILY[r] = 'r' .. DAILY[r]
