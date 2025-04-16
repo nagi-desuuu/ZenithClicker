@@ -779,16 +779,16 @@ function GAME.refreshModIcon()
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     if #hand == 1 then
         GAME.modIB:add(
-            TEXTURE.modQuad_ig[hand[1]], 0, 0,
+            TEXTURE.modQuad_ig_ex[hand[1]], 0, 0,
             0, #hand[1] == 3 and .7023 or .62, nil, 219 * .5, 219 * .5
         )
     elseif #hand == 2 then
         GAME.modIB:add(
-            TEXTURE.modQuad_ig[hand[2]], 35, 0,
+            TEXTURE.modQuad_ig_ex[hand[2]], 35, 0,
             0, #hand[2] == 3 and .626 or .5, nil, 219 * .5, 219 * .5
         )
         GAME.modIB:add(
-            TEXTURE.modQuad_ig[hand[1]], -35, 0,
+            TEXTURE.modQuad_ig_ex[hand[1]], -35, 0,
             0, #hand[1] == 3 and .626 or .5, nil, 219 * .5, 219 * .5
         )
     else
@@ -813,16 +813,16 @@ function GAME.refreshResultModIcon()
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     if #hand == 1 then
         GAME.resIB:add(
-            TEXTURE.modQuad_res[hand[1]], 0, 0,
+            TEXTURE.modQuad_res_ex[hand[1]], 0, 0,
             0, #hand[1] == 3 and .626 or .5, nil, 183 * .5, 183 * .5
         )
     elseif #hand == 2 then
         GAME.resIB:add(
-            TEXTURE.modQuad_res[hand[2]], 35, 0,
+            TEXTURE.modQuad_res_ex[hand[2]], 35, 0,
             0, #hand[2] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
         )
         GAME.resIB:add(
-            TEXTURE.modQuad_res[hand[1]], -35, 0,
+            TEXTURE.modQuad_res_ex[hand[1]], -35, 0,
             0, #hand[1] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
         )
     else
