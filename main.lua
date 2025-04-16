@@ -156,7 +156,7 @@ FONT.load {
     sans = "assets/DINPro-Medium.otf",
     led = "assets/UniDreamLED.ttf",
 }
-local fontNotLoaded = MATH.roll(.62)
+local fontNotLoaded = SYSTEM ~= 'Web' and MATH.roll(.62)
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 
 BG.add('black', { draw = function() GC.clear(0, 0, 0) end })
