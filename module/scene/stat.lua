@@ -36,7 +36,7 @@ local function calculateRating()
     local cr = 0
 
     -- Best Height (5K)
-    cr = cr + 5000 * norm(MATH.icLerp(50, 6666, STAT.maxHeight), 6.2)
+    cr = cr + 5000 * norm(MATH.icLerp(50, 6200, STAT.maxHeight), 6.2)
 
     -- Best Time (5K)
     cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
