@@ -10,9 +10,10 @@ local clr = {
 
     z = { COLOR.HEX "80CCFF" },
     asrial = { COLOR.HEX "DDFF80" },
-    garbo = { COLOR.HEX "3A67DB" },
-    ocelot = { COLOR.HEX "FF99CC" },
+    ccyt = { COLOR.HEX "66DD55" },
     osk = { COLOR.HEX "DD99FF" },
+    ocelot = { COLOR.HEX "FF99CC" },
+    garbo = { COLOR.HEX "3A66DD" },
 }
 
 AboutText = GC.newText(FONT.get(70))
@@ -43,53 +44,57 @@ table.insert(lines, 387)
 
 addText({ COLOR.O, "THE TEAM" }, 0, 410, .3)
 
-addText({ clr.z, "MRZ" }, -180, 450, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, -180, 490, .26)
-addText({ COLOR.LD, "Programming, Game Design, General Development" }, -180, 510, .2)
+addText({ clr.z, "MRZ" }, 0, 450, .5)
+addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
+addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .2)
 
-addText({ clr.asrial, "DJ  ASRIEL" }, 180, 450, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 180, 490, .26)
-addText({ COLOR.LD, "Background Reconstruction" }, 180, 510, .2)
+addText({ clr.asrial, "DJ  ASRIEL" }, -160, 550, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -160, 590, .26)
+addText({ COLOR.LD, "Background Reconstruction" }, -160, 610, .2)
 
-addText({ clr.osk, "OSK" }, -320, 550, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -320, 590, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, -320, 610, .2)
+addText({ clr.ccyt, "CREEPERCRAFTYT" }, 160, 550, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 160, 590, .26)
+addText({ COLOR.LD, "Icon for Single Mod" }, 160, 610, .2)
 
-addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 550, .5)
-addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 590, .26)
+addText({ clr.osk, "OSK" }, -320, 650, .5)
+addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -320, 690, .26)
+addText({ COLOR.LD, "of the Original Game: TETR.IO" }, -320, 710, .2)
 
-addText({ clr.garbo, "GARBO" }, 320, 550, .5)
-addText({ COLOR.LD, "GAME & WORLD DESIGN…" }, 320, 590, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, 320, 610, .2)
+addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 650, .5)
+addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 690, .26)
 
-table.insert(lines, 640)
+addText({ clr.garbo, "GARBO" }, 320, 650, .5)
+addText({ COLOR.LD, "GAME & WORLD DESIGN…" }, 320, 690, .26)
+addText({ COLOR.LD, "of the Original Game: TETR.IO" }, 320, 710, .2)
 
-addText({ COLOR.O, "ART BY" }, 0, 660 + 10, .3)
+table.insert(lines, 740)
 
-addText("LARGEONIONS", -300 * 1.26, 712, .46)
-addText({ COLOR.LD, "FLOORS 1-5" }, -300 * 1.26, 740 + 10, .26)
-addText("S.  ZHANG", -100 * 1.26, 712, .46)
-addText({ COLOR.LD, "FLOORS 6-8" }, -100 * 1.26, 740 + 10, .26)
-addText("LAUREN  SHENG", 100 * 1.26, 712, .46)
-addText({ COLOR.LD, "FLOORS 9-10" }, 100 * 1.26, 740 + 10, .26)
-addText("RICMAN", 300 * 1.26, 712, .46)
-addText({ COLOR.LD, "CARD ART" }, 300 * 1.26, 740 + 10, .26)
+addText({ COLOR.O, "ART BY" }, 0, 760 + 10, .3)
 
-table.insert(lines, 800)
+addText("LARGEONIONS", -300 * 1.26, 812, .46)
+addText({ COLOR.LD, "FLOORS 1-5" }, -300 * 1.26, 840 + 10, .26)
+addText("S.  ZHANG", -100 * 1.26, 812, .46)
+addText({ COLOR.LD, "FLOORS 6-8" }, -100 * 1.26, 840 + 10, .26)
+addText("LAUREN  SHENG", 100 * 1.26, 812, .46)
+addText({ COLOR.LD, "FLOORS 9-10" }, 100 * 1.26, 840 + 10, .26)
+addText("RICMAN", 300 * 1.26, 812, .46)
+addText({ COLOR.LD, "CARD ART" }, 300 * 1.26, 840 + 10, .26)
+
+table.insert(lines, 900)
 
 addText({
     COLOR.O, "GAME ICON BY ",
     clr.asrial, "DJ Asriel ",
     COLOR.O, "& ",
     clr.z, "MrZ"
-}, 0, 826, .32)
+}, 0, 926, .32)
 
 addText({
     COLOR.O, "FONTS BY ",
     COLOR.L, "Adrian Frutiger (D-Din-Pro) ",
     COLOR.O, "& ",
     COLOR.L, "Mooniak (AbhayaLibre)"
-}, 0, 870, .32)
+}, 0, 970, .32)
 
 local timer
 function scene.load()
@@ -100,12 +105,12 @@ end
 
 function scene.mouseMove(_, _, _, dy)
     if love.mouse.isDown(1, 2) then
-        scroll = MATH.clamp(scroll - dy, 0, 100)
+        scroll = MATH.clamp(scroll - dy, 0, 200)
     end
 end
 
 function scene.touchMove(_, _, _, dy)
-    scroll = MATH.clamp(scroll - dy, 0, 100)
+    scroll = MATH.clamp(scroll - dy, 0, 200)
 end
 
 function scene.keyDown(key, isRep)
@@ -119,7 +124,7 @@ function scene.keyDown(key, isRep)
 end
 
 function scene.wheelMove(_, dy)
-    scroll = MATH.clamp(scroll - dy * 42, 0, 120)
+    scroll = MATH.clamp(scroll - dy * 42, 0, 200)
 end
 
 function scene.update(dt)
