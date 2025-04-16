@@ -11,10 +11,14 @@ and there's still no convenient way to know which mods are included in a specifi
 
 Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
-Redesigned by MrZ  
-Backgrounds reconstructed by DJ Asriel  
-D-Din-Pro (Font) by Adrian Frutigеr  
-AbhayaLibre-Regular (Font) by Mooniak
+**MrZ**: Programming, game design, general development  
+**DJ Asriel**: Background reconstruction  
+**CreepercraftYT**: Detailed mod icons  
+**Dr Ocelot**: Audio & Music  
+**osk**: founder & lead producer of tetr.io  
+**Garbo**: game & world design of tetr.io  
+**Frutigеr**: Font designer (D-Din-Pro)  
+**Mooniak**: Font designer (AbhayaLibre-Regular)
 
 ## Behind The Scene
 

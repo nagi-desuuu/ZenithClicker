@@ -54,7 +54,7 @@ addText({ COLOR.LD, "Background Reconstruction" }, -160, 610, .2)
 
 addText({ clr.ccyt, "CREEPERCRAFTYT" }, 160, 550, .5)
 addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 160, 590, .26)
-addText({ COLOR.LD, "Icon for Single Mod" }, 160, 610, .2)
+addText({ COLOR.LD, "Detailed Mod Icons" }, 160, 610, .2)
 
 addText({ clr.osk, "OSK" }, -320, 650, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -320, 690, .26)
