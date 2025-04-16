@@ -580,7 +580,7 @@ function scene.draw()
     -- Mod icons
     if GAME.uiHide > 0 then
         gc_setColor(1, 1, 1, GAME.uiHide)
-        local y = 330 + GAME.height - GAME.bgH
+        local y = 330 + (GAME.height - GAME.bgH) * (M.VL + 1)
         if GAME.anyRev then
             local r = (M.AS + 1) * .026
             gc_setColorMask(false, false, true, true)
