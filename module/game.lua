@@ -854,6 +854,16 @@ function GAME.refreshCurrentCombo()
         DailyActived =
             #GAME.getHand(true) == #DAILY and
             TABLE.equal(TABLE.sort(GAME.getHand(true)), TABLE.sort(TABLE.copy(DAILY)))
+
+        local lastLine = (
+            #hand == 0 and "With no mod, " or
+            #hand == 1 and "With this mod, " or
+            "With this combo, "
+        ) .. "ZP earning rate start from 0%% at %.0fm,to 100%% at %.0fm"
+        local W = SCN.scenes.tower.widgetList.help2
+        W.floatText = "Each mod multiple the ZP gain with a certain rate.\n" ..
+            lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
+        W:reset()
     end
 end
 
@@ -1397,6 +1407,7 @@ function GAME.start()
         return
     end
     SCN.scenes.tower.widgetList.help:setVisible(false)
+    SCN.scenes.tower.widgetList.help2:setVisible(false)
     SCN.scenes.tower.widgetList.daily:setVisible(false)
 
     SFX.play('menuconfirm', .8)
@@ -1510,6 +1521,7 @@ end
 ---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help:setVisible(not GAME.zenithTraveler)
+    SCN.scenes.tower.widgetList.help2:setVisible(not GAME.zenithTraveler)
     SCN.scenes.tower.widgetList.daily:setVisible(not GAME.zenithTraveler)
     MSG.clear()
 

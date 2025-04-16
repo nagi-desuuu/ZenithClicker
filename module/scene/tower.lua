@@ -1200,6 +1200,16 @@ scene.widgetList = {
             Space: commit    Z: reset    Esc: forfeit/quit
         ]],
     },
+    WIDGET.new {
+        name = 'help2', type = 'hint',
+        pos = { 1, 0 }, x = -190, y = 275, w = 60, cornerR = 30,
+        color = TextColor,
+        fontSize = 50, text = "?",
+        sound_hover = 'menutap',
+        labelPos = 'leftBottom',
+        floatFontSize = 30,
+        floatText = "", -- Dynamic text
+    },
 }
 
 return scene
