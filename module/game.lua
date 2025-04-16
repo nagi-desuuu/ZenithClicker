@@ -1300,14 +1300,15 @@ function GAME.commit()
             GAME.addXP(attack + xp)
         end
 
+        -- rMS little shuffle
         if M.MS == 2 then
             local r1 = rnd(2, #CD - 1)
             local r2, r3
             repeat r2 = rnd(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #CD)
-            repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
             if GAME.floor <= 8 then
                 CD[r1], CD[r2] = CD[r2], CD[r1]
             else
+                repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
                 CD[r1], CD[r2], CD[r3] = CD[r2], CD[r3], CD[r1]
             end
             GAME.refreshLayout()

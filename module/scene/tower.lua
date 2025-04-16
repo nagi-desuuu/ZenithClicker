@@ -183,7 +183,9 @@ end
 
 function scene.load()
     if SYSTEM == 'Web' and TASK.lock('web_warn') then
-        MSG('warn', "[WARNING]\nWeb version is only for trial purposes.\nYour progress can randomly lost without being saved (cannot fix)\nDownload desktop version to play more in the future, with far better performance.\nThank you for your support!", 12.6)
+        MSG('warn',
+            "[WARNING]\nWeb version is only for trial purposes.\nYour progress can randomly lost without being saved (cannot fix)\nDownload desktop version to play more in the future, with far better performance.\nThank you for your support!",
+            12.6)
     end
 
     cancelNextClick = true
@@ -399,6 +401,7 @@ local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
 local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
 local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
+local gc_setColorMask = GC.setColorMask
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
@@ -526,6 +529,7 @@ local function drawPBline(h, r)
 end
 
 function scene.draw()
+    local t = love.timer.getTime()
     if GAME.zenithTraveler then
         DrawBG(100)
         drawPBline(STAT.maxHeight, .26)
@@ -576,7 +580,19 @@ function scene.draw()
     -- Mod icons
     if GAME.uiHide > 0 then
         gc_setColor(1, 1, 1, GAME.uiHide)
-        gc_draw(GAME.modIB, 1490, 330)
+        local y = 330 + GAME.height - GAME.bgH
+        if GAME.anyRev then
+            local r = (M.AS + 1) * .026
+            gc_setColorMask(false, false, true, true)
+            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.5), y + .5 * 2.6 * sin(t * 2.5), r * sin(t * 0.5))
+            gc_setColorMask(false, true, false, true)
+            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.6), y + .5 * 2.6 * sin(t * 2.6), r * sin(t * 0.6))
+            gc_setColorMask(true, false, false, true)
+            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.7), y + .5 * 2.6 * sin(t * 2.7), r * sin(t * 0.7))
+            gc_setColorMask()
+        else
+            gc_draw(GAME.modIB, 1490, y, M.AS * .026 * sin(t))
+        end
     end
 
     -- Card Panel
@@ -700,7 +716,7 @@ function scene.draw()
         gc_mDraw(TEXTS.dcBest, -200, 100, nil, .626)
         gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
         if DailyActived then
-            gc_setAlpha(.42 + .1 * sin(love.timer.getTime() * 6.2))
+            gc_setAlpha(.42 + .1 * sin(t * 6.2))
             gc_mRect('fill', -200, 126, 200, 80, 40)
         end
     end
