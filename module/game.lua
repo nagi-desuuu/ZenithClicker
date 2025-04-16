@@ -1142,7 +1142,7 @@ function GAME.commit()
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
         local xp = 0
-        if dp and M.EX <= 2 then attack = attack + 2 end
+        if dp and M.EX < 2 then attack = attack + 2 end
         if GAME.fault then
             -- Non-perfect
             if GAME.currentTask then
