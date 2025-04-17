@@ -25,6 +25,15 @@ Credits:
 *Frutigеr*: Font designer (D-Din-Pro)  
 *Mooniak*: Font designer (AbhayaLibre-Regular)
 
+## How to Play
+
+After you starting the game, you can see three mod combos, which are called "quest", shown at the top of the screen.  
+Select the mods which contained by the first (largest) one, then press `Start` button to commit.
+
+Pass quests with one click at most on each card to get "perfect pass", with extra attack and charging b2b.
+
+Each mod twists the rules and creates unique experience.
+
 ## Behind The Scene
 
 ### Clicker Rating (CR)
