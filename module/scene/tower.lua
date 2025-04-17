@@ -1196,7 +1196,7 @@ scene.widgetList = {
         floatText = STRING.trimIndent [[
             Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
             The higher you go in the tower, the more tricky players you'll encounter!
-            There's no leaderboards, but how high can you reach?
+            There's no leaderboards yet, but how high can you reach?
             Space: Commit    Z: Reset    Esc: Forfeit/Quit
         ]],
     },

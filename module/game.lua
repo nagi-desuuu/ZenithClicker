@@ -750,7 +750,7 @@ function GAME.refreshRPC()
         local hand = GAME.getHand(true)
         if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2) end
     else
-        stateStr = "Listening to music"
+        stateStr = "Enjoying to music"
         if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
         if M.IN > 0 then
@@ -859,7 +859,7 @@ function GAME.refreshCurrentCombo()
             #hand == 0 and "Without any mods, " or
             #hand == 1 and "With this mod, " or
             "With this combo, "
-        ) .. "ZP gain starts from 0%% at %.0fm, to 100%% at %.0fm"
+        ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
         local W = SCN.scenes.tower.widgetList.help2
         W.floatText = "Each mod will multiply ZP gain with a certain rate.\n" ..
             lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
@@ -1023,7 +1023,7 @@ function GAME.refreshDailyChallengeText()
         table.sort(sortedDaily, function(a, b) return ModData.prio_card[a] < ModData.prio_card[b] end)
         local rev = str:match("r%S+")
         if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
-        str = str .. "\nTry to get more ZP in one run using this mod combo.\n(Click to select)"
+        str = str .. "\nTry to get more ZP in one run using this mod combo.\n(Click to select them)"
     else
         str = "Oops! Today's mod combo is not available for you...\nComplete more mods to unlock some content."
     end
