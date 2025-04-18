@@ -237,7 +237,7 @@ function GAME.getComboName(list, extend, ingame)
             return { COLOR.dL, ComboData[str].name }
         end
 
-        table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
+        table.sort(list, function(a, b) return MD.prio_name[a] < MD.prio_name[b] end)
 
         for i = 1, len - 1 do
             ins(fstr, MD.textColor[list[i]])
@@ -292,7 +292,7 @@ function GAME.getComboName(list, extend, ingame)
         local str = table.concat(TABLE.sort(list), ' ')
         if ComboData[str] and (ComboData[str].basic or extend) then return ComboData[str].name end
 
-        table.sort(list, function(a, b) return MD.prio[a] < MD.prio[b] end)
+        table.sort(list, function(a, b) return MD.prio_name[a] < MD.prio_name[b] end)
 
         str = ""
         for i = 1, len - 1 do str = str .. MD.adj[list[i]] .. " " end
