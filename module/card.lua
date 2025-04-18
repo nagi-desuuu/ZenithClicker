@@ -2,10 +2,11 @@ local max, min = math.max, math.min
 local abs, rnd = math.abs, math.random
 local sin, cos = math.sin, math.cos
 local sign, lerp = MATH.sign, MATH.lerp
+local floor, ceil = math.floor, math.ceil
 local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
 
 local M = GAME.mod
-local Cards = Cards
+local CD = Cards
 
 ---@class Card
 ---@field burn false | number
@@ -141,10 +142,13 @@ function Card:setActive(auto, key)
                     ignite = true
                     self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
-                    local cards = TABLE.copy(Cards, 0)
-                    TABLE.delete(cards, self)
-                    for _ = 1, M.AS == 1 and 2 or 4 do
-                        TABLE.popRandom(cards):setActive(true)
+                    local p = TABLE.find(CD, self) or 0
+                    local l = { -3, -2, -1, 1, 2, 3 }
+                    CD[(p + table.remove(l, rnd(4, 6)) - 1) % #CD + 1]:setActive(true)
+                    CD[(p + table.remove(l, rnd(1, 3)) - 1) % #CD + 1]:setActive(true)
+                    if M.AS == 2 then
+                        CD[(p + table.remove(l, rnd(3, 4)) - 1) % #CD + 1]:setActive(true)
+                        CD[(p + table.remove(l, rnd(1, 2)) - 1) % #CD + 1]:setActive(true)
                     end
                     SFX.play('wound')
                 else
@@ -198,7 +202,7 @@ function Card:setActive(auto, key)
             W:reset()
         elseif self.id == 'IN' then
             BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or .65)
-            for _, C in ipairs(Cards) do C:flip() end
+            for _, C in ipairs(CD) do C:flip() end
             noSpin = M.IN == 1
         elseif self.id == 'AS' then
             local W = SCN.scenes.tower.widgetList.reset
@@ -307,7 +311,7 @@ function Card:revJump()
             if currentState == 2 then
                 SFX.play('card_reverse_impact', 1, 0, M.GV)
                 TWEEN.new(tween_deckPress):setUnique('DeckPress'):setEase('OutQuad'):setDuration(.42):run()
-                for _, C in ipairs(Cards) do
+                for _, C in ipairs(CD) do
                     if C ~= self then
                         local r = rnd()
                         if self.id == 'EX' then r = r * 2.6 end
@@ -330,7 +334,7 @@ function Card:revJump()
                 if currentState == 0 then
                     self:bounce(100, .26)
                 else
-                    for _, C in ipairs(Cards) do
+                    for _, C in ipairs(CD) do
                         if C ~= self then
                             local r = 1 - abs(C.initOrder - self.initOrder) / 8
                             C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
@@ -369,7 +373,7 @@ function Card:update(dt)
     self.x = expApproach(self.x, self.tx, dt * 16)
     self.y = expApproach(self.y, self.ty, dt * 16)
     self.visY1 = expApproach(self.visY1, self.visY, dt * 26)
-    self.float = expApproach(self.float, Cards[FloatOnCard] == self and 1 or 0, dt * 12)
+    self.float = expApproach(self.float, CD[FloatOnCard] == self and 1 or 0, dt * 12)
     if self.burn then
         self.burn = self.burn - dt
         if self.burn <= 0 then
@@ -416,7 +420,7 @@ function Card:draw()
     if not playing and not self.upright then gc_rotate(3.1416) end
     gc_scale(abs(self.size * self.kx), self.size * self.ky)
 
-    if self == Cards[FloatOnCard] then
+    if self == CD[FloatOnCard] then
         -- EX scale
         if M.EX > 0 and love.mouse.isDown(1, 2) then gc_scale(.9) end
         -- Fake 3D
