@@ -393,7 +393,6 @@ ComboData = {
     { set = "EX NH MS GV VL AS",          name = "oppression" },
     { set = "EX NH MS GV VL IN",          name = "on screen keyboard" },
     { set = "EX NH MS GV VL DH",          name = "depression" },
-    { set = "NH MS GV VL DH IN AS",       name = "diluted lite diet swamp water zero" },
 }
 
 RevComboData = {
