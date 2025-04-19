@@ -48,6 +48,7 @@ local ins, rem = table.insert, table.remove
 ---@field maxComboSize number
 ---@field extraComboBase number
 ---@field extraComboVar number
+---@field comboFavor number
 ---@field dmgHeal number
 ---@field dmgWrong number
 ---@field dmgWrongExtra number
@@ -436,12 +437,30 @@ function GAME.genQuest()
     end
 
     local pool = TABLE.copyAll(MD.weight)
-    if M.DH == 2 then pool.DP = pool.DP * .5 end
+
     local lastQ = GAME.quests[#GAME.quests]
-    if lastQ then pool[lastQ.combo[1]] = nil end
-    for _ = 1, MATH.clamp(MATH.roundRnd(r), 1, GAME.maxComboSize) do
+    if lastQ then pool[lastQ.combo[1]] = 0 end
+    local questCount = MATH.clamp(MATH.roundRnd(r), 1, GAME.maxComboSize)
+    if questCount == 1 then
+        pool.DP = 0
+    elseif M.DH == 2 then
+        pool.DP = pool.DP * .5
+    end
+    for _ = 1, questCount do
         local mod = MATH.randFreqAll(pool)
-        pool[mod] = nil
+        pool[mod] = 0
+        local p = TABLE.find(CD, CD[mod])
+        if p then
+            if p > 1 then
+                local left = CD[p - 1].id
+                pool[left] = max(pool[left] * (1 - GAME.comboFavor * .01), 0)
+            end
+            if p < 9 then
+                local right = CD[p + 1].id
+                pool[right] = max(pool[right] * (1 - GAME.comboFavor * .01), 0)
+            end
+        end
+
         ins(combo, mod)
     end
 
@@ -687,6 +706,12 @@ function GAME.upFloor()
             end
         end
     end
+    GAME.comboFavor =
+        M.VL == 2 and 50 or (
+            (M.EX > 0 and 0 or 33)
+            - (M.MS > 0 and 25 or 0)
+            - GAME.floor * 3
+        )
     if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
     local F = Floors[GAME.floor]
     local e = F.event
@@ -1453,6 +1478,7 @@ function GAME.start()
     GAME.maxComboSize = M.DH == 2 and 3 or 4
     GAME.extraComboBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0)
     GAME.extraComboVar = (M.DH > 0 and .626 or 1)
+    GAME.comboFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
     GAME.dmgTime = 2
@@ -1567,7 +1593,9 @@ function GAME.finish(reason)
             end
             if unlockRev then
                 MSG.clear()
-                MSG('dark', "You’ve unlocked a new REVERSED MOD!\nActivate it by right-clicking on a card that has a star on it.", 6.26)
+                MSG('dark',
+                    "You’ve unlocked a new REVERSED MOD!\nActivate it by right-clicking on a card that has a star on it.",
+                    6.26)
                 SFX.play('notify')
             end
         end

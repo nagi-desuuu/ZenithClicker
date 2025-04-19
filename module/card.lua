@@ -2,7 +2,6 @@ local max, min = math.max, math.min
 local abs, rnd = math.abs, math.random
 local sin, cos = math.sin, math.cos
 local sign, lerp = MATH.sign, MATH.lerp
-local floor, ceil = math.floor, math.ceil
 local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
 
 local M = GAME.mod
