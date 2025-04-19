@@ -418,7 +418,7 @@ Floors = {
     { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                 name = "The Casino" },
     { top = 450,  event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Arena" },
     { top = 650,  event = { 'dmgDelay', -1, 'dmgCycle', -.5, 'dmgWrong', 1 },  name = "The Museum",          MSshuffle = true },
-    { top = 850,  event = { 'dmgDelay', -1, 'dmgTime', 1, 'maxComboSize', 1 }, name = "Abandoned Offices" },
+    { top = 850,  event = { 'dmgDelay', -1, 'dmgTime', 1, 'maxQuestSize', 1 }, name = "Abandoned Offices" },
     { top = 1100, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Laboratory",      MSshuffle = true },
     { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Core" },
     { top = 1650, event = { 'dmgDelay', -.5, 'dmgWrong', 1 },                  name = "Corruption",          MSshuffle = true },
@@ -434,7 +434,7 @@ Fatigue = {
         { time = 360,  event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 },                          text = "ALL SENSES BLUR TOGETHER_", desc = "TimerSpeed++   Heal--" },
         { time = 390,  event = { 'dmgTimeMul', -.1, 'dmgWrong', 1 },                          text = "YOUR CONSCIOUSNESS FADES_", desc = "TimerSpeed++   Damage++" },
         { time = 420,  event = { 'dmgTimeMul', -.2, 'dmgCycle', -.5 },                        text = "THIS IS THE END.",          desc = "TimerSpeed++   DmgCycle--" },
-        { time = 480,  event = { 'maxComboSize', 1, 'extraComboVar', 1, 'atkBufferCap', 18 }, text = "FAREWELL.",                 desc = "QuestDifficulty++++++" },
+        { time = 480,  event = { 'maxQuestSize', 1, 'extraQuestVar', 1, 'atkBufferCap', 18 }, text = "FAREWELL.",                 desc = "QuestDifficulty++++++" },
         { time = 1e99, text = "" }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
     },
     rEX = {

@@ -45,10 +45,10 @@ local ins, rem = table.insert, table.remove
 ---@field fatigue number
 ---
 ---@field queueLen number
----@field maxComboSize number
----@field extraComboBase number
----@field extraComboVar number
----@field comboFavor number
+---@field maxQuestSize number
+---@field extraQuestBase number
+---@field extraQuestVar number
+---@field questFavor number Higher questFavor will result in mods generated consecutively more often, in design
 ---@field dmgHeal number
 ---@field dmgWrong number
 ---@field dmgWrongExtra number
@@ -424,9 +424,9 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraComboBase + MATH.icLerp(6200, 10000, GAME.height)
-    local var = GAME.floor * .26 * GAME.extraComboVar
-    local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxComboSize)
+    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + MATH.icLerp(6200, 10000, GAME.height)
+    local var = GAME.floor * .26 * GAME.extraQuestVar
+    local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxQuestSize)
     if M.DP == 0 then
         GAME.atkBuffer = GAME.atkBuffer + r
         if GAME.atkBuffer > GAME.atkBufferCap then
@@ -440,7 +440,7 @@ function GAME.genQuest()
 
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then pool[lastQ.combo[1]] = 0 end
-    local questCount = MATH.clamp(MATH.roundRnd(r), 1, GAME.maxComboSize)
+    local questCount = MATH.clamp(MATH.roundRnd(r), 1, GAME.maxQuestSize)
     if questCount == 1 then
         pool.DP = 0
     elseif M.DH == 2 then
@@ -453,11 +453,11 @@ function GAME.genQuest()
         if p then
             if p > 1 then
                 local left = CD[p - 1].id
-                pool[left] = max(pool[left] * (1 - GAME.comboFavor * .01), 0)
+                pool[left] = max(pool[left] * (1 - GAME.questFavor * .01), 0)
             end
             if p < 9 then
                 local right = CD[p + 1].id
-                pool[right] = max(pool[right] * (1 - GAME.comboFavor * .01), 0)
+                pool[right] = max(pool[right] * (1 - GAME.questFavor * .01), 0)
             end
         end
 
@@ -706,7 +706,7 @@ function GAME.upFloor()
             end
         end
     end
-    GAME.comboFavor =
+    GAME.questFavor =
         M.VL == 2 and 50 or (
             (M.EX > 0 and 0 or 33)
             - (M.MS > 0 and 25 or 0)
@@ -1479,10 +1479,10 @@ function GAME.start()
 
     -- Params
     GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
-    GAME.maxComboSize = M.DH == 2 and 3 or 4
-    GAME.extraComboBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0)
-    GAME.extraComboVar = (M.DH > 0 and .626 or 1)
-    GAME.comboFavor = 0 -- Initialized in GAME.upFloor()
+    GAME.maxQuestSize = M.DH == 2 and 3 or 4
+    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0)
+    GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
+    GAME.questFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
     GAME.dmgTime = 2
