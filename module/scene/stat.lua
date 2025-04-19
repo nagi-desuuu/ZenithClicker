@@ -197,7 +197,13 @@ function RefreshProfile()
     GC.line(7, bh - 30, bw - 7, bh - 30)
     -- Number
     local rating = calculateRating()
-    t30:set(rating == 25000 and "YOU ARE THE VERY BEST!" or "CALCULATED FROM CAREER")
+    t30:set(
+        rating == 25000 and "THE VERY BEST!" or
+        rating >= 24500 and "ALMOST THERE!" or
+        rating >= 23800 and "YOU ARE GETTING THERE" or
+        rating >= 22050 and "YOU'RE NOT FAR OFF." or
+        "CALCULATED FROM CAREER"
+    )
     GC.mDraw(t30, bw / 2, 105, 0, .7)
     t50:set(tostring(rating))
     GC.setColor(scoreColor)
@@ -281,7 +287,7 @@ function RefreshProfile()
         { t = { scoreColor, STAT.maxHeight <= 0 and "---" or MATH.round(STAT.maxHeight) .. "m" }, x = 470, y = 8 },
         { t = { scoreColor, STAT.minTime >= 1560 and "---" or MATH.round(STAT.minTime) .. "s" },  x = 470, y = 33 },
         { t = { scoreColor, MATH.round(STAT.zp / 1000), textColor, " kZP" },                      x = 470, y = 58 },
-        { t = { scoreColor, MATH.round(STAT.dzp), textColor, " ZP" },                         x = 470, y = 83 },
+        { t = { scoreColor, MATH.round(STAT.dzp), textColor, " ZP" },                             x = 470, y = 83 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
 
