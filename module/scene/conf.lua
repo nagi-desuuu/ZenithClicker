@@ -220,6 +220,7 @@ scene.widgetList = {
             CLIPBOARD.set(STRING.packTable(STAT) .. ',' .. STRING.packTable(BEST))
             MSG('dark', "Progress exported!")
             SFX.play('social_notify_minor')
+            IssueAchv('zenith_transitioner')
         end,
     },
     WIDGET.new {

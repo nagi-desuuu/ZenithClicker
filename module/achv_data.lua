@@ -155,33 +155,31 @@ Achievements = {
         desc = "HFD with EX MS",
         quote = [[Adversity favors the resourceful.]],
     },
-
-    -- Swamp Water Series
     swamp_water_lite = {
         name = "Swamp Water Lite",
-        desc = "HFD with 7 mods",
-        quote = [[Comes in... 36 different flavors!]],
+        desc = "HFD while using all 7/8 of the difficulty mods (\"Duo\" not allowed)",
+        quote = [[Comes in 8 different flavors!]],
     },
     swamp_water = {
         name = "Swamp Water",
-        desc = "HFD with 8 mods",
+        desc = "HFD while using all mods other then \"Duo\" at the same time",
         quote = [[The worst of all worlds.]],
     },
 
     -- General
     zenith_explorer = {
         name = "Zenith Explorer",
-        desc = "HFD WAM",
+        desc = "HFD without any mods",
         quote = [[Uncover the mysteries of the Zenith Tower.]],
     },
     zenith_speedrun = {
         name = "Zenith Speedrun",
-        desc = "Reach F10 AFAP while retaining GIGASPEED WAM",
+        desc = "Reach F10 AFAP while retaining GIGASPEED without any mods",
         quote = [[F10 Hyper%]],
     },
     supercharged = {
         name = "Supercharged",
-        desc = "Highest Back-to-Back chain discovered WAM",
+        desc = "Highest Back-to-Back chain discovered without any mods",
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
     },
     the_responsible_one = {
@@ -282,7 +280,7 @@ Achievements = {
     -- Swamp Water Extended
     swamp_water_pro = {
         name = "Swamp Water Pro",
-        desc = "HFD with 9 mods",
+        desc = "HFD with all 9/9 mods",
         quote = [[How did you find someone as insane as you to do it together?]],
         hide = function() return STAT.maxFloor >= 9 end,
     },
@@ -437,18 +435,18 @@ Achievements = {
         desc = "Reach F10 AFAP while retaining GIGASPEED",
         quote = [[F10 Any%]],
     },
-    -- zenith_challenger = {
-    --     name = "Zenith Challenger",
-    --     desc = "Total best altitude with 1 mod enabled",
-    --     quote = [[Challenge the reality of the Zenith Tower.]],
-    --     credit = "@5han",
-    -- },
-    -- divine_challenger = {
-    --     name = "Divine Challenger",
-    --     desc = "Total best altitude with 1 rev mod enabled",
-    --     quote = [[Expose the darkness of the Zenith Tower.]],
-    --     hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
-    -- },
+    zenith_challenger = {
+        name = "Zenith Challenger",
+        desc = "Total best altitude with 1 mod enabled",
+        quote = [[Challenge the reality of the Zenith Tower.]],
+        credit = "@5han",
+    },
+    divine_challenger = {
+        name = "Divine Challenger",
+        desc = "Total best altitude with 1 rev mod enabled",
+        quote = [[Expose the darkness of the Zenith Tower.]],
+        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+    },
     indolency = {
         name = "Indolency",
         desc = "Highest attack total in F1 with rEX",
@@ -583,7 +581,7 @@ Achievements = {
         name = "Respectful",
         desc = "Stay in ABOUT page for 26s",
         quote = [[Press F2 to pay respect]],
-        credit = "cod11",
+        credit = "COD11",
     },
     somersault = {
         name = "Somersault",
@@ -612,9 +610,8 @@ Achievements = {
     },
     zenith_transitioner = {
         name = "Zenith Transitioner",
-        desc = "Import your save into a different platform",
+        desc = "Export your save to another device",
         quote = [[Uncover the mysteries of a new, familiar Tower.]],
-        hide = TRUE,
         credit = "@GameTilDead",
     },
 
@@ -670,7 +667,6 @@ for i = 1, #Achievements do
     achv.desc = achv.desc:gsub("[A-Z][A-Z][A-Z][A-Z]?", {
         HFD = "Highest floor discovered",
         AFAP = "as fast as possible",
-        WAM = "without any mods"
     })
     achv.hide = achv.hide or FALSE
     achv.credit = achv.credit or ""
