@@ -211,6 +211,18 @@ function scene.mouseMove(x, y, _, dy)
     end
 end
 
+local msIsDown = love.mouse.isDown
+local kbIsDown = love.keyboard.isDown
+local function getBtnPressed()
+    local btnPressed = 0
+    for i = 1, 6 do if msIsDown(i) then btnPressed = btnPressed + 1 end end
+    if not (M.NH == 2 and M.AS == 0) then
+        if kbIsDown('x') then btnPressed = btnPressed + 1 end
+        if kbIsDown('c') then btnPressed = btnPressed + 1 end
+    end
+    return btnPressed
+end
+
 function scene.mouseDown(x, y, k)
     cancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
@@ -219,6 +231,8 @@ function scene.mouseDown(x, y, k)
         switchVisitor(true)
         return true
     end
+
+    if getBtnPressed() > 1 + math.floor(M.VL / 2) then return end
     if M.EX == 0 then
         SFX.play('move')
         mousePress(x, y, k)
@@ -234,6 +248,8 @@ function scene.mouseClick(x, y, k)
     if GAME.zenithTraveler then return end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return end
+
+    if getBtnPressed() > math.floor(M.VL / 2) then return end
     if cancelNextClick then
         cancelNextClick = false
         return
