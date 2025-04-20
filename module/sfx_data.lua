@@ -190,9 +190,9 @@ return {
     -- ratinglower=                 {733, 2.7},
     ratingraise = { 118, 2.2 },
 
-    -- achievement_1 = { 232, 3.65 },
-    -- achievement_2 = { 312, 3.13 },
-    -- achievement_3 = { 642, 3.37 },
+    achievement_1 = { 232, 3.65 },
+    achievement_2 = { 312, 3.13 },
+    achievement_3 = { 642, 3.37 },
 
     -- social_close_minor=          {54,  0.2},
     -- social_close=                {393, 0.39},

@@ -12,9 +12,6 @@ STRING.install()
 
 SCR.setSize(1600, 1000)
 
-MSG.setSafeY(75)
-MSG.addCategory('dark', COLOR.lD, COLOR.L)
-
 ---@return love.Texture
 local function assets(path) return 'assets/' .. path end
 local function q(oy, n, size)
@@ -313,21 +310,40 @@ function SaveStat() love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDe
 
 function SaveAchv() love.filesystem.write('achv.luaon', 'return' .. TABLE.dumpDeflate(ACHV)) end
 
+MSG.setSafeY(75)
+MSG.addCategory('dark', COLOR.D, COLOR.L)
+
+MSG.addCategory('achv_issued', COLOR.DM, COLOR.L, TEXTURE.stat.achievement.frame[-1])
+MSG.addCategory('achv_bronze', COLOR.DO, COLOR.L, TEXTURE.stat.achievement.frame[1])
+MSG.addCategory('achv_silver', { .26, .26, .26 }, COLOR.L, TEXTURE.stat.achievement.frame[2])
+MSG.addCategory('achv_gold', COLOR.DY, COLOR.L, TEXTURE.stat.achievement.frame[3])
+MSG.addCategory('achv_platinum', COLOR.DJ, COLOR.L, TEXTURE.stat.achievement.frame[4])
+MSG.addCategory('achv_diamond', COLOR.DP, COLOR.L, TEXTURE.stat.achievement.frame[5])
+
 function IssueAchv(tag)
+    if 1 then return end -- TODO
     if not ACHV[tag] then
         ACHV[tag] = 0
-        -- TODO
+        local achvData = Achievements[tag]
+        MSG('achv_issued', {
+            COLOR.lM, achvData.name .. "\n",
+            COLOR.dL, achvData.desc .. "\n",
+            COLOR.LD, achvData.quote,
+        }, 6)
         SFX.play('achievement_1', .7, 0, GAME.mod.VL)
-        -- SaveAchv()
+        SaveAchv()
     end
 end
 
-function SubmitAchv()
-    -- TODO
-    SFX.play('achievement_1', .7, 0, GAME.mod.VL)
-    -- SFX.play('achievement_2', .7, 0, GAME.mod.VL)
-    -- SFX.play('achievement_3', .7, 0, GAME.mod.VL)
-    -- SaveAchv()
+function SubmitAchv(tag, score)
+    if 1 then return end -- TODO
+    if not score > ACHV[tag] then
+        -- TODO
+        -- SFX.play('achievement_1', .7, 0, GAME.mod.VL)
+        -- SFX.play('achievement_2', .7, 0, GAME.mod.VL)
+        -- SFX.play('achievement_3', .7, 0, GAME.mod.VL)
+        SaveAchv()
+    end
 end
 
 MX, MY = 0, 0
@@ -401,13 +417,7 @@ BgmSets = {
 }
 
 require 'module.game_data'
-
-for i = 1, #ComboData do
-    local cmb = ComboData[i]
-    cmb.name = '"' .. cmb.name:upper() .. '"'
-    local cmbStr = table.concat(TABLE.sort(cmb.set:trim():split('%s+', true)), ' ')
-    ComboData[cmbStr] = ComboData[cmbStr] or cmb
-end
+require 'module.achv_data'
 
 Shader_Coloring = GC.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
 

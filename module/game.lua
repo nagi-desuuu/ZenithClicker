@@ -234,7 +234,7 @@ function GAME.getComboName(list, extend, ingame)
         end
 
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or extend) then
+        if ComboData[str] and (ComboData[str].basic or extend and ComboData[str].ex) then
             return { COLOR.dL, ComboData[str].name }
         end
 
@@ -291,7 +291,7 @@ function GAME.getComboName(list, extend, ingame)
 
         -- Normal Combo
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or extend) then return ComboData[str].name end
+        if ComboData[str] and (ComboData[str].basic or ComboData[str].menu or ComboData[str].ex and extend) then return ComboData[str].name end
 
         table.sort(list, function(a, b) return MD.prio_name[a] < MD.prio_name[b] end)
 
@@ -870,7 +870,7 @@ end
 
 function GAME.refreshCurrentCombo()
     local hand = GAME.getHand(not GAME.playing)
-    TEXTS.mod:set(GAME.getComboName(hand, M.DH == 2))
+    TEXTS.mod:set(GAME.getComboName(hand, M.DH == 2, GAME.playing))
     if not GAME.playing then
         GAME.comboMP = GAME.getComboMP(hand)
         GAME.comboZP = GAME.getComboZP(hand)
