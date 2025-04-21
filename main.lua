@@ -161,13 +161,13 @@ TEXTURE = {
         },
         achievement = {
             frame = {
-                [-1] = assets 'achievements/frames/issued.png',
                 [0] = assets 'achievements/frames/none.png',
                 assets 'achievements/frames/bronze.png',
                 assets 'achievements/frames/silver.png',
                 assets 'achievements/frames/gold.png',
                 assets 'achievements/frames/platinum.png',
                 assets 'achievements/frames/diamond.png',
+                assets 'achievements/frames/issued.png',
             },
             glint_1 = assets 'achievements/glint-a.png',
             glint_2 = assets 'achievements/glint-b.png',
@@ -314,34 +314,62 @@ function SaveAchv() love.filesystem.write('achv.luaon', 'return' .. TABLE.dumpDe
 MSG.setSafeY(75)
 MSG.addCategory('dark', COLOR.D, COLOR.L)
 
-MSG.addCategory('achv_issued', COLOR.DM, COLOR.L, TEXTURE.stat.achievement.frame[-1])
-MSG.addCategory('achv_bronze', COLOR.DO, COLOR.L, TEXTURE.stat.achievement.frame[1])
-MSG.addCategory('achv_silver', { .26, .26, .26 }, COLOR.L, TEXTURE.stat.achievement.frame[2])
-MSG.addCategory('achv_gold', COLOR.DY, COLOR.L, TEXTURE.stat.achievement.frame[3])
-MSG.addCategory('achv_platinum', COLOR.DJ, COLOR.L, TEXTURE.stat.achievement.frame[4])
-MSG.addCategory('achv_diamond', COLOR.DP, COLOR.L, TEXTURE.stat.achievement.frame[5])
+local achvData = {
+    { id = 'achv_bronze',   bg = COLOR.DO,          fg = COLOR.lO },
+    { id = 'achv_silver',   bg = { .26, .26, .26 }, fg = COLOR.L },
+    { id = 'achv_gold',     bg = COLOR.DY,          fg = COLOR.lY },
+    { id = 'achv_platinum', bg = COLOR.DJ,          fg = COLOR.lJ },
+    { id = 'achv_diamond',  bg = COLOR.DP,          fg = COLOR.lP },
+    { id = 'achv_issued',   bg = COLOR.DM,          fg = COLOR.lM },
+}
+for i = 1, 6 do MSG.addCategory(achvData[i].id, achvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
+
+local msgTime = 0
 
 function IssueAchv(tag)
-    if 1 then return end -- TODO
-    if not ACHV[tag] then
-        ACHV[tag] = 0
-        local achvData = Achievements[tag]
-        MSG('achv_issued', {
-            COLOR.lM, achvData.name .. "\n",
-            COLOR.dL, achvData.desc .. "\n",
-            COLOR.LD, achvData.quote,
-        }, 6)
+    do return end
+    local A = Achievements[tag]
+    if not A or ACHV[tag] then return end
+
+    msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
+    MSG('achv_issued', {
+        achvData[6].fg, A.name .. "\n",
+        COLOR.dL, A.desc .. "\n",
+        COLOR.LD, A.quote,
+    }, msgTime, true)
+    if TASK.lock('achv_sfx_1', 1) then
         SFX.play('achievement_1', .7, 0, GAME.mod.VL)
-        -- SaveAchv()
     end
+    ACHV[tag] = 6
+    -- SaveAchv()
 end
 
 function SubmitAchv(tag, score)
-    if 1 then return end -- TODO
-    if not score > ACHV[tag] then
-        -- SFX.play('achievement_1', .7, 0, GAME.mod.VL)
-        -- SFX.play('achievement_2', .7, 0, GAME.mod.VL)
-        SFX.play('achievement_3', .7, 0, GAME.mod.VL)
+    do return end
+    local A = Achievements[tag]
+    if not A then return end
+    local oldScore = ACHV[tag] or A.noScore or 0
+    if not A.comp(score, oldScore) then return end
+
+    local R1 = A.rank(score)
+    if R1 < 1 then return end
+
+    local R0 = A.rank(oldScore)
+    if R1 > R0 then
+        if math.floor(R0) ~= math.floor(R1) then
+            local n = math.floor(R1)
+            local sfxLV = n <= 2 and 1 or n <= 4 and 2 or 3
+            if TASK.lock('achv_sfx_' .. sfxLV, 1) then
+                SFX.play('achievement_' .. sfxLV, .7, 0, GAME.mod.VL)
+            end
+            msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
+            MSG(achvData[n].id, {
+                achvData[n].fg, A.name .. "\n",
+                COLOR.dL, A.desc .. "\n",
+                COLOR.LD, A.quote,
+            }, msgTime, true)
+        end
+        ACHV[tag] = score
         -- SaveAchv()
     end
 end

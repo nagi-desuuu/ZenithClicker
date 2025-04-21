@@ -709,7 +709,7 @@ function GAME.setGigaspeedAnim(on, finish)
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
 
-        if GAME.floor then IssueAchv('speedrun_speedruning') end
+        if GAME.floor == 1 then IssueAchv('speedrun_speedruning') end
     else
         TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
             :setUnique('giga'):run()
@@ -1811,8 +1811,8 @@ function GAME.finish(reason)
         SubmitAchv('teraspeed', GAME.maxRank)
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.height)
         SubmitAchv('tailgater', GAME.achv_tailgaterH or GAME.height)
-        SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
-        SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height)
+        if M.DP > 0 then SubmitAchv('carried', GAME.achv_carriedH or GAME.height) end
+        if M.rAS == 2 then SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height) end
         -- SubmitAchv('the_pacifist_ii', GAME.achv_pacifist2H or GAME.height)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
         if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end

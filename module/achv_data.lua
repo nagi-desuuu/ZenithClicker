@@ -1,3 +1,27 @@
+---@class Achievement
+---@field name string
+---@field desc string
+---@field quote string
+---@field credit? string
+---@field comp? '<' | '>' | fun(newScore, oldScore):boolean
+---@field rank? 'floor' | fun(score):number
+---@field noScore? number
+---@field hide? fun():boolean
+
+local ilLerp = MATH.ilLerp
+local function floorRank(l0, l1, l2, l3, l4, l5)
+    local l = {
+        Floors[l0 - 1].top,
+        Floors[l1 - 1].top,
+        Floors[l2 - 1].top,
+        Floors[l3 - 1].top,
+        Floors[l4 - 1].top,
+        Floors[l5 - 1].top,
+    }
+    return function(h) return 5 * ilLerp(l, h) end
+end
+
+---@type Map<Achievement>
 Achievements = {
     ---------------------------
     -- Original from TETR.IO --
@@ -176,6 +200,8 @@ Achievements = {
         name = "Zenith Speedrun",
         desc = [[Reach F10 AFAP while retaining GIGASPEED without any mods]],
         quote = [[F10 Hyper%]],
+        comp = '<',
+        noScore = 1560,
     },
     supercharged = {
         name = "Supercharged",
@@ -213,69 +239,80 @@ Achievements = {
     -- Rev Swamp Water Series
     blight = {
         name = "Blight",
-        desc = [[HFD with 8+ mod points (F4/6/8/9/10)]],
+        desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        rank = floorRank(4, 6, 8, 9, 10),
     },
     desolation = {
         name = "Desolation",
-        desc = [[HFD with 9+ mod points (F4/6/8/9/10)]],
+        desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        rank = floorRank(4, 6, 8, 9, 10),
     },
     havoc = {
         name = "Havoc",
-        desc = [[HFD with 10+ mod points (F3/5/8/9/10)]],
+        desc = [[HFD with 10+ mod points]],
         quote = [[The world is in chaos...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        rank = floorRank(3, 5, 8, 9, 10),
     },
     pandemonium = {
         name = "Pandemonium",
-        desc = [[HFD with 11+ mod points (F2/4/7/8/9)]],
+        desc = [[HFD with 11+ mod points]],
         quote = [[Several realms began to collide...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        rank = floorRank(2, 4, 7, 8, 9),
     },
     inferno = {
         name = "Inferno",
-        desc = [[HFD with 12+ mod points (F2/4/6/7/8)]],
+        desc = [[HFD with 12+ mod points]],
         quote = [[Everything is burning and melting...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 6 end,
+        rank = floorRank(2, 4, 6, 7, 8),
     },
     purgatory = {
         name = "Purgatory",
-        desc = [[HFD with 13+ mod points (F1/3/5/6/7)]],
+        desc = [[HFD with 13+ mod points]],
         quote = [[Nobody knows their destination...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 5 end,
+        rank = floorRank(1, 3, 5, 6, 7),
     },
     perdition = {
         name = "Perdition",
-        desc = [[HFD with 14+ mod points (F1/3/4/5/6)]],
+        desc = [[HFD with 14+ mod points]],
         quote = [[There's no way back...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 4 end,
+        rank = floorRank(1, 3, 4, 5, 6),
     },
     cataclysm = {
         name = "Cataclysm",
-        desc = [[HFD with 15+ mod points (F1/2/3/4/5)]],
+        desc = [[HFD with 15+ mod points]],
         quote = [[The real disaster is yet to come...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 3 end,
+        rank = floorRank(1, 2, 3, 4, 5),
     },
     annihilation = {
         name = "Annihilation",
-        desc = [[HFD with 16+ mod points (F1/2/3/4)]],
+        desc = [[HFD with 16+ mod points]],
         quote = [[The whole universe is trembling...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 2 end,
+        rank = floorRank(1, 1, 2, 3, 4),
     },
     armageddon = {
         name = "Armageddon",
-        desc = [[HFD with 17+ mod points (F1/2/3)]],
+        desc = [[HFD with 17+ mod points]],
         quote = [[Big crunch is real...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 1 end,
+        rank = floorRank(1, 1, 1, 2, 3),
     },
     abyss = {
         name = "Abyss",
-        desc = [[HFD with 18 mod points (F1/2)]],
+        desc = [[HFD with 18 mod points]],
         quote = [[.]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 0 end,
+        rank = floorRank(1, 1, 1, 1, 2),
     },
 
     -- Swamp Water Extended
@@ -333,22 +370,25 @@ Achievements = {
     },
     rDPrEX = {
         name = "Tyrannical Dyarchy",
-        desc = [[HFD with rEX rDP (F2/4/6/7/8)]],
+        desc = [[HFD with rEX rDP]],
         quote = [[Live in fear and despair.]],
         hide = function() return GAME.completion.EX > 0 and GAME.completion.DP > 0 end,
+        rank = floorRank(2, 4, 6, 7, 8),
     },
     VLrDPrIN = {
         name = "Painful Relapse",
-        desc = [[HFD with VL rIN rDP (F2/4/5/6/7)]],
+        desc = [[HFD with VL rIN rDP]],
         quote = [["I miss my ex..."]],
         hide = function() return GAME.completion.IN > 0 and GAME.completion.DP > 0 end,
+        rank = floorRank(2, 4, 5, 6, 7),
         credit = "@obsidian",
     },
     rDHrIN = {
         name = "Brain Capacity",
-        desc = [[HFD with rDH rIN (F1/2/3/4/5)]],
+        desc = [[HFD with rDH rIN]],
         quote = [[How long can you keep up in this forsaken memory game?]],
         hide = function() return GAME.completion.DH > 0 and GAME.completion.IN > 0 end,
+        rank = floorRank(1, 2, 3, 4, 5),
         credit = "@GameTilDead",
     },
     DHEXrGV = {
@@ -402,11 +442,15 @@ Achievements = {
         name = "Clicker Speedrun",
         desc = [[Minimal time on 40 quests]],
         quote = [[Supercharged Q40%]],
+        comp = '<',
+        defaultVal = 1560,
     },
     perfect_speedrun = {
         name = "Perfect Speedrun",
         desc = [[Reach 75 Back-to-Back AFAP]],
         quote = [[Supercharged B75%]],
+        comp = '<',
+        defaultVal = 1560,
     },
     the_perfectionist = {
         name = "The Perfectionist",
@@ -435,18 +479,28 @@ Achievements = {
         name = "Zenith Speedrun+",
         desc = [[Reach F10 AFAP while retaining GIGASPEED]],
         quote = [[F10 Any%]],
+        comp = '<',
+        defaultVal = 1560,
     },
     zenith_challenger = {
         name = "Zenith Challenger",
         desc = [[Total best altitude with 1 mod enabled]],
         quote = [[Challenge the reality of the Zenith Tower.]],
         credit = "@5han",
+        rank = (function()
+            local l = { 0, 16000, 26000, 32000, 40000, 42000 }
+            return function(h) return 5 * ilLerp(l, h) end
+        end)(),
     },
     divine_challenger = {
         name = "Divine Challenger",
         desc = [[Total best altitude with 1 rev mod enabled]],
         quote = [[Expose the darkness of the Zenith Tower.]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        rank = (function()
+            local l = { 0, 10000, 16000, 20000, 24000, 26000 }
+            return function(h) return 5 * ilLerp(l, h) end
+        end)(),
     },
     indolency = {
         name = "Indolency",
@@ -484,11 +538,19 @@ Achievements = {
         desc = [[Highest altitude*modPoints]],
         quote = [[Master doing everything, then master doing everything.]],
         credit = "@Flowerling",
+        rank = (function()
+            local l = { 0, 2600, 4200, 6200, 10000, 16200 }
+            return function(zp) return 5 * ilLerp(l, zp) end
+        end)(),
     },
     effective = {
         name = "Effective",
         desc = [[Highest altitude*ZPmul]],
         quote = [[Master doing everything efficiently.]],
+        rank = (function()
+            local l = { 0, 2600, 4200, 6200, 10000, 16200 }
+            return function(zp) return 5 * ilLerp(l, zp) end
+        end)(),
     },
     teraspeed = {
         name = "TeraSpeed",
@@ -531,8 +593,9 @@ Achievements = {
     -- },
     psychokinesis = {
         name = "Psychokinesis",
-        desc = [[HFD with 0 flip count increasing in statistics (F1/2/3)]],
+        desc = [[HFD with 0 flip count increasing in statistics]],
         quote = [[Real magic exists!]],
+        rank = floorRank(1, 1, 1, 2, 3),
     },
     divine_rejection = {
         name = "Divine Rejection",
@@ -654,7 +717,7 @@ Achievements = {
     the_completionist = {
         name = "The Completionist",
         desc = [[Speedrun all single rev mods]],
-        quote = [[The full spectrum of the game now lies within your grasp.]],
+        quote = [[The full spectrum of the mods now lies within your grasp.]],
         hide = TRUE,
     },
     skys_the_limit = {
@@ -671,15 +734,34 @@ Achievements = {
     },
 }
 
-for i = 1, #Achievements do
-    local achv = Achievements[i]
+local compFunc = {
+    ['>'] = function(a, b) return a > b end,
+    ['<'] = function(a, b) return a < b end,
+}
 
-    Achievements[achv.id] = achv
+for id, achv in next, Achievements do
+    assert(achv.name, "Missing field 'name'", id)
 
+    assert(achv.desc, "Missing field 'desc'", id)
     achv.desc = achv.desc:gsub("[A-Z][A-Z][A-Z][A-Z]?", {
         HFD = "Highest floor discovered",
         AFAP = "as fast as possible",
     })
-    achv.hide = achv.hide or FALSE
+
+    assert(achv.quote, "Missing field 'quote'", id)
+
     achv.credit = achv.credit or ""
+
+    if achv.comp == nil then
+        achv.comp = compFunc['>']
+    elseif compFunc[achv.comp] then
+        achv.comp = compFunc[achv.comp]
+    elseif type(achv.comp) ~= 'function' then
+        error("Invalid field 'comp'", id)
+    end
+
+    if achv.rank == nil then achv.rank = floorRank(1, 3, 5, 7, 9, 10) end
+    assert(type(achv.rank) == 'function', "Invalid field 'rank'", id)
+
+    achv.hide = achv.hide or FALSE
 end
