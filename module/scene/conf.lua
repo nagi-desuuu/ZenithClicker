@@ -259,7 +259,7 @@ scene.widgetList = {
             GAME.refreshLockState()
             if STAT.system ~= SYSTEM then
                 STAT.system = SYSTEM
-                IssueAchv('zenith_transitioner')
+                IssueAchv('zenith_relocation')
             end
             SaveStat()
             SaveBest()

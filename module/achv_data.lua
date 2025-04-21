@@ -689,8 +689,8 @@ Achievements = {
         hide = function() return GAME.completion.DP > 0 end,
         credit = "@GameTilDead",
     },
-    zenith_transitioner = {
-        name = "Zenith Transitioner",
+    zenith_relocation = {
+        name = "Zenith Relocation",
         desc = [[Export your save to a different platform (Web / Windows / Linux)]],
         quote = [[Uncover the mysteries of a new, familiar Tower.]],
         credit = "@GameTilDead",

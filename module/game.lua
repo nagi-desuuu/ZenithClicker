@@ -796,7 +796,7 @@ function GAME.upFloor()
         end
 
         -- SubmitAchv('the_pacifist', GAME.totalAttack)
-        if GAME.comboMP == 0 then SubmitAchv('zenith_speedrun', GAME.time) end
+        if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', GAME.time) end
         SubmitAchv('zenith_speedrun_plus', GAME.time)
     end
     GAME.updateBgm('ingame')
@@ -1793,13 +1793,13 @@ function GAME.finish(reason)
         GAME.achv_consecRestart = 0
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
-        if MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god') end
         local mCnt = 0
         for id in next, MD.name do if BEST.highScore[id] >= 1650 then mCnt = mCnt + 1 end end
         if mCnt >= 9 then IssueAchv('mastery') end
         mCnt = 0
         for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then mCnt = mCnt + 1 end end
         if mCnt >= 9 then IssueAchv('supremacy') end
+        if MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
         local totalH = 0
         for id in next, MD.name do totalH = totalH + BEST.highScore[id] end
         SubmitAchv('zenith_challenger', totalH)
@@ -1819,12 +1819,12 @@ function GAME.finish(reason)
         if GAME.comboStr == 'rAS' then SubmitAchv('patience_is_a_virtue', GAME.achv_felMagicQuest) end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
-            SubmitAchv('guardian_angel', GAME.achv_maxReviveH)
+            SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
         end
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
-        if GAME.comboMP == 0 then
+        if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.height)
             SubmitAchv('supercharged', GAME.achv_maxChain)
         elseif #GAME.comboStr <= 3 then

@@ -326,25 +326,29 @@ for i = 1, 6 do MSG.addCategory(achvData[i].id, achvData[i].bg, COLOR.L, TEXTURE
 
 local msgTime = 0
 
-function IssueAchv(tag)
+function IssueAchv(tag, silent)
     do return end
     local A = Achievements[tag]
     if not A or ACHV[tag] then return end
 
-    msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
-    MSG('achv_issued', {
-        achvData[6].fg, A.name .. "\n",
-        COLOR.dL, A.desc .. "\n",
-        COLOR.LD, A.quote,
-    }, msgTime, true)
-    if TASK.lock('achv_sfx_1', 1) then
-        SFX.play('achievement_1', .7, 0, GAME.mod.VL)
-    end
     ACHV[tag] = 0
     -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
+
+    if not silent then
+        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
+        MSG('achv_issued', {
+            achvData[6].fg, A.name .. "\n",
+            COLOR.dL, A.desc .. "\n",
+            COLOR.LD, A.quote,
+        }, msgTime, true)
+        if TASK.lock('achv_sfx_1', 1) then
+            SFX.play('achievement_1', .7, 0, GAME.mod.VL)
+        end
+    end
+    return true
 end
 
-function SubmitAchv(tag, score)
+function SubmitAchv(tag, score, silent)
     do return end
     local A = Achievements[tag]
     if not A then return end
@@ -355,23 +359,25 @@ function SubmitAchv(tag, score)
     if R1 < 1 then return end
 
     local R0 = A.rank(oldScore)
-    if R1 > R0 then
-        if math.floor(R0) ~= math.floor(R1) then
-            local n = math.floor(R1)
-            local sfxLV = n <= 2 and 1 or n <= 4 and 2 or 3
-            if TASK.lock('achv_sfx_' .. sfxLV, 1) then
-                SFX.play('achievement_' .. sfxLV, .7, 0, GAME.mod.VL)
-            end
-            msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
-            MSG(achvData[n].id, {
-                achvData[n].fg, A.name .. "\n",
-                COLOR.dL, A.desc .. "\n",
-                COLOR.LD, A.quote,
-            }, msgTime, true)
+    if R1 <= R0 then return end
+
+    ACHV[tag] = score
+    -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
+
+    if not silent and math.floor(R0) ~= math.floor(R1) then
+        local n = math.floor(R1)
+        local sfxLV = n <= 2 and 1 or n <= 4 and 2 or 3
+        if TASK.lock('achv_sfx_' .. sfxLV, 1) then
+            SFX.play('achievement_' .. sfxLV, .7, 0, GAME.mod.VL)
         end
-        ACHV[tag] = score
-        -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
+        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
+        MSG(achvData[n].id, {
+            achvData[n].fg, A.name .. "\n",
+            COLOR.dL, A.desc .. "\n",
+            COLOR.LD, A.quote,
+        }, msgTime, true)
     end
+    return true
 end
 
 MX, MY = 0, 0
