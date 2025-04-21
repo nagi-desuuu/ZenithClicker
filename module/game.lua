@@ -813,7 +813,11 @@ function GAME.refreshRPC()
 
     local stateStr
     if GAME.playing then
-        stateStr = GAME.gigaspeed and "Speedrun: " or "In game: "
+        if DailyActived then
+            stateStr = GAME.gigaspeed and "Daily speedrun: " or "Daily game: "
+        else
+            stateStr = GAME.gigaspeed and "Speedrun: " or "In game: "
+        end
         stateStr = stateStr .. "F" .. GAME.floor
         local hand = GAME.getHand(true)
         if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2) end
