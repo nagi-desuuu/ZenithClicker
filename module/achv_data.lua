@@ -536,12 +536,12 @@ Achievements = {
     },
     divine_rejection = {
         name = "Divine Rejection",
-        desc = [[Die exactly before F10 (1626+/1645+/1649+)]],
-        quote = [[TODO]],
+        desc = [[Finish the run exactly before F10 (1626+/1645+/1649+)]],
+        quote = [["And in the end, it doesn't even matter..."]],
     },
     -- moon_struck = {
     --     name = "Moon Struck",
-    --     desc = [[Die at exactly 2202.8m (±10/±5/±2/±0.5/±0)]],
+    --     desc = [[Finish the run at exactly 2202.8m (±10/±5/±2/±0.5/±0)]],
     --     quote = [[TODO]],
     --     credit = "@osk",
     -- },
@@ -648,13 +648,13 @@ Achievements = {
     supremacy = {
         name = "Supremacy",
         desc = [[Mastery on all single rev mods]],
-        quote = [[TODO]],
+        quote = [[Your reign has begun, and it knows no end.]],
         hide = TRUE,
     },
     the_completionist = {
         name = "The Completionist",
         desc = [[Speedrun all single rev mods]],
-        quote = [[TODO]],
+        quote = [[The full spectrum of the game now lies within your grasp.]],
         hide = TRUE,
     },
     skys_the_limit = {
