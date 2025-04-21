@@ -20,6 +20,10 @@ local function floorRank(l0, l1, l2, l3, l4, l5)
     }
     return function(h) return 5 * ilLerp(l, h) end
 end
+local function numberRank(...)
+    local l = { ... }
+    return function(s) return 5 * (6 - #l + ilLerp(l, s)) end
+end
 
 ---@type Map<Achievement>
 Achievements = {
@@ -242,77 +246,77 @@ Achievements = {
         desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(4, 6, 8, 9, 10),
+        rank = floorRank(1, 4, 6, 8, 9, 10),
     },
     desolation = {
         name = "Desolation",
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(4, 6, 8, 9, 10),
+        rank = floorRank(1, 4, 6, 8, 9, 10),
     },
     havoc = {
         name = "Havoc",
         desc = [[HFD with 10+ mod points]],
         quote = [[The world is in chaos...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(3, 5, 8, 9, 10),
+        rank = floorRank(1, 3, 5, 8, 9, 10),
     },
     pandemonium = {
         name = "Pandemonium",
         desc = [[HFD with 11+ mod points]],
         quote = [[Several realms began to collide...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(2, 4, 7, 8, 9),
+        rank = floorRank(1, 2, 4, 7, 8, 9),
     },
     inferno = {
         name = "Inferno",
         desc = [[HFD with 12+ mod points]],
         quote = [[Everything is burning and melting...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 6 end,
-        rank = floorRank(2, 4, 6, 7, 8),
+        rank = floorRank(1, 2, 4, 6, 7, 8),
     },
     purgatory = {
         name = "Purgatory",
         desc = [[HFD with 13+ mod points]],
         quote = [[Nobody knows their destination...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 5 end,
-        rank = floorRank(1, 3, 5, 6, 7),
+        rank = floorRank(1, 1, 3, 5, 6, 7),
     },
     perdition = {
         name = "Perdition",
         desc = [[HFD with 14+ mod points]],
         quote = [[There's no way back...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 4 end,
-        rank = floorRank(1, 3, 4, 5, 6),
+        rank = floorRank(1, 1, 3, 4, 5, 6),
     },
     cataclysm = {
         name = "Cataclysm",
         desc = [[HFD with 15+ mod points]],
         quote = [[The real disaster is yet to come...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 3 end,
-        rank = floorRank(1, 2, 3, 4, 5),
+        rank = floorRank(1, 1, 2, 3, 4, 5),
     },
     annihilation = {
         name = "Annihilation",
         desc = [[HFD with 16+ mod points]],
         quote = [[The whole universe is trembling...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 2 end,
-        rank = floorRank(1, 1, 2, 3, 4),
+        rank = floorRank(1, 1, 1, 2, 3, 4),
     },
     armageddon = {
         name = "Armageddon",
         desc = [[HFD with 17+ mod points]],
         quote = [[Big crunch is real...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 1 end,
-        rank = floorRank(1, 1, 1, 2, 3),
+        rank = floorRank(1, 1, 1, 1, 2, 3),
     },
     abyss = {
         name = "Abyss",
         desc = [[HFD with 18 mod points]],
         quote = [[.]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 0 end,
-        rank = floorRank(1, 1, 1, 1, 2),
+        rank = floorRank(1, 1, 1, 1, 1, 2),
     },
 
     -- Swamp Water Extended
@@ -373,14 +377,14 @@ Achievements = {
         desc = [[HFD with rEX rDP]],
         quote = [[Live in fear and despair.]],
         hide = function() return GAME.completion.EX > 0 and GAME.completion.DP > 0 end,
-        rank = floorRank(2, 4, 6, 7, 8),
+        rank = floorRank(1, 2, 4, 6, 7, 8),
     },
     VLrDPrIN = {
         name = "Painful Relapse",
         desc = [[HFD with VL rIN rDP]],
         quote = [["I miss my ex..."]],
         hide = function() return GAME.completion.IN > 0 and GAME.completion.DP > 0 end,
-        rank = floorRank(2, 4, 5, 6, 7),
+        rank = floorRank(1, 2, 4, 5, 6, 7),
         credit = "@obsidian",
     },
     rDHrIN = {
@@ -388,7 +392,7 @@ Achievements = {
         desc = [[HFD with rDH rIN]],
         quote = [[How long can you keep up in this forsaken memory game?]],
         hide = function() return GAME.completion.DH > 0 and GAME.completion.IN > 0 end,
-        rank = floorRank(1, 2, 3, 4, 5),
+        rank = floorRank(1, 1, 2, 3, 4, 5),
         credit = "@GameTilDead",
     },
     DHEXrGV = {
@@ -465,7 +469,7 @@ Achievements = {
     ultra_dash = {
         name = "Ultra Dash",
         desc = [[Shortest time spent in F9 (26/16/12/6.2/4.2)]],
-        quote = [[Probably a good strategy for speedrun 1.2x faster.]],
+        quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
     },
 
     -- Others
@@ -509,13 +513,13 @@ Achievements = {
         credit = "@Flowerling",
         hide = function() return GAME.completion.EX > 0 end,
     },
-    last_stand_ii = {
-        name = "Last Stand II",
+    final_defiance = {
+        name = "Final Defiance",
         desc = [[Meet the final fatigue effect]],
         quote = [["This is not the end!"]],
     },
-    last_stand_iii = {
-        name = "Last Stand III",
+    royal_resistance = {
+        name = "Royal Resistance",
         desc = [[Meet the final fatigue effect with rEX]],
         quote = [["History will prove me right!!"]],
         hide = function() return GAME.completion.EX > 0 end,
@@ -554,8 +558,9 @@ Achievements = {
     },
     teraspeed = {
         name = "TeraSpeed",
-        desc = [[Highest rank reached (12/13/14/15/16)]],
+        desc = [[Highest rank reached]],
         quote = [[Speed is the key.]],
+        rank = numberRank(11, 12, 13, 14, 15, 16),
     },
     -- tailgater = {
     --     name = "Tailgater",
@@ -595,12 +600,13 @@ Achievements = {
         name = "Psychokinesis",
         desc = [[HFD with 0 flip count increasing in statistics]],
         quote = [[Real magic exists!]],
-        rank = floorRank(1, 1, 1, 2, 3),
+        rank = floorRank(1, 1, 1, 1, 2, 3),
     },
     divine_rejection = {
         name = "Divine Rejection",
-        desc = [[Finish the run exactly before F10 (1626+/1645+/1649+)]],
+        desc = [[Finish the run exactly before F10]],
         quote = [["And in the end, it doesn't even matter..."]],
+        rank = numberRank(1626, 1645, 1649),
     },
     -- moon_struck = {
     --     name = "Moon Struck",
@@ -620,19 +626,19 @@ Achievements = {
     intended_glitch = {
         name = "Intended Glitch",
         desc = [[Play Duo]],
-        quote = [[This is not bug, it's a feature.]],
+        quote = [[This is not a bug, it's a feature.]],
     },
     zenith_traveler = {
         name = "Zenith Traveler",
         desc = [[Enter traveler mode]],
-        quote = [[Aka background debugging mode]],
+        quote = [[Also known as background debugging mode]],
         hide = TRUE,
     },
     speedrun_speedruning = {
         hide = function() return GAME.completion.EX > 0 end,
         name = "Speedrun Speedruning",
         desc = [[Enter GIGASPEED on F1]],
-        quote = [[Not really speedrun]],
+        quote = [[Not much of a speedrun]],
     },
     fruitless_effort = {
         hide = function() return GAME.completion.EX > 0 end,
@@ -667,7 +673,7 @@ Achievements = {
     dark_force = {
         name = "Dark Force",
         desc = [[Interrupt font loading with rev mod]],
-        quote = [[The overflowing darkness]],
+        quote = [[The darkness overflows]],
         hide = TRUE,
     },
     -- uninspired = {
@@ -729,7 +735,7 @@ Achievements = {
     superluminal = {
         name = "Superluminal",
         desc = [[Reach F10 in 76.2s]],
-        quote = [[Faster than the light!]],
+        quote = [[Faster than light!]],
         hide = TRUE,
     },
 }
@@ -760,7 +766,7 @@ for id, achv in next, Achievements do
         error("Invalid field 'comp'", id)
     end
 
-    if achv.rank == nil then achv.rank = floorRank(1, 3, 5, 7, 9, 10) end
+    if achv.rank == nil then achv.rank = floorRank(1, 1, 3, 5, 7, 9, 10) end
     assert(type(achv.rank) == 'function', "Invalid field 'rank'", id)
 
     achv.hide = achv.hide or FALSE

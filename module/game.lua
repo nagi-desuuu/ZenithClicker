@@ -1840,8 +1840,8 @@ function GAME.finish(reason)
                 #hand == 8 and 'swamp_water' or
                 #hand == 9 and 'swamp_water_pro' or
                 'swamp_water_x'
-            if GAME.anyRev then name = name .. '_plus' end
-            SubmitAchv(name, GAME.height)
+            SubmitAchv(name .. (GAME.anyRev and '_plus' or ''), GAME.height)
+            if name == 'swamp_water' then SubmitAchv('swamp_water_lite' .. (GAME.anyRev and '_plus' or ''), GAME.height) end
         end
         SubmitAchv('zenith_explorer_plus', GAME.height)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)

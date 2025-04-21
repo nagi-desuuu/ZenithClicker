@@ -340,8 +340,8 @@ function IssueAchv(tag)
     if TASK.lock('achv_sfx_1', 1) then
         SFX.play('achievement_1', .7, 0, GAME.mod.VL)
     end
-    ACHV[tag] = 6
-    -- SaveAchv()
+    ACHV[tag] = 0
+    -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
 end
 
 function SubmitAchv(tag, score)
@@ -370,7 +370,7 @@ function SubmitAchv(tag, score)
             }, msgTime, true)
         end
         ACHV[tag] = score
-        -- SaveAchv()
+        -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
     end
 end
 
