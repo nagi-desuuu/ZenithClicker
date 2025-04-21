@@ -199,10 +199,11 @@ Achievements = {
     },
 
     -- Activity
-    Lovers_Promise = {
+    lovers_promise = {
         name = "Lover's Promise",
-        desc = "Highest altitude reached with DP on Valentine days",
+        desc = "Highest altitude reached with DP on day 14 of each month",
         quote = [[The impossible promise of an eternity just like this moment.]],
+        unranked = true,
     },
 
     --------------------------------
@@ -210,67 +211,67 @@ Achievements = {
     --------------------------------
 
     -- Rev Swamp Water Series
-    Blight = {
+    blight = {
         name = "Blight",
         desc = "HFD with 8+ mod points (F4/6/8/9/10)",
         quote = [[The world starts withering...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
-    Desolation = {
+    desolation = {
         name = "Desolation",
         desc = "HFD with 9+ mod points (F4/6/8/9/10)",
         quote = [[Vitality has faded from the world's palette...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
-    Havoc = {
+    havoc = {
         name = "Havoc",
         desc = "HFD with 10+ mod points (F3/5/8/9/10)",
         quote = [[The world is in chaos...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
-    Pandemonium = {
+    pandemonium = {
         name = "Pandemonium",
         desc = "HFD with 11+ mod points (F2/4/7/8/9)",
         quote = [[Several realms began to collide...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
-    Inferno = {
+    inferno = {
         name = "Inferno",
         desc = "HFD with 12+ mod points (F2/4/6/7/8)",
         quote = [[Everything is burning and melting...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 6 end,
     },
-    Purgatory = {
+    purgatory = {
         name = "Purgatory",
         desc = "HFD with 13+ mod points (F1/3/5/6/7)",
         quote = [[Nobody knows their destination...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 5 end,
     },
-    Perdition = {
+    perdition = {
         name = "Perdition",
         desc = "HFD with 14+ mod points (F1/3/4/5/6)",
         quote = [[There's no way back...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 4 end,
     },
-    Cataclysm = {
+    cataclysm = {
         name = "Cataclysm",
         desc = "HFD with 15+ mod points (F1/2/3/4/5)",
         quote = [[The real disaster is yet to come...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 3 end,
     },
-    Annihilation = {
+    annihilation = {
         name = "Annihilation",
         desc = "HFD with 16+ mod points (F1/2/3/4)",
         quote = [[The whole universe is trembling...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 2 end,
     },
-    Armageddon = {
+    armageddon = {
         name = "Armageddon",
         desc = "HFD with 17+ mod points (F1/2/3)",
         quote = [[Big crunch is real...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 1 end,
     },
-    Abyss = {
+    abyss = {
         name = "Abyss",
         desc = "HFD with 18 mod points (F1/2)",
         quote = [[.]],
@@ -286,19 +287,19 @@ Achievements = {
     },
     swamp_water_lite_plus = {
         name = "Swamp Water Lite+",
-        desc = "HFD with 7+ mods, including 1 rev",
+        desc = "HFD with 1rev+6 mods (\"Duo\" not allowed)",
         quote = [[Comes in...... 252 different flavors?]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
     swamp_water_plus = {
         name = "Swamp Water+",
-        desc = "HFD with 8+ mods, including 1 rev",
+        desc = "HFD with 1rev+7 mods (\"Duo\" not allowed)",
         quote = [[Less choices but still a lot to try.]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
     swamp_water_pro_plus = {
         name = "Swamp Water Pro+",
-        desc = "HFD with 9 mods, including 1 rev",
+        desc = "HFD with 1rev+8 mods",
         quote = [[The cup is about to overflow!]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
@@ -392,7 +393,7 @@ Achievements = {
     -- },
 
     -- Supercharged
-    supercharged_Plus = {
+    supercharged_plus = {
         name = "Supercharged+",
         desc = "Highest Back-to-Back chain reached",
         quote = [[Supercharged Any%]],
@@ -456,8 +457,14 @@ Achievements = {
     },
     last_stand_ii = {
         name = "Last Stand II",
-        desc = "At F10, stay alive for 30s after final fatigue effect",
-        quote = [[This should not be the end!]],
+        desc = "Meet the final fatigue effect",
+        quote = [["This is not the end!"]],
+    },
+    last_stand_iii = {
+        name = "Last Stand III",
+        desc = "Meet the final fatigue effect with rEX",
+        quote = [["History will prove me right!!"]],
+        hide = function() return GAME.completion.EX > 0 end,
     },
     fel_magic = {
         name = "Fel Magic",
@@ -477,6 +484,11 @@ Achievements = {
         desc = "Highest altitude*modPoints",
         quote = [[Master doing everything, then master doing everything.]],
         credit = "@Flowerling",
+    },
+    effective = {
+        name = "Effective",
+        desc = "Highest altitude*ZPmul",
+        quote = [[Master doing everything efficiently.]],
     },
     teraspeed = {
         name = "TeraSpeed",

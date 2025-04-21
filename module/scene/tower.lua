@@ -139,7 +139,12 @@ local function keyPress(key)
         local W = scene.widgetList.start
         W._pressTime = W._pressTimeMax * 2
         W._hoverTime = W._hoverTimeMax
-        GAME[GAME.playing and 'commit' or 'start']();
+        if GAME.playing then
+            GAME.commit()
+            if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.height end
+        else
+            GAME.start()
+        end
     elseif key == '`' then
         if GAME.playing then
             SFX.play('no')

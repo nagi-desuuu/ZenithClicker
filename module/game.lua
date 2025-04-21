@@ -37,6 +37,7 @@ local ins, rem = table.insert, table.remove
 ---@field rankupLast boolean
 ---@field xpLockLevel number
 ---@field xpLockTimer number
+---@field maxRank number
 ---
 ---@field floor number
 ---@field height number
@@ -71,7 +72,7 @@ local ins, rem = table.insert, table.remove
 ---
 ---@field onAlly boolean
 ---@field life2 number
----@field maxRank number
+---@field rankLimit number
 ---@field reviveCount number
 ---@field currentTask ReviveTask |false
 ---@field DPlock boolean
@@ -127,6 +128,15 @@ local GAME = {
     lastFlip = false,
 
     zenithTraveler = false,
+
+    achv_consecRestart = 0,
+    achv_tailgaterH = nil,
+    achv_carriedH = nil,
+    achv_arroganceH = nil,
+    achv_pacifist2H = nil,
+    achv_patienceH = nil,
+    achv_maxChain = nil,
+    achv_maxReviveH = nil,
 }
 
 GAME.playing = false
@@ -160,7 +170,7 @@ function GAME.getHand(real)
         if M.AS > 0 then ins(list, M.AS == 1 and 'AS' or 'rAS') end
         if M.DP > 0 then ins(list, M.DP == 1 and 'DP' or 'rDP') end
         -- for i = 1, 9 do
-        --     local D = ModData.deck[i]
+        --     local D = MD.deck[i]
         --     local level = M[D.id]
         --     if level == 1 then
         --         ins(list, D.id)
@@ -274,25 +284,26 @@ function GAME.getComboName(list, extend, ingame)
         if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
             local mp = GAME.getComboMP(list)
             if mp >= 8 then return RevComboData[min(mp, #RevComboData)] end
-        elseif len >= 7 then
-            if GAME.anyRev then
+        elseif len == 9 or len >= 7 and not TABLE.find(list, 'DP') then
             return
+                GAME.anyRev and (
                     len == 7 and [["SWAMP WATER LITE+"]] or
                     len == 8 and [["SWAMP WATER+"]] or
                     len == 9 and [["SWAMP WATER PRO+"]] or
                     [["SWAMP WATER X+"]]
-            elseif len == 9 or not TABLE.find(list, 'DP') then
-                return
+                ) or (
                     len == 7 and [["SWAMP WATER LITE"]] or
                     len == 8 and [["SWAMP WATER"]] or
                     len == 9 and [["SWAMP WATER PRO"]] or
                     [["SWAMP WATER X"]]
-            end
+                )
         end
 
         -- Normal Combo
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or ComboData[str].menu or ComboData[str].ex and extend) then return ComboData[str].name end
+        if ComboData[str] and (ComboData[str].basic or ComboData[str].menu or ComboData[str].ex and extend) then
+            return ComboData[str].name
+        end
 
         table.sort(list, function(a, b) return MD.prio_name[a] < MD.prio_name[b] end)
 
@@ -558,6 +569,8 @@ function GAME.incrementPrompt(prompt, value)
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
+                if not GAME.achv_carriedH then GAME.achv_carriedH = GAME.height end
+                GAME.achv_maxReviveH = max(GAME.achv_maxReviveH or 0, GAME.height)
             end
         end
         t.progObj:set(floor(t.progress) .. "/" .. t.target)
@@ -593,6 +606,7 @@ end
 ---@param dmg number
 ---@param reason 'wrong' | 'time'
 ---@param toAlly? boolean
+---@return boolean killed
 function GAME.takeDamage(dmg, reason, toAlly)
     if GAME.currentTask then
         GAME.incrementPrompt('dmg_time')
@@ -657,8 +671,8 @@ function GAME.addXP(xp)
             GAME.xpLockLevel = 5
         end
     end
-    if GAME.rank > GAME.maxRank then
-        GAME.rank = GAME.maxRank
+    if GAME.rank > GAME.rankLimit then
+        GAME.rank = GAME.rankLimit
         GAME.xp = 4 * GAME.rank
     end
     if GAME.rank ~= oldRank then
@@ -671,6 +685,7 @@ function GAME.addXP(xp)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
+        GAME.maxRank = max(GAME.maxRank, GAME.rank)
     else
         GAME.xpLockTimer = oldLockTimer
     end
@@ -685,6 +700,8 @@ function GAME.setGigaspeedAnim(on, finish)
             :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
+
+        if GAME.floor then IssueAchv('speedrun_speedruning') end
     else
         TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
             :setUnique('giga'):run()
@@ -692,6 +709,9 @@ function GAME.setGigaspeedAnim(on, finish)
 end
 
 function GAME.upFloor()
+    if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.time) end
+    if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.time) end
+
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
     if GAME.floor > 1 then
@@ -755,7 +775,20 @@ function GAME.upFloor()
                 BEST.speedrun[GAME.comboStr] = roundTime
                 SaveBest()
             end
+
+            if GAME.time <= 76.2 then IssueAchv('superluminal') end
+            if GAME.time >= 300 then IssueAchv('worn_out') end
+            local srCnt = 0
+            for id in next, MD.name do if BEST.speedrun[id] then srCnt = srCnt + 1 end end
+            if srCnt >= 9 then IssueAchv('terminal_velocity') end
+            srCnt = 0
+            for id in next, MD.name do if BEST.speedrun['r' .. id] then srCnt = srCnt + 1 end end
+            if srCnt >= 9 then IssueAchv('the_completionist') end
         end
+
+        -- SubmitAchv('the_pacifist', GAME.totalAttack)
+        if GAME.comboMP == 0 then SubmitAchv('zenith_speedrun', GAME.time) end
+        SubmitAchv('zenith_speedrun_plus', GAME.time)
     end
     GAME.updateBgm('ingame')
     GAME.refreshRPC()
@@ -1050,7 +1083,7 @@ function GAME.refreshDailyChallengeText()
     local str
     if DailyAvailable then
         str = "Today's Combo: " .. table.concat(sortedDaily, " ")
-        table.sort(sortedDaily, function(a, b) return ModData.prio_card[a] < ModData.prio_card[b] end)
+        table.sort(sortedDaily, function(a, b) return MD.prio_card[a] < MD.prio_card[b] end)
         local rev = str:match("r%S+")
         if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
         str = str .. "\nTry to get more ZP in one run using this mod combo.\n(Click to select them)"
@@ -1113,7 +1146,7 @@ function GAME.commit()
         GAME.incrementPrompt('commit')
         GAME.nixPrompt('keep_no_commit')
         for i = 1, 9 do
-            local id = ModData.deck[i].id
+            local id = MD.deck[i].id
             if TABLE.find(hand, id) then
                 GAME.incrementPrompt('commit_' .. id)
                 GAME.incrementPrompt('commit_' .. id .. '_row')
@@ -1270,10 +1303,13 @@ function GAME.commit()
             end
 
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
+            if not GAME.achv_arroganceH and M.AS == 2 then GAME.achv_arroganceH = GAME.height end
+            if not GAME.achv_pacifist2H and GAME.chain >= 4 then GAME.achv_pacifist2H = GAME.height end
         end
         if dblCorrect then
             attack = attack * 3
             xp = xp * 3
+            GAME.chain = GAME.chain + 1
         end
         if GAME.chain >= 4 then
             if GAME.chain == 4 then
@@ -1319,18 +1355,26 @@ function GAME.commit()
                     )
                 end
             end
+
+            GAME.achv_maxChain = max(GAME.achv_maxChain, GAME.chain)
+            if GAME.chain >= 70 and GAME.chain - (dblCorrect and 2 or 1) < 70 then
+                SubmitAchv('perfect_speedrun', GAME.time)
+            end
         end
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
 
-        if M.DP == 2 then
-            if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then return end
-        end
-
-        if M.DP > 0 and GAME[GAME.getLifeKey(true)] == 0 then
-            xp = xp / 2
-            attack = attack / 2
-            attack = floor(attack) + (MATH.roll(attack % 1) and 1 or 0)
+        if M.DP > 0 then
+            if M.DP == 2 then
+                if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then return end
+            end
+            if GAME[GAME.getLifeKey(true)] == 0 then
+                xp = xp / 2
+                attack = attack / 2
+                attack = floor(attack) + (MATH.roll(attack % 1) and 1 or 0)
+            elseif not GAME.achv_carriedH then
+                GAME.achv_carriedH = GAME.height
+            end
         end
 
         GAME.incrementPrompt('send', attack)
@@ -1370,6 +1414,7 @@ function GAME.commit()
             end
             GAME.questReady()
             GAME.totalQuest = GAME.totalQuest + 1
+            if GAME.totalQuest == 40 then SubmitAchv('clicker_speedrun', GAME.time) end
         end
 
         if M.DP > 0 and (correct == 2 or dblCorrect) then
@@ -1470,6 +1515,7 @@ function GAME.start()
     GAME.rankupLast = false
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
+    GAME.maxRank = 0
 
     -- Floor
     GAME.floor = 0
@@ -1505,13 +1551,13 @@ function GAME.start()
     -- rDP
     GAME.onAlly = false
     GAME.life2 = 20
-    GAME.maxRank = 26000
+    GAME.rankLimit = 26000
     GAME.reviveCount = 0
     GAME.currentTask = false
     GAME.DPlock = false
     GAME.lastFlip = false
     if M.DP == 2 then
-        GAME.maxRank = 8 + 4 * M.EX
+        GAME.rankLimit = 8 + 4 * M.EX
         GAME.dmgHeal = 3
     end
 
@@ -1525,7 +1571,7 @@ function GAME.start()
     TABLE.clear(ComboColor)
     for k, v in next, M do
         if v > 0 then
-            local c = TABLE.copy(ModData.color[k])
+            local c = TABLE.copy(MD.color[k])
             c[4] = nil
             ins(ComboColor, c)
         end
@@ -1547,6 +1593,17 @@ function GAME.start()
 
     TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
+
+    GAME.achv_consecRestart = GAME.achv_consecRestart + 1
+    GAME.achv_tailgaterH = false
+    GAME.achv_carriedH = false
+    GAME.achv_arroganceH = false
+    GAME.achv_pacifist2H = false
+    GAME.achv_patienceH = false
+    GAME.achv_maxChain = 0
+    GAME.achv_maxReviveH = false
+    if GAME.achv_consecRestart == 100 then IssueAchv('uninspired') end
+    if M.DP == 1 then IssueAchv('intended_glitch') end
 end
 
 ---@param reason 'forfeit' | 'wrong' | 'time'
@@ -1649,12 +1706,12 @@ function GAME.finish(reason)
         SaveStat()
 
         -- Best
+        local hand = GAME.getHand(true)
         local oldPB = BEST.highScore[GAME.comboStr]
         if GAME.height > oldPB then
             BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .01)
-            local modCount = #GAME.getHand(true)
-            if modCount > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
-                local t = modCount == 1 and "MOD MASTERED" or "COMBO MASTERED"
+            if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
+                local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
                 if GAME.anyRev then t = t:gsub(" ", "+ ", 1) end
                 TEXT:add {
                     text = t,
@@ -1662,7 +1719,7 @@ function GAME.finish(reason)
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lC', duration = 6.2,
                 }
-                SFX.play('worldrecord', 1, 0, (modCount == 1 and -1 or 0) + M.GV)
+                SFX.play('worldrecord', 1, 0, (#hand == 1 and -1 or 0) + M.GV)
             elseif GAME.floor >= 2 then
                 TEXT:add {
                     text = "PERSONAL BEST",
@@ -1709,6 +1766,54 @@ function GAME.finish(reason)
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%)\n",
         })
         GAME.refreshResultModIcon()
+
+        GAME.achv_consecRestart = 0
+        if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
+        if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
+        if MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god') end
+        local mCnt = 0
+        for id in next, MD.name do if BEST.highScore[id] >= 1650 then mCnt = mCnt + 1 end end
+        if mCnt >= 9 then IssueAchv('mastery') end
+        mCnt = 0
+        for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then mCnt = mCnt + 1 end end
+        if mCnt >= 9 then IssueAchv('supremacy') end
+        SubmitAchv('multitasker', GAME.height * GAME.comboMP)
+        SubmitAchv('effective', zpGain)
+        SubmitAchv('teraspeed', GAME.maxRank)
+        SubmitAchv('tailgater', GAME.achv_tailgaterH or GAME.height)
+        SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
+        SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height)
+        -- SubmitAchv('the_pacifist_ii', GAME.achv_pacifist2H or GAME.height)
+        SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
+        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
+        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
+        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
+        if M.DP > 0 then
+            SubmitAchv('the_responsible_one', GAME.reviveCount)
+            SubmitAchv('guardian_angel', GAME.achv_maxReviveH)
+        end
+        if GAME.comboMP == 0 then
+            SubmitAchv('zenith_explorer', GAME.height)
+            SubmitAchv('supercharged', GAME.achv_maxChain)
+        elseif #GAME.comboStr <= 3 then
+            SubmitAchv(GAME.comboStr, GAME.height)
+        elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
+            for mp = GAME.comboMP, 8, -1 do
+                local name = RevComboData[min(mp, #RevComboData)]
+                SubmitAchv(name:sub(2, #name - 1), GAME.height)
+            end
+        elseif #hand == 9 or #hand >= 7 and not TABLE.find(hand, 'DP') then
+            local name =
+                #hand == 7 and 'swamp_water_lite' or
+                #hand == 8 and 'swamp_water' or
+                #hand == 9 and 'swamp_water_pro' or
+                'swamp_water_x'
+            if GAME.anyRev then name = name .. '_plus' end
+            SubmitAchv(name, GAME.height)
+        end
+        SubmitAchv('zenith_explorer_plus', GAME.height)
+        SubmitAchv('supercharged_plus', GAME.achv_maxChain)
+        if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
@@ -1852,6 +1957,7 @@ function GAME.update(dt)
                         end
                         TEXTS.rank:set("R-" .. GAME.rank)
                         SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
+                        if not GAME.achv_tailgaterH then GAME.achv_tailgaterH = GAME.height end
                     end
                 end
             end

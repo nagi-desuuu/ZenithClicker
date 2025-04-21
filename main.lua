@@ -331,18 +331,17 @@ function IssueAchv(tag)
             COLOR.LD, achvData.quote,
         }, 6)
         SFX.play('achievement_1', .7, 0, GAME.mod.VL)
-        SaveAchv()
+        -- SaveAchv()
     end
 end
 
 function SubmitAchv(tag, score)
     if 1 then return end -- TODO
     if not score > ACHV[tag] then
-        -- TODO
         -- SFX.play('achievement_1', .7, 0, GAME.mod.VL)
         -- SFX.play('achievement_2', .7, 0, GAME.mod.VL)
-        -- SFX.play('achievement_3', .7, 0, GAME.mod.VL)
-        SaveAchv()
+        SFX.play('achievement_3', .7, 0, GAME.mod.VL)
+        -- SaveAchv()
     end
 end
 
