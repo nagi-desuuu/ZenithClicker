@@ -1811,14 +1811,15 @@ function GAME.finish(reason)
         SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height)
         -- SubmitAchv('the_pacifist_ii', GAME.achv_pacifist2H or GAME.height)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
+        if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
         if GAME.comboStr == 'rAS' then SubmitAchv('patience_is_a_virtue', GAME.achv_felMagicQuest) end
-        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
-        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
-        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH)
         end
+        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
+        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
+        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
         if GAME.comboMP == 0 then
             SubmitAchv('zenith_explorer', GAME.height)
             SubmitAchv('supercharged', GAME.achv_maxChain)
@@ -1840,8 +1841,8 @@ function GAME.finish(reason)
         end
         SubmitAchv('zenith_explorer_plus', GAME.height)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)
+        SubmitAchv(GAME.comboStr, GAME.height)
         if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
-        if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")

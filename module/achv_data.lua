@@ -105,52 +105,52 @@ Achievements = {
     },
 
     -- Mod Combo
-    NH_GV = {
+    GVNH = {
         name = "A Modern Classic",
         desc = "HFD with NH GV",
         quote = [[Times were different back then...]],
     },
-    NH_MS_DH = {
+    DHMSNH = {
         name = "Deadlock",
         desc = "HFD with NH MS DH",
         quote = [["Escape has become a distant dream, yet still we struggle..."]],
     },
-    MS_DH_AS = {
+    ASDHMS = {
         name = "The Escape Artist",
         desc = "HFD with MS DH AS",
         quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
     },
-    GV_IN = {
+    GVIN = {
         name = "The Grandmaster",
         desc = "HFD with GV IN",
         quote = [[When the world descends into chaos, the grandmaster remains at peace.]],
     },
-    EX_NH_DH = {
+    DHEXNH = {
         name = "Emperor's Decadence",
         desc = "HFD with EX NH DH",
         quote = [[The Devil's lesson in humility.]],
     },
-    EX_MS_VL_DH = {
+    DHEXMSVL = {
         name = "Divine Mastery",
         desc = "HFD with EX MS VL DH",
         quote = [[The universe is yours.]],
     },
-    NH_AS = {
+    ASNH = {
         name = "The Starving Artist",
         desc = "HFD with NH AS",
         quote = [[Creativity cultivated trough limitation.]],
     },
-    EX_VL_AS = {
+    ASEXVL = {
         name = "The Con Artist",
         desc = "HFD with EX VL AS",
         quote = [[Would the perfect lie not be an art worthy of admiration ?]],
     },
-    EX_DP = {
+    DPEX = {
         name = "Trained Professionals",
         desc = "HFD with EX DP",
         quote = [[Partners in expertise.]],
     },
-    EX_MS = {
+    EXMS = {
         name = "Block Rationing",
         desc = "HFD with EX MS",
         quote = [[Adversity favors the resourceful.]],
@@ -305,86 +305,86 @@ Achievements = {
     },
 
     -- Mod Combo Extended
-    atlas_lament = {
+    EXGVMSNH = {
         name = "Atlas' Lament",
         desc = "HFD with EX NH MS GV",
         quote = [[A thankless job, yet our existence lies in his balance...]],
         credit = "@cat_noises",
     },
-    midnight_meal = {
+    ASDPNHVL = {
         name = "Midnight Meal",
         desc = "HFD with NH VL AS DP",
         quote = [[You came to eat up these mods, so you'd best be hungry.]],
         credit = "@GameTilDead",
     },
-    sweatshop = {
+    rGVrNHrVL = {
         name = "Sweatshop",
         desc = "HFD with rNH rGV rVL",
         quote = [[Carefree life is not for the asking, someone else is carrying the burden for you.]],
         hide = function() return GAME.completion.NH > 0 and GAME.completion.GV > 0 and GAME.completion.VL > 0 end,
         credit = "@obsidian",
     },
-    pristine = {
+    NHrAS = {
         name = "Pristine",
         desc = "HFD with NH rAS",
         quote = [[The pearl of your gameplay requires perfection for a clean finish.]],
         hide = function() return GAME.completion.AS > 0 end,
         credit = "@GameTilDead",
     },
-    tyrannical_dyarchy = {
+    rDPrEX = {
         name = "Tyrannical Dyarchy",
         desc = "HFD with rEX rDP (F2/4/6/7/8)",
         quote = [[Live in fear and despair.]],
         hide = function() return GAME.completion.EX > 0 and GAME.completion.DP > 0 end,
     },
-    painful_relapse = {
+    VLrDPrIN = {
         name = "Painful Relapse",
         desc = "HFD with VL rIN rDP (F2/4/5/6/7)",
         quote = [["I miss my ex..."]],
         hide = function() return GAME.completion.IN > 0 and GAME.completion.DP > 0 end,
         credit = "@obsidian",
     },
-    brain_capacity = {
+    rDHrIN = {
         name = "Brain Capacity",
         desc = "HFD with rDH rIN (F1/2/3/4/5)",
         quote = [[How long can you keep up in this forsaken memory game?]],
         hide = function() return GAME.completion.DH > 0 and GAME.completion.IN > 0 end,
         credit = "@GameTilDead",
     },
-    demonic_speed = {
+    DHEXrGV = {
         name = "Demonic Speed",
         desc = "HFD with EX rGV DH",
         quote = [[Prove your hellish capabilities to the world.]],
         hide = function() return GAME.completion.GV > 0 end,
         credit = "@GameTilDead",
     },
-    grand_master_rounds = {
+    DHGVVLrNH = {
         name = "Grand-Master! Rounds",
         desc = "HFD with rNH GV VL DH",
         quote = [[YOU AER GRAND-MASTER! ROUNDS]],
         hide = function() return GAME.completion.NH > 0 end,
         credit = "TGM4",
     },
-    instant_memory = {
+    rINrNH = {
         name = "Instant Memory",
         desc = "HFD with rNH rIN",
         quote = [[In the twinkling of a eye.]],
         hide = function() return GAME.completion.NH > 0 and GAME.completion.IN > 0 end,
     },
-    bnuuy = {
+    EXGVNHrMS = {
         name = "Bnuuy",
         desc = "HFD with EX NH rMS GV",
         quote = [[Look at them hopping around! Too bad they don't want to be picked up...]],
         hide = function() return GAME.completion.MS > 0 end,
         credit = "@GameTilDead",
     },
-    do_i_have_to_memorize_all_of_them = {
+    rASrDH = {
         name = "Do I Have to Memorize All of Them?",
         desc = "HFD with rDH rAS",
         quote = [[Believe it or not, no.]],
         hide = function() return GAME.completion.DH > 0 and GAME.completion.AS > 0 end,
     },
-    -- stenography = {
+    -- --['ASDHNHVLrGV']={
     --     name = "Stenography",
     --     desc = "HFD with NH rGV VL DH AS",
     --     quote = [["Let your plans be dark and impenetrable as night, and when you move, fall like a thunderbolt." - Sun Tzu, The Art of War]],
