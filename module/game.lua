@@ -130,6 +130,7 @@ local GAME = {
     zenithTraveler = false,
 
     achv_consecRestart = 0,
+    achv_perfectionistH = nil,
     achv_tailgaterH = nil,
     achv_carriedH = nil,
     achv_arroganceH = nil,
@@ -137,6 +138,8 @@ local GAME = {
     achv_patienceH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
+    achv_felMagicBurnt = nil,
+    achv_felMagicQuest = nil,
 }
 
 GAME.playing = false
@@ -608,7 +611,7 @@ end
 ---@param dmg number
 ---@param reason 'wrong' | 'time'
 ---@param toAlly? boolean
----@return boolean killed
+---@return boolean? killed
 function GAME.takeDamage(dmg, reason, toAlly)
     if GAME.currentTask then
         GAME.incrementPrompt('dmg_time')
@@ -624,6 +627,9 @@ function GAME.takeDamage(dmg, reason, toAlly)
         dmg <= 4.2 and 'damage_medium' or
         'damage_large', .872
     )
+
+    if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.height end
+
     if GAME[k] <= 0 then
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
             if toAlly then
@@ -1266,6 +1272,8 @@ function GAME.commit()
                 end
             end
             GAME.chain = 0
+
+            if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.height end
         else
             -- Perfect
             if GAME.currentTask then
@@ -1366,6 +1374,11 @@ function GAME.commit()
         end
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
+
+        if GAME.achv_felMagicBurnt then
+            GAME.achv_felMagicBurnt = false
+            GAME.achv_felMagicQuest = GAME.achv_felMagicQuest + 1
+        end
 
         if M.DP > 0 then
             if M.DP == 2 then
@@ -1598,6 +1611,7 @@ function GAME.start()
     GAME.updateBgm('start')
 
     GAME.achv_consecRestart = GAME.achv_consecRestart + 1
+    GAME.achv_perfectionistH = false
     GAME.achv_tailgaterH = false
     GAME.achv_carriedH = false
     GAME.achv_arroganceH = false
@@ -1605,6 +1619,8 @@ function GAME.start()
     GAME.achv_patienceH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
+    GAME.achv_felMagicBurnt = false
+    GAME.achv_felMagicQuest = 0
     if GAME.achv_consecRestart == 100 then IssueAchv('uninspired') end
     if M.DP == 1 then IssueAchv('intended_glitch') end
 end
@@ -1789,11 +1805,13 @@ function GAME.finish(reason)
         SubmitAchv('multitasker', GAME.height * GAME.comboMP)
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
+        SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.height)
         SubmitAchv('tailgater', GAME.achv_tailgaterH or GAME.height)
         SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
         SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height)
         -- SubmitAchv('the_pacifist_ii', GAME.achv_pacifist2H or GAME.height)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
+        if GAME.comboStr == 'rAS' then SubmitAchv('patience_is_a_virtue', GAME.achv_felMagicQuest) end
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end

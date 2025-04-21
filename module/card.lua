@@ -148,6 +148,7 @@ function Card:setActive(auto, key)
                     if M.AS == 2 then
                         CD[(p + table.remove(l, rnd(3, 4)) - 1) % #CD + 1]:setActive(true)
                         CD[(p + table.remove(l, rnd(1, 2)) - 1) % #CD + 1]:setActive(true)
+                        if GAME.floor<10 and GAME.gigaspeed then GAME.achv_felMagicBurnt = true end
                     end
                     SFX.play('wound')
                 else
