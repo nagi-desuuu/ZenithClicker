@@ -904,7 +904,7 @@ end
 
 function GAME.refreshCurrentCombo()
     local hand = GAME.getHand(not GAME.playing)
-    TEXTS.mod:set(GAME.getComboName(hand, M.DH == 2, GAME.playing))
+    TEXTS.mod:set(GAME.getComboName(hand, M.DH == 2))
     if not GAME.playing then
         GAME.comboMP = GAME.getComboMP(hand)
         GAME.comboZP = GAME.getComboZP(hand)
