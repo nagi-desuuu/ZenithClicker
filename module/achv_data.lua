@@ -622,7 +622,7 @@ Achievements = {
     },
     zenith_transitioner = {
         name = "Zenith Transitioner",
-        desc = [[Export your save to another device]],
+        desc = [[Export your save to a different platform (Web / Windows / Linux)]],
         quote = [[Uncover the mysteries of a new, familiar Tower.]],
         credit = "@GameTilDead",
     },

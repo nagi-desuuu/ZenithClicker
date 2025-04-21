@@ -220,7 +220,6 @@ scene.widgetList = {
             CLIPBOARD.set(STRING.packTable(STAT) .. ',' .. STRING.packTable(BEST))
             MSG('dark', "Progress exported!")
             SFX.play('social_notify_minor')
-            IssueAchv('zenith_transitioner')
         end,
     },
     WIDGET.new {
@@ -258,6 +257,10 @@ scene.widgetList = {
             setmetatable(BEST.highScore, Metatable.best_highscore)
             setmetatable(BEST.speedrun, Metatable.best_speedrun)
             GAME.refreshLockState()
+            if STAT.system ~= SYSTEM then
+                STAT.system = SYSTEM
+                IssueAchv('zenith_transitioner')
+            end
             SaveStat()
             SaveBest()
             MSG('dark', "Progress imported!")
