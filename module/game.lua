@@ -221,6 +221,8 @@ function GAME.getComboZP(list)
     return zp
 end
 
+local function modSortFunc(a, b) return MD.prio_name[a] < MD.prio_name[b] end
+
 ---@param list string[] WILL BE SORTED!!!
 ---@param extend? boolean use extended combo lib from community
 ---@param ingame? boolean return a color-string table instead
@@ -248,7 +250,7 @@ function GAME.getComboName(list, extend, ingame)
             return { COLOR.dL, ComboData[str].name }
         end
 
-        table.sort(list, function(a, b) return MD.prio_name[a] < MD.prio_name[b] end)
+        table.sort(list, modSortFunc)
 
         for i = 1, len - 1 do
             ins(fstr, MD.textColor[list[i]])
@@ -305,7 +307,7 @@ function GAME.getComboName(list, extend, ingame)
             return ComboData[str].name
         end
 
-        table.sort(list, function(a, b) return MD.prio_name[a] < MD.prio_name[b] end)
+        table.sort(list, modSortFunc)
 
         str = ""
         for i = 1, len - 1 do str = str .. MD.adj[list[i]] .. " " end
@@ -709,6 +711,7 @@ function GAME.setGigaspeedAnim(on, finish)
 end
 
 function GAME.upFloor()
+    if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
     if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.time) end
     if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.time) end
 
@@ -1777,6 +1780,12 @@ function GAME.finish(reason)
         mCnt = 0
         for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then mCnt = mCnt + 1 end end
         if mCnt >= 9 then IssueAchv('supremacy') end
+        local totalH = 0
+        for id in next, MD.name do totalH = totalH + BEST.highScore[id] end
+        SubmitAchv('zenith_challenger', totalH)
+        totalH = 0
+        for id in next, MD.name do totalH = totalH + BEST.highScore['r' .. id] end
+        SubmitAchv('divine_challenger', totalH)
         SubmitAchv('multitasker', GAME.height * GAME.comboMP)
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
@@ -1814,6 +1823,7 @@ function GAME.finish(reason)
         SubmitAchv('zenith_explorer_plus', GAME.height)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)
         if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
+        if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
