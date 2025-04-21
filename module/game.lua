@@ -1832,7 +1832,7 @@ function GAME.finish(reason)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
             for mp = GAME.comboMP, 8, -1 do
                 local name = RevComboData[min(mp, #RevComboData)]
-                SubmitAchv(name:sub(2, #name - 1), GAME.height)
+                SubmitAchv(name:sub(2, #name - 1):lower(), GAME.height, mp < GAME.comboMP)
             end
         elseif #hand == 9 or #hand >= 7 and not TABLE.find(hand, 'DP') then
             local name =
@@ -1841,7 +1841,12 @@ function GAME.finish(reason)
                 #hand == 9 and 'swamp_water_pro' or
                 'swamp_water_x'
             SubmitAchv(name .. (GAME.anyRev and '_plus' or ''), GAME.height)
-            if name == 'swamp_water' then SubmitAchv('swamp_water_lite' .. (GAME.anyRev and '_plus' or ''), GAME.height) end
+            if name == 'swamp_water' then
+                SubmitAchv(
+                    'swamp_water_lite' .. (GAME.anyRev and '_plus' or ''),
+                    GAME.height, true
+                )
+            end
         end
         SubmitAchv('zenith_explorer_plus', GAME.height)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)

@@ -5,6 +5,8 @@
 ---@field credit? string
 ---@field comp? '<' | '>' | fun(newScore, oldScore):boolean
 ---@field rank? 'floor' | fun(score):number
+---@field scoreSimp? fun(score):string
+---@field scoreFull? fun(score):string
 ---@field noScore? number
 ---@field hide? fun():boolean
 
@@ -23,6 +25,16 @@ end
 local function numberRank(...)
     local l = { ... }
     return function(s) return 5 * (6 - #l + ilLerp(l, s)) end
+end
+local function heightFloor(h)
+    for i = 9, 0, -1 do
+        if h >= Floors[i].top then
+            return "F" .. (i + 1)
+        end
+    end
+end
+local function heightNumber(score)
+    return string.format("%.1fm", score)
 end
 
 ---@type Map<Achievement>
@@ -206,11 +218,18 @@ Achievements = {
         quote = [[F10 Hyper%]],
         comp = '<',
         noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        scoreFull = NULL,
+        -- rank = TODO,
     },
     supercharged = {
         name = "Supercharged",
         desc = [[Highest Back-to-Back chain discovered without any mods]],
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
+        scoreSimp = function(b2b) return b2b .. "x" end,
+        scoreFull = NULL,
+        rank = numberRank(0, 20, 40, 65, 85, 100),
+
     },
     the_responsible_one = {
         name = "The Responsible One",
@@ -221,11 +240,14 @@ Achievements = {
         name = "Guardian Angel",
         desc = [[Highest altitude to perform a successful revive at]],
         quote = [[An angel's intervention.]],
+        scoreSimp = heightNumber,
+        scoreFull = NULL,
     },
     talentless = {
         name = "Talentless",
         desc = [[HFD with AS but mouse-only]],
         quote = [[Reaching deep down but coming back empty every time.]],
+        -- TODO
     },
 
     -- Activity
@@ -233,12 +255,15 @@ Achievements = {
         name = "Lover's Promise",
         desc = [[Highest altitude reached with DP on day 14 of each month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
-        unranked = true,
+        scoreSimp = heightNumber,
+        scoreFull = NULL,
     },
 
-    --------------------------------
-    -- Extended by Zenith Clicker --
-    --------------------------------
+
+
+    -----------------------------------------------
+    -- Extended Achievements from Zenith Clicker --
+    -----------------------------------------------
 
     -- Rev Swamp Water Series
     blight = {
@@ -441,20 +466,26 @@ Achievements = {
         name = "Supercharged+",
         desc = [[Highest Back-to-Back chain reached]],
         quote = [[Supercharged Any%]],
+        scoreSimp = function(b2b) return b2b .. "x" end,
+        scoreFull = NULL,
+        rank = numberRank(0, 20, 40, 65, 85, 100),
     },
     clicker_speedrun = {
         name = "Clicker Speedrun",
         desc = [[Minimal time on 40 quests]],
         quote = [[Supercharged Q40%]],
         comp = '<',
-        defaultVal = 1560,
+        noScore = 1560,
     },
     perfect_speedrun = {
         name = "Perfect Speedrun",
         desc = [[Reach 75 Back-to-Back AFAP]],
         quote = [[Supercharged B75%]],
         comp = '<',
-        defaultVal = 1560,
+        noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        scoreFull = NULL,
+        -- rank = TODO,
     },
     the_perfectionist = {
         name = "The Perfectionist",
@@ -465,11 +496,21 @@ Achievements = {
         name = "Museum Heist",
         desc = [[Shortest time spent in F5 with DH DP (20/12/6.2/2.6)]],
         quote = [[Less time, less evidence.]],
+        comp = '<',
+        noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        scoreFull = NULL,
+        -- rank = TODO,
     },
     ultra_dash = {
         name = "Ultra Dash",
         desc = [[Shortest time spent in F9 (26/16/12/6.2/4.2)]],
         quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
+        comp = '<',
+        noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        scoreFull = NULL,
+        -- rank = TODO,
     },
 
     -- Others
@@ -484,7 +525,10 @@ Achievements = {
         desc = [[Reach F10 AFAP while retaining GIGASPEED]],
         quote = [[F10 Any%]],
         comp = '<',
-        defaultVal = 1560,
+        noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        scoreFull = NULL,
+        -- rank = TODO,
     },
     zenith_challenger = {
         name = "Zenith Challenger",
@@ -517,12 +561,14 @@ Achievements = {
         name = "Final Defiance",
         desc = [[Meet the final fatigue effect]],
         quote = [["This is not the end!"]],
+        -- TODO,
     },
     royal_resistance = {
         name = "Royal Resistance",
         desc = [[Meet the final fatigue effect with rEX]],
         quote = [["History will prove me right!!"]],
         hide = function() return GAME.completion.EX > 0 end,
+        -- TODO,
     },
     fel_magic = {
         name = "Fel Magic",
@@ -530,6 +576,7 @@ Achievements = {
         quote = [["And what, Gul'dan, must we give it return?"]],
         credit = "WoW",
         hide = function() return GAME.completion.AS > 0 end,
+        -- TODO,
     },
     -- the_pacifist = {
     --     name = "The Pacifist",
@@ -766,8 +813,11 @@ for id, achv in next, Achievements do
         error("Invalid field 'comp'", id)
     end
 
-    if achv.rank == nil then achv.rank = floorRank(1, 1, 3, 5, 7, 9, 10) end
+    if achv.rank == nil then achv.rank = floorRank(1, 3, 5, 7, 9, 10) end
     assert(type(achv.rank) == 'function', "Invalid field 'rank'", id)
+
+    achv.scoreSimp = achv.scoreSimp or heightFloor
+    achv.scoreFull = achv.scoreFull or heightNumber
 
     achv.hide = achv.hide or FALSE
 end

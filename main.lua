@@ -326,16 +326,15 @@ for i = 1, 6 do MSG.addCategory(achvData[i].id, achvData[i].bg, COLOR.L, TEXTURE
 
 local msgTime = 0
 
-function IssueAchv(tag, silent)
-    do return end
-    local A = Achievements[tag]
-    if not A or ACHV[tag] then return end
+function IssueAchv(id, silent)
+    local A = Achievements[id]
+    if not A or ACHV[id] then return end
 
-    ACHV[tag] = 0
+    ACHV[id] = 0
     -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
 
     if not silent then
-        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
+        msgTime = TASK.lock('achv_bulk', 1) and 3.55 or msgTime + 2.6
         MSG('achv_issued', {
             achvData[6].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
@@ -348,11 +347,10 @@ function IssueAchv(tag, silent)
     return true
 end
 
-function SubmitAchv(tag, score, silent)
-    do return end
-    local A = Achievements[tag]
+function SubmitAchv(id, score, silent)
+    local A = Achievements[id]
     if not A then return end
-    local oldScore = ACHV[tag] or A.noScore or 0
+    local oldScore = ACHV[id] or A.noScore or 0
     if not A.comp(score, oldScore) then return end
 
     local R1 = A.rank(score)
@@ -361,7 +359,7 @@ function SubmitAchv(tag, score, silent)
     local R0 = A.rank(oldScore)
     if R1 <= R0 then return end
 
-    ACHV[tag] = score
+    ACHV[id] = score
     -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
 
     if not silent and math.floor(R0) ~= math.floor(R1) then
@@ -370,10 +368,11 @@ function SubmitAchv(tag, score, silent)
         if TASK.lock('achv_sfx_' .. sfxLV, 1) then
             SFX.play('achievement_' .. sfxLV, .7, 0, GAME.mod.VL)
         end
-        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 3.5
+        msgTime = TASK.lock('achv_bulk', 1) and 3.55 or msgTime + 2.6
         MSG(achvData[n].id, {
             achvData[n].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
+            COLOR.DL, A.scoreSimp(score) .. (A.scoreFull ~= NULL and "  (" .. A.scoreFull(score) .. ")\n" or "\n"),
             COLOR.LD, A.quote,
         }, msgTime, true)
     end
@@ -544,7 +543,7 @@ function RefreshDaily()
         STAT.lastDay = os.time()
     end
 
-    for x = 0, 6 do
+    for x = 0, 0 do
         math.randomseed(os.date("!%Y%m%d") + x)
         for _ = 1, 26 do math.random() end
 
@@ -568,7 +567,7 @@ function RefreshDaily()
                 DAILY[r2] = 'r' .. DAILY[r2]
             end
         end
-        print(table.concat(DAILY, ' '))
+        -- print(table.concat(DAILY, ' '))
     end
 end
 
