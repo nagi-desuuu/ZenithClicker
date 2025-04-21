@@ -186,6 +186,15 @@ ComboData = {
     { set = 'EX NH AS',          name = "positioning master",                 ex = true },
     -- Contents below are ideas from tetr.io's community:
     -- https://docs.google.com/spreadsheets/d/1syh3q2oiduCZb1cJ5QI95Y2XhhedAfhv4YnEH9z2tbc
+    { set = "EX",                name = "the emperor",                        ex = true },
+    { set = "NH",                name = "temperance",                         ex = true },
+    { set = "MS",                name = "wheel of fortune",                   ex = true },
+    { set = "GV",                name = "the tower",                          ex = true },
+    { set = "VL",                name = "strength",                           ex = true },
+    { set = "DH",                name = "the devil",                          ex = true },
+    { set = "IN",                name = "the hermit",                         ex = true },
+    { set = "AS",                name = "the magician",                       ex = true },
+    { set = "DP",                name = "the lovers",                         ex = true },
     { set = "MS DH",             name = "dig in",                             ex = true },
     { set = "NH MS",             name = "all in",                             ex = true },
     { set = "EX VL",             name = "icarus",                             ex = true },
