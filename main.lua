@@ -510,30 +510,32 @@ function RefreshDaily()
         STAT.lastDay = os.time()
     end
 
-    math.randomseed(os.date("!%Y%m%d") + 0)
-    for _ = 1, 26 do math.random() end
+    for x = 0, 6 do
+        math.randomseed(os.date("!%Y%m%d") + x)
+        for _ = 1, 26 do math.random() end
 
-    local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
-    DAILY = {}
+        local modCount = math.ceil(9 - math.log(math.random(11, 42), 1.62)) -- 5 444 3333 2222
+        DAILY = {}
 
-    DailyActived = false
-    DailyAvailable = false
+        DailyActived = false
+        DailyAvailable = false
 
-    while #DAILY < modCount do
-        local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
-        if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
-    end
-    if MATH.roll(.26 + #DAILY * .0626) then
-        if #DAILY >= 3 and MATH.roll(.62) then TABLE.popRandom(DAILY) end
-        local r = math.random(#DAILY)
-        DAILY[r] = 'r' .. DAILY[r]
-        if MATH.roll(.26) then
-            local r2 = math.random(#DAILY - 1)
-            if r2 >= r then r2 = r2 + 1 end
-            DAILY[r2] = 'r' .. DAILY[r2]
+        while #DAILY < modCount do
+            local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
+            if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
         end
+        if MATH.roll(.26 + #DAILY * .1) then
+            if #DAILY >= 3 and MATH.roll(.62) then TABLE.popRandom(DAILY) end
+            local r = math.random(#DAILY)
+            DAILY[r] = 'r' .. DAILY[r]
+            if MATH.roll(.26) then
+                local r2 = math.random(#DAILY - 1)
+                if r2 >= r then r2 = r2 + 1 end
+                DAILY[r2] = 'r' .. DAILY[r2]
+            end
+        end
+        print(table.concat(DAILY, ' '))
     end
-    -- print(table.concat(DAILY, ' '))
 end
 
 love.mouse.setVisible(false)
