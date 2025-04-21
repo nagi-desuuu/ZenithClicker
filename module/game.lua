@@ -275,18 +275,19 @@ function GAME.getComboName(list, extend, ingame)
             local mp = GAME.getComboMP(list)
             if mp >= 8 then return RevComboData[min(mp, #RevComboData)] end
         elseif len >= 7 then
+            if GAME.anyRev then
             return
-                GAME.anyRev and (
                     len == 7 and [["SWAMP WATER LITE+"]] or
                     len == 8 and [["SWAMP WATER+"]] or
                     len == 9 and [["SWAMP WATER PRO+"]] or
                     [["SWAMP WATER X+"]]
-                ) or (
+            elseif len == 9 or not TABLE.find(list, 'DP') then
+                return
                     len == 7 and [["SWAMP WATER LITE"]] or
                     len == 8 and [["SWAMP WATER"]] or
                     len == 9 and [["SWAMP WATER PRO"]] or
                     [["SWAMP WATER X"]]
-                )
+            end
         end
 
         -- Normal Combo
