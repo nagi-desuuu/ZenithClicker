@@ -34,6 +34,145 @@ Pass quests with one click at most on each card to get "perfect pass", with extr
 
 Each mod twists the rules and creates unique experience.
 
+## Mod Effects (from community, may not be exactly correct & complete)
+
+### Expert (`EX`)
+
+- Cards are **10px (9%)** closer together.
+- Climb speed **decays 67% faster.**
+- Cards are deactivated after failure.
+- All actions happen on button **release** instead of button press.
+
+### No Hold (`NH`)
+
+- You cannot manually deselect cards.
+
+#### Messy (`MS`)
+
+- Cards are **lightly shuffled** at the start of **floors 1, 2, 5, and 8**. The cards will always be in or adjacent to their correct position.
+
+### Gravity (`GV`)
+
+- **Automatically commit** some time after the first card flip. The timer starts at **9s** at floor 1, and decreases every floor until **4s** at floor 10. The timer will also automatically start if you flip no cards for 2.6s.
+
+### Volatile (`VL`)
+
+- Cards are **20px (18%)** further apart.
+- Cards must be pressed **twice** to activate (but deactivating still takes one press).
+
+### Double Hole (`DH`)
+
+- Quests are harder.
+- TODO: add specifics to difficulty change
+
+### Invisible (`IN`)
+
+- Cards are flipped to be **face-down**.
+- Quest colours are desaturated.
+- Quest hints are only shown for a moment **every two seconds**..
+
+### All-Spin (`AS`)
+
+- You can flip cards with your keyboard: on ANSI QWERTY layout, the inputs are 1~9, Q~O, or A~L. If cards are shuffled by `(r)MS`, they are flipped based on their *position*, not by which card they are.
+- The RESET button is replaced with **SPIN**, which quickly flips all cards one-by-one.
+- Flipping a card will apply **burn** to it, indicated by it flashing yellow. Burn lasts **3s** plus **0.5s per floor**, and can be removed by committing (even a wrong one), or by pressing SPIN. Flipping a burned card will **wound** you, force-flipping two cards. These cards do *not* get Burn.
+
+### Duo (`DP`)
+
+- Quests are a bit harder.
+- There are two "players" instead of one. You can swap players by activating the Duo card, or by completing the second quest in the queue (the cards will be highlighted pink while you do this).
+- If one player is incapacitated, your ascension is halved, and they can be revived by completing some tasks.
+- TODO: specifics on tasks
+
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+## SPOILERS AHEAD
+
+### The Tyrant (`rEX`)
+
+- **ALL the effects of Expert.**
+- Fatigue is much harsher.
+- Passing a quest with Duo no longer gives +2 attack.
+- **You fall downward** instead of passively climbing. The speed increases quadratically from **0.6m/s** on Floor 1 to **6m/s** on Floor 10.
+
+### Asceticism (`rNH`)
+
+- The keyboard is disabled, unless (r)AS is enabled. 
+- The RESET (or SPIN) button is removed.
+- The **next queue** is removed. If (r)DP is enabled, it will show only one next quest.
+- Quest **colours** are faded.
+- Cards are **not deselected** after committing.
+
+### Loaded Dice (`rMS`)
+
+- Cards are shuffled at the start of **every floor**. The shuffling gets stronger every odd-numbered floor, with cards straying further from their correct positions.
+- On commit, **swap two cards**, three on Floor 9/10. The cards must be within a five-card range.
+
+### Freefall (`rGV`)
+
+- The auto-commit timer is reduced, now starting at **3.2s** and decreasing every floor down to **2s**.
+
+### Last Stand (`rVL`)
+
+- Cards are **40px (36%)** further apart.
+- Cards must be pressed **four times** to activate *and* to **deactivate**!
+
+### Damnation (`rDH`)
+
+- Quests are harder.
+- Most combos are given a **community name**!
+- TODO: specifics again
+
+### The Exile (`rIN`)
+
+- **ALL the effects of Invisible, except...**
+- Quest hints are **not shown** at all!
+- Quests **fade away** after a short time (faster at higher floors), but reappear if you make a wrong commit.
+- TODO: specifics on fade time
+
+### The Warlock (`rAS`)
+
+- **ALL the effects of All-Spin, except...**
+- Wounds flip **four cards** instead of two.
+- Burn will **not be removed** over time, nor on SPIN, nor on wrong commit!
+- B2B >= 4 sends **+1 attack**, but passing imperfectly **sends none**!
+
+### Bleeding Hearts (`rDP`)
+
+- **ALL the effects of Duo, except...**
+- Special fatigue.
+- **Half of attack** goes to the inactive player.
+- If one player is incapacitated, **you can't climb** and half of attack goes to the **active player**!
+
+### Hard Mode
+
+- **Expert and ALL reversed modifiers activate Hard Mode with the following effects.**
+- Activating a correct card for the first time no longer gives +1 Climb Speed XP.
+- Quest hints take longer to appear (**1.5s longer**, or on IN, **38% longer** between flashes)
+
 ## Behind The Scene
 
 ### Clicker Rating (CR)
