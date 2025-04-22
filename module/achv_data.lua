@@ -661,13 +661,13 @@ Achievements = {
         quote = [["History will prove me right!!"]],
         hide = function() return GAME.completion.EX == 0 end,
     },
-    -- {
-    --     id = 'tbd',
-    --     name = "tbd",
-    --     desc = [[Meet the final fatigue effect with rEX]],
-    --     quote = [[tbd]],
-    --     hide = function() return GAME.completion.DP == 0 end,
-    -- },
+    {
+        id = 'lovers_stand',
+        name = "Lover's Stand",
+        desc = [[Meet the final fatigue effect with rDP]],
+        quote = [[The power of affection sees you through the bitter end.]],
+        hide = function() return GAME.completion.DP == 0 end,
+    },
     {
         id = 'fel_magic',
         name = "Fel Magic",

@@ -1989,7 +1989,7 @@ function GAME.update(dt)
                     elseif GAME.fatigueSet == Fatigue.rEX then
                         IssueAchv('royal_resistance')
                     elseif GAME.fatigueSet == Fatigue.rDP then
-                        -- IssueAchv('???')
+                        IssueAchv('lovers_stand')
                     end
                 end
                 TEXT:add {
