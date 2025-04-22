@@ -1813,7 +1813,7 @@ function GAME.finish(reason)
         SubmitAchv('tailgater', GAME.achv_tailgaterH or GAME.height)
         if M.DP > 0 then SubmitAchv('carried', GAME.achv_carriedH or GAME.height) end
         if M.rAS == 2 then SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height) end
-        -- SubmitAchv('the_pacifist_ii', GAME.achv_pacifist2H or GAME.height)
+        -- SubmitAchv('powerless', GAME.achv_pacifist2H or GAME.height)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
         if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
         if GAME.comboStr == 'rAS' then SubmitAchv('patience_is_a_virtue', GAME.achv_felMagicQuest) end
