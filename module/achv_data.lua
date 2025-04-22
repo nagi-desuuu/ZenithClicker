@@ -540,6 +540,8 @@ Achievements = {
         quote = [[Supercharged Q40%]],
         comp = '<',
         noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        -- rank = TODO,
     },
     {
         id = 'perfect_speedrun',
@@ -584,7 +586,6 @@ Achievements = {
         name = "Zenith Explorer+",
         desc = [[HFD]],
         quote = [[Uncover the mysteries of the Zenith Tower.]],
-        credit = ""
     },
     {
         id = 'zenith_speedrun_plus',
@@ -891,22 +892,23 @@ local compFunc = {
     ['>'] = function(a, b) return a > b end,
     ['<'] = function(a, b) return a < b end,
 }
+local defaultFloorRank = floorRank(1, 3, 5, 7, 9, 10)
 
 for i = 1, #Achievements do
     local achv = Achievements[i]
     local id = achv.id
     Achievements[id] = achv
 
-    assert(type(id) == 'string', "Missing field 'name'", id)
-    assert(type(achv.name) == 'string', "Missing field 'name'", id)
+    assert(type(id) == 'string', "Missing field 'name' - " .. id)
+    assert(type(achv.name) == 'string', "Missing field 'name' - " .. id)
 
-    assert(achv.desc, "Missing field 'desc'", id)
+    assert(achv.desc, "Missing field 'desc' - " .. id)
     achv.desc = achv.desc:gsub("[A-Z][A-Z][A-Z][A-Z]?", {
         HFD = "Highest floor discovered",
         AFAP = "as fast as possible",
     })
 
-    assert(achv.quote, "Missing field 'quote'", id)
+    assert(achv.quote, "Missing field 'quote' - " .. id)
 
     achv.credit = achv.credit or ""
 
@@ -915,20 +917,18 @@ for i = 1, #Achievements do
     elseif compFunc[achv.comp] then
         achv.comp = compFunc[achv.comp]
     elseif type(achv.comp) ~= 'function' then
-        error("Invalid field 'comp'", id)
+        error("Invalid field 'comp' - " .. id)
     end
 
-    if achv.rank == nil then achv.rank = floorRank(1, 3, 5, 7, 9, 10) end
-    assert(type(achv.rank) == 'function', "Invalid field 'rank'", id)
+    if achv.rank == nil then achv.rank = defaultFloorRank end
+    assert(type(achv.rank) == 'function', "Invalid field 'rank' - " .. id)
 
     if achv.scoreSimp == nil then
         achv.scoreSimp = heightFloor
         achv.scoreFull = heightNumber
-    elseif achv.scoreFull == nil then
-        achv.scoreFull = NULL
     end
-    assert(type(achv.scoreSimp) == 'function', "Invalid field 'scoreSimp'", id)
-    assert(type(achv.scoreFull) == 'function', "Invalid field 'scoreFull'", id)
+    assert(type(achv.scoreSimp) == 'function', "Invalid field 'scoreSimp' - " .. id)
+    assert(achv.scoreFull == nil or type(achv.scoreFull) == 'function', "Invalid field 'scoreFull' - " .. id)
 
     achv.hide = achv.hide or FALSE
 end

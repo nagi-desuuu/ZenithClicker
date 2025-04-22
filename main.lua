@@ -372,7 +372,7 @@ function SubmitAchv(id, score, silent)
         MSG(achvData[n].id, {
             achvData[n].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
-            COLOR.DL, A.scoreSimp(score) .. (A.scoreFull ~= NULL and "  (" .. A.scoreFull(score) .. ")\n" or "\n"),
+            COLOR.DL, ">>  " .. A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")\n" or "\n"),
             COLOR.LD, A.quote,
         }, msgTime, true)
     end
