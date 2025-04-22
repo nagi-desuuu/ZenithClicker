@@ -266,13 +266,14 @@ Achievements = {
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
         scoreSimp = function(b2b) return b2b .. "x" end,
         rank = numberRank(0, 20, 40, 65, 85, 100),
-
     },
     {
         id = 'the_responsible_one',
         name = "The Responsible One",
         desc = [[Highest amount of revivals performed in a single duo run]],
         quote = [["Could you please stop dying?"]],
+        scoreSimp = function(b2b) return b2b .. " Revives" end,
+        rank = numberRank(0, 3, 6, 9, 12, 16),
     },
     {
         id = 'guardian_angel',
@@ -280,6 +281,7 @@ Achievements = {
         desc = [[Highest altitude to perform a successful revive at]],
         quote = [[An angel's intervention.]],
         scoreSimp = heightNumber,
+        rank = numberRank(0, 626, 942, 1620, 2600, 4200),
     },
     {
         id = 'talentless',
