@@ -325,6 +325,7 @@ local achvData = {
 for i = 1, 6 do MSG.addCategory(achvData[i].id, achvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
 
 local msgTime = 0
+local bufferedMsg = {}
 
 function IssueAchv(id, silent)
     local A = Achievements[id]
@@ -334,14 +335,13 @@ function IssueAchv(id, silent)
     -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
 
     if not silent then
-        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 2.6
-        MSG('achv_issued', {
+        table.insert(bufferedMsg, { 'achv_issued', {
             achvData[6].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
             COLOR.LD, A.quote,
-        }, msgTime, true)
-        if TASK.lock('achv_sfx_1', 1) then
-            SFX.play('achievement_1', .7, 0, GAME.mod.VL)
+        }, 1 })
+        if not GAME.playing then
+            ReleaseAchvBuffer()
         end
     end
     return true
@@ -364,19 +364,29 @@ function SubmitAchv(id, score, silent)
 
     if not silent and math.floor(R0) ~= math.floor(R1) then
         local n = math.floor(R1)
-        local sfxLV = n <= 2 and 1 or n <= 4 and 2 or 3
-        if TASK.lock('achv_sfx_' .. sfxLV, 1) then
-            SFX.play('achievement_' .. sfxLV, .7, 0, GAME.mod.VL)
-        end
-        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 2.6
-        MSG(achvData[n].id, {
+        table.insert(bufferedMsg, { achvData[n].id, {
             achvData[n].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
             COLOR.DL, ">>  " .. A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")\n" or "\n"),
             COLOR.LD, A.quote,
-        }, msgTime, true)
+        }, n <= 2 and 1 or n <= 4 and 2 or 3 })
+        if not GAME.playing then
+            ReleaseAchvBuffer()
+        end
     end
     return true
+end
+
+function ReleaseAchvBuffer()
+    for i = 1, #bufferedMsg do
+        local msg = bufferedMsg[i]
+        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 2.6
+        MSG(msg[1], msg[2], msgTime, true)
+        if TASK.lock('achv_sfx_' .. msg[3], .26) then
+            SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)
+        end
+    end
+    TABLE.clear(bufferedMsg)
 end
 
 MX, MY = 0, 0

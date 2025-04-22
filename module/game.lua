@@ -1790,6 +1790,7 @@ function GAME.finish(reason)
         })
         GAME.refreshResultModIcon()
 
+        -- Achievements
         GAME.achv_consecRestart = 0
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
@@ -1853,6 +1854,7 @@ function GAME.finish(reason)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain, noSP)
         SubmitAchv(GAME.comboStr, GAME.height)
         if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
+        ReleaseAchvBuffer()
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")

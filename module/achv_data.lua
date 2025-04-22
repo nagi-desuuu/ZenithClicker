@@ -307,7 +307,7 @@ Achievements = {
         desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(1, 4, 6, 8, 9, 10),
+        rank = floorRank(1, 3, 5, 7, 9, 10),
     },
     {
         id = 'desolation',
@@ -315,7 +315,7 @@ Achievements = {
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(1, 4, 6, 8, 9, 10),
+        rank = floorRank(1, 3, 5, 7, 9, 10),
     },
     {
         id = 'havoc',
@@ -323,7 +323,7 @@ Achievements = {
         desc = [[HFD with 10+ mod points]],
         quote = [[The world is in chaos...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(1, 3, 5, 8, 9, 10),
+        rank = floorRank(1, 3, 5, 7, 8, 9),
     },
     {
         id = 'pandemonium',
@@ -331,7 +331,7 @@ Achievements = {
         desc = [[HFD with 11+ mod points]],
         quote = [[Several realms began to collide...]],
         hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
-        rank = floorRank(1, 2, 4, 7, 8, 9),
+        rank = floorRank(1, 2, 4, 6, 8, 9),
     },
     {
         id = 'inferno',
@@ -489,7 +489,7 @@ Achievements = {
         id = 'DHGVVLrNH',
         name = "Grand-Master! Rounds",
         desc = [[HFD with rNH GV VL DH]],
-        quote = [[YOU AER GRAND-MASTER! ROUNDS]],
+        quote = [[YOUR AER: GRAND-MASTER! Rounds]],
         hide = function() return GAME.completion.NH > 0 end,
         credit = "TGM4",
     },
@@ -783,7 +783,7 @@ Achievements = {
         id = 'worn_out',
         name = "Worn Out",
         desc = [[Reach F10 in over 5 minutes while retaining GIGASPEED]],
-        quote = [[You alright over there? You seem a bit tired from all that "speed "running...]],
+        quote = [[You alright over there? You seem a bit tired from all that "speed"-running...]],
         credit = "@GameTilDead",
     },
     {
