@@ -710,13 +710,13 @@ Achievements = {
         rank = numberRank(13, 13, 13, 13, 15, 16),
         scoreSimp = function(rank) return "Rank " .. rank end,
     },
-    -- {
-    --     id = 'tailgater',
-    --     name = "Tailgater",
-    --     desc = [[HFD without losing rank]],
-    --     quote = [["I slow down for no one!"]],
-    --     credit = "@Axye",
-    -- },
+    {
+        id = 'tailgater',
+        name = "Tailgater",
+        desc = [[HFD without losing rank]],
+        quote = [["I slow down for no one!"]],
+        credit = "@Axye",
+    },
     {
         id = 'carried',
         name = "Carried",
