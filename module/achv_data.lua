@@ -15,6 +15,10 @@ local function numberRank(...)
     local l = { ... }
     return function(s) return 5 * (6 - #l + ilLerp(l, s)) end
 end
+local function numberRankRev(...)
+    local l = TABLE.reverse { ... }
+    return function(s) return 5 * (#l - 5 - ilLerp(l, s)) end
+end
 local function heightFloor(h)
     for i = 9, 0, -1 do
         if h >= Floors[i].top then
@@ -105,63 +109,63 @@ Achievements = {
         name = "The Tyrant",
         desc = [[HFD with rEX]],
         quote = [[Fear, oppression, and limitless ambition.]],
-        hide = function() return GAME.completion.EX > 0 end,
+        hide = function() return GAME.completion.EX == 0 end,
     },
     {
         id = 'rNH',
         name = "Asceticism",
         desc = [[HFD with rNH]],
         quote = [[A detachment from even that which is moderate.]],
-        hide = function() return GAME.completion.NH > 0 end,
+        hide = function() return GAME.completion.NH == 0 end,
     },
     {
         id = 'rMS',
         name = "Loaded Dice",
         desc = [[HFD with rMS]],
         quote = [[In a rigged game, your mind is the only fair advantage.]],
-        hide = function() return GAME.completion.MS > 0 end,
+        hide = function() return GAME.completion.MS == 0 end,
     },
     {
         id = 'rGV',
         name = "Freefall",
         desc = [[HFD with rGV]],
         quote = [[In retrospect, the ground you stood on never existed in the first place.]],
-        hide = function() return GAME.completion.GV > 0 end,
+        hide = function() return GAME.completion.GV == 0 end,
     },
     {
         id = 'rVL',
         name = "Last Stand",
         desc = [[HFD with rVL]],
         quote = [[Strength isn't necessary for those with nothing to lose.]],
-        hide = function() return GAME.completion.VL > 0 end,
+        hide = function() return GAME.completion.VL == 0 end,
     },
     {
         id = 'rDH',
         name = "Damnation",
         desc = [[HFD with rDH]],
         quote = [[No more second chances.]],
-        hide = function() return GAME.completion.DH > 0 end,
+        hide = function() return GAME.completion.DH == 0 end,
     },
     {
         id = 'rIN',
         name = "The Exile",
         desc = [[HFD with rIN]],
         quote = [[Never underestimate blind faith.]],
-        hide = function() return GAME.completion.IN > 0 end,
+        hide = function() return GAME.completion.IN == 0 end,
     },
     {
         id = 'rAS',
         name = "The Warlock",
         desc = [[HFD with rAS]],
         quote = [[Into realms beyond heaven and earth.]],
-        hide = function() return GAME.completion.AS > 0 end,
+        hide = function() return GAME.completion.AS == 0 end,
     },
     {
         id = 'rDP',
         name = "Bleeding Hearts",
         desc = [[HFD with rDP]],
         quote = [[Even as we bleed, we keep holding on...]],
-        hide = function() return GAME.completion.DP > 0 end,
+        hide = function() return GAME.completion.DP == 0 end,
     },
 
     -- Mod Combo
@@ -253,7 +257,7 @@ Achievements = {
         comp = '<',
         noScore = 1560,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        -- rank = TODO,
+        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2),
     },
     {
         id = 'supercharged',
@@ -440,7 +444,7 @@ Achievements = {
         name = "Sweatshop",
         desc = [[HFD with rNH rGV rVL]],
         quote = [[Carefree life is not for the asking, someone else is carrying the burden for you.]],
-        hide = function() return GAME.completion.NH > 0 and GAME.completion.GV > 0 and GAME.completion.VL > 0 end,
+        hide = function() return GAME.completion.NH == 0 or GAME.completion.GV == 0 or GAME.completion.VL == 0 end,
         credit = "@obsidian",
     },
     {
@@ -448,7 +452,7 @@ Achievements = {
         name = "Pristine",
         desc = [[HFD with NH rAS]],
         quote = [[The pearl of your gameplay requires perfection for a clean finish.]],
-        hide = function() return GAME.completion.AS > 0 end,
+        hide = function() return GAME.completion.AS == 0 end,
         credit = "@GameTilDead",
     },
     {
@@ -456,7 +460,7 @@ Achievements = {
         name = "Tyrannical Dyarchy",
         desc = [[HFD with rEX rDP]],
         quote = [[Live in fear and despair.]],
-        hide = function() return GAME.completion.EX > 0 and GAME.completion.DP > 0 end,
+        hide = function() return GAME.completion.EX == 0 or GAME.completion.DP == 0 end,
         rank = floorRank(1, 2, 4, 6, 7, 8),
     },
     {
@@ -464,7 +468,7 @@ Achievements = {
         name = "Painful Relapse",
         desc = [[HFD with VL rIN rDP]],
         quote = [["I miss my ex..."]],
-        hide = function() return GAME.completion.IN > 0 and GAME.completion.DP > 0 end,
+        hide = function() return GAME.completion.IN == 0 or GAME.completion.DP == 0 end,
         rank = floorRank(1, 2, 4, 5, 6, 7),
         credit = "@obsidian",
     },
@@ -473,7 +477,7 @@ Achievements = {
         name = "Brain Capacity",
         desc = [[HFD with rDH rIN]],
         quote = [[How long can you keep up in this forsaken memory game?]],
-        hide = function() return GAME.completion.DH > 0 and GAME.completion.IN > 0 end,
+        hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
         rank = floorRank(1, 1, 2, 3, 4, 5),
         credit = "@GameTilDead",
     },
@@ -482,7 +486,7 @@ Achievements = {
         name = "Demonic Speed",
         desc = [[HFD with EX rGV DH]],
         quote = [[Prove your hellish capabilities to the world.]],
-        hide = function() return GAME.completion.GV > 0 end,
+        hide = function() return GAME.completion.GV == 0 end,
         credit = "@GameTilDead",
     },
     {
@@ -490,7 +494,7 @@ Achievements = {
         name = "Grand-Master! Rounds",
         desc = [[HFD with rNH GV VL DH]],
         quote = [[YOUR AER: GRAND-MASTER! Rounds]],
-        hide = function() return GAME.completion.NH > 0 end,
+        hide = function() return GAME.completion.NH == 0 end,
         credit = "TGM4",
     },
     {
@@ -498,14 +502,14 @@ Achievements = {
         name = "Instant Memory",
         desc = [[HFD with rNH rIN]],
         quote = [[In the twinkling of a eye.]],
-        hide = function() return GAME.completion.NH > 0 and GAME.completion.IN > 0 end,
+        hide = function() return GAME.completion.NH == 0 or GAME.completion.IN == 0 end,
     },
     {
         id = 'EXGVNHrMS',
         name = "Bnuuy",
         desc = [[HFD with EX NH rMS GV]],
         quote = [[Look at them hopping around! Too bad they don't want to be picked up...]],
-        hide = function() return GAME.completion.MS > 0 end,
+        hide = function() return GAME.completion.MS == 0 end,
         credit = "@GameTilDead",
     },
     {
@@ -513,14 +517,14 @@ Achievements = {
         name = "Do I Have to Memorize All of Them?",
         desc = [[HFD with rDH rAS]],
         quote = [[Believe it or not, no.]],
-        hide = function() return GAME.completion.DH > 0 and GAME.completion.AS > 0 end,
+        hide = function() return GAME.completion.DH == 0 or GAME.completion.AS == 0 end,
     },
     {
         id = 'DHNHrASrIN',
         name = "Steganography",
         desc = [[HFD with NH DH rIN rAS]],
         quote = [[Sometimes, the best hiding place is in plain sight.]],
-        hide = function() return GAME.completion.IN > 0 and GAME.completion.AS > 0 end,
+        hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
         credit = "@obsidian",
     },
 
@@ -536,12 +540,22 @@ Achievements = {
     {
         id = 'clicker_speedrun',
         name = "Clicker Speedrun",
-        desc = [[Minimal time on 40 quests]],
+        desc = [[Minimal time on 40 quests without any mods]],
         quote = [[Supercharged Q40%]],
         comp = '<',
         noScore = 1560,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        -- rank = TODO,
+        rank = numberRankRev(94.2, 72, 55, 42, 33, 26),
+    },
+    {
+        id = 'typer_speedrun',
+        name = "Typer Speedrun",
+        desc = [[Minimal time on 40 quests]],
+        quote = [[Supercharged AnyQ40%]],
+        comp = '<',
+        noScore = 1560,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(72, 55, 42, 33, 26, 22),
     },
     {
         id = 'perfect_speedrun',
@@ -551,7 +565,7 @@ Achievements = {
         comp = '<',
         noScore = 1560,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        -- rank = TODO,
+        rank = numberRankRev(150, 115, 90, 70, 55, 45),
     },
     {
         id = 'the_perfectionist',
@@ -562,22 +576,22 @@ Achievements = {
     {
         id = 'museum_heist',
         name = "Museum Heist",
-        desc = [[Shortest time spent in F5 with DH DP (20/12/6.2/2.6)]],
+        desc = [[Shortest time spent in F5 with DH DP]],
         quote = [[Less time, less evidence.]],
         comp = '<',
         noScore = 1560,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        -- rank = TODO,
+        rank = numberRankRev(35, 26, 20, 12, 6.2, 2.6),
     },
     {
         id = 'ultra_dash',
         name = "Ultra Dash",
-        desc = [[Shortest time spent in F9 (26/16/12/6.2/4.2)]],
+        desc = [[Shortest time spent in F9]],
         quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
         comp = '<',
         noScore = 1560,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        -- rank = TODO,
+        rank = numberRankRev(62, 26, 16, 12, 6.2, 4.2),
     },
 
     -- Others
@@ -595,7 +609,7 @@ Achievements = {
         comp = '<',
         noScore = 1560,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        -- rank = TODO,
+        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2),
     },
     {
         id = 'zenith_challenger',
@@ -615,28 +629,27 @@ Achievements = {
         rank = numberRank(0, 10000, 16000, 20000, 24000, 26000),
         scoreSimp = function(h) return string.format("%.0fm", h) end,
     },
-    {
-        id = 'indolency',
-        name = "Indolency",
-        desc = [[Highest attack total in F1 with rEX]],
-        quote = [[Those glorious laurels, allowing you to stay where it's comfortable.]],
-        credit = "@Flowerling",
-        hide = function() return GAME.completion.EX > 0 end,
-    },
+    -- {
+    --     id = 'indolency',
+    --     name = "Indolency",
+    --     desc = [[Highest attack total in F1 with rEX]],
+    --     quote = [[Those glorious laurels, allowing you to stay where it's comfortable.]],
+    --     credit = "@Flowerling",
+    --     hide = function() return GAME.completion.EX == 0 end,
+    --     rank = numberRank(0, 62, 90, 126, 162, 260),
+    -- },
     {
         id = 'final_defiance',
         name = "Final Defiance",
         desc = [[Meet the final fatigue effect]],
         quote = [["This is not the end!"]],
-        -- TODO,
     },
     {
         id = 'royal_resistance',
         name = "Royal Resistance",
         desc = [[Meet the final fatigue effect with rEX]],
         quote = [["History will prove me right!!"]],
-        hide = function() return GAME.completion.EX > 0 end,
-        -- TODO,
+        hide = function() return GAME.completion.EX == 0 end,
     },
     {
         id = 'fel_magic',
@@ -644,7 +657,7 @@ Achievements = {
         desc = [[Quest passed with wound triggered during GIGASPEED, with rAS]],
         quote = [["And what, Gul'dan, must we give it return?"]],
         credit = "WoW",
-        hide = function() return GAME.completion.AS > 0 end,
+        hide = function() return GAME.completion.AS == 0 end,
         -- TODO,
     },
     -- {
@@ -712,7 +725,7 @@ Achievements = {
         name = "Arrogance",
         desc = [[HFD with rAS and no perfect pass]],
         quote = [[Maintaining arrogance at all times is also not easy.]],
-        hide = function() return GAME.completion.AS > 0 end,
+        hide = function() return GAME.completion.AS == 0 end,
     },
     -- {
     --     id='powerless',
@@ -748,7 +761,7 @@ Achievements = {
         desc = [[HFD without manually commit]],
         quote = [[Good things come to those who wait.]],
         credit = "@The_111thBlitzer",
-        hide = function() return GAME.completion.GV > 0 end,
+        hide = function() return GAME.completion.GV == 0 end,
     },
 
     -- Issued, easy
@@ -766,18 +779,18 @@ Achievements = {
         hide = TRUE,
     },
     speedrun_speedruning = {
-        function() return GAME.completion.EX > 0 end,
         id = 'hide',
         name = "Speedrun Speedruning",
         desc = [[Enter GIGASPEED on F1]],
         quote = [[Not much of a speedrun]],
+        hide = function() return GAME.completion.EX == 0 end,
     },
     fruitless_effort = {
-        function() return GAME.completion.EX > 0 end,
         id = 'hide',
         name = "Fruitless Effort",
         desc = [[Finish a game with bonus over 260%]],
         quote = [[Effort is pointless if you are not strong enough.]],
+        hide = function() return GAME.completion.EX == 0 end,
     },
     {
         id = 'worn_out',
@@ -826,7 +839,7 @@ Achievements = {
         name = "And Then... Nothing",
         desc = [[Break b2b x 50 while one player is KO'd in rDP, and survived]],
         quote = [[Moral of the story: NEVER exploit your partner.]],
-        hide = function() return GAME.completion.DP > 0 end,
+        hide = function() return GAME.completion.DP == 0 end,
         credit = "@GameTilDead",
     },
     {

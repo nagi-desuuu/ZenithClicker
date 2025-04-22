@@ -796,8 +796,9 @@ function GAME.upFloor()
         end
 
         -- SubmitAchv('the_pacifist', GAME.totalAttack)
-        if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', GAME.time) end
-        SubmitAchv('zenith_speedrun_plus', GAME.time)
+        local noZSP
+        if GAME.comboStr == '' then noZSP = SubmitAchv('zenith_speedrun', GAME.time) end
+        SubmitAchv('zenith_speedrun_plus', GAME.time, noZSP)
     end
     GAME.updateBgm('ingame')
     GAME.refreshRPC()
@@ -1945,6 +1946,14 @@ function GAME.update(dt)
                 local duration = 5
                 if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
                     duration = duration * 2
+                end
+                if GAME.fatigue == #GAME.fatigueSet then
+                    if GAME.fatigueSet == Fatigue.normal then
+                        IssueAchv('final_defiance')
+                    elseif GAME.fatigueSet == Fatigue.rEX then
+                        IssueAchv('royal_resistance')
+                    elseif GAME.fatigueSet == Fatigue.rDP then
+                    end
                 end
                 TEXT:add {
                     text = stage.text,
