@@ -453,6 +453,8 @@ function GAME.genQuest()
             GAME.atkBuffer = GAME.atkBufferCap
         end
         GAME.atkBuffer = max(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4)), 0)
+    elseif GAME[GAME.getLifeKey(true)] == 0 then
+        r = r * 1.26
     end
 
     local pool = TABLE.copyAll(MD.weight)
