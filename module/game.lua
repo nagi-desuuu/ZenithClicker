@@ -1547,7 +1547,7 @@ function GAME.start()
     -- Params
     GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
     GAME.maxQuestSize = M.DH == 2 and 3 or 4
-    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0)
+    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0) - .15
     GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
     GAME.questFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
@@ -1854,7 +1854,6 @@ function GAME.finish(reason)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain, noSP)
         SubmitAchv(GAME.comboStr, GAME.height)
         if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
-        ReleaseAchvBuffer()
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
@@ -1862,6 +1861,7 @@ function GAME.finish(reason)
         TEXTS.zpChange:set("")
         GAME.resIB:clear()
     end
+    ReleaseAchvBuffer()
 
     GAME.setGigaspeedAnim(false)
     TASK.removeTask_code(task_startSpin)
@@ -1941,25 +1941,27 @@ function GAME.update(dt)
             end
             if GAME.floor >= 10 then GAME.updateBgm('ingame') end
             GAME.fatigue = GAME.fatigue + 1
-            local duration = 5
-            if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
-                duration = duration * 2
+            if stage.text then
+                local duration = 5
+                if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
+                    duration = duration * 2
+                end
+                TEXT:add {
+                    text = stage.text,
+                    x = 800, y = 265, fontSize = 30, k = 1.5,
+                    style = 'score', duration = duration,
+                    inPoint = .1, outPoint = .26,
+                    color = stage.color or 'lM',
+                }
+                TEXT:add {
+                    text = stage.desc,
+                    x = 800, y = 300, fontSize = 30,
+                    style = 'score', duration = duration,
+                    inPoint = .26, outPoint = .1,
+                    color = stage.color or 'lM',
+                }
+                TASK.new(GAME.task_fatigueWarn)
             end
-            TEXT:add {
-                text = stage.text,
-                x = 800, y = 265, fontSize = 30, k = 1.5,
-                style = 'score', duration = duration,
-                inPoint = .1, outPoint = .26,
-                color = stage.color or 'lM',
-            }
-            TEXT:add {
-                text = stage.desc,
-                x = 800, y = 300, fontSize = 30,
-                style = 'score', duration = duration,
-                inPoint = .26, outPoint = .1,
-                color = stage.color or 'lM',
-            }
-            TASK.new(GAME.task_fatigueWarn)
         end
 
         if not GAME.DPlock then

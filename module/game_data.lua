@@ -449,6 +449,9 @@ Floors = {
 
 Fatigue = {
     normal = {
+        { time = 90,   event = { 'extraQuestBase', .2 } },
+        { time = 180,  event = { 'extraQuestBase', .2 } },
+        { time = 240,  event = { 'extraQuestBase', .2 } },
         { time = 300,  event = { 'dmgTimeMul', -.1 },                                         text = "FATIGUE SETS IN_",          desc = "TimerSpeed++" },
         { time = 330,  event = { 'dmgCycle', -.5, 'dmgWrong', 1 },                            text = "YOUR BODY GROWS WEAK_",     desc = "DmgCycle--   Damage++" },
         { time = 360,  event = { 'dmgTimeMul', -.1, 'dmgHeal', -1 },                          text = "ALL SENSES BLUR TOGETHER_", desc = "TimerSpeed++   Heal--" },
@@ -458,6 +461,9 @@ Fatigue = {
         { time = 1e99, text = "" }, -- Total: dmgTimeMul-50%, Cycle-1, Wrong+2
     },
     rEX = {
+        { time = 90,   event = { 'extraQuestBase', .2 } },
+        { time = 180,  event = { 'extraQuestBase', .2 } },
+        { time = 240,  event = { 'extraQuestBase', .2 } },
         { time = 240,  event = { 'dmgTimeMul', -.2 },                 text = "YOUR POWER SLIPS_",               desc = "TimerSpeed++" },
         { time = 270,  event = { 'dmgWrong', 2 },                     text = "WHISPERS OF DISCONTENT SPREAD_",  desc = "Damage++" },
         { time = 300,  event = { 'dmgCycle', -1 },                    text = "PROTESTERS LINE THE STREETS_",    desc = "DmgCycle--" },
@@ -472,13 +478,16 @@ Fatigue = {
         { time = 40,   event = { 'dmgHeal', -.5 }, --[[ 1.5 ]] text = "THEIR REPLIES BECOME LESS ENGAGED_",         desc = "Heal--" },
         { time = 60,   event = { 'dmgHeal', -.5 }, --[[ 1 ]]   text = "YOU FEEL NEGLECTED_",                        desc = "Heal---" },
         { time = 80,   event = { 'dmgHeal', 1 }, --[[ 2 ]]     text = "THEY SUCCESSFULLY APOLOGIZE_?",              desc = "Heal+",         color = 'lO' },
+        { time = 90,   event = { 'extraQuestBase', .2 } },
         { time = 100,  event = { 'dmgHeal', 1 }, --[[ 3 ]]     text = "THINGS ARE BACK TO HOW THEY USED TO BE_!",   desc = "Heal+++",       color = 'lO' },
         { time = 120,  event = { 'dmgHeal', -1 }, --[[ 2 ]]    text = "MINOR ISSUES BECOME LARGE CONFLICTS_",       desc = "Heal--" },
         { time = 140,  event = { 'dmgHeal', -1 }, --[[ 1 ]]    text = "YOU BLAME THEM FOR YOUR OWN PROBLEMS_",      desc = "Heal---" },
         { time = 160,  event = { 'reviveCount', 3 },           text = "THEY WOULD RATHER SPEND TIME ALONE_",        desc = "Revive++" },
+        { time = 180,  event = { 'extraQuestBase', .2 } },
         { time = 180,  event = { 'dmgHeal', 1.5 }, --[[ 2.5 ]] text = "YOU PROMISE TO CHANGE_",                     desc = "Heal++",        color = 'lO' },
         { time = 200,  event = { 'dmgTimeMul', -.2 },          text = "PROMISES ARE BROKEN_",                       desc = "TimerSpeed++" },
         { time = 220,  event = { 'dmgHeal', -.5 }, --[[ 2 ]]   text = "CONVERSATIONS DEVOLVE TO SHOUTING MATCHES_", desc = "Heal---" },
+        { time = 240,  event = { 'extraQuestBase', .2 } },
         { time = 240,  event = { 'dmgHeal', -.5 }, --[[ 1.5 ]] text = "ALL TRUST HAS WITHERED AWAY_",               desc = "Heal--" },
         { time = 260,  event = { 'dmgHeal', -.5 }, --[[ 1 ]]   text = "THEY SET AN ULTIMATUM_",                     desc = "Heal--" },
         { time = 280,  event = { 'dmgHeal', -.5 }, --[[ .5 ]]  text = "YOU CAN'T BE BOTHERED ANYMORE_",             desc = "Heal--" },
@@ -491,7 +500,7 @@ Fatigue = {
     },
 }
 -- My formatter doesn't work if there's "…" inside
-for _, f in next, Fatigue do for _, v in next, f do v.text = v.text:gsub("_", "…") end end
+for _, f in next, Fatigue do for _, v in next, f do if v.text then v.text = v.text:gsub("_", "…") end end end
 
 local function rndMod(t)
     local d = ModData.deck[math.random(9)].id
