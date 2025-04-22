@@ -708,20 +708,20 @@ Achievements = {
         quote = [["I have no idea how to play the game, can you unlock the mods for me?"]],
         credit = "@obsidian",
     },
-    {
-        id = 'honeymoon',
-        name = "Honeymoon",
-        desc = [[HFD with every commit shares at least one mod with previous]],
-        quote = [["Can we be together forever?"]],
-        -- TODO
-    },
-    {
-        id = 'break_up',
-        name = "Break Up",
-        desc = [[HFD without commiting any mod twice in a row]],
-        quote = [["Never let me see you again."]],
-        -- TODO
-    },
+    -- {
+    --     id = 'honeymoon',
+    --     name = "Honeymoon",
+    --     desc = [[HFD with every commit shares at least one mod with previous]],
+    --     quote = [["Can we be together forever?"]],
+    --     -- TODO
+    -- },
+    -- {
+    --     id = 'break_up',
+    --     name = "Break Up",
+    --     desc = [[HFD without commiting any mod twice in a row]],
+    --     quote = [["Never let me see you again."]],
+    --     -- TODO
+    -- },
     {
         id = 'arrogance',
         name = "Arrogance",
