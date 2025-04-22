@@ -79,9 +79,9 @@ Each mod twists the rules and creates unique experience.
 
 ### Duo (`DP`)
 
-- Quests are a bit harder.
 - There are two "players" instead of one. You can swap players by activating the Duo card, or by completing the second quest in the queue (the cards will be highlighted pink while you do this).
-- If one player is incapacitated, your ascension is halved, and they can be revived by completing some tasks.
+- If one player is incapacitated, your ascension is halved and quests becomes harder, but they can be revived by completing some tasks.
+- Quests are a bit harder.
 - TODO: specifics on tasks
 
 ## SPOILERS AHEAD
