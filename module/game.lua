@@ -791,12 +791,17 @@ function GAME.upFloor()
 
             if GAME.time <= 76.2 then IssueAchv('superluminal') end
             if GAME.time >= 300 then IssueAchv('worn_out') end
-            local srCnt = 0
-            for id in next, MD.name do if BEST.speedrun[id] then srCnt = srCnt + 1 end end
-            if srCnt >= 9 then IssueAchv('terminal_velocity') end
-            srCnt = 0
-            for id in next, MD.name do if BEST.speedrun['r' .. id] then srCnt = srCnt + 1 end end
-            if srCnt >= 9 then IssueAchv('the_completionist') end
+            local _t
+            if not ACHV.terminal_velocity then
+                _t = 0
+                for id in next, MD.name do if BEST.speedrun[id] then _t = _t + 1 end end
+                if _t >= 9 then IssueAchv('terminal_velocity') end
+            end
+            if not ACHV.the_completionist then
+                _t = 0
+                for id in next, MD.name do if BEST.speedrun['r' .. id] then _t = _t + 1 end end
+                if _t >= 9 then IssueAchv('the_completionist') end
+            end
         end
 
         -- SubmitAchv('the_pacifist', GAME.totalAttack)
@@ -1799,20 +1804,38 @@ function GAME.finish(reason)
 
         -- Achievements
         GAME.achv_consecRestart = 0
-        local mCnt = 0
-        for id in next, MD.name do if BEST.highScore[id] >= 1650 then mCnt = mCnt + 1 end end
-        if mCnt >= 9 then IssueAchv('mastery') end
-        mCnt = 0
-        for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then mCnt = mCnt + 1 end end
-        if mCnt >= 9 then IssueAchv('supremacy') end
-        if MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
+        local _t
+        if not ACHV.mastery then
+            _t = 0
+            for id in next, MD.name do if BEST.highScore[id] >= 1650 then _t = _t + 1 end end
+            if _t >= 9 then IssueAchv('mastery') end
+        end
+        if not ACHV.supremacy then
+            _t = 0
+            for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
+            if _t >= 9 then IssueAchv('supremacy') end
+        end
+        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
 
-        local sumH = 0
-        for id in next, MD.name do sumH = sumH + BEST.highScore[id] end
-        SubmitAchv('zenith_challenger', sumH)
-        sumH = 0
-        for id in next, MD.name do sumH = sumH + BEST.highScore['r' .. id] end
-        SubmitAchv('divine_challenger', sumH)
+        if not ACHV.the_harbinger then
+            local allRevF5 = true
+            for id in next, MD.name do
+                if BEST.highScore['r' .. id] < Floors[4].top then
+                    allRevF5 = false
+                    break
+                end
+            end
+            if allRevF5 then
+                IssueAchv('the_harbinger')
+            end
+        end
+
+        _t = 0
+        for id in next, MD.name do _t = _t + BEST.highScore[id] end
+        SubmitAchv('zenith_challenger', _t)
+        _t = 0
+        for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
+        SubmitAchv('divine_challenger', _t)
 
         SubmitAchv('multitasker', GAME.height * GAME.comboMP)
         SubmitAchv('effective', zpGain)
@@ -1966,6 +1989,7 @@ function GAME.update(dt)
                     elseif GAME.fatigueSet == Fatigue.rEX then
                         IssueAchv('royal_resistance')
                     elseif GAME.fatigueSet == Fatigue.rDP then
+                        -- IssueAchv('???')
                     end
                 end
                 TEXT:add {

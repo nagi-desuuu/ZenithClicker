@@ -37,10 +37,11 @@ end
 ---@field quote string
 ---@field credit? string
 ---@field comp? '<' | '>' | fun(newScore, oldScore):boolean
----@field rank? 'floor' | fun(score):number
+---@field noScore? number
 ---@field scoreSimp? fun(score):string
 ---@field scoreFull? fun(score):string
----@field noScore? number
+---@field rank? 'floor' | fun(score):number
+---@field unranked? true
 ---@field hide? fun():boolean
 
 ---@type Map<Achievement>
@@ -166,6 +167,13 @@ Achievements = {
         desc = [[HFD with rDP]],
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
+    },
+    {
+        id = 'the_harbinger',
+        name = "The Harbinger",
+        desc = [[Reach floor 3 in all nine reversed mods]],
+        quote = [[Weathering the storm of an unfavorable future.]],
+        hide = TRUE,
     },
 
     -- Mod Combo
@@ -297,6 +305,7 @@ Achievements = {
         desc = [[Highest altitude reached with DP on day 14 of each month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
+        unranked = true,
     },
 
 
@@ -311,88 +320,88 @@ Achievements = {
         name = "Blight",
         desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
         rank = floorRank(1, 3, 5, 7, 9, 10),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
     {
         id = 'desolation',
         name = "Desolation",
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
         rank = floorRank(1, 3, 5, 7, 9, 10),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
     {
         id = 'havoc',
         name = "Havoc",
         desc = [[HFD with 10+ mod points]],
         quote = [[The world is in chaos...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
         rank = floorRank(1, 3, 5, 7, 8, 9),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
     {
         id = 'pandemonium',
         name = "Pandemonium",
         desc = [[HFD with 11+ mod points]],
         quote = [[Several realms began to collide...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
         rank = floorRank(1, 2, 4, 6, 8, 9),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
     },
     {
         id = 'inferno',
         name = "Inferno",
         desc = [[HFD with 12+ mod points]],
         quote = [[Everything is burning and melting...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 6 end,
         rank = floorRank(1, 2, 4, 6, 7, 8),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 6 end,
     },
     {
         id = 'purgatory',
         name = "Purgatory",
         desc = [[HFD with 13+ mod points]],
         quote = [[Nobody knows their destination...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 5 end,
         rank = floorRank(1, 1, 3, 5, 6, 7),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 5 end,
     },
     {
         id = 'perdition',
         name = "Perdition",
         desc = [[HFD with 14+ mod points]],
         quote = [[There's no way back...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 4 end,
         rank = floorRank(1, 1, 3, 4, 5, 6),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 4 end,
     },
     {
         id = 'cataclysm',
         name = "Cataclysm",
         desc = [[HFD with 15+ mod points]],
         quote = [[The real disaster is yet to come...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 3 end,
         rank = floorRank(1, 1, 2, 3, 4, 5),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 3 end,
     },
     {
         id = 'annihilation',
         name = "Annihilation",
         desc = [[HFD with 16+ mod points]],
         quote = [[The whole universe is trembling...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 2 end,
         rank = floorRank(1, 1, 1, 2, 3, 4),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 2 end,
     },
     {
         id = 'armageddon',
         name = "Armageddon",
         desc = [[HFD with 17+ mod points]],
         quote = [[Big crunch is real...]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 1 end,
         rank = floorRank(1, 1, 1, 1, 2, 3),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 1 end,
     },
     {
         id = 'abyss',
         name = "Abyss",
         desc = [[HFD with 18 mod points]],
         quote = [[.]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 0 end,
         rank = floorRank(1, 1, 1, 1, 1, 2),
+        hide = function() return TABLE.countAll(GAME.completion, 0) <= 0 end,
     },
 
     -- Swamp Water Extended
@@ -445,58 +454,58 @@ Achievements = {
         name = "Sweatshop",
         desc = [[HFD with rNH rGV rVL]],
         quote = [[Carefree life is not for the asking, someone else is carrying the burden for you.]],
-        hide = function() return GAME.completion.NH == 0 or GAME.completion.GV == 0 or GAME.completion.VL == 0 end,
         credit = "@obsidian",
+        hide = function() return GAME.completion.NH == 0 or GAME.completion.GV == 0 or GAME.completion.VL == 0 end,
     },
     {
         id = 'NHrAS',
         name = "Pristine",
         desc = [[HFD with NH rAS]],
         quote = [[The pearl of your gameplay requires perfection for a clean finish.]],
-        hide = function() return GAME.completion.AS == 0 end,
         credit = "@GameTilDead",
+        hide = function() return GAME.completion.AS == 0 end,
     },
     {
         id = 'rDPrEX',
         name = "Tyrannical Dyarchy",
         desc = [[HFD with rEX rDP]],
         quote = [[Live in fear and despair.]],
-        hide = function() return GAME.completion.EX == 0 or GAME.completion.DP == 0 end,
         rank = floorRank(1, 2, 4, 6, 7, 8),
+        hide = function() return GAME.completion.EX == 0 or GAME.completion.DP == 0 end,
     },
     {
         id = 'VLrDPrIN',
         name = "Painful Relapse",
         desc = [[HFD with VL rIN rDP]],
         quote = [["I miss my ex..."]],
-        hide = function() return GAME.completion.IN == 0 or GAME.completion.DP == 0 end,
-        rank = floorRank(1, 2, 4, 5, 6, 7),
         credit = "@obsidian",
+        rank = floorRank(1, 2, 4, 5, 6, 7),
+        hide = function() return GAME.completion.IN == 0 or GAME.completion.DP == 0 end,
     },
     {
         id = 'rDHrIN',
         name = "Brain Capacity",
         desc = [[HFD with rDH rIN]],
         quote = [[How long can you keep up in this forsaken memory game?]],
-        hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
-        rank = floorRank(1, 1, 2, 3, 4, 5),
         credit = "@GameTilDead",
+        rank = floorRank(1, 1, 2, 3, 4, 5),
+        hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
     },
     {
         id = 'DHEXrGV',
         name = "Demonic Speed",
         desc = [[HFD with EX rGV DH]],
         quote = [[Prove your hellish capabilities to the world.]],
-        hide = function() return GAME.completion.GV == 0 end,
         credit = "@GameTilDead",
+        hide = function() return GAME.completion.GV == 0 end,
     },
     {
         id = 'DHGVVLrNH',
         name = "Grand-Master! Rounds",
         desc = [[HFD with rNH GV VL DH]],
         quote = [[YOUR AER: GRAND-MASTER! Rounds]],
-        hide = function() return GAME.completion.NH == 0 end,
         -- credit = "TGM4",
+        hide = function() return GAME.completion.NH == 0 end,
     },
     {
         id = 'rINrNH',
@@ -510,8 +519,8 @@ Achievements = {
         name = "Bnuuy",
         desc = [[HFD with EX NH rMS GV]],
         quote = [[Look at them hopping around! Too bad they don't want to be picked up...]],
-        hide = function() return GAME.completion.MS == 0 end,
         credit = "@GameTilDead",
+        hide = function() return GAME.completion.MS == 0 end,
     },
     {
         id = 'rASrDH',
@@ -525,8 +534,8 @@ Achievements = {
         name = "Steganography",
         desc = [[HFD with NH DH rIN rAS]],
         quote = [[Sometimes, the best hiding place is in plain sight.]],
-        hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
         credit = "@obsidian",
+        hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
 
     -- Supercharged
@@ -626,9 +635,9 @@ Achievements = {
         name = "Divine Challenger",
         desc = [[Total best altitude with 1 rev mod enabled]],
         quote = [[Expose the darkness of the Zenith Tower.]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
         rank = numberRank(0, 10000, 16000, 20000, 24000, 26000),
         scoreSimp = function(h) return string.format("%.0fm", h) end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
     -- {
     --     id = 'indolency',
@@ -652,18 +661,25 @@ Achievements = {
         quote = [["History will prove me right!!"]],
         hide = function() return GAME.completion.EX == 0 end,
     },
+    -- {
+    --     id = 'tbd',
+    --     name = "tbd",
+    --     desc = [[Meet the final fatigue effect with rEX]],
+    --     quote = [[tbd]],
+    --     hide = function() return GAME.completion.DP == 0 end,
+    -- },
     {
         id = 'fel_magic',
         name = "Fel Magic",
         desc = [[Quest passed with wound triggered during GIGASPEED, with rAS]],
         quote = [["And what, Gul'dan, must we give it return?"]],
         -- credit = "WoW",
-        hide = function() return GAME.completion.AS == 0 end,
         rank = numberRank(0, 6, 15, 26, 38, 62),
         scoreSimp = function(rank) return floor(rank) .. " Quests" end,
+        hide = function() return GAME.completion.AS == 0 end,
     },
     -- {
-    --     id='the_pacifist',
+    --     id = 'the_pacifist',
     --     name = "The Pacifist",
     --     desc = [[Minimum attack before reaching F10]],
     --     quote = [[Give evil nothing to oppose and it will disappear by itself.]],
@@ -695,7 +711,7 @@ Achievements = {
         scoreSimp = function(rank) return "Rank " .. rank end,
     },
     -- {
-    --     id='tailgater',
+    --     id = 'tailgater',
     --     name = "Tailgater",
     --     desc = [[HFD without losing rank]],
     --     quote = [["I slow down for no one!"]],
@@ -730,7 +746,7 @@ Achievements = {
         hide = function() return GAME.completion.AS == 0 end,
     },
     -- {
-    --     id='powerless',
+    --     id = 'powerless',
     --     name = "The Pacifist II",
     --     desc = [[HFD without building up surge]],
     --     quote = [["We have a similar goal to climb the Zenith Tower in many ways."]],
@@ -751,10 +767,12 @@ Achievements = {
         rank = numberRank(1626, 1645, 1649),
     },
     -- {
-    --     id='moon_struck',
+    --     id = 'moon_struck',
     --     name = "Moon Struck",
-    --     desc = [[Finish the run at exactly 2202.8m (±10/±5/±2/±0.5/±0)]],
+    --     desc = [[Finish the run at exactly 2202.8m (±3/±1/±0)]],
     --     quote = [[TODO]],
+    --     scoreSimp = heightNumber,
+    --     rank = ...,
     --     credit = "@osk",
     -- },
     {
@@ -772,6 +790,7 @@ Achievements = {
         name = "Intended Glitch",
         desc = [[Play Duo]],
         quote = [[This is not a bug, it's a feature.]],
+        unranked = true,
     },
     {
         id = 'zenith_traveler',
@@ -779,6 +798,7 @@ Achievements = {
         desc = [[Enter traveler mode]],
         quote = [[Also known as background debugging mode]],
         hide = TRUE,
+        unranked = true,
     },
     speedrun_speedruning = {
         id = 'hide',
@@ -786,6 +806,7 @@ Achievements = {
         desc = [[Enter GIGASPEED on F1]],
         quote = [[Not much of a speedrun]],
         hide = function() return GAME.completion.EX == 0 end,
+        unranked = true,
     },
     fruitless_effort = {
         id = 'hide',
@@ -793,6 +814,7 @@ Achievements = {
         desc = [[Finish a game with bonus over 260%]],
         quote = [[Effort is pointless if you are not strong enough.]],
         hide = function() return GAME.completion.EX == 0 end,
+        unranked = true,
     },
     {
         id = 'worn_out',
@@ -800,6 +822,7 @@ Achievements = {
         desc = [[Reach F10 in over 5 minutes while retaining GIGASPEED]],
         quote = [[You alright over there? You seem a bit tired from all that "speed"-running...]],
         credit = "@GameTilDead",
+        unranked = true,
     },
     {
         id = 'identity',
@@ -807,6 +830,7 @@ Achievements = {
         desc = [[Change ID or about-me]],
         quote = [[Is this free?]],
         hide = TRUE,
+        unranked = true,
     },
     {
         id = 'respectful',
@@ -821,6 +845,7 @@ Achievements = {
         desc = [[Rev animation ended at non-rev activated state]],
         quote = [[Elegant backflip]],
         hide = TRUE,
+        unranked = true,
     },
     {
         id = 'dark_force',
@@ -828,12 +853,14 @@ Achievements = {
         desc = [[Interrupt font loading with rev mod]],
         quote = [[The darkness overflows]],
         hide = TRUE,
+        unranked = true,
     },
     -- {
-    --     id='uninspired',
+    --     id = 'uninspired',
     --     name = "Uninspired",
     --     desc = [[Consecutively restart 100 times]],
     --     quote = [[Without the will to even begin, how will you ever improve?]],
+    --     unranked = true,
     --     credit = "@shig @Winterfrost",
     -- },
     {
@@ -841,8 +868,9 @@ Achievements = {
         name = "And Then... Nothing",
         desc = [[Break b2b x 50 while one player is KO'd in rDP, and survived]],
         quote = [[Moral of the story: NEVER exploit your partner.]],
-        hide = function() return GAME.completion.DP == 0 end,
         credit = "@GameTilDead",
+        hide = function() return GAME.completion.DP == 0 end,
+        unranked = true,
     },
     {
         id = 'zenith_relocation',
@@ -850,6 +878,7 @@ Achievements = {
         desc = [[Export your save to a different platform (Web / Windows / Linux)]],
         quote = [[Uncover the mysteries of a new, familiar Tower.]],
         credit = "@GameTilDead",
+        unranked = true,
     },
 
     -- Issued, hard
@@ -858,6 +887,7 @@ Achievements = {
         name = "Mastery",
         desc = [[Mastery on all single mods]],
         quote = [[Game cleared, congratulations!]],
+        unranked = true,
     },
     {
         id = 'terminal_velocity',
@@ -865,12 +895,14 @@ Achievements = {
         desc = [[Speedrun all single mods]],
         quote = [[Reaching for the stars again and again.]],
         credit = "@The_111thBlitzer",
+        unranked = true,
     },
     {
         id = 'false_god',
         name = "False God",
         desc = [[Mastery on all mods]],
         quote = [[Do it again but without clever tricks this time.]],
+        unranked = true,
         hide = TRUE,
     },
     {
@@ -878,6 +910,7 @@ Achievements = {
         name = "Supremacy",
         desc = [[Mastery on all single rev mods]],
         quote = [[Your reign has begun, and it knows no end.]],
+        unranked = true,
         hide = TRUE,
     },
     {
@@ -885,6 +918,7 @@ Achievements = {
         name = "The Completionist",
         desc = [[Speedrun all single rev mods]],
         quote = [[The full spectrum of the mods now lies within your grasp.]],
+        unranked = true,
         hide = TRUE,
     },
     {
@@ -892,6 +926,7 @@ Achievements = {
         name = "Sky's The Limit",
         desc = [[Reach 6200m]],
         quote = [[Edge of the universe.]],
+        unranked = true,
         hide = TRUE,
     },
     {
@@ -899,6 +934,7 @@ Achievements = {
         name = "Superluminal",
         desc = [[Reach F10 in 76.2s]],
         quote = [[Faster than light!]],
+        unranked = true,
         hide = TRUE,
     },
 }
