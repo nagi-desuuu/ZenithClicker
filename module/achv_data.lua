@@ -607,7 +607,9 @@ Achievements = {
         name = "TeraSpeed",
         desc = [[Highest rank reached]],
         quote = [[Speed is the key.]],
-        rank = numberRank(11, 12, 13, 14, 15, 16),
+        rank = numberRank(8, 12, 13, 14, 15, 16),
+        scoreSimp = function(rank) return "Rank " .. rank end,
+        scoreFull = NULL,
     },
     -- tailgater = {
     --     name = "Tailgater",
@@ -625,11 +627,13 @@ Achievements = {
         name = "Honeymoon",
         desc = [[HFD with every commit shares at least one mod with previous]],
         quote = [["Can we be together forever?"]],
+        -- TODO
     },
     break_up = {
         name = "Break Up",
         desc = [[HFD without commiting any mod twice in a row]],
         quote = [["Never let me see you again."]],
+        -- TODO
     },
     arrogance = {
         name = "Arrogance",

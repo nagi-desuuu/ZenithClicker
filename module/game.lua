@@ -1824,9 +1824,10 @@ function GAME.finish(reason)
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
+        local noZEP, noSP
         if GAME.comboStr == '' then
-            SubmitAchv('zenith_explorer', GAME.height)
-            SubmitAchv('supercharged', GAME.achv_maxChain)
+            noZEP = SubmitAchv('zenith_explorer', GAME.height)
+            noSP = SubmitAchv('supercharged', GAME.achv_maxChain)
         elseif #GAME.comboStr <= 3 then
             SubmitAchv(GAME.comboStr, GAME.height)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
@@ -1848,8 +1849,8 @@ function GAME.finish(reason)
                 )
             end
         end
-        SubmitAchv('zenith_explorer_plus', GAME.height)
-        SubmitAchv('supercharged_plus', GAME.achv_maxChain)
+        SubmitAchv('zenith_explorer_plus', GAME.height, noZEP)
+        SubmitAchv('supercharged_plus', GAME.achv_maxChain, noSP)
         SubmitAchv(GAME.comboStr, GAME.height)
         if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
     else

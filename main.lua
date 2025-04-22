@@ -334,7 +334,7 @@ function IssueAchv(id, silent)
     -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
 
     if not silent then
-        msgTime = TASK.lock('achv_bulk', 1) and 3.55 or msgTime + 2.6
+        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 2.6
         MSG('achv_issued', {
             achvData[6].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
@@ -368,7 +368,7 @@ function SubmitAchv(id, score, silent)
         if TASK.lock('achv_sfx_' .. sfxLV, 1) then
             SFX.play('achievement_' .. sfxLV, .7, 0, GAME.mod.VL)
         end
-        msgTime = TASK.lock('achv_bulk', 1) and 3.55 or msgTime + 2.6
+        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 2.6
         MSG(achvData[n].id, {
             achvData[n].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
