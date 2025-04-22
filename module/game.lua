@@ -74,6 +74,7 @@ local ins, rem = table.insert, table.remove
 ---@field life2 number
 ---@field rankLimit number
 ---@field reviveCount number
+---@field noRevive 0|1
 ---@field currentTask ReviveTask |false
 ---@field DPlock boolean
 ---@field lastFlip number | false
@@ -500,7 +501,7 @@ function GAME.questReady()
 end
 
 function GAME.startRevive()
-    if GAME.reviveCount < 260 then
+    if GAME.noRevive == 0 then
         local power = min(GAME.floor + GAME.reviveCount, 17)
         local maxOut = power == 17
         local powerList = TABLE.new(floor(power / 3), 3)
@@ -1575,6 +1576,7 @@ function GAME.start()
     GAME.life2 = 20
     GAME.rankLimit = 26000
     GAME.reviveCount = 0
+    GAME.noRevive = 0
     GAME.currentTask = false
     GAME.DPlock = false
     GAME.lastFlip = false

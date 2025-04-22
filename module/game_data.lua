@@ -492,7 +492,7 @@ Fatigue = {
         { time = 260,  event = { 'dmgHeal', -.5 }, --[[ 1 ]]   text = "THEY SET AN ULTIMATUM_",                     desc = "Heal--" },
         { time = 280,  event = { 'dmgHeal', -.5 }, --[[ .5 ]]  text = "YOU CAN'T BE BOTHERED ANYMORE_",             desc = "Heal--" },
         { time = 300,  event = { 'dmgWrong', 2 },              text = "ONE LAST PAINFUL ARGUMENT_",                 desc = "Dmg+" },
-        { time = 320,  event = { 'reviveCount', 260 },         text = "GOODBYE.",                                   desc = "NO REVIVE" },
+        { time = 320,  event = { 'noRevive', 1 },              text = "GOODBYE.",                                   desc = "NO REVIVE" },
         { time = 360,  event = { 'dmgHeal', 1 }, --[[ 1.5 ]]   text = "\"I MISS YOU\"",                             desc = "Heal+++",       color = 'lO' },
         { time = 380,  event = { 'dmgHeal', 1 }, --[[ 2.5 ]]   text = "MAYBE IT CAN STILL WORK_?",                  desc = "Heal+",         color = 'lO' },
         { time = 400,  event = { 'dmgTimeMul', -.5 },          text = "GOODBYE.",                                   desc = "TimerSpeed++++" },
