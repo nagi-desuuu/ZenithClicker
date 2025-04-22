@@ -136,6 +136,7 @@ local GAME = {
     achv_arroganceH = nil,
     achv_pacifist2H = nil,
     achv_patienceH = nil,
+    achv_talentlessH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
     achv_felMagicBurnt = nil,
@@ -1622,6 +1623,7 @@ function GAME.start()
     GAME.achv_arroganceH = false
     GAME.achv_pacifist2H = false
     GAME.achv_patienceH = false
+    GAME.achv_talentlessH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
     GAME.achv_felMagicBurnt = false
@@ -1793,8 +1795,6 @@ function GAME.finish(reason)
 
         -- Achievements
         GAME.achv_consecRestart = 0
-        if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
-        if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         local mCnt = 0
         for id in next, MD.name do if BEST.highScore[id] >= 1650 then mCnt = mCnt + 1 end end
         if mCnt >= 9 then IssueAchv('mastery') end
@@ -1802,30 +1802,41 @@ function GAME.finish(reason)
         for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then mCnt = mCnt + 1 end end
         if mCnt >= 9 then IssueAchv('supremacy') end
         if MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
-        local totalH = 0
-        for id in next, MD.name do totalH = totalH + BEST.highScore[id] end
-        SubmitAchv('zenith_challenger', totalH)
-        totalH = 0
-        for id in next, MD.name do totalH = totalH + BEST.highScore['r' .. id] end
-        SubmitAchv('divine_challenger', totalH)
+
+        local sumH = 0
+        for id in next, MD.name do sumH = sumH + BEST.highScore[id] end
+        SubmitAchv('zenith_challenger', sumH)
+        sumH = 0
+        for id in next, MD.name do sumH = sumH + BEST.highScore['r' .. id] end
+        SubmitAchv('divine_challenger', sumH)
+
         SubmitAchv('multitasker', GAME.height * GAME.comboMP)
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.height)
         SubmitAchv('tailgater', GAME.achv_tailgaterH or GAME.height)
-        if M.DP > 0 then SubmitAchv('carried', GAME.achv_carriedH or GAME.height) end
-        if M.rAS == 2 then SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height) end
-        -- SubmitAchv('powerless', GAME.achv_pacifist2H or GAME.height)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
-        if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
-        if GAME.comboStr == 'rAS' then SubmitAchv('patience_is_a_virtue', GAME.achv_felMagicQuest) end
+        SubmitAchv(GAME.comboStr, GAME.height)
+        -- SubmitAchv('powerless', GAME.achv_pacifist2H or GAME.height)
+        -- if GAME.comboStr == 'rEX' and GAME.floor == 1 then SubmitAchv('indolency', GAME.totalAttack) end
+        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
+        if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
+        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
+        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
+        if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
+        if GAME.comboStr == 'DP' then
+            SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
+            if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
+        elseif GAME.comboStr == 'AS' then
+            SubmitAchv('talentless', GAME.achv_talentlessH or GAME.height)
+        elseif GAME.comboStr == 'rAS' then
+            SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height)
+            SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
+        end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
         end
-        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
-        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
-        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
         local noZEP, noSP
         if GAME.comboStr == '' then
             noZEP = SubmitAchv('zenith_explorer', GAME.height)
@@ -1853,8 +1864,6 @@ function GAME.finish(reason)
         end
         SubmitAchv('zenith_explorer_plus', GAME.height, noZEP)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain, noSP)
-        SubmitAchv(GAME.comboStr, GAME.height)
-        if M.DP == 1 and os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")

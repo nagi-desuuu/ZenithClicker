@@ -286,7 +286,6 @@ Achievements = {
         name = "Talentless",
         desc = [[HFD with AS but mouse-only]],
         quote = [[Reaching deep down but coming back empty every time.]],
-        -- TODO
     },
 
     -- Activity
@@ -495,7 +494,7 @@ Achievements = {
         desc = [[HFD with rNH GV VL DH]],
         quote = [[YOUR AER: GRAND-MASTER! Rounds]],
         hide = function() return GAME.completion.NH == 0 end,
-        credit = "TGM4",
+        -- credit = "TGM4",
     },
     {
         id = 'rINrNH',
@@ -656,9 +655,10 @@ Achievements = {
         name = "Fel Magic",
         desc = [[Quest passed with wound triggered during GIGASPEED, with rAS]],
         quote = [["And what, Gul'dan, must we give it return?"]],
-        credit = "WoW",
+        -- credit = "WoW",
         hide = function() return GAME.completion.AS == 0 end,
-        -- TODO,
+        rank = numberRank(0, 6, 15, 26, 38, 62),
+        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
     },
     -- {
     --     id='the_pacifist',
@@ -689,7 +689,7 @@ Achievements = {
         name = "TeraSpeed",
         desc = [[Highest rank reached]],
         quote = [[Speed is the key.]],
-        rank = numberRank(8, 12, 13, 14, 15, 16),
+        rank = numberRank(13, 13, 13, 13, 15, 16),
         scoreSimp = function(rank) return "Rank " .. rank end,
     },
     -- {
@@ -811,7 +811,7 @@ Achievements = {
         name = "Respectful",
         desc = [[Stay in ABOUT page for 26s]],
         quote = [[Press F2 to pay respect]],
-        credit = "COD11",
+        -- credit = "COD11",
     },
     {
         id = 'somersault',

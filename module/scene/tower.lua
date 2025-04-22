@@ -104,6 +104,7 @@ local function keyPress(key)
                 C:flick()
                 SFX.play('no')
             end
+            if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.height end
         end
     elseif key == 'escape' then
         if not GAME.playing then
@@ -129,10 +130,12 @@ local function keyPress(key)
         SFX.play('menuclick')
         if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
         GAME.cancelAll()
+        if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.height end
     elseif key == 'x' or key == 'c' then
         if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, key == 'x' and 1 or 2)
+        if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.height end
     elseif key == 'space' then
         if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
@@ -142,6 +145,7 @@ local function keyPress(key)
         if GAME.playing then
             GAME.commit()
             if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.height end
+            if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.height end
         else
             GAME.start()
         end

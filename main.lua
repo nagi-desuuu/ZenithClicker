@@ -332,7 +332,7 @@ function IssueAchv(id, silent)
     if not A or ACHV[id] then return end
 
     ACHV[id] = 0
-    -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
+    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
 
     if not silent then
         table.insert(bufferedMsg, { 'achv_issued', {
@@ -353,14 +353,12 @@ function SubmitAchv(id, score, silent)
     local oldScore = ACHV[id] or A.noScore or 0
     if not A.comp(score, oldScore) then return end
 
-    local R1 = A.rank(score)
-    if R1 < 1 then return end
-
-    local R0 = A.rank(oldScore)
-    if R1 <= R0 then return end
+    local R0, R1 = A.rank(oldScore), A.rank(score)
+    -- printf("%s: %.1f(%.2f) -> %.1f(%.2f)", id, oldScore, R0, score, R1)
+    if R1 < 1 or R1 <= R0 then return end
 
     ACHV[id] = score
-    -- TWEEN.new():setOnFinish(SaveAchv):setDuration(0.26):setUnique('achv_saver'):run()
+    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
 
     if not silent and math.floor(R0) ~= math.floor(R1) then
         local n = math.floor(R1)
