@@ -171,7 +171,7 @@ Achievements = {
     {
         id = 'the_harbinger',
         name = "The Harbinger",
-        desc = [[Reach floor 3 in all nine reversed mods]],
+        desc = [[Reach floor 5 in all nine reversed mods]],
         quote = [[Weathering the storm of an unfavorable future.]],
         hide = TRUE,
     },
