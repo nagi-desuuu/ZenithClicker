@@ -282,6 +282,12 @@ function scene.draw()
                 gc_mDraw(texture.event, x, 15, 0, .2)
             end
 
+            if GAME.mod.IN > 0 and a.hidden then
+                gc_setColor(clr.D)
+                gc_setAlpha(GAME.mod.IN * (.3 + .1 * sin(i * .626 - t * 1.626)))
+                gc_rectangle('fill', 0, 0, 600, 130)
+            end
+
             gc_ucs_back()
         end
     end
