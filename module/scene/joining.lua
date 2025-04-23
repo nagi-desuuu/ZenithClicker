@@ -10,7 +10,7 @@ end
 scene.keyDown = TRUE
 
 function scene.update(dt)
-    dt = math.min(dt, 1 / 30)
+    dt = math.min(dt, 1 / 26)
     if TASK.lock('init') then
     elseif t1 > 0 then
         t1 = t1 - dt

@@ -327,7 +327,7 @@ AchvData = {
     { id = 'achv_diamond',  bg = COLOR.DP,          fg = COLOR.lP, fg2 = COLOR.lB },
     { id = 'achv_issued',   bg = COLOR.DM,          fg = COLOR.lM, fg2 = COLOR.lM },
 }
-for i = 1, 6 do MSG.addCategory(AchvData[i].id, AchvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
+for i = 0, 6 do MSG.addCategory(AchvData[i].id, AchvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
 
 local msgTime = 0
 local bufferedMsg = {}
@@ -934,9 +934,21 @@ if BEST.version == 167 then
     STAT.dailyHS = nil
     BEST.version = 168
 end
+if BEST.version == 168 then
+    if ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then
+        ACHV.patience_is_a_virtue = nil
+        TASK.new(function()
+            TASK.yieldT(1)
+            MSG('achv_none', "'Patience is a Virtue' score reset due to bug fix.", 6.26)
+            SFX.play('staffwarning')
+        end)
+    end
+    BEST.version = 169
+end
 if BEST.version ~= oldVer then
     SaveStat()
     SaveBest()
+    SaveAchv()
 end
 
 -- Some Initialization
