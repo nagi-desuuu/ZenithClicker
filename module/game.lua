@@ -723,7 +723,7 @@ end
 function GAME.upFloor()
     if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
     if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.time) end
-    if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.time) end
+    if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.floorTime) end
 
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
