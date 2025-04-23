@@ -948,8 +948,8 @@ Achievements = {
 }
 
 local compFunc = {
-    ['>'] = function(a, b) return a > b end,
-    ['<'] = function(a, b) return a < b end,
+    ['>'] = function(a, b) return a - b > 1e-10 end,
+    ['<'] = function(a, b) return b - a > 1e-10 end,
 }
 local defaultFloorRank = floorRank(1, 3, 5, 7, 9, 10)
 

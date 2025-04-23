@@ -1523,6 +1523,7 @@ function GAME.start()
     SCN.scenes.tower.widgetList.help:setVisible(false)
     SCN.scenes.tower.widgetList.help2:setVisible(false)
     SCN.scenes.tower.widgetList.daily:setVisible(false)
+    MSG.clear()
 
     SFX.play('menuconfirm', .8)
     SFX.play(CD.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)

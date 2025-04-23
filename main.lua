@@ -361,14 +361,14 @@ function SubmitAchv(id, score, silent)
     ACHV[id] = score
     TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
 
-    if not silent and math.floor(R0) ~= math.floor(R1) then
-        local n = math.floor(R1)
-        table.insert(bufferedMsg, { AchvData[n].id, {
-            AchvData[n].fg, A.name .. "\n",
-            COLOR.dL, A.desc .. "\n",
-            COLOR.DL, ">>  " .. A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")\n" or "\n"),
-            COLOR.LD, A.quote,
-        }, n <= 2 and 1 or n <= 4 and 2 or 3 })
+    if not silent and R1 >= 1 then
+        local rank = math.floor(R1)
+        local scoreText = A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")" or "")
+        table.insert(bufferedMsg, { AchvData[rank].id, {
+            AchvData[rank].fg, A.name .. "  >>  " .. scoreText,
+            COLOR.LD, "    Previous: " .. (A.scoreFull or A.scoreSimp)(oldScore) .. "\n",
+            COLOR.dL, A.desc .. "\n", COLOR.LD, A.quote,
+        }, rank <= 2 and 1 or rank <= 4 and 2 or 3 })
         if not GAME.playing then
             ReleaseAchvBuffer()
         end
@@ -379,7 +379,7 @@ end
 function ReleaseAchvBuffer()
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
-        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 2.6
+        msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 3.55
         MSG(msg[1], msg[2], msgTime, true)
         if TASK.lock('achv_sfx_' .. msg[3], .26) then
             SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)
