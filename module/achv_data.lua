@@ -13,16 +13,18 @@ local function floorRank(l0, l1, l2, l3, l4, l5)
 end
 local function numberRank(...)
     local l = { ... }
-    return function(s) return 5 * (6 - #l + ilLerp(l, s)) end
+    assert(#l == 6)
+    return function(s) return 5 * ilLerp(l, s) end
 end
 local function numberRankRev(...)
     local l = TABLE.reverse { ... }
-    return function(s) return 5 * (#l - 5 - ilLerp(l, s)) end
+    assert(#l == 6)
+    return function(s) return 5 - 5 * ilLerp(l, s) end
 end
 local function heightFloor(h)
     for i = 9, 0, -1 do
         if h >= Floors[i].top then
-            return "F" .. (i + 1)
+            return "FLOOR " .. (i + 1)
         end
     end
 end
@@ -41,7 +43,7 @@ end
 ---@field scoreSimp? fun(score):string
 ---@field scoreFull? fun(score):string
 ---@field rank? 'floor' | fun(score):number
----@field unranked? true
+---@field type? 'competitive' | 'issued' | 'activity'
 ---@field hide? fun():boolean
 
 ---@type Map<Achievement>
@@ -263,7 +265,7 @@ Achievements = {
         desc = [[Reach F10 as fast as possible while retaining GIGASPEED without any mods]],
         quote = [[F10 Hyper%]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2),
     },
@@ -305,7 +307,7 @@ Achievements = {
         desc = [[Highest altitude reached with DP on day 14 of each month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
-        unranked = true,
+        type = 'activity',
     },
 
 
@@ -553,7 +555,7 @@ Achievements = {
         desc = [[Minimal time on 40 quests without any mods]],
         quote = [[Supercharged Q40%]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(94.2, 72, 55, 42, 33, 26),
     },
@@ -563,7 +565,7 @@ Achievements = {
         desc = [[Minimal time on 40 quests]],
         quote = [[Supercharged AnyQ40%]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(72, 55, 42, 33, 26, 22),
     },
@@ -573,7 +575,7 @@ Achievements = {
         desc = [[Reach 75 Back-to-Back as fast as possible]],
         quote = [[Supercharged B75%]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(150, 115, 90, 70, 55, 45),
     },
@@ -589,7 +591,7 @@ Achievements = {
         desc = [[Shortest time spent in F5 with DH DP]],
         quote = [[Less time, less evidence.]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(35, 26, 20, 12, 6.2, 2.6),
     },
@@ -599,7 +601,7 @@ Achievements = {
         desc = [[Shortest time spent in F9]],
         quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(62, 26, 16, 12, 6.2, 4.2),
     },
@@ -617,7 +619,7 @@ Achievements = {
         desc = [[Reach F10 as fast as possible while retaining GIGASPEED]],
         quote = [[F10 Any%]],
         comp = '<',
-        noScore = 1560,
+        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2),
     },
@@ -769,7 +771,7 @@ Achievements = {
         name = "Divine Rejection",
         desc = [[Finish the run exactly before F10]],
         quote = [["And in the end, it doesn't even matter..."]],
-        rank = numberRank(1626, 1645, 1649),
+        rank = numberRank(1626, 1626, 1626, 1626, 1645, 1649),
     },
     -- {
     --     id = 'moon_struck',
@@ -795,7 +797,7 @@ Achievements = {
         name = "Intended Glitch",
         desc = [[Play Duo]],
         quote = [[This is not a bug, it's a feature.]],
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'zenith_traveler',
@@ -803,7 +805,7 @@ Achievements = {
         desc = [[Enter traveler mode]],
         quote = [[Also known as background debugging mode]],
         hide = TRUE,
-        unranked = true,
+        type = 'issued',
     },
     speedrun_speedruning = {
         id = 'hide',
@@ -811,7 +813,7 @@ Achievements = {
         desc = [[Enter GIGASPEED on F1]],
         quote = [[Not much of a speedrun]],
         hide = function() return GAME.completion.EX == 0 end,
-        unranked = true,
+        type = 'issued',
     },
     fruitless_effort = {
         id = 'hide',
@@ -819,7 +821,7 @@ Achievements = {
         desc = [[Finish a game with bonus over 260%]],
         quote = [[Effort is pointless if you are not strong enough.]],
         hide = function() return GAME.completion.EX == 0 end,
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'worn_out',
@@ -827,7 +829,7 @@ Achievements = {
         desc = [[Reach F10 in over 5 minutes while retaining GIGASPEED]],
         quote = [[You alright over there? You seem a bit tired from all that "speed"-running...]],
         credit = "@GameTilDead",
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'identity',
@@ -835,7 +837,7 @@ Achievements = {
         desc = [[Change ID or about-me]],
         quote = [[Is this free?]],
         hide = TRUE,
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'respectful',
@@ -850,7 +852,7 @@ Achievements = {
         desc = [[Rev animation ended at non-rev activated state]],
         quote = [[Elegant backflip]],
         hide = TRUE,
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'dark_force',
@@ -858,14 +860,14 @@ Achievements = {
         desc = [[Interrupt font loading with rev mod]],
         quote = [[The darkness overflows]],
         hide = TRUE,
-        unranked = true,
+        type = 'issued',
     },
     -- {
     --     id = 'uninspired',
     --     name = "Uninspired",
     --     desc = [[Consecutively restart 100 times]],
     --     quote = [[Without the will to even begin, how will you ever improve?]],
-    --     unranked = true,
+    --     type = 'issued',
     --     credit = "@shig @Winterfrost",
     -- },
     {
@@ -875,7 +877,7 @@ Achievements = {
         quote = [[Moral of the story: NEVER exploit your partner.]],
         credit = "@GameTilDead",
         hide = function() return GAME.completion.DP == 0 end,
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'zenith_relocation',
@@ -883,7 +885,7 @@ Achievements = {
         desc = [[Export your save to a different platform (Web / Windows / Linux)]],
         quote = [[Uncover the mysteries of a new, familiar Tower.]],
         credit = "@GameTilDead",
-        unranked = true,
+        type = 'issued',
     },
 
     -- Issued, hard
@@ -892,7 +894,7 @@ Achievements = {
         name = "Mastery",
         desc = [[Mastery on all single mods]],
         quote = [[Game cleared, congratulations!]],
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'terminal_velocity',
@@ -900,14 +902,14 @@ Achievements = {
         desc = [[Speedrun all single mods]],
         quote = [[Reaching for the stars again and again.]],
         credit = "@The_111thBlitzer",
-        unranked = true,
+        type = 'issued',
     },
     {
         id = 'false_god',
         name = "False God",
         desc = [[Mastery on all mods]],
         quote = [[Do it again but without clever tricks this time.]],
-        unranked = true,
+        type = 'issued',
         hide = TRUE,
     },
     {
@@ -915,7 +917,7 @@ Achievements = {
         name = "Supremacy",
         desc = [[Mastery on all single rev mods]],
         quote = [[Your reign has begun, and it knows no end.]],
-        unranked = true,
+        type = 'issued',
         hide = TRUE,
     },
     {
@@ -923,7 +925,7 @@ Achievements = {
         name = "The Completionist",
         desc = [[Speedrun all single rev mods]],
         quote = [[The full spectrum of the mods now lies within your grasp.]],
-        unranked = true,
+        type = 'issued',
         hide = TRUE,
     },
     {
@@ -931,7 +933,7 @@ Achievements = {
         name = "Sky's The Limit",
         desc = [[Reach 6200m]],
         quote = [[Edge of the universe.]],
-        unranked = true,
+        type = 'issued',
         hide = TRUE,
     },
     {
@@ -939,7 +941,7 @@ Achievements = {
         name = "Superluminal",
         desc = [[Reach F10 in 76.2s]],
         quote = [[Faster than light!]],
-        unranked = true,
+        type = 'issued',
         hide = TRUE,
     },
 }
@@ -959,10 +961,9 @@ for i = 1, #Achievements do
     assert(type(achv.name) == 'string', "Missing field 'name' - " .. id)
 
     assert(achv.desc, "Missing field 'desc' - " .. id)
-    achv.desc = achv.desc:gsub("[A-Z][A-Z][A-Z][A-Z]?", {
-        HFD = "Highest floor discovered",
-        HFDWUT = "Highest floor discovered while using the",
-    })
+    achv.desc = achv.desc
+    :gsub("HFDWUT", "Highest floor discovered while using the")
+        :gsub("HFD", "Highest floor discovered")
 
     assert(achv.quote, "Missing field 'quote' - " .. id)
 
@@ -985,6 +986,9 @@ for i = 1, #Achievements do
     end
     assert(type(achv.scoreSimp) == 'function', "Invalid field 'scoreSimp' - " .. id)
     assert(achv.scoreFull == nil or type(achv.scoreFull) == 'function', "Invalid field 'scoreFull' - " .. id)
+
+    if achv.type == nil then achv.type = 'competitive' end
+    assert(type(achv.type) == 'string', "Invalid field 'type' - " .. id)
 
     achv.hide = achv.hide or FALSE
 end

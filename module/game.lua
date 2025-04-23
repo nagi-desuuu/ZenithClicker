@@ -1841,7 +1841,7 @@ function GAME.finish(reason)
         SubmitAchv('teraspeed', GAME.maxRank)
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.height)
         SubmitAchv('sink_cost', GAME.achv_balanceH or GAME.height)
-        if M.EX > 0 then SubmitAchv('balance', GAME.achv_balanceH or GAME.height) end
+        if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.height) end
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
         SubmitAchv(GAME.comboStr, GAME.height)
         -- SubmitAchv('powerless', GAME.achv_pacifist2H or GAME.height)
