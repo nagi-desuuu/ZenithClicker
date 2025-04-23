@@ -148,7 +148,7 @@ function Card:setActive(auto, key)
                     if M.AS == 2 then
                         CD[(p + table.remove(l, rnd(3, 4)) - 1) % #CD + 1]:setActive(true)
                         CD[(p + table.remove(l, rnd(1, 2)) - 1) % #CD + 1]:setActive(true)
-                        if GAME.floor<10 and GAME.gigaspeed then GAME.achv_felMagicBurnt = true end
+                        if GAME.floor < 10 and GAME.gigaspeed then GAME.achv_felMagicBurnt = true end
                     end
                     SFX.play('wound')
                 else
@@ -311,11 +311,13 @@ function Card:revJump()
             if currentState == 2 then
                 SFX.play('card_reverse_impact', 1, 0, M.GV)
                 TWEEN.new(tween_deckPress):setUnique('DeckPress'):setEase('OutQuad'):setDuration(.42):run()
-                for _, C in ipairs(CD) do
-                    if C ~= self then
-                        local r = rnd()
-                        if self.id == 'EX' then r = r * 2.6 end
-                        C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
+                if self.id ~= 'NH' then
+                    for _, C in ipairs(CD) do
+                        if C ~= self then
+                            local r = rnd()
+                            if self.id == 'EX' then r = r * 2.6 end
+                            C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
+                        end
                     end
                 end
                 local color = ModData.color[self.id]
