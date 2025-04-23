@@ -1,6 +1,9 @@
 ---@type Zenitha.Scene
 local scene = {}
 
+local max, min = math.max, math.min
+local floor, abs = math.floor, math.abs
+
 local clr = {
     D = { COLOR.HEX '19311E' },
     L = { COLOR.HEX '4DA667' },
@@ -15,6 +18,7 @@ local Achievements = Achievements
 ---@field id string
 ---@field name string
 ---@field desc string
+---@field descWidth number
 ---@field rank number
 ---@field progress number
 ---@field score table
@@ -24,6 +28,7 @@ local Achievements = Achievements
 local achvList = {}
 local scroll, scroll1 = 0, -620
 local maxScroll = 0
+local tempText = GC.newText(FONT.get(30))
 
 function scene.load()
     SetMouseVisible(true)
@@ -41,7 +46,7 @@ function scene.load()
         if achv.type == 'issued' then
             rank = ACHV[achv.id] and 6 or 0
             progress = 0
-            score = ACHV[achv.id] and "DONE!" or ""
+            score = ACHV[achv.id] and "DONE!" or "---"
         else
             rank = achv.rank(ACHV[achv.id] or achv.noScore or 0)
             progress = rank == 5 and 1 or rank % 1
@@ -49,13 +54,15 @@ function scene.load()
                 { COLOR.LL, achv.scoreSimp(ACHV[achv.id]), COLOR.DL, achv.scoreFull and
                 "   " .. achv.scoreFull(ACHV[achv.id]) or "" }
         end
+        tempText:set(achv.desc)
         repeat
             if achv.hide() and not ACHV[achv.id] then break end
             table.insert(achvList, {
                 id = achv.id,
                 name = achv.name:upper(),
                 desc = achv.desc,
-                rank = math.floor(rank),
+                descWidth = tempText:getWidth(),
+                rank = floor(rank),
                 progress = progress,
                 score = score,
                 hidden = achv.hide ~= FALSE,
@@ -63,7 +70,9 @@ function scene.load()
         until true
     end
 
-    maxScroll = math.floor((#achvList - 12) / 2) * 140
+    if GAME.mod.MS == 2 then TABLE.shuffle(achvList) end
+
+    maxScroll = floor((#achvList - 12) / 2) * 140
 end
 
 function scene.mouseMove(_, _, _, dy)
@@ -81,6 +90,60 @@ function scene.keyDown(key, isRep)
     if key == 'escape' or key == 'tab' then
         SFX.play('menuclick')
         SCN.back('none')
+    elseif key == 'return' then
+        local function submit(id, score)
+            if SubmitAchv(id, score) then TASK.yieldT(0.1) end
+        end
+        TASK.new(function()
+            local MD = ModData
+            for k, v in next, BEST.highScore do
+                submit(k, v)
+                local mp = #k / 2 + STRING.count(k, 'r') / 2
+                if mp >= 8 then submit(RevSwampName[mp]:sub(2, -2):lower(), v) end
+            end
+            submit('zenith_explorer', BEST.highScore[''] or 0)
+            submit('zenith_speedrun', BEST.speedrun[''] or 2600)
+            submit('zenith_explorer_plus', TABLE.maxAll(BEST.highScore) or 0)
+            submit('zenith_speedrun_plus', TABLE.minAll(BEST.speedrun) or 2600)
+            if STAT.maxHeight >= 6200 then IssueAchv('skys_the_limit') end
+            if STAT.minTime <= 76.2 then IssueAchv('superluminal') end
+            submit('effective', STAT.dzp)
+            local _t
+            if not ACHV.terminal_velocity then
+                _t = 0
+                for id in next, MD.name do if BEST.speedrun[id] then _t = _t + 1 end end
+                if _t >= 9 then IssueAchv('terminal_velocity') end
+            end
+            if not ACHV.the_completionist then
+                _t = 0
+                for id in next, MD.name do if BEST.speedrun['r' .. id] then _t = _t + 1 end end
+                if _t >= 9 then IssueAchv('the_completionist') end
+            end
+            if not ACHV.mastery then
+                _t = 0
+                for id in next, MD.name do if BEST.highScore[id] >= 1650 then _t = _t + 1 end end
+                if _t >= 9 then IssueAchv('mastery') end
+            end
+            if not ACHV.supremacy then
+                _t = 0
+                for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
+                if _t >= 9 then IssueAchv('supremacy') end
+            end
+            if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
+
+            if not ACHV.the_harbinger then
+                local allRevF5 = true
+                for id in next, MD.name do
+                    if BEST.highScore['r' .. id] < Floors[4].top then
+                        allRevF5 = false
+                        break
+                    end
+                end
+                if allRevF5 then
+                    IssueAchv('the_harbinger')
+                end
+            end
+        end)
     end
     ZENITHA.setCursorVis(true)
     return true
@@ -102,12 +165,15 @@ function scene.draw()
     GC.setColor(clr.D)
     GC.mRect('fill', 0, 0, 1260, 1200)
 
+    local ea = (colorRev and .5 or -.5) * GAME.mod.AS ^ 2 * love.timer.getTime()
+    local ka = colorRev and -3.1416 or 3.1416
+
     -- Achievements
     GC.translate(0, -400 - scroll1)
     for i = 1, #achvList do
         local a = achvList[i]
         local A = Achievements[a.id]
-        GC.ucs_move('m', i % 2 == 1 and -605 or 5, math.floor((i - 1) / 2) * 140)
+        GC.ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
         GC.setColor(0, 0, 0, .5)
         GC.setAlpha(.626)
         GC.rectangle('fill', 0, 0, 600, 130)
@@ -117,8 +183,14 @@ function scene.draw()
             if colorRev then GC.setColor(COLOR.lR) end
             if a.progress < 1 then
                 GC.stc_setComp()
-                GC.stc_arc('pie', 65, 65, -2.0944, -2.0944 + (colorRev and -3.1416 or 3.1416) * a.progress, 63, 26)
-                GC.stc_arc('pie', 65, 65, 1.0472, 1.0472 + (colorRev and -3.1416 or 3.1416) * a.progress, 63, 26)
+                GC.stc_arc('pie', 65, 65,
+                    ea + -2.0944,
+                    ea + -2.0944 + ka * a.progress,
+                    63, 26)
+                GC.stc_arc('pie', 65, 65,
+                    ea + 1.0472,
+                    ea + 1.0472 + ka * a.progress,
+                    63, 26)
                 GC.mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 0, .42)
                 GC.mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 3.1416, .42)
                 GC.stc_stop()
@@ -132,15 +204,13 @@ function scene.draw()
         GC.print(a.score, 135, 35, 0)
         GC.setColor(colorRev and COLOR.LR or COLOR.L)
         GC.print(a.name, 135, 7, 0, .7)
-        if #a.desc <= 70 then
-            GC.print(a.desc, 135, 77, 0, .5)
-            GC.setColor(colorRev and COLOR.dR or COLOR.LD)
-            GC.print(A.quote, 135, 98, 0, .42)
+        if 420 / a.descWidth > .4 then
+            GC.print(a.desc, 135, 77, 0, min(400 / a.descWidth, .4), .4)
         else
-            GC.printf(a.desc, 135, 73, 1150, 'left', 0, .4)
-            GC.setColor(colorRev and COLOR.dR or COLOR.LD)
-            GC.print(A.quote, 135, 103, 0, .42)
+            GC.printf(a.desc, 135, 73, 1100, 'left', 0, .4)
         end
+        GC.setColor(colorRev and COLOR.dR or COLOR.LD)
+        GC.print(A.quote, 135, a.descWidth <= 1150 and 98 or 103, 0, .42)
         local x = 600 - 15
         if a.hidden then
             GC.mDraw(TEXTURE.stat.achievement.hidden, x, 15, 0, .2)

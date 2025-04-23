@@ -176,67 +176,68 @@ Achievements = {
         desc = [[Reach floor 5 in all nine reversed mods]],
         quote = [[Weathering the storm of an unfavorable future.]],
         hide = TRUE,
+        type = 'issued',
     },
 
     -- Mod Combo
     {
         id = 'GVNH',
         name = "A Modern Classic",
-        desc = [[HFDWUT "No Hold" and "Gravity" (NH GV) mods]],
+        desc = [[HFDWUT "No Hold" and "Gravity" mods]],
         quote = [[Times were different back then...]],
     },
     {
         id = 'DHMSNH',
         name = "Deadlock",
-        desc = [[HFDWUT "No Hold", "Messier Garbage" and "Double Hole" (NH MS DH) mods]],
+        desc = [[HFDWUT "No Hold", "Messier Garbage" and "Double Hole" mods]],
         quote = [["Escape has become a distant dream, yet still we struggle..."]],
     },
     {
         id = 'ASDHMS',
         name = "The Escape Artist",
-        desc = [[HFDWUT "Messier Garbage", "Double Hole" and "All-Spin" (MS DH AS) mods]],
+        desc = [[HFDWUT "Messier Garbage", "Double Hole" and "All-Spin" mods]],
         quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
     },
     {
         id = 'GVIN',
         name = "The Grandmaster",
-        desc = [[HFDWUT "Gravity" and "Invisible" (GV IN) mods]],
+        desc = [[HFDWUT "Gravity" and "Invisible" mods]],
         quote = [[When the world descends into chaos, the grandmaster remains at peace.]],
     },
     {
         id = 'DHEXNH',
         name = "Emperor's Decadence",
-        desc = [[HFDWUT "Expert Mode", "No Hold" and "Double Hole" (EX NH DH) mods]],
+        desc = [[HFDWUT "Expert Mode", "No Hold" and "Double Hole" mods]],
         quote = [[The Devil's lesson in humility.]],
     },
     {
         id = 'DHEXMSVL',
         name = "Divine Mastery",
-        desc = [[HFDWUT "Expert Mode", "Messier Garbage", "Volatile Garbage" and "Double Hole" (EX MS VL DH) mods]],
+        desc = [[HFDWUT "Expert Mode", "Messier Garbage", "Volatile Garbage" and "Double Hole" mods]],
         quote = [[The universe is yours.]],
     },
     {
         id = 'ASNH',
         name = "The Starving Artist",
-        desc = [[HFDWUT "No Hold" and "All-Spin" (NH AS) mods]],
+        desc = [[HFDWUT "No Hold" and "All-Spin" mods]],
         quote = [[Creativity cultivated trough limitation.]],
     },
     {
         id = 'ASEXVL',
         name = "The Con Artist",
-        desc = [[HFDWUT "Expert Mode", "Volatile Garbage" and "All-Spin" (EX VL AS) mods]],
+        desc = [[HFDWUT "Expert Mode", "Volatile Garbage" and "All-Spin" mods]],
         quote = [[Would the perfect lie not be an art worthy of admiration ?]],
     },
     {
         id = 'DPEX',
         name = "Trained Professionals",
-        desc = [[HFDWUT "Expert Mode" and "Duo" (EX DP) mods]],
+        desc = [[HFDWUT "Expert Mode" and "Duo" mods]],
         quote = [[Partners in expertise.]],
     },
     {
         id = 'EXMS',
         name = "Block Rationing",
-        desc = [[HFDWUT "Expert Mode" and "Messier Garbage" (EX MS) mods]],
+        desc = [[HFDWUT "Expert Mode" and "Messier Garbage" mods]],
         quote = [[Adversity favors the resourceful.]],
     },
     {
@@ -304,7 +305,7 @@ Achievements = {
     {
         id = 'lovers_promise',
         name = "Lover's Promise",
-        desc = [[Highest altitude reached with DP on day 14 of each month]],
+        desc = [[Highest altitude reached with DP on 14th day of a month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
         type = 'event',
@@ -323,7 +324,7 @@ Achievements = {
         desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
         rank = floorRank(1, 3, 5, 7, 9, 10),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
         id = 'desolation',
@@ -331,7 +332,7 @@ Achievements = {
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
         rank = floorRank(1, 3, 5, 7, 9, 10),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
         id = 'havoc',
@@ -339,7 +340,7 @@ Achievements = {
         desc = [[HFD with 10+ mod points]],
         quote = [[The world is in chaos...]],
         rank = floorRank(1, 3, 5, 7, 8, 9),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
         id = 'pandemonium',
@@ -347,7 +348,7 @@ Achievements = {
         desc = [[HFD with 11+ mod points]],
         quote = [[Several realms began to collide...]],
         rank = floorRank(1, 2, 4, 6, 8, 9),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
         id = 'inferno',
@@ -355,7 +356,7 @@ Achievements = {
         desc = [[HFD with 12+ mod points]],
         quote = [[Everything is burning and melting...]],
         rank = floorRank(1, 2, 4, 6, 7, 8),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 6 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 6 end,
     },
     {
         id = 'purgatory',
@@ -363,7 +364,7 @@ Achievements = {
         desc = [[HFD with 13+ mod points]],
         quote = [[Nobody knows their destination...]],
         rank = floorRank(1, 1, 3, 5, 6, 7),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 5 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 5 end,
     },
     {
         id = 'perdition',
@@ -371,7 +372,7 @@ Achievements = {
         desc = [[HFD with 14+ mod points]],
         quote = [[There's no way back...]],
         rank = floorRank(1, 1, 3, 4, 5, 6),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 4 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 4 end,
     },
     {
         id = 'cataclysm',
@@ -379,7 +380,7 @@ Achievements = {
         desc = [[HFD with 15+ mod points]],
         quote = [[The real disaster is yet to come...]],
         rank = floorRank(1, 1, 2, 3, 4, 5),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 3 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 3 end,
     },
     {
         id = 'annihilation',
@@ -387,7 +388,7 @@ Achievements = {
         desc = [[HFD with 16+ mod points]],
         quote = [[The whole universe is trembling...]],
         rank = floorRank(1, 1, 1, 2, 3, 4),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 2 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 2 end,
     },
     {
         id = 'armageddon',
@@ -395,7 +396,7 @@ Achievements = {
         desc = [[HFD with 17+ mod points]],
         quote = [[Big crunch is real...]],
         rank = floorRank(1, 1, 1, 1, 2, 3),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 1 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 1 end,
     },
     {
         id = 'abyss',
@@ -403,7 +404,7 @@ Achievements = {
         desc = [[HFD with 18 mod points]],
         quote = [[.]],
         rank = floorRank(1, 1, 1, 1, 1, 2),
-        hide = function() return TABLE.countAll(GAME.completion, 0) <= 0 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
 
     -- Swamp Water Extended
@@ -419,21 +420,21 @@ Achievements = {
         name = "Swamp Water Lite+",
         desc = [[HFDWUT 1rev+6 mods ("Duo" not allowed)]],
         quote = [[Comes in...... 252 different flavors?]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     {
         id = 'swamp_water_plus',
         name = "Swamp Water+",
         desc = [[HFDWUT 1rev+7 mods ("Duo" not allowed)]],
         quote = [[Less choices but still a lot to try.]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     {
         id = 'swamp_water_pro_plus',
         name = "Swamp Water Pro+",
         desc = [[HFDWUT 1rev+8 mods]],
         quote = [[The cup is about to overflow!]],
-        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
 
     -- Mod Combo Extended
@@ -639,7 +640,7 @@ Achievements = {
         quote = [[Expose the darkness of the Zenith Tower.]],
         rank = numberRank(0, 10000, 16000, 20000, 24000, 26000),
         scoreSimp = function(h) return string.format("%.0fm", h) end,
-        hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
     -- {
     --     id = 'indolency',

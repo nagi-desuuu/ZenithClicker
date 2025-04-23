@@ -415,7 +415,7 @@ for i = 1, #ComboData do
     ComboData[cmbStr] = ComboData[cmbStr] or cmb
 end
 
-RevComboData = {
+RevSwampName = {
     "Z", "S", "J", "L", "T", "O", "I",
     [["BLIGHT"]],
     [["DESOLATION"]],

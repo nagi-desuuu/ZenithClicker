@@ -290,7 +290,7 @@ function GAME.getComboName(list, extend, ingame)
         -- Super Set
         if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
             local mp = GAME.getComboMP(list)
-            if mp >= 8 then return RevComboData[min(mp, #RevComboData)] end
+            if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
         elseif len == 9 or len >= 7 and not TABLE.find(list, 'DP') then
             return
                 GAME.anyRev and (
@@ -1881,8 +1881,8 @@ function GAME.finish(reason)
             SubmitAchv(GAME.comboStr, GAME.height)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
             for mp = GAME.comboMP, 8, -1 do
-                local name = RevComboData[min(mp, #RevComboData)]
-                SubmitAchv(name:sub(2, #name - 1):lower(), GAME.height, mp < GAME.comboMP)
+                local name = RevSwampName[min(mp, #RevSwampName)]:sub(2, -2):lower()
+                SubmitAchv(name, GAME.height, mp < GAME.comboMP)
             end
         elseif #hand == 9 or #hand >= 7 and not TABLE.find(hand, 'DP') then
             local name =
