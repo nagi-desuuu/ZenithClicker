@@ -1173,7 +1173,12 @@ scene.widgetList = {
         fontSize = 70, text = "START",
         onClick = function(k)
             if k ~= 3 then
-                GAME[GAME.playing and 'commit' or 'start']()
+                if GAME.playing then
+                    GAME.commit()
+                    if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
+                else
+                    GAME.start()
+                end
             end
         end,
     },
