@@ -805,9 +805,8 @@ function GAME.upFloor()
         end
 
         -- SubmitAchv('the_pacifist', GAME.totalAttack)
-        local noZSP
-        if GAME.comboStr == '' then noZSP = SubmitAchv('zenith_speedrun', GAME.time) end
-        SubmitAchv('zenith_speedrun_plus', GAME.time, noZSP)
+        if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', GAME.time) end
+        SubmitAchv('zenith_speedrun_plus', GAME.time)
     end
     GAME.updateBgm('ingame')
     GAME.refreshRPC()
@@ -1865,10 +1864,9 @@ function GAME.finish(reason)
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
         end
-        local noZEP, noSP
         if GAME.comboStr == '' then
-            noZEP = SubmitAchv('zenith_explorer', GAME.height)
-            noSP = SubmitAchv('supercharged', GAME.achv_maxChain)
+            SubmitAchv('zenith_explorer', GAME.height)
+            SubmitAchv('supercharged', GAME.achv_maxChain)
         elseif #GAME.comboStr <= 3 then
             SubmitAchv(GAME.comboStr, GAME.height)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
@@ -1890,8 +1888,8 @@ function GAME.finish(reason)
                 )
             end
         end
-        SubmitAchv('zenith_explorer_plus', GAME.height, noZEP)
-        SubmitAchv('supercharged_plus', GAME.achv_maxChain, noSP)
+        SubmitAchv('zenith_explorer_plus', GAME.height)
+        SubmitAchv('supercharged_plus', GAME.achv_maxChain)
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
