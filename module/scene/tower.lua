@@ -205,6 +205,10 @@ function scene.load()
     GAME.refreshDailyChallengeText()
 end
 
+function scene.unload()
+    TEXT:clear()
+end
+
 function scene.mouseMove(x, y, _, dy)
     if GAME.zenithTraveler then
         GAME.height = clamp(GAME.height +
