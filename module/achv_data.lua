@@ -241,7 +241,7 @@ Achievements = {
     {
         id = 'swamp_water',
         name = "Swamp Water",
-        desc = [[HFDWUT all mods other then "Duo" at the same time]],
+        desc = [[HFDWUT all mods other than "Duo" at the same time]],
         quote = [[The worst of all worlds.]],
     },
 
@@ -265,7 +265,7 @@ Achievements = {
     {
         id = 'supercharged',
         name = "Supercharged",
-        desc = [[Highest Back-to-Back chain discovered without any mods]],
+        desc = [[Highest Back-to-Back chain reached without any mods]],
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
         rank = numberRank(0, 20, 40, 65, 85, 100),
@@ -394,7 +394,7 @@ Achievements = {
         id = 'armageddon',
         name = "Armageddon",
         desc = [[HFD with 17+ mod points]],
-        quote = [[Big crunch is real...]],
+        quote = [[Big crunch is about to happen...]],
         rank = floorRank(1, 1, 1, 1, 2, 3),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 1 end,
     },
@@ -859,7 +859,7 @@ Achievements = {
         id = 'dark_force',
         name = "Dark Force",
         desc = [[Interrupt font loading with rev mod]],
-        quote = [[The darkness overflows]],
+        quote = [[The darkness overflows.]],
         hide = TRUE,
         type = 'issued',
     },
