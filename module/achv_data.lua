@@ -170,14 +170,6 @@ Achievements = {
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
     },
-    {
-        id = 'the_harbinger',
-        name = "The Harbinger",
-        desc = [[Reach floor 5 in all nine reversed mods]],
-        quote = [[Weathering the storm of an unfavorable future.]],
-        hide = TRUE,
-        type = 'issued',
-    },
 
     -- Mod Combo
     {
@@ -301,7 +293,7 @@ Achievements = {
         quote = [[Reaching deep down but coming back empty every time.]],
     },
 
-    -- Event
+    -- Others
     {
         id = 'lovers_promise',
         name = "Lover's Promise",
@@ -309,6 +301,14 @@ Achievements = {
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
         type = 'event',
+    },
+    {
+        id = 'the_harbinger',
+        name = "The Harbinger",
+        desc = [[Reach floor 5 in all nine reversed mods]],
+        quote = [[Weathering the storm of an unfavorable future.]],
+        hide = TRUE,
+        type = 'issued',
     },
 
 

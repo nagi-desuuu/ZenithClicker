@@ -48,9 +48,6 @@ local function getAchvCompletion()
                 local rank = floor(A.rank(ACHV[A.id]))
                 p = p + rank
             end
-        elseif A.type == 'issued' then
-            P = P + 1
-            if ACHV[A.id] then p = p + 1 end
         end
     end
     return p, P
