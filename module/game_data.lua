@@ -168,7 +168,6 @@ ComboData = {
     { set = 'EX MS',             name = "block rationing",                    basic = true },
 
     -- Achievement combos
-    { set = "EX NH MS GV",       name = "atlas' lament",                      menu = true, ex = true },
     { set = "NH VL AS DP",       name = "midnight meal",                      menu = true, ex = true },
     { set = "rNH rGV rVL",       name = "sweatshop",                          menu = true },
     { set = "NH rAS",            name = "pristine",                           menu = true },
@@ -179,7 +178,7 @@ ComboData = {
     { set = "rNH GV VL DH",      name = "grand-master! rounds",               menu = true },
     { set = "rNH rIN",           name = "instant memory",                     menu = true },
     { set = "EX NH rMS GV",      name = "bnuuy",                              menu = true },
-    { set = "rDH rAS",           name = "do i have to memorize all of them?", menu = true },
+    { set = "GV rDH rAS",        name = "do i have to memorize all of them?", menu = true },
 
     -- rDH database
     { set = 'MS IN',             name = "scrambled rainbow",                  ex = true },

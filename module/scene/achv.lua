@@ -3,6 +3,8 @@ local scene = {}
 
 local max, min = math.max, math.min
 local floor, abs = math.floor, math.abs
+local sin, cos = math.sin, math.cos
+
 
 local clr = {
     D = { COLOR.HEX '19311E' },
@@ -29,6 +31,7 @@ local achvList = {}
 local scroll, scroll1 = 0, -620
 local maxScroll = 0
 local tempText = GC.newText(FONT.get(30))
+local timer = 0
 
 function scene.load()
     SetMouseVisible(true)
@@ -154,6 +157,13 @@ function scene.wheelMove(_, dy)
 end
 
 function scene.update(dt)
+    if timer < 6.26 then
+        timer = timer + dt
+        if timer > 6.26 then
+            AchvNotice.__canClear = true
+            timer = 0
+        end
+    end
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
 end
 
@@ -165,7 +175,8 @@ function scene.draw()
     GC.setColor(clr.D)
     GC.mRect('fill', 0, 0, 1260, 1200)
 
-    local ea = (colorRev and .5 or -.5) * GAME.mod.AS ^ 2 * love.timer.getTime()
+    local t = love.timer.getTime()
+    local ea = (colorRev and .5 or -.5) * GAME.mod.AS ^ 2 * t
     local ka = colorRev and -3.1416 or 3.1416
 
     -- Achievements
@@ -174,7 +185,7 @@ function scene.draw()
         local a = achvList[i]
         local A = Achievements[a.id]
         GC.ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
-        GC.setColor(0, 0, 0, .5)
+        GC.setColor(AchvNotice[a.id] and .26 + .2 * sin(t * 6.26) or 0, 0, 0, .5)
         GC.setAlpha(.626)
         GC.rectangle('fill', 0, 0, 600, 130)
         GC.setColor(1, 1, 1)

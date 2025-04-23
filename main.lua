@@ -307,6 +307,8 @@ STAT = {
 
 ACHV = {}
 
+AchvNotice = {}
+
 function SaveBest() love.filesystem.write('best.luaon', 'return' .. TABLE.dumpDeflate(BEST)) end
 
 function SaveStat() love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDeflate(STAT)) end
@@ -359,13 +361,14 @@ function SubmitAchv(id, score, silent)
     if R1 == 0 or not A.comp(score, oldScore) then return end
 
     ACHV[id] = score
+    AchvNotice[id] = true
     TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
 
     if not silent and R1 >= 1 then
         local rank = math.floor(R1)
         local scoreText = A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")" or "")
         table.insert(bufferedMsg, { AchvData[rank].id, {
-            AchvData[rank].fg, A.name .. "  >>  " .. scoreText,
+            AchvData[rank].fg, A.name .. "   >>   " .. scoreText,
             COLOR.LD, "    Previous: " .. (A.scoreFull or A.scoreSimp)(oldScore) .. "\n",
             COLOR.dL, A.desc .. "\n", COLOR.LD, A.quote,
         }, rank <= 2 and 1 or rank <= 4 and 2 or 3 })
@@ -379,7 +382,14 @@ end
 function ReleaseAchvBuffer()
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
-        msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 3.55
+        if TASK.lock('achv_bulk', 1) then
+            msgTime = 6.2
+            if AchvNotice.__canClear then
+                TABLE.clear(AchvNotice)
+            end
+        else
+            msgTime = msgTime + 3.55
+        end
         MSG(msg[1], msg[2], msgTime, true)
         if TASK.lock('achv_sfx_' .. msg[3], .26) then
             SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)

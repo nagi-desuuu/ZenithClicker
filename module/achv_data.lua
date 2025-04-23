@@ -439,13 +439,6 @@ Achievements = {
 
     -- Mod Combo Extended
     {
-        id = 'EXGVMSNH',
-        name = "Atlas' Lament",
-        desc = [[HFDWUT EX NH MS GV mods]],
-        quote = [[A thankless job, yet our existence lies in his balance...]],
-        credit = "@cat_noises",
-    },
-    {
         id = 'ASDPNHVL',
         name = "Midnight Meal",
         desc = [[HFDWUT NH VL AS DP mods]],
@@ -528,7 +521,7 @@ Achievements = {
     {
         id = 'rASrDH',
         name = "Do I Have to Memorize All of Them?",
-        desc = [[HFDWUT rDH rAS mods]],
+        desc = [[HFDWUT GV rDH rAS mods]],
         quote = [[Believe it or not, no.]],
         hide = function() return GAME.completion.DH == 0 or GAME.completion.AS == 0 end,
     },
