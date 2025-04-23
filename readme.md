@@ -73,7 +73,7 @@ Each mod twists the rules and creates unique experience.
 
 ### All-Spin (`AS`)
 
-- You can flip cards with your keyboard: on ANSI QWERTY layout, the inputs are 1~9, Q~O, or A~L. If cards are shuffled by `(r)MS`, they are flipped based on their *position*, not by which card they are.
+- You can flip cards with your keyboard: on ANSI QWERTY layout, the inputs are 1-9, Q-O, or A-L. If cards are shuffled by `(r)MS`, they are flipped based on their *position*, not by which card they are.
 - The RESET button is replaced with **SPIN**, which quickly flips all cards one-by-one.
 - Flipping a card will apply **burn** to it, indicated by it flashing yellow. Burn lasts **3s** plus **0.5s per floor**, and can be removed by committing (even a wrong one), or by pressing SPIN. Flipping a burned card will **wound** you, force-flipping two cards. These cards do *not* get Burn.
 
