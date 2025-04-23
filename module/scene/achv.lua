@@ -184,7 +184,7 @@ local gc_setColor, gc_rectangle, gc_print, gc_printf = gc.setColor, gc.rectangle
 local gc_ucs_move, gc_ucs_back = GC.ucs_move, GC.ucs_back
 local gc_setAlpha, gc_mRect, gc_mDraw = GC.setAlpha, GC.mRect, GC.mDraw
 local gc_stc_setComp, gc_stc_arc, gc_stc_stop = GC.stc_setComp, GC.stc_arc, GC.stc_stop
-
+local gc_setBlendMode = GC.setBlendMode
 function scene.draw()
     DrawBG(26)
 
@@ -240,14 +240,22 @@ function scene.draw()
                         ea + 1.0472,
                         ea + 1.0472 + ka * a.progress,
                         63, 26)
-                    gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
-                    gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
-                    gc_stc_stop()
-                else
-                    gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
-                    gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
                 end
+                gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
+                gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
+                gc_stc_stop()
             end
+            if a.rank >= 1 then
+                gc_setBlendMode('add', 'alphamultiply')
+                gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.1))
+                gc_mDraw(texture.glint_1, 65, 65, 0, .42)
+                gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.3))
+                gc_mDraw(texture.glint_2, 65, 65, 0, .42)
+                gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
+                gc_mDraw(texture.glint_3, 65, 65, 0, .42)
+                gc_setBlendMode('alpha')
+            end
+
             gc_setColor(AchvData[a.rank].fg2)
             gc_print(a.score, 135, 35, 0)
             gc_setColor(colorRev and COLOR.LR or COLOR.L)
