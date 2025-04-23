@@ -132,7 +132,7 @@ local GAME = {
 
     achv_consecRestart = 0,
     achv_perfectionistH = nil,
-    achv_tailgaterH = nil,
+    achv_balanceH = nil,
     achv_carriedH = nil,
     achv_arroganceH = nil,
     achv_pacifist2H = nil,
@@ -1328,7 +1328,7 @@ function GAME.commit()
             end
 
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
-            if not GAME.achv_arroganceH and M.AS == 2 then GAME.achv_arroganceH = GAME.height end
+            if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then GAME.achv_arroganceH = GAME.height end
             if not GAME.achv_pacifist2H and GAME.chain >= 4 then GAME.achv_pacifist2H = GAME.height end
         end
         if dblCorrect then
@@ -1627,7 +1627,7 @@ function GAME.start()
 
     GAME.achv_consecRestart = GAME.achv_consecRestart + 1
     GAME.achv_perfectionistH = false
-    GAME.achv_tailgaterH = false
+    GAME.achv_balanceH = false
     GAME.achv_carriedH = false
     GAME.achv_arroganceH = false
     GAME.achv_pacifist2H = false
@@ -1841,7 +1841,8 @@ function GAME.finish(reason)
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.height)
-        SubmitAchv('tailgater', GAME.achv_tailgaterH or GAME.height)
+        SubmitAchv('sink_cost', GAME.achv_balanceH or GAME.height)
+        if M.EX > 0 then SubmitAchv('balance', GAME.achv_balanceH or GAME.height) end
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
         SubmitAchv(GAME.comboStr, GAME.height)
         -- SubmitAchv('powerless', GAME.achv_pacifist2H or GAME.height)
@@ -2046,7 +2047,7 @@ function GAME.update(dt)
                         end
                         TEXTS.rank:set("R-" .. GAME.rank)
                         SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
-                        if not GAME.achv_tailgaterH then GAME.achv_tailgaterH = GAME.height end
+                        if not GAME.achv_balanceH then GAME.achv_balanceH = GAME.height end
                     end
                 end
             end
