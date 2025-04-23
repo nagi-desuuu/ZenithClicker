@@ -41,6 +41,7 @@ local ins, rem = table.insert, table.remove
 ---
 ---@field floor number
 ---@field height number
+---@field roundHeight number for statistics and achievement
 ---@field heightBuffer number
 ---@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string}[]
 ---@field fatigue number
@@ -135,7 +136,7 @@ local GAME = {
     achv_balanceH = nil,
     achv_carriedH = nil,
     achv_arroganceH = nil,
-    achv_pacifist2H = nil,
+    achv_powerlessH = nil,
     achv_patienceH = nil,
     achv_talentlessH = nil,
     achv_maxChain = nil,
@@ -578,7 +579,7 @@ function GAME.incrementPrompt(prompt, value)
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
-                GAME.achv_maxReviveH = max(GAME.achv_maxReviveH or 0, GAME.height)
+                GAME.achv_maxReviveH = max(GAME.achv_maxReviveH or 0, GAME.roundHeight)
             end
         end
         t.progObj:set(floor(t.progress) .. "/" .. t.target)
@@ -631,7 +632,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
         'damage_large', .872
     )
 
-    if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.height end
+    if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
 
     if GAME[k] <= 0 then
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
@@ -804,8 +805,8 @@ function GAME.upFloor()
         end
 
         -- SubmitAchv('the_pacifist', GAME.totalAttack)
-        if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', GAME.time) end
-        SubmitAchv('zenith_speedrun_plus', GAME.time)
+        if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', roundTime) end
+        SubmitAchv('zenith_speedrun_plus', roundTime)
     end
     GAME.updateBgm('ingame')
     GAME.refreshRPC()
@@ -1287,7 +1288,7 @@ function GAME.commit()
             end
             GAME.chain = 0
 
-            if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.height end
+            if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
         else
             -- Perfect
             if GAME.currentTask then
@@ -1328,8 +1329,8 @@ function GAME.commit()
             end
 
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
-            if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then GAME.achv_arroganceH = GAME.height end
-            if not GAME.achv_pacifist2H and GAME.chain >= 4 then GAME.achv_pacifist2H = GAME.height end
+            if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then GAME.achv_arroganceH = GAME.roundHeight end
+            if not GAME.achv_powerlessH and GAME.chain >= 4 then GAME.achv_powerlessH = GAME.roundHeight end
         end
         if dblCorrect then
             attack = attack * 3
@@ -1407,7 +1408,7 @@ function GAME.commit()
                 attack = attack / 2
                 attack = floor(attack) + (MATH.roll(attack % 1) and 1 or 0)
             elseif not GAME.achv_carriedH then
-                GAME.achv_carriedH = GAME.height
+                GAME.achv_carriedH = GAME.roundHeight
             end
         end
 
@@ -1639,7 +1640,7 @@ function GAME.start()
     GAME.achv_balanceH = false
     GAME.achv_carriedH = false
     GAME.achv_arroganceH = false
-    GAME.achv_pacifist2H = false
+    GAME.achv_powerlessH = false
     GAME.achv_patienceH = false
     GAME.achv_talentlessH = false
     GAME.achv_maxChain = 0
@@ -1709,7 +1710,7 @@ function GAME.finish(reason)
         -- Statistics
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
         if GAME.height > STAT.maxHeight then
-            STAT.maxHeight = MATH.roundUnit(GAME.height, .01)
+            STAT.maxHeight = GAME.roundHeight
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
@@ -1753,7 +1754,7 @@ function GAME.finish(reason)
         local hand = GAME.getHand(true)
         local oldPB = BEST.highScore[GAME.comboStr]
         if GAME.height > oldPB then
-            BEST.highScore[GAME.comboStr] = MATH.roundUnit(GAME.height, .01)
+            BEST.highScore[GAME.comboStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
                 if GAME.anyRev then t = t:gsub(" ", "+ ", 1) end
@@ -1846,43 +1847,41 @@ function GAME.finish(reason)
         for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
         SubmitAchv('divine_challenger', _t)
 
-        SubmitAchv('multitasker', GAME.height * GAME.comboMP)
+        SubmitAchv('multitasker', MATH.roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
-        SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.height)
-        SubmitAchv('sink_cost', GAME.achv_balanceH or GAME.height)
-        if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.height) end
-        SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.height)
-        SubmitAchv(GAME.comboStr, GAME.height)
-        -- SubmitAchv('powerless', GAME.achv_pacifist2H or GAME.height)
+        SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.roundHeight)
+        SubmitAchv('sink_cost', GAME.achv_balanceH or GAME.roundHeight)
+        if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.roundHeight) end
+        SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
+        SubmitAchv(GAME.comboStr, GAME.roundHeight)
+        -- SubmitAchv('powerless', GAME.achv_powerless2H or roundedH)
         -- if GAME.comboStr == 'rEX' and GAME.floor == 1 then SubmitAchv('indolency', GAME.totalAttack) end
-        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', GAME.height) end
+        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
-        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.height) end
-        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
+        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.roundHeight) end
+        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.roundHeight) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'DP' then
-            if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
+            if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then
-            SubmitAchv('talentless', GAME.achv_talentlessH or GAME.height)
+            SubmitAchv('talentless', GAME.achv_talentlessH or GAME.roundHeight)
         elseif GAME.comboStr == 'rAS' then
-            SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.height)
+            SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
-            SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
+            SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
         end
         if GAME.comboStr == '' then
-            SubmitAchv('zenith_explorer', GAME.height)
+            SubmitAchv('zenith_explorer', GAME.roundHeight)
             SubmitAchv('supercharged', GAME.achv_maxChain)
-        elseif #GAME.comboStr <= 3 then
-            SubmitAchv(GAME.comboStr, GAME.height)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
             for mp = GAME.comboMP, 8, -1 do
                 local name = RevSwampName[min(mp, #RevSwampName)]:sub(2, -2):lower()
-                SubmitAchv(name, GAME.height, mp < GAME.comboMP)
+                SubmitAchv(name, GAME.roundHeight, mp < GAME.comboMP)
             end
         elseif #hand == 9 or #hand >= 7 and not TABLE.find(hand, 'DP') then
             local name =
@@ -1890,15 +1889,12 @@ function GAME.finish(reason)
                 #hand == 8 and 'swamp_water' or
                 #hand == 9 and 'swamp_water_pro' or
                 'swamp_water_x'
-            SubmitAchv(name .. (GAME.anyRev and '_plus' or ''), GAME.height)
+            SubmitAchv(name .. (GAME.anyRev and '_plus' or ''), GAME.roundHeight)
             if name == 'swamp_water' then
-                SubmitAchv(
-                    'swamp_water_lite' .. (GAME.anyRev and '_plus' or ''),
-                    GAME.height, true
-                )
+                SubmitAchv('swamp_water_lite' .. (GAME.anyRev and '_plus' or ''), GAME.roundHeight, true)
             end
         end
-        SubmitAchv('zenith_explorer_plus', GAME.height)
+        SubmitAchv('zenith_explorer_plus', GAME.roundHeight)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)
     else
         TEXTS.endHeight:set("")
@@ -2033,6 +2029,7 @@ function GAME.update(dt)
                     Floors[GAME.floor - 1].top
                 )
             end
+            GAME.roundHeight = MATH.roundUnit(GAME.height, .01)
 
             if GAME.height >= Floors[GAME.floor].top then
                 GAME.upFloor()
@@ -2055,7 +2052,7 @@ function GAME.update(dt)
                         end
                         TEXTS.rank:set("R-" .. GAME.rank)
                         SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
-                        if not GAME.achv_balanceH then GAME.achv_balanceH = GAME.height end
+                        if not GAME.achv_balanceH then GAME.achv_balanceH = GAME.roundHeight end
                     end
                 end
             end

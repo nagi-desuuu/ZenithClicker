@@ -533,6 +533,14 @@ Achievements = {
         credit = "@obsidian",
         hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
+    {
+        id = 'rGVrAS',
+        name = "Whizzing Wizard",
+        desc = [[HFDWUT rGV rAS mods]],
+        quote = [["I felt enchanted!"  But soon after, disaster struck...]],
+        credit = "@GameTilDead",
+        hide = function() return GAME.completion.GV == 0 or GAME.completion.AS == 0 end,
+    },
 
     -- Supercharged
     {
@@ -748,7 +756,7 @@ Achievements = {
     },
     -- {
     --     id = 'powerless',
-    --     name = "The Pacifist II",
+    --     name = "Powerless",
     --     desc = [[HFD without building up surge]],
     --     quote = [["We have a similar goal to climb the Zenith Tower in many ways."]],
     --     credit = "@cmdingo",
