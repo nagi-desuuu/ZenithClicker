@@ -168,12 +168,14 @@ TEXTURE = {
                 assets 'achievements/frames/platinum.png',
                 assets 'achievements/frames/diamond.png',
                 assets 'achievements/frames/issued.png',
+                ring = assets 'achievements/frames/ring-piece.png'
             },
             glint_1 = assets 'achievements/glint-a.png',
             glint_2 = assets 'achievements/glint-b.png',
             glint_3 = assets 'achievements/glint-c.png',
             competitive = assets 'achievements/competitive.png',
             hidden = assets 'achievements/hidden.png',
+            event = assets 'achievements/event.png',
         },
     },
 
@@ -314,15 +316,16 @@ function SaveAchv() love.filesystem.write('achv.luaon', 'return' .. TABLE.dumpDe
 MSG.setSafeY(75)
 MSG.addCategory('dark', COLOR.D, COLOR.L)
 
-local achvData = {
-    { id = 'achv_bronze',   bg = COLOR.DO,          fg = COLOR.lO },
-    { id = 'achv_silver',   bg = { .26, .26, .26 }, fg = COLOR.L },
-    { id = 'achv_gold',     bg = COLOR.DY,          fg = COLOR.lY },
-    { id = 'achv_platinum', bg = COLOR.DJ,          fg = COLOR.lJ },
-    { id = 'achv_diamond',  bg = COLOR.DP,          fg = COLOR.lP },
-    { id = 'achv_issued',   bg = COLOR.DM,          fg = COLOR.lM },
+AchvData = {
+    [0] = { id = 'achv_none', bg = COLOR.D, fg = COLOR.LD, fg2 = COLOR.LD },
+    { id = 'achv_bronze',   bg = COLOR.DO,          fg = COLOR.lO, fg2 = COLOR.O },
+    { id = 'achv_silver',   bg = { .26, .26, .26 }, fg = COLOR.L,  fg2 = COLOR.dL },
+    { id = 'achv_gold',     bg = COLOR.DY,          fg = COLOR.lY, fg2 = COLOR.Y },
+    { id = 'achv_platinum', bg = COLOR.DJ,          fg = COLOR.lJ, fg2 = COLOR.J },
+    { id = 'achv_diamond',  bg = COLOR.DP,          fg = COLOR.lP, fg2 = COLOR.lB },
+    { id = 'achv_issued',   bg = COLOR.DM,          fg = COLOR.lM, fg2 = COLOR.lM },
 }
-for i = 1, 6 do MSG.addCategory(achvData[i].id, achvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
+for i = 1, 6 do MSG.addCategory(AchvData[i].id, AchvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
 
 local msgTime = 0
 local bufferedMsg = {}
@@ -336,7 +339,7 @@ function IssueAchv(id, silent)
 
     if not silent then
         table.insert(bufferedMsg, { 'achv_issued', {
-            achvData[6].fg, A.name .. "\n",
+            AchvData[6].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
             COLOR.LD, A.quote,
         }, 1 })
@@ -355,15 +358,15 @@ function SubmitAchv(id, score, silent)
 
     local R0, R1 = A.rank(oldScore), A.rank(score)
     -- printf("%s: %.1f(%.2f) -> %.1f(%.2f)", id, oldScore, R0, score, R1)
-    if R1 < 1 or R1 <= R0 then return end
+    if R1 == 0 or R1 <= R0 then return end
 
     ACHV[id] = score
     TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
 
     if not silent and math.floor(R0) ~= math.floor(R1) then
         local n = math.floor(R1)
-        table.insert(bufferedMsg, { achvData[n].id, {
-            achvData[n].fg, A.name .. "\n",
+        table.insert(bufferedMsg, { AchvData[n].id, {
+            AchvData[n].fg, A.name .. "\n",
             COLOR.dL, A.desc .. "\n",
             COLOR.DL, ">>  " .. A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")\n" or "\n"),
             COLOR.LD, A.quote,

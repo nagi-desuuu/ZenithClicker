@@ -43,7 +43,7 @@ end
 ---@field scoreSimp? fun(score):string
 ---@field scoreFull? fun(score):string
 ---@field rank? 'floor' | fun(score):number
----@field type? 'competitive' | 'issued' | 'activity'
+---@field type? 'competitive' | 'issued' | 'event'
 ---@field hide? fun():boolean
 
 ---@type Map<Achievement>
@@ -56,117 +56,117 @@ Achievements = {
     {
         id = 'EX',
         name = "The Emperor",
-        desc = [[HFD with the "Expert Mode" (EX) mod]],
+        desc = [[HFD with the "Expert Mode" mod]],
         quote = [[A display of power for those willing to bear its burden.]],
     },
     {
         id = 'NH',
         name = "Temperance",
-        desc = [[HFD with the "No Hold" (NH) mod]],
+        desc = [[HFD with the "No Hold" mod]],
         quote = [[Use each piece as they come and embrace the natural flow of stacking.]],
     },
     {
         id = 'MS',
         name = "Wheel of Fortune",
-        desc = [[HFD with the "Messier Garbage" (MS) mod]],
+        desc = [[HFD with the "Messier Garbage" mod]],
         quote = [[The only constant in life is change.]],
     },
     {
         id = 'GV',
         name = "The Tower",
-        desc = [[HFD with the "Gravity" (GV) mod]],
+        desc = [[HFD with the "Gravity" mod]],
         quote = [[What will you do when it all comes crumbling down?]],
     },
     {
         id = 'VL',
         name = "Strength",
-        desc = [[HFD with the "Volatile Garbage" (VL) mod]],
+        desc = [[HFD with the "Volatile Garbage" mod]],
         quote = [[Match great obstacles with greater determination.]],
     },
     {
         id = 'DH',
         name = "The Devil",
-        desc = [[HFD with the "Double Hole" (DH) mod]],
+        desc = [[HFD with the "Double Hole" mod]],
         quote = [[Redifine your limits or succumb to his chains.]],
     },
     {
         id = 'IN',
         name = "The Hermit",
-        desc = [[HFD with the "Invisible" (IN) mod]],
+        desc = [[HFD with the "Invisible" mod]],
         quote = [[When the outside world fails you, trust the voice within to light a path.]],
     },
     {
         id = 'AS',
         name = "The Magician",
-        desc = [[HFD with the "All-Spin" (AS) mod]],
+        desc = [[HFD with the "All-Spin" mod]],
         quote = [[Inspiration is nothing short of magic.]],
     },
     {
         id = 'DP',
         name = "The Lovers",
-        desc = [[HFD with the "Duo" (DP) mod]],
+        desc = [[HFD with the "Duo" mod]],
         quote = [[Love, and resign yourself to the fate of another.]],
     },
     {
         id = 'rEX',
         name = "The Tyrant",
-        desc = [[HFD with the reversed "Expert Mode" (rEX) mod]],
+        desc = [[HFD with the reversed "Expert Mode" mod]],
         quote = [[Fear, oppression, and limitless ambition.]],
         hide = function() return GAME.completion.EX == 0 end,
     },
     {
         id = 'rNH',
         name = "Asceticism",
-        desc = [[HFD with the reversed "No Hold" (rNH) mod]],
+        desc = [[HFD with the reversed "No Hold" mod]],
         quote = [[A detachment from even that which is moderate.]],
         hide = function() return GAME.completion.NH == 0 end,
     },
     {
         id = 'rMS',
         name = "Loaded Dice",
-        desc = [[HFD with the reversed "Messier Garbage" (rMS) mod]],
+        desc = [[HFD with the reversed "Messier Garbage" mod]],
         quote = [[In a rigged game, your mind is the only fair advantage.]],
         hide = function() return GAME.completion.MS == 0 end,
     },
     {
         id = 'rGV',
         name = "Freefall",
-        desc = [[HFD with the reversed "Gravity" (rGV) mod]],
+        desc = [[HFD with the reversed "Gravity" mod]],
         quote = [[In retrospect, the ground you stood on never existed in the first place.]],
         hide = function() return GAME.completion.GV == 0 end,
     },
     {
         id = 'rVL',
         name = "Last Stand",
-        desc = [[HFD with the reversed "Volatile Garbage" (rVL) mod]],
+        desc = [[HFD with the reversed "Volatile Garbage" mod]],
         quote = [[Strength isn't necessary for those with nothing to lose.]],
         hide = function() return GAME.completion.VL == 0 end,
     },
     {
         id = 'rDH',
         name = "Damnation",
-        desc = [[HFD with the reversed "Double Hole" (rDH) mod]],
+        desc = [[HFD with the reversed "Double Hole" mod]],
         quote = [[No more second chances.]],
         hide = function() return GAME.completion.DH == 0 end,
     },
     {
         id = 'rIN',
         name = "The Exile",
-        desc = [[HFD with the reversed "Invisible" (rIN) mod]],
+        desc = [[HFD with the reversed "Invisible" mod]],
         quote = [[Never underestimate blind faith.]],
         hide = function() return GAME.completion.IN == 0 end,
     },
     {
         id = 'rAS',
         name = "The Warlock",
-        desc = [[HFD with the reversed "All-Spin" (rAS) mod]],
+        desc = [[HFD with the reversed "All-Spin" mod]],
         quote = [[Into realms beyond heaven and earth.]],
         hide = function() return GAME.completion.AS == 0 end,
     },
     {
         id = 'rDP',
         name = "Bleeding Hearts",
-        desc = [[HFD with the reversed "Duo" (rDP) mod]],
+        desc = [[HFD with the reversed "Duo" mod]],
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
     },
@@ -242,13 +242,13 @@ Achievements = {
     {
         id = 'swamp_water_lite',
         name = "Swamp Water Lite",
-        desc = [[HFDWU all 7/8 of the difficulty mods ("Duo" not allowed)]],
+        desc = [[HFDWUT all 7/8 of the difficulty mods ("Duo" not allowed)]],
         quote = [[Comes in 8 different flavors!]],
     },
     {
         id = 'swamp_water',
         name = "Swamp Water",
-        desc = [[HFDWU all mods other then "Duo" at the same time]],
+        desc = [[HFDWUT all mods other then "Duo" at the same time]],
         quote = [[The worst of all worlds.]],
     },
 
@@ -274,7 +274,7 @@ Achievements = {
         name = "Supercharged",
         desc = [[Highest Back-to-Back chain discovered without any mods]],
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
-        scoreSimp = function(b2b) return b2b .. "x" end,
+        scoreSimp = function(b2b) return "B2B x" .. b2b end,
         rank = numberRank(0, 20, 40, 65, 85, 100),
     },
     {
@@ -300,14 +300,14 @@ Achievements = {
         quote = [[Reaching deep down but coming back empty every time.]],
     },
 
-    -- Activity
+    -- Event
     {
         id = 'lovers_promise',
         name = "Lover's Promise",
         desc = [[Highest altitude reached with DP on day 14 of each month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
-        type = 'activity',
+        type = 'event',
     },
 
 
@@ -410,28 +410,28 @@ Achievements = {
     {
         id = 'swamp_water_pro',
         name = "Swamp Water Pro",
-        desc = [[HFDWU all mods at the same time]],
+        desc = [[HFDWUT all mods at the same time]],
         quote = [[How did you find someone as insane as you to do it together?]],
         hide = function() return STAT.maxFloor >= 9 end,
     },
     {
         id = 'swamp_water_lite_plus',
         name = "Swamp Water Lite+",
-        desc = [[HFDWU 1rev+6 mods ("Duo" not allowed)]],
+        desc = [[HFDWUT 1rev+6 mods ("Duo" not allowed)]],
         quote = [[Comes in...... 252 different flavors?]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
     {
         id = 'swamp_water_plus',
         name = "Swamp Water+",
-        desc = [[HFDWU 1rev+7 mods ("Duo" not allowed)]],
+        desc = [[HFDWUT 1rev+7 mods ("Duo" not allowed)]],
         quote = [[Less choices but still a lot to try.]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
     {
         id = 'swamp_water_pro_plus',
         name = "Swamp Water Pro+",
-        desc = [[HFDWU 1rev+8 mods]],
+        desc = [[HFDWUT 1rev+8 mods]],
         quote = [[The cup is about to overflow!]],
         hide = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
@@ -546,7 +546,7 @@ Achievements = {
         name = "Supercharged+",
         desc = [[Highest Back-to-Back chain reached]],
         quote = [[Supercharged Any%]],
-        scoreSimp = function(b2b) return b2b .. "x" end,
+        scoreSimp = function(b2b) return "B2B x" .. b2b end,
         rank = numberRank(0, 20, 40, 65, 85, 100),
     },
     {
@@ -836,7 +836,6 @@ Achievements = {
         name = "Identity",
         desc = [[Change ID or about-me]],
         quote = [[Is this free?]],
-        hide = TRUE,
         type = 'issued',
     },
     {
@@ -873,7 +872,7 @@ Achievements = {
     {
         id = 'and_then_nothing',
         name = "And Then... Nothing",
-        desc = [[Break b2b x 50 while one player is KO'd in rDP, and survived]],
+        desc = [[Break B2B x 50 while one player is KO'd in rDP, and survived]],
         quote = [[Moral of the story: NEVER exploit your partner.]],
         credit = "@GameTilDead",
         hide = function() return GAME.completion.DP == 0 end,
@@ -962,7 +961,7 @@ for i = 1, #Achievements do
 
     assert(achv.desc, "Missing field 'desc' - " .. id)
     achv.desc = achv.desc
-    :gsub("HFDWUT", "Highest floor discovered while using the")
+        :gsub("HFDWUT", "Highest floor discovered while using the")
         :gsub("HFD", "Highest floor discovered")
 
     assert(achv.quote, "Missing field 'quote' - " .. id)

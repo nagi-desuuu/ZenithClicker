@@ -14,9 +14,11 @@ local Achievements = Achievements
 ---@class AchvItem
 ---@field id string
 ---@field name string
+---@field desc string
 ---@field rank number
 ---@field progress number
 ---@field score table
+---@field hidden boolean
 
 ---@type AchvItem[]
 local achvList = {}
@@ -38,23 +40,25 @@ function scene.load()
         local rank, score, progress
         if achv.type == 'issued' then
             rank = ACHV[achv.id] and 6 or 0
-            score = ACHV[achv.id] and { COLOR.lM, "NICE!" } or ""
+            progress = 0
+            score = ACHV[achv.id] and "DONE!" or ""
         else
             rank = achv.rank(ACHV[achv.id] or achv.noScore or 0)
-            progress = rank % 1
-            score = not ACHV[achv.id] and { COLOR.L, "---" } or
-                { COLOR.L, achv.scoreSimp(ACHV[achv.id]), COLOR.DL, achv.scoreFull and
+            progress = rank == 5 and 1 or rank % 1
+            score = not ACHV[achv.id] and "---" or
+                { COLOR.LL, achv.scoreSimp(ACHV[achv.id]), COLOR.DL, achv.scoreFull and
                 "   " .. achv.scoreFull(ACHV[achv.id]) or "" }
         end
         repeat
-            local hide = achv.hide()
-            if hide and not rank then break end
+            if achv.hide() and not ACHV[achv.id] then break end
             table.insert(achvList, {
                 id = achv.id,
                 name = achv.name:upper(),
+                desc = achv.desc,
                 rank = math.floor(rank),
                 progress = progress,
                 score = score,
+                hidden = achv.hide ~= FALSE,
             })
         until true
     end
@@ -109,14 +113,45 @@ function scene.draw()
         GC.rectangle('fill', 0, 0, 600, 130)
         GC.setColor(1, 1, 1)
         GC.mDraw(TEXTURE.stat.achievement.frame[a.rank], 65, 65, 0, .42)
+        if a.progress > 0 then
+            if colorRev then GC.setColor(COLOR.lR) end
+            if a.progress < 1 then
+                GC.stc_setComp()
+                GC.stc_arc('pie', 65, 65, -2.0944, -2.0944 + (colorRev and -3.1416 or 3.1416) * a.progress, 63, 26)
+                GC.stc_arc('pie', 65, 65, 1.0472, 1.0472 + (colorRev and -3.1416 or 3.1416) * a.progress, 63, 26)
+                GC.mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 0, .42)
+                GC.mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 3.1416, .42)
+                GC.stc_stop()
+            else
+                GC.mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 0, .42)
+                GC.mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 3.1416, .42)
+            end
+        end
         FONT.set(30)
-        GC.setColor(COLOR.L)
-        GC.print(a.name, 135, 10, 0, .6)
-        GC.print(A.desc, 135, 77, 0, .5)
-        GC.setColor(1, 1, 1)
+        GC.setColor(AchvData[a.rank].fg2)
         GC.print(a.score, 135, 35, 0)
-        GC.setColor(COLOR.LD)
-        GC.print(A.quote, 135, 98, 0, .42)
+        GC.setColor(colorRev and COLOR.LR or COLOR.L)
+        GC.print(a.name, 135, 7, 0, .7)
+        if #a.desc <= 70 then
+            GC.print(a.desc, 135, 77, 0, .5)
+            GC.setColor(colorRev and COLOR.dR or COLOR.LD)
+            GC.print(A.quote, 135, 98, 0, .42)
+        else
+            GC.printf(a.desc, 135, 73, 1150, 'left', 0, .4)
+            GC.setColor(colorRev and COLOR.dR or COLOR.LD)
+            GC.print(A.quote, 135, 103, 0, .42)
+        end
+        local x = 600 - 15
+        if a.hidden then
+            GC.mDraw(TEXTURE.stat.achievement.hidden, x, 15, 0, .2)
+            x = x - 30
+        end
+        if A.type == 'competitive' then
+            GC.mDraw(TEXTURE.stat.achievement.competitive, x, 15, 0, .2)
+        elseif A.type == 'event' then
+            GC.mDraw(TEXTURE.stat.achievement.event, x, 15, 0, .2)
+        end
+
         GC.ucs_back()
     end
 

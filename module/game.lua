@@ -1238,6 +1238,7 @@ function GAME.commit()
         local attack = 3
         local xp = 0
         if dp and M.EX < 2 then attack = attack + 2 end
+        local check_achv_and_then_nothing
         if GAME.fault then
             -- Non-perfect
             if GAME.currentTask then
@@ -1252,6 +1253,7 @@ function GAME.commit()
             if GAME.chain < 4 then
                 SFX.play('clearline', .62)
             else
+                check_achv_and_then_nothing = M.DP == 2 and GAME.chain >= 50 and GAME[GAME.getLifeKey(true)] == 0
                 if GAME.currentTask then
                     if GAME.chain >= 4 and GAME.chain <= 10 and GAME.chain % 2 == 0 then
                         GAME.incrementPrompt('b2b_break_' .. GAME.chain)
@@ -1395,7 +1397,11 @@ function GAME.commit()
 
         if M.DP > 0 then
             if M.DP == 2 then
-                if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then return end
+                if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
+                    return
+                elseif check_achv_and_then_nothing then
+                    IssueAchv('and_then_nothing')
+                end
             end
             if GAME[GAME.getLifeKey(true)] == 0 then
                 xp = xp / 2
@@ -1443,7 +1449,11 @@ function GAME.commit()
             end
             GAME.questReady()
             GAME.totalQuest = GAME.totalQuest + 1
-            if GAME.totalQuest == 40 then SubmitAchv('clicker_speedrun', GAME.time) end
+            if GAME.totalQuest == 40 then
+                local noTSR
+                if GAME.comboStr == '' then noTSR = SubmitAchv('clicker_speedrun', GAME.time) end
+                SubmitAchv('typer_speedrun', GAME.time, noTSR)
+            end
         end
 
         if M.DP > 0 and (correct == 2 or dblCorrect) then
