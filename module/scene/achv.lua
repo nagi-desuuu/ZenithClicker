@@ -72,7 +72,7 @@ function scene.load()
 
     if GAME.mod.MS == 2 then TABLE.shuffle(achvList) end
 
-    maxScroll = floor((#achvList - 12) / 2) * 140
+    maxScroll = max(floor((#achvList - 12) / 2) * 140, 0)
 end
 
 function scene.mouseMove(_, _, _, dy)

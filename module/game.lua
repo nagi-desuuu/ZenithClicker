@@ -578,7 +578,6 @@ function GAME.incrementPrompt(prompt, value)
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
-                if not GAME.achv_carriedH then GAME.achv_carriedH = GAME.height end
                 GAME.achv_maxReviveH = max(GAME.achv_maxReviveH or 0, GAME.height)
             end
         end
@@ -1863,7 +1862,6 @@ function GAME.finish(reason)
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.height) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'DP' then
-            SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
             if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.height) end
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_talentlessH or GAME.height)
@@ -1874,6 +1872,7 @@ function GAME.finish(reason)
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
+            SubmitAchv('carried', GAME.achv_carriedH or GAME.height)
         end
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.height)
