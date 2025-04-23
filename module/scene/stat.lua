@@ -13,6 +13,13 @@ local textColor = { COLOR.HEX("54B06D") }
 local scoreColor = { COLOR.HEX("B0FFC0") }
 local setup = { stencil = true, card }
 
+local crProgress = {
+    f10 = 0,
+    sr = 0,
+    achvGet = 0,
+    achvAll = 0,
+}
+
 local function getF10Completion()
     local s = 0
     for i = 1, 9 do
@@ -31,6 +38,23 @@ local function getSpeedrunCompletion()
     end
     return s
 end
+local function getAchvCompletion()
+    local p, P = 0, 0
+    for i = 1, #Achievements do
+        local A = Achievements[i]
+        if A.type == 'competitive' then
+            P = P + 5
+            if ACHV[A.id] then
+                local rank = floor(A.rank(ACHV[A.id]))
+                p = p + rank
+            end
+        elseif A.type == 'issued' then
+            P = P + 1
+            if ACHV[A.id] then p = p + 1 end
+        end
+    end
+    return p, P
+end
 local function norm(x, k) return 1 + (x - 1) / (k * x + 1) end
 local function calculateRating()
     local cr = 0
@@ -42,10 +66,10 @@ local function calculateRating()
     cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
 
     -- Mod Completion (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 18, getF10Completion()), .62)
+    cr = cr + 3000 * norm(MATH.icLerp(0, 18, crProgress.f10), .62)
 
     -- Mod Speedrun (2K)
-    cr = cr + 2000 * norm(MATH.icLerp(0, 18, getSpeedrunCompletion()), .62)
+    cr = cr + 2000 * norm(MATH.icLerp(0, 18, crProgress.sr), .62)
 
     -- Zenith Points (3K)
     cr = cr + 3000 * norm(MATH.icLerp(0, 26e4, STAT.zp), 4.2)
@@ -54,7 +78,7 @@ local function calculateRating()
     cr = cr + 2000 * norm(MATH.icLerp(0, 6200, STAT.dzp), 2.6)
 
     -- TODO: Achievement (5K)
-    cr = MATH.clamp(cr * 25000 / 20000, 0, 25000)
+    cr = cr + 5000 * norm(MATH.icLerp(0, crProgress.achvAll, crProgress.achvGet), 2.6)
 
     return MATH.round(cr)
 end
@@ -274,12 +298,12 @@ function RefreshProfile()
     GC.setColor(1, 1, 1)
     local maxComp = TABLE.countAll(GAME.completion, 0) == 9 and 9 or 18
     for _, l in next, {
-        { t = { textColor, "Achievements" },                                                      x = 26,  y = 33 },
-        { t = { textColor, "1-Mod Ascent" },                                                      x = 26,  y = 58 },
-        { t = { textColor, "1-Mod Speedrun" },                                                    x = 26,  y = 83 },
-        { t = { scoreColor, "N/A" },                                                              x = 200, y = 33 },
-        { t = { scoreColor, getF10Completion() .. " / " .. maxComp },                             x = 200, y = 58 },
-        { t = { scoreColor, getSpeedrunCompletion() .. " / " .. maxComp },                        x = 200, y = 83 },
+        { t = { textColor, "1-Mod Ascent" },                                                      x = 26,  y = 33 },
+        { t = { textColor, "1-Mod Speedrun" },                                                    x = 26,  y = 58 },
+        { t = { textColor, "Achievements" },                                                      x = 26,  y = 83 },
+        { t = { scoreColor, crProgress.f10 .. " / " .. maxComp },                                 x = 200, y = 33 },
+        { t = { scoreColor, crProgress.sr .. " / " .. maxComp },                                  x = 200, y = 58 },
+        { t = { scoreColor, crProgress.achvGet .. " / " .. crProgress.achvAll },                  x = 200, y = 83 },
         { t = { textColor, "Best Altitude" },                                                     x = 300, y = 8 },
         { t = { textColor, "Best Speedrun" },                                                     x = 300, y = 33 },
         { t = { textColor, "Zenith Points" },                                                     x = 300, y = 58 },
@@ -334,6 +358,10 @@ function scene.load()
             TASK.unlock('no_back')
         end)
     end)
+
+    crProgress.f10 = getF10Completion()
+    crProgress.sr = getSpeedrunCompletion()
+    crProgress.achvGet, crProgress.achvAll = getAchvCompletion()
 
     RefreshProfile()
 end

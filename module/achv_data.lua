@@ -296,7 +296,7 @@ Achievements = {
     {
         id = 'talentless',
         name = "Talentless",
-        desc = [[HFDWUT "All-Spin" (AS) mod without using keyboard]],
+        desc = [[HFDWUT "All-Spin" mod without using keyboard]],
         quote = [[Reaching deep down but coming back empty every time.]],
     },
 
@@ -844,6 +844,7 @@ Achievements = {
         desc = [[Stay in ABOUT page for 26s]],
         quote = [[Press F2 to pay respect]],
         -- credit = "COD11",
+        type = 'issued',
     },
     {
         id = 'somersault',
@@ -866,8 +867,8 @@ Achievements = {
     --     name = "Uninspired",
     --     desc = [[Consecutively restart 100 times]],
     --     quote = [[Without the will to even begin, how will you ever improve?]],
-    --     type = 'issued',
     --     credit = "@shig @Winterfrost",
+    --     type = 'issued',
     -- },
     {
         id = 'and_then_nothing',
