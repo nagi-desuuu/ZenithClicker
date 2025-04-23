@@ -217,8 +217,9 @@ function scene.draw()
         local t = love.timer.getTime()
         local ea = (colorRev and -.5 or .5) * GAME.mod.AS ^ 2 * t
         local ka = colorRev and -3.1416 or 3.1416
+        local texture = TEXTURE.stat.achievement
         gc_translate(0, -400 - scroll1)
-        for i = 1, #achvList do
+        for i = 1 + 2 * max(floor(scroll1 / 140) - 1, 0), min(2 * (floor(scroll1 / 140) + 8), #achvList) do
             local a = achvList[i]
             local A = Achievements[a.id]
             gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
@@ -226,7 +227,7 @@ function scene.draw()
             gc_setAlpha(.626)
             gc_rectangle('fill', 0, 0, 600, 130)
             gc_setColor(1, 1, 1)
-            gc_mDraw(TEXTURE.stat.achievement.frame[a.rank], 65, 65, 0, .42)
+            gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
             if a.progress > 0 then
                 if colorRev then gc_setColor(COLOR.lR) end
                 if a.progress < 1 then
@@ -239,12 +240,12 @@ function scene.draw()
                         ea + 1.0472,
                         ea + 1.0472 + ka * a.progress,
                         63, 26)
-                    gc_mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 0, .42)
-                    gc_mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 3.1416, .42)
+                    gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
+                    gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
                     gc_stc_stop()
                 else
-                    gc_mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 0, .42)
-                    gc_mDraw(TEXTURE.stat.achievement.frame.ring, 65, 65, 3.1416, .42)
+                    gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
+                    gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
                 end
             end
             gc_setColor(AchvData[a.rank].fg2)
@@ -261,13 +262,13 @@ function scene.draw()
             gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
             local x = 600 - 15
             if a.hidden then
-                gc_mDraw(TEXTURE.stat.achievement.hidden, x, 15, 0, .2)
+                gc_mDraw(texture.hidden, x, 15, 0, .2)
                 x = x - 30
             end
             if A.type == 'competitive' then
-                gc_mDraw(TEXTURE.stat.achievement.competitive, x, 15, 0, .2)
+                gc_mDraw(texture.competitive, x, 15, 0, .2)
             elseif A.type == 'event' then
-                gc_mDraw(TEXTURE.stat.achievement.event, x, 15, 0, .2)
+                gc_mDraw(texture.event, x, 15, 0, .2)
             end
 
             gc_ucs_back()

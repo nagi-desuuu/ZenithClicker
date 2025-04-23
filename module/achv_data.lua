@@ -696,7 +696,7 @@ Achievements = {
         quote = [[Master doing everything, then master doing everything.]],
         credit = "@Flowerling",
         rank = numberRank(0, 2600, 4200, 6200, 10000, 16200),
-        scoreSimp = function(rank) return floor(rank) .. " MP·M" end,
+        scoreSimp = function(rank) return floor(rank) .. "m·MP" end,
     },
     {
         id = 'effective',
