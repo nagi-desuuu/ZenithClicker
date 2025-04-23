@@ -2,7 +2,7 @@
 local scene = {}
 
 local max, min = math.max, math.min
-local floor, sin = math.floor, math.sin
+local floor, ceil, sin = math.floor, math.ceil, math.sin
 
 local clr = {
     D = { COLOR.HEX '19311E' },
@@ -140,7 +140,7 @@ function scene.load()
 
     refreshAchvList(true)
 
-    maxScroll = max(floor((#achvList - 12) / 2) * 140, 0)
+    maxScroll = max(ceil((#achvList - 12) / 2) * 140, 0)
 end
 
 function scene.mouseMove(_, _, _, dy)
@@ -223,9 +223,12 @@ function scene.draw()
             local a = achvList[i]
             local A = Achievements[a.id]
             gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
-            gc_setColor(AchvNotice[a.id] and .26 + .2 * sin(t * 6.26) or 0, 0, 0, .5)
-            gc_setAlpha(.626)
+            gc_setColor(0, 0, 0, .626)
             gc_rectangle('fill', 0, 0, 600, 130)
+            if AchvNotice[a.id] then
+                gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + GAME.mod.VL * 4.2)))
+                gc_rectangle('fill', 0, 0, 600, 130)
+            end
             gc_setColor(1, 1, 1)
             gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
             if a.progress > 0 then

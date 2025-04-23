@@ -337,6 +337,7 @@ function IssueAchv(id, silent)
     if not A or ACHV[id] then return end
 
     ACHV[id] = 0
+    AchvNotice[id] = true
     TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
 
     if not silent then
@@ -380,16 +381,10 @@ function SubmitAchv(id, score, silent)
 end
 
 function ReleaseAchvBuffer()
+    if TASK.getLock('achv_bulk') and AchvNotice.__canClear then TABLE.clear(AchvNotice) end
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
-        if TASK.lock('achv_bulk', 1) then
-            msgTime = 6.2
-            if AchvNotice.__canClear then
-                TABLE.clear(AchvNotice)
-            end
-        else
-            msgTime = msgTime + 3.55
-        end
+        msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 3.55
         MSG(msg[1], msg[2], msgTime, true)
         if TASK.lock('achv_sfx_' .. msg[3], .26) then
             SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)
