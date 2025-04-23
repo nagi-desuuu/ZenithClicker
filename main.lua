@@ -354,11 +354,9 @@ function SubmitAchv(id, score, silent)
     local A = Achievements[id]
     if not A then return end
     local oldScore = ACHV[id] or A.noScore or 0
-    if not A.comp(score, oldScore) then return end
-
     local R0, R1 = A.rank(oldScore), A.rank(score)
-    printf("%s: %.1f(%.2f) -> %.1f(%.2f)", id, oldScore, R0, score, R1)
-    if R1 == 0 or score <= oldScore then return end
+    -- printf("%s: %.1f(%.2f) -> %.1f(%.2f)", id, oldScore, R0, score, R1)
+    if R1 == 0 or not A.comp(score, oldScore) then return end
 
     ACHV[id] = score
     TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
