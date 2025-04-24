@@ -217,7 +217,7 @@ scene.widgetList = {
                 return
             end
             TASK.unlock('export')
-            CLIPBOARD.set(STRING.packTable(STAT) .. ',' .. STRING.packTable(BEST))
+            CLIPBOARD.set(STRING.packTable(STAT) .. ',' .. STRING.packTable(BEST) .. ',' .. STRING.packTable(ACHV))
             MSG('dark', "Progress exported!")
             SFX.play('social_notify_minor')
         end,
@@ -245,15 +245,16 @@ scene.widgetList = {
                 return
             end
             TASK.unlock('import')
-            local d2 = STRING.split(data, ',')
-            local suc1, res1 = pcall(STRING.unpackTable, d2[1])
-            local suc2, res2 = pcall(STRING.unpackTable, d2[2])
-            if not suc1 or not suc2 then
+            local d3 = STRING.split(data, ',')
+            local suc1, res1 = pcall(STRING.unpackTable, d3[1])
+            local suc2, res2 = pcall(STRING.unpackTable, d3[2])
+            local suc3, res3 = pcall(STRING.unpackTable, d3[3])
+            if not suc1 or not suc2 or not suc3 then
                 MSG('dark', "Invalid data format")
                 SFX.play('staffwarning')
                 return
             end
-            STAT, BEST = res1, res2
+            STAT, BEST, ACHV = res1, res2, res3
             setmetatable(BEST.highScore, Metatable.best_highscore)
             setmetatable(BEST.speedrun, Metatable.best_speedrun)
             GAME.refreshLockState()
@@ -263,6 +264,7 @@ scene.widgetList = {
             end
             SaveStat()
             SaveBest()
+            SaveAchv()
             MSG('dark', "Progress imported!")
             SFX.play('social_notify_major')
         end,

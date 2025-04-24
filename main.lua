@@ -956,6 +956,11 @@ if BEST.version ~= oldVer then
     SaveBest()
     SaveAchv()
 end
+for k in next, ACHV do
+    if not Achievements[k] then
+        ACHV[k] = nil
+    end
+end
 
 -- Some Initialization
 for i = 1, #Cards do
