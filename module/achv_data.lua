@@ -569,7 +569,7 @@ Achievements = {
         hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
     {
-        id = 'rGVrAS',
+        id = 'rASrGV',
         name = "Whizzing Wizard",
         desc = [[HFDWUT rGV rAS mods]],
         quote = [["I felt enchanted!"  But soon after, disaster struck...]],
