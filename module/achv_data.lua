@@ -557,7 +557,7 @@ Achievements = {
         name = "Do I Have to Memorize All of Them?",
         desc = [[HFDWUT GV rDH rAS mods]],
         quote = [[Believe it or not, no.]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.AS == 0 end,
     },
     {
@@ -566,7 +566,7 @@ Achievements = {
         desc = [[HFDWUT NH DH rIN rAS mods]],
         quote = [[Sometimes, the best hiding place is in plain sight.]],
         credit = "@obsidian",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
     {
@@ -777,6 +777,7 @@ Achievements = {
     --     name = "Powerless",
     --     desc = [[HFD without building up surge]],
     --     quote = [["We have a similar goal to climb the Zenith Tower in many ways."]],
+    --     rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     --     credit = "@cmdingo",
     -- },
     {
@@ -784,7 +785,7 @@ Achievements = {
         name = "Psychokinesis",
         desc = [[HFD with 0 flip count increasing in statistics]],
         quote = [[Real magic exists!]],
-        rank = floorRank(1, 1, 1, 1, 2, 3, 4),
+        rank = floorRank(1, 1, 1, 1, 2, 3, 5),
     },
     {
         id = 'divine_rejection',
@@ -808,7 +809,7 @@ Achievements = {
         desc = [[HFD without manually commit]],
         quote = [[Good things come to those who wait.]],
         credit = "@The_111thBlitzer",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return GAME.completion.GV == 0 end,
     },
 
