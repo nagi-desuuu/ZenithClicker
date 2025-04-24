@@ -721,8 +721,7 @@ function GAME.setGigaspeedAnim(on, finish)
 end
 
 function GAME.upFloor()
-    if GAME.floor == 1 and GAME.comboStr == 'rEX' then SubmitAchv('indolency', GAME.totalAttack) end
-    if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.time) end
+    if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
     if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.floorTime) end
 
     GAME.floor = GAME.floor + 1
@@ -794,12 +793,12 @@ function GAME.upFloor()
             local _t
             if not ACHV.terminal_velocity then
                 _t = 0
-                for id in next, MD.name do if BEST.speedrun[id] then _t = _t + 1 end end
+                for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
                 if _t >= 9 then IssueAchv('terminal_velocity') end
             end
             if not ACHV.the_completionist then
                 _t = 0
-                for id in next, MD.name do if BEST.speedrun['r' .. id] then _t = _t + 1 end end
+                for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
                 if _t >= 9 then IssueAchv('the_completionist') end
             end
         end
@@ -1233,6 +1232,7 @@ function GAME.commit()
         end
 
         GAME.heal((dblCorrect and 3 or 1) * GAME.dmgHeal)
+        if MATH.between(Floors[GAME.floor].top - (GAME.height + GAME.heightBuffer), 0, 2) then GAME.addHeight(3) end
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
@@ -1851,12 +1851,11 @@ function GAME.finish(reason)
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.roundHeight)
-        SubmitAchv('sink_cost', GAME.achv_balanceH or GAME.roundHeight)
+        SubmitAchv('sunk_cost', GAME.achv_balanceH or GAME.roundHeight)
         if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.roundHeight) end
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
         -- SubmitAchv('powerless', GAME.achv_powerless2H or roundedH)
-        -- if GAME.comboStr == 'rEX' and GAME.floor == 1 then SubmitAchv('indolency', GAME.totalAttack) end
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.roundHeight) end

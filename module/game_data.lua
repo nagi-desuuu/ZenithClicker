@@ -175,10 +175,13 @@ ComboData = {
     { set = "VL rIN rDP",        name = "painful relapse",                    menu = true },
     { set = "rDH rIN",           name = "brain capacity",                     menu = true },
     { set = "EX rGV DH",         name = "demonic speed",                      menu = true },
-    { set = "rNH GV VL DH",      name = "grand-master! rounds",               menu = true },
+    { set = "rNH MS GV DP",      name = "grand-master! rounds",               menu = true },
     { set = "rNH rIN",           name = "instant memory",                     menu = true },
     { set = "EX NH rMS GV",      name = "bnuuy",                              menu = true },
     { set = "GV rDH rAS",        name = "do i have to memorize all of them?", menu = true },
+    { set = "NH DH rIN rAS",     name = "steganography",                      menu = true },
+    { set = "rGV rAS",           name = "whizzing wizard",                    menu = true },
+    { set = "DH DP",             name = "museum heist",                       menu = true },
 
     -- rDH database
     { set = 'MS IN',             name = "scrambled rainbow",                  ex = true },

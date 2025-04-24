@@ -170,6 +170,14 @@ TEXTURE = {
                 assets 'achievements/frames/issued.png',
                 ring = assets 'achievements/frames/ring-piece.png'
             },
+            wreath = {
+                assets 'achievements/wreaths/t100.png',
+                assets 'achievements/wreaths/t50.png',
+                assets 'achievements/wreaths/t25.png',
+                assets 'achievements/wreaths/t10.png',
+                assets 'achievements/wreaths/t5.png',
+                assets 'achievements/wreaths/t3.png',
+            },
             glint_1 = assets 'achievements/glint-a.png',
             glint_2 = assets 'achievements/glint-b.png',
             glint_3 = assets 'achievements/glint-c.png',
@@ -929,16 +937,20 @@ if BEST.version == 167 then
     STAT.dailyHS = nil
     BEST.version = 168
 end
-if BEST.version == 168 then
-    if ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then
-        ACHV.patience_is_a_virtue = nil
-        TASK.new(function()
-            TASK.yieldT(1)
-            MSG('achv_none', "'Patience is a Virtue' score reset due to bug fix.", 6.26)
-            SFX.play('staffwarning')
-        end)
-    end
-    BEST.version = 169
+if BEST.version == 168 or BEST.version == 169 then
+    if ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
+    ACHV.mastery = nil
+    ACHV.terminal_velocity = nil
+    ACHV.false_god = nil
+    ACHV.supremacy = nil
+    ACHV.the_completionist = nil
+    ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
+    TASK.new(function()
+        TASK.yieldT(1)
+        MSG('achv_none', "Some achievement are reset due to bug fix", 6.26)
+        SFX.play('staffwarning')
+    end)
+    BEST.version = 170
 end
 if BEST.version ~= oldVer then
     SaveStat()

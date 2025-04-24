@@ -1,6 +1,6 @@
 local floor = math.floor
 local ilLerp = MATH.ilLerp
-local function floorRank(l0, l1, l2, l3, l4, l5)
+local function floorRank(l0, l1, l2, l3, l4, l5, l6)
     local l = {
         Floors[l0 - 1].top,
         Floors[l1 - 1].top,
@@ -8,18 +8,20 @@ local function floorRank(l0, l1, l2, l3, l4, l5)
         Floors[l3 - 1].top,
         Floors[l4 - 1].top,
         Floors[l5 - 1].top,
+        l6 <= 10 and Floors[l6 - 1].top or l6,
     }
-    return function(h) return 5 * ilLerp(l, h) end
+    assert(#l == 7)
+    return function(h) return 5.9999 * ilLerp(l, h) end
 end
 local function numberRank(...)
     local l = { ... }
-    assert(#l == 6)
-    return function(s) return 5 * ilLerp(l, s) end
+    assert(#l == 7)
+    return function(s) return 5.9999 * ilLerp(l, s) end
 end
 local function numberRankRev(...)
     local l = TABLE.reverse { ... }
-    assert(#l == 6)
-    return function(s) return 5 - 5 * ilLerp(l, s) end
+    assert(#l == 7)
+    return function(s) return 5.9999 * (1 - ilLerp(l, s)) end
 end
 local function heightFloor(h)
     for i = 9, 0, -1 do
@@ -58,6 +60,7 @@ Achievements = {
         name = "The Emperor",
         desc = [[HFD with the "Expert Mode" mod]],
         quote = [[A display of power for those willing to bear its burden.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'NH',
@@ -70,6 +73,7 @@ Achievements = {
         name = "Wheel of Fortune",
         desc = [[HFD with the "Messier Garbage" mod]],
         quote = [[The only constant in life is change.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'GV',
@@ -100,6 +104,7 @@ Achievements = {
         name = "The Magician",
         desc = [[HFD with the "All-Spin" mod]],
         quote = [[Inspiration is nothing short of magic.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 7200),
     },
     {
         id = 'DP',
@@ -113,6 +118,7 @@ Achievements = {
         desc = [[HFD with the reversed "Expert Mode" mod]],
         quote = [[Fear, oppression, and limitless ambition.]],
         hide = function() return GAME.completion.EX == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
     {
         id = 'rNH',
@@ -120,6 +126,7 @@ Achievements = {
         desc = [[HFD with the reversed "No Hold" mod]],
         quote = [[A detachment from even that which is moderate.]],
         hide = function() return GAME.completion.NH == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'rMS',
@@ -127,6 +134,7 @@ Achievements = {
         desc = [[HFD with the reversed "Messier Garbage" mod]],
         quote = [[In a rigged game, your mind is the only fair advantage.]],
         hide = function() return GAME.completion.MS == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'rGV',
@@ -134,6 +142,7 @@ Achievements = {
         desc = [[HFD with the reversed "Gravity" mod]],
         quote = [[In retrospect, the ground you stood on never existed in the first place.]],
         hide = function() return GAME.completion.GV == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'rVL',
@@ -141,6 +150,7 @@ Achievements = {
         desc = [[HFD with the reversed "Volatile Garbage" mod]],
         quote = [[Strength isn't necessary for those with nothing to lose.]],
         hide = function() return GAME.completion.VL == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'rDH',
@@ -148,6 +158,7 @@ Achievements = {
         desc = [[HFD with the reversed "Double Hole" mod]],
         quote = [[No more second chances.]],
         hide = function() return GAME.completion.DH == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'rIN',
@@ -155,6 +166,7 @@ Achievements = {
         desc = [[HFD with the reversed "Invisible" mod]],
         quote = [[Never underestimate blind faith.]],
         hide = function() return GAME.completion.IN == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
     {
         id = 'rAS',
@@ -169,6 +181,7 @@ Achievements = {
         desc = [[HFD with the reversed "Duo" mod]],
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
 
     -- Mod Combo
@@ -177,36 +190,42 @@ Achievements = {
         name = "A Modern Classic",
         desc = [[HFDWUT "No Hold" and "Gravity" mods]],
         quote = [[Times were different back then...]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'DHMSNH',
         name = "Deadlock",
         desc = [[HFDWUT "No Hold", "Messier Garbage" and "Double Hole" mods]],
         quote = [["Escape has become a distant dream, yet still we struggle..."]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'ASDHMS',
         name = "The Escape Artist",
         desc = [[HFDWUT "Messier Garbage", "Double Hole" and "All-Spin" mods]],
         quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'GVIN',
         name = "The Grandmaster",
         desc = [[HFDWUT "Gravity" and "Invisible" mods]],
         quote = [[When the world descends into chaos, the grandmaster remains at peace.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'DHEXNH',
         name = "Emperor's Decadence",
         desc = [[HFDWUT "Expert Mode", "No Hold" and "Double Hole" mods]],
         quote = [[The Devil's lesson in humility.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'DHEXMSVL',
         name = "Divine Mastery",
         desc = [[HFDWUT "Expert Mode", "Messier Garbage", "Volatile Garbage" and "Double Hole" mods]],
         quote = [[The universe is yours.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'ASNH',
@@ -225,24 +244,28 @@ Achievements = {
         name = "Trained Professionals",
         desc = [[HFDWUT "Expert Mode" and "Duo" mods]],
         quote = [[Partners in expertise.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'EXMS',
         name = "Block Rationing",
         desc = [[HFDWUT "Expert Mode" and "Messier Garbage" mods]],
         quote = [[Adversity favors the resourceful.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'swamp_water_lite',
         name = "Swamp Water Lite",
         desc = [[HFDWUT all 7/8 of the difficulty mods ("Duo" not allowed)]],
         quote = [[Comes in 8 different flavors!]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'swamp_water',
         name = "Swamp Water",
         desc = [[HFDWUT all mods other than "Duo" at the same time]],
         quote = [[The worst of all worlds.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     },
 
     -- General
@@ -260,7 +283,7 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2),
+        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 62.6),
     },
     {
         id = 'supercharged',
@@ -268,7 +291,7 @@ Achievements = {
         desc = [[Highest Back-to-Back chain reached without any mods]],
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
-        rank = numberRank(0, 20, 40, 65, 85, 100),
+        rank = numberRank(0, 20, 40, 65, 85, 100, 160),
     },
     {
         id = 'the_responsible_one',
@@ -276,7 +299,7 @@ Achievements = {
         desc = [[Highest amount of revivals performed in a single duo run]],
         quote = [["Could you please stop dying?"]],
         scoreSimp = function(b2b) return b2b .. " Revives" end,
-        rank = numberRank(0, 3, 6, 9, 12, 16),
+        rank = numberRank(0, 3, 6, 9, 12, 15, 18),
     },
     {
         id = 'guardian_angel',
@@ -284,13 +307,14 @@ Achievements = {
         desc = [[Highest altitude to perform a successful revive at]],
         quote = [[An angel's intervention.]],
         scoreSimp = heightNumber,
-        rank = numberRank(0, 626, 942, 1620, 2600, 4200),
+        rank = numberRank(0, 626, 942, 1620, 2600, 4200, 6200),
     },
     {
         id = 'talentless',
         name = "Talentless",
         desc = [[HFDWUT "All-Spin" mod without using keyboard]],
         quote = [[Reaching deep down but coming back empty every time.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
 
     -- Others
@@ -323,7 +347,7 @@ Achievements = {
         name = "Blight",
         desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
-        rank = floorRank(1, 3, 5, 7, 9, 10),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
@@ -331,7 +355,7 @@ Achievements = {
         name = "Desolation",
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
-        rank = floorRank(1, 3, 5, 7, 9, 10),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
@@ -339,7 +363,7 @@ Achievements = {
         name = "Havoc",
         desc = [[HFD with 10+ mod points]],
         quote = [[The world is in chaos...]],
-        rank = floorRank(1, 3, 5, 7, 8, 9),
+        rank = floorRank(1, 3, 5, 7, 8, 9, 10),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
@@ -347,7 +371,7 @@ Achievements = {
         name = "Pandemonium",
         desc = [[HFD with 11+ mod points]],
         quote = [[Several realms began to collide...]],
-        rank = floorRank(1, 2, 4, 6, 8, 9),
+        rank = floorRank(1, 2, 4, 6, 8, 9, 10),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     {
@@ -355,7 +379,7 @@ Achievements = {
         name = "Inferno",
         desc = [[HFD with 12+ mod points]],
         quote = [[Everything is burning and melting...]],
-        rank = floorRank(1, 2, 4, 6, 7, 8),
+        rank = floorRank(1, 2, 4, 6, 7, 8, 9),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 6 end,
     },
     {
@@ -363,7 +387,7 @@ Achievements = {
         name = "Purgatory",
         desc = [[HFD with 13+ mod points]],
         quote = [[Nobody knows their destination...]],
-        rank = floorRank(1, 1, 3, 5, 6, 7),
+        rank = floorRank(1, 1, 3, 5, 6, 7, 8),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 5 end,
     },
     {
@@ -371,7 +395,7 @@ Achievements = {
         name = "Perdition",
         desc = [[HFD with 14+ mod points]],
         quote = [[There's no way back...]],
-        rank = floorRank(1, 1, 3, 4, 5, 6),
+        rank = floorRank(1, 1, 3, 4, 5, 6, 7),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 4 end,
     },
     {
@@ -379,7 +403,7 @@ Achievements = {
         name = "Cataclysm",
         desc = [[HFD with 15+ mod points]],
         quote = [[The real disaster is yet to come...]],
-        rank = floorRank(1, 1, 2, 3, 4, 5),
+        rank = floorRank(1, 1, 2, 3, 4, 5, 6),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 3 end,
     },
     {
@@ -387,7 +411,7 @@ Achievements = {
         name = "Annihilation",
         desc = [[HFD with 16+ mod points]],
         quote = [[The whole universe is trembling...]],
-        rank = floorRank(1, 1, 1, 2, 3, 4),
+        rank = floorRank(1, 1, 1, 2, 3, 4, 5),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 2 end,
     },
     {
@@ -395,7 +419,7 @@ Achievements = {
         name = "Armageddon",
         desc = [[HFD with 17+ mod points]],
         quote = [[Big crunch is about to happen...]],
-        rank = floorRank(1, 1, 1, 1, 2, 3),
+        rank = floorRank(1, 1, 1, 1, 2, 3, 4),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 1 end,
     },
     {
@@ -403,7 +427,7 @@ Achievements = {
         name = "Abyss",
         desc = [[HFD with 18 mod points]],
         quote = [[.]],
-        rank = floorRank(1, 1, 1, 1, 1, 2),
+        rank = floorRank(1, 1, 1, 1, 1, 2, 3),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
 
@@ -413,6 +437,7 @@ Achievements = {
         name = "Swamp Water Pro",
         desc = [[HFDWUT all mods at the same time]],
         quote = [[How did you find someone as insane as you to do it together?]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return STAT.maxFloor >= 9 end,
     },
     {
@@ -420,6 +445,7 @@ Achievements = {
         name = "Swamp Water Lite+",
         desc = [[HFDWUT 1rev+6 mods ("Duo" not allowed)]],
         quote = [[Comes in...... 252 different flavors?]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     {
@@ -427,6 +453,7 @@ Achievements = {
         name = "Swamp Water+",
         desc = [[HFDWUT 1rev+7 mods ("Duo" not allowed)]],
         quote = [[Less choices but still a lot to try.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     {
@@ -434,6 +461,7 @@ Achievements = {
         name = "Swamp Water Pro+",
         desc = [[HFDWUT 1rev+8 mods]],
         quote = [[The cup is about to overflow!]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
 
@@ -451,6 +479,7 @@ Achievements = {
         desc = [[HFDWUT rNH rGV rVL mods]],
         quote = [[Carefree life is not for the asking, someone else is carrying the burden for you.]],
         credit = "@obsidian",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return GAME.completion.NH == 0 or GAME.completion.GV == 0 or GAME.completion.VL == 0 end,
     },
     {
@@ -459,6 +488,7 @@ Achievements = {
         desc = [[HFDWUT NH rAS mods]],
         quote = [[The pearl of your gameplay requires perfection for a clean finish.]],
         credit = "@GameTilDead",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.AS == 0 end,
     },
     {
@@ -466,7 +496,7 @@ Achievements = {
         name = "Tyrannical Dyarchy",
         desc = [[HFDWUT rEX rDP mods]],
         quote = [[Live in fear and despair.]],
-        rank = floorRank(1, 2, 4, 6, 7, 8),
+        rank = floorRank(1, 2, 3, 4, 6, 7, 8),
         hide = function() return GAME.completion.EX == 0 or GAME.completion.DP == 0 end,
     },
     {
@@ -475,7 +505,7 @@ Achievements = {
         desc = [[HFDWUT VL rIN rDP mods]],
         quote = [["I miss my ex..."]],
         credit = "@obsidian",
-        rank = floorRank(1, 2, 4, 5, 6, 7),
+        rank = floorRank(1, 2, 3, 4, 5, 6, 7),
         hide = function() return GAME.completion.IN == 0 or GAME.completion.DP == 0 end,
     },
     {
@@ -484,7 +514,7 @@ Achievements = {
         desc = [[HFDWUT rDH rIN mods]],
         quote = [[How long can you keep up in this forsaken memory game?]],
         credit = "@GameTilDead",
-        rank = floorRank(1, 1, 2, 3, 4, 5),
+        rank = floorRank(1, 1, 2, 3, 4, 5, 6),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
     },
     {
@@ -493,14 +523,16 @@ Achievements = {
         desc = [[HFDWUT EX rGV DH mods]],
         quote = [[Prove your hellish capabilities to the world.]],
         credit = "@GameTilDead",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
         hide = function() return GAME.completion.GV == 0 end,
     },
     {
-        id = 'DHGVVLrNH',
+        id = 'DPGVMSrNH',
         name = "Grand-Master! Rounds",
-        desc = [[HFDWUT rNH GV VL DH mods]],
+        desc = [[HFDWUT rNH MS GV DP mods]],
         quote = [[YOUR AER: GRAND-MASTER! Rounds]],
         -- credit = "TGM4",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.NH == 0 end,
     },
     {
@@ -508,6 +540,7 @@ Achievements = {
         name = "Instant Memory",
         desc = [[HFDWUT rNH rIN mods]],
         quote = [[In the twinkling of a eye.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.NH == 0 or GAME.completion.IN == 0 end,
     },
     {
@@ -516,6 +549,7 @@ Achievements = {
         desc = [[HFDWUT EX NH rMS GV mods]],
         quote = [[Look at them hopping around! Too bad they don't want to be picked up...]],
         credit = "@GameTilDead",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.MS == 0 end,
     },
     {
@@ -523,6 +557,7 @@ Achievements = {
         name = "Do I Have to Memorize All of Them?",
         desc = [[HFDWUT GV rDH rAS mods]],
         quote = [[Believe it or not, no.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.AS == 0 end,
     },
     {
@@ -531,6 +566,7 @@ Achievements = {
         desc = [[HFDWUT NH DH rIN rAS mods]],
         quote = [[Sometimes, the best hiding place is in plain sight.]],
         credit = "@obsidian",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
     {
@@ -539,6 +575,7 @@ Achievements = {
         desc = [[HFDWUT rGV rAS mods]],
         quote = [["I felt enchanted!"  But soon after, disaster struck...]],
         credit = "@GameTilDead",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.GV == 0 or GAME.completion.AS == 0 end,
     },
 
@@ -549,7 +586,7 @@ Achievements = {
         desc = [[Highest Back-to-Back chain reached]],
         quote = [[Supercharged Any%]],
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
-        rank = numberRank(0, 20, 40, 65, 85, 100),
+        rank = numberRank(0, 20, 40, 65, 85, 100, 180),
     },
     {
         id = 'clicker_speedrun',
@@ -559,7 +596,7 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(94.2, 72, 55, 42, 33, 26),
+        rank = numberRankRev(94.2, 72, 55, 42, 33, 26, 20),
     },
     {
         id = 'typer_speedrun',
@@ -569,7 +606,7 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(72, 55, 42, 33, 26, 22),
+        rank = numberRankRev(72, 55, 42, 33, 26, 22, 19),
     },
     {
         id = 'perfect_speedrun',
@@ -579,13 +616,14 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(150, 115, 90, 70, 55, 45),
+        rank = numberRankRev(150, 115, 90, 70, 55, 45, 40),
     },
     {
         id = 'the_perfectionist',
         name = "The Perfectionist",
         desc = [[HFD with no imperfect pass or getting hurt]],
         quote = [[Supercharged Perf%]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'museum_heist',
@@ -595,7 +633,7 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(35, 26, 20, 12, 6.2, 2.6),
+        rank = numberRankRev(35, 26, 20, 12, 6.2, 4.2, 2.6),
     },
     {
         id = 'ultra_dash',
@@ -605,7 +643,7 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(62, 26, 16, 12, 6.2, 4.2),
+        rank = numberRankRev(62, 26, 16, 12, 6.2, 4.2, 2.6),
     },
 
     -- Others
@@ -614,6 +652,7 @@ Achievements = {
         name = "Zenith Explorer+",
         desc = [[HFD]],
         quote = [[Uncover the mysteries of the Zenith Tower.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 8000),
     },
     {
         id = 'zenith_speedrun_plus',
@@ -623,7 +662,7 @@ Achievements = {
         comp = '<',
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2),
+        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 56.7),
     },
     {
         id = 'zenith_challenger',
@@ -631,7 +670,7 @@ Achievements = {
         desc = [[Total best altitude with 1 mod enabled]],
         quote = [[Challenge the reality of the Zenith Tower.]],
         credit = "@5han",
-        rank = numberRank(0, 14000, 26000, 36000, 42000, 46000),
+        rank = numberRank(0, 14000, 26000, 36000, 42000, 46000, 60000),
         scoreSimp = function(h) return string.format("%.0fm", h) end,
     },
     {
@@ -639,26 +678,17 @@ Achievements = {
         name = "Divine Challenger",
         desc = [[Total best altitude with 1 rev mod enabled]],
         quote = [[Expose the darkness of the Zenith Tower.]],
-        rank = numberRank(0, 10000, 16000, 20000, 24000, 26000),
+        rank = numberRank(0, 10000, 16000, 20000, 24000, 26000, 30000),
         scoreSimp = function(h) return string.format("%.0fm", h) end,
         hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
-    -- {
-    --     id = 'indolency',
-    --     name = "Indolency",
-    --     desc = [[Highest attack total in F1 with rEX]],
-    --     quote = [[Those glorious laurels, allowing you to stay where it's comfortable.]],
-    --     credit = "@Flowerling",
-    --     hide = function() return GAME.completion.EX == 0 end,
-    --     rank = numberRank(0, 62, 90, 126, 162, 260),
-    -- },
     {
         id = 'fel_magic',
         name = "Fel Magic",
         desc = [[Quest passed with wound triggered during GIGASPEED, with rAS]],
         quote = [["And what, Gul'dan, must we give it return?"]],
         -- credit = "WoW",
-        rank = numberRank(0, 6, 15, 26, 38, 62),
+        rank = numberRank(0, 6, 15, 26, 42, 62, 100),
         scoreSimp = function(rank) return floor(rank) .. " Quests" end,
         hide = function() return GAME.completion.AS == 0 end,
     },
@@ -667,6 +697,10 @@ Achievements = {
     --     name = "The Pacifist",
     --     desc = [[Minimum attack before reaching F10]],
     --     quote = [[Give evil nothing to oppose and it will disappear by itself.]],
+    --     rank = numberRankRev(2600,600,550,500,470,440,420,400),
+    --     scoreSimp = function(atk) return atk .. " Attack" end,
+    --     comp = '<',
+    --     noScore = 2600,
     --     credit = "@wah",
     -- },
     {
@@ -675,7 +709,7 @@ Achievements = {
         desc = [[Highest altitude*modPoints]],
         quote = [[Master doing everything, then master doing everything.]],
         credit = "@Flowerling",
-        rank = numberRank(0, 2600, 4200, 6200, 10000, 16200),
+        rank = numberRank(0, 2600, 4200, 6200, 10000, 16200, 26000),
         scoreSimp = function(rank) return floor(rank) .. "m·MP" end,
     },
     {
@@ -683,7 +717,7 @@ Achievements = {
         name = "Effective",
         desc = [[Highest altitude*ZPmul]],
         quote = [[Master doing everything efficiently.]],
-        rank = numberRank(0, 2600, 4200, 6200, 10000, 16200),
+        rank = numberRank(0, 2600, 4200, 6200, 10000, 12600, 16200),
         scoreSimp = function(rank) return floor(rank) .. " ZP" end,
     },
     {
@@ -691,20 +725,22 @@ Achievements = {
         name = "TeraSpeed",
         desc = [[Highest rank reached]],
         quote = [[Speed is the key.]],
-        rank = numberRank(13, 13, 13, 13, 15, 16),
+        rank = numberRank(13, 14, 15, 16, 17, 18, 20),
         scoreSimp = function(rank) return "Rank " .. rank end,
     },
     {
-        id = 'sink_cost',
-        name = "Sink Cost",
+        id = 'sunk_cost',
+        name = "Sunk Cost",
         desc = [[HFD without losing rank]],
         quote = [["Cross the line, and the descent begins."]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'knife_edge',
         name = "Knife-edge",
         desc = [[HFD without losing rank, with at least EX]],
         quote = [[A delicate dance on the cutting edge.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
     {
         id = 'carried',
@@ -712,6 +748,7 @@ Achievements = {
         desc = [[HFD with only one player passing quests, with at least DP]],
         quote = [["I have no idea how to play the game, can you unlock the mods for me?"]],
         credit = "@obsidian",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
     -- {
     --     id = 'honeymoon',
@@ -731,7 +768,8 @@ Achievements = {
         id = 'arrogance',
         name = "Arrogance",
         desc = [[HFD with rAS and no perfect pass]],
-        quote = [[Maintaining arrogance at all times is also not easy.]],
+        quote = [[Maintaining arrogance constantly is also not easy.]],
+        rank = floorRank(1, 1, 1, 1, 2, 3, 4),
         hide = function() return GAME.completion.AS == 0 end,
     },
     -- {
@@ -746,14 +784,14 @@ Achievements = {
         name = "Psychokinesis",
         desc = [[HFD with 0 flip count increasing in statistics]],
         quote = [[Real magic exists!]],
-        rank = floorRank(1, 1, 1, 1, 2, 3),
+        rank = floorRank(1, 1, 1, 1, 2, 3, 4),
     },
     {
         id = 'divine_rejection',
         name = "Divine Rejection",
         desc = [[Finish the run exactly before F10]],
         quote = [["And in the end, it doesn't even matter..."]],
-        rank = numberRank(1626, 1626, 1626, 1626, 1645, 1649),
+        rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
     },
     -- {
     --     id = 'moon_struck',
@@ -770,6 +808,7 @@ Achievements = {
         desc = [[HFD without manually commit]],
         quote = [[Good things come to those who wait.]],
         credit = "@The_111thBlitzer",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.GV == 0 end,
     },
 
@@ -952,7 +991,7 @@ local compFunc = {
     ['>'] = function(a, b) return a - b > 1e-10 end,
     ['<'] = function(a, b) return b - a > 1e-10 end,
 }
-local defaultFloorRank = floorRank(1, 3, 5, 7, 9, 10)
+local defaultFloorRank = floorRank(1, 3, 5, 7, 9, 10, 6200)
 
 for i = 1, #Achievements do
     local achv = Achievements[i]

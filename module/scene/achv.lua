@@ -13,6 +13,7 @@ local clr = {
 local colorRev = false
 
 local Achievements = Achievements
+local M = GAME.mod
 
 ---@class AchvItem
 ---@field id string
@@ -64,7 +65,7 @@ local function refreshAchvList(canShuffle)
         until true
     end
 
-    if GAME.mod.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
+    if M.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
 end
 
 local function submit(id, score)
@@ -87,12 +88,12 @@ local function refreshAchivement()
     local _t
     if not ACHV.terminal_velocity then
         _t = 0
-        for id in next, MD.name do if BEST.speedrun[id] then _t = _t + 1 end end
+        for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
         if _t >= 9 then IssueAchv('terminal_velocity') end
     end
     if not ACHV.the_completionist then
         _t = 0
-        for id in next, MD.name do if BEST.speedrun['r' .. id] then _t = _t + 1 end end
+        for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
         if _t >= 9 then IssueAchv('the_completionist') end
     end
     if not ACHV.mastery then
@@ -215,7 +216,7 @@ function scene.draw()
 
         -- Achievements
         local t = love.timer.getTime()
-        local ea = (colorRev and -.5 or .5) * GAME.mod.AS ^ 2 * t
+        local ea = (colorRev and -.5 or .5) * M.AS ^ 2 * t
         local ka = colorRev and -3.1416 or 3.1416
         local texture = TEXTURE.stat.achievement
         gc_translate(0, -400 - scroll1)
@@ -223,14 +224,18 @@ function scene.draw()
             local a = achvList[i]
             local A = Achievements[a.id]
             gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
+            -- Bottom
             gc_setColor(0, 0, 0, .626)
             gc_rectangle('fill', 0, 0, 600, 130)
+            -- Flash Notice
             if AchvNotice[a.id] then
-                gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + GAME.mod.VL * 4.2)))
+                gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + M.VL * 4.2)))
                 gc_rectangle('fill', 0, 0, 600, 130)
             end
+            -- Badge
             gc_setColor(1, 1, 1)
             gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
+            -- Progress
             if a.progress > 0 then
                 if colorRev then gc_setColor(COLOR.lR) end
                 if a.progress < 1 then
@@ -248,6 +253,7 @@ function scene.draw()
                 gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
                 gc_stc_stop()
             end
+            -- Glint
             if a.rank >= 1 then
                 gc_setBlendMode('add', 'alphamultiply')
                 gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.1))
@@ -257,6 +263,11 @@ function scene.draw()
                 gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
                 gc_mDraw(texture.glint_3, 65, 65, 0, .42)
                 gc_setBlendMode('alpha')
+                -- Wreath
+                if a.rank == 5 then
+                    gc_setColor(1, 1, 1)
+                    gc_mDraw(texture.wreath[floor(MATH.clampInterpolate(.166, 1, .999, 6, a.progress))], 65, 65, 0, .42)
+                end
             end
 
             gc_setColor(AchvData[a.rank].fg2)
@@ -282,9 +293,9 @@ function scene.draw()
                 gc_mDraw(texture.event, x, 15, 0, .2)
             end
 
-            if GAME.mod.IN > 0 and a.hidden then
+            if M.IN > 0 and a.hidden then
                 gc_setColor(clr.D)
-                gc_setAlpha(GAME.mod.IN * (.3 + .1 * sin(i * .626 - t * 1.626)))
+                gc_setAlpha(M.IN * (.3 + .1 * sin(i * .626 - t * 1.626)))
                 gc_rectangle('fill', 0, 0, 600, 130)
             end
 
