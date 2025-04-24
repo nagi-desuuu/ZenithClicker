@@ -181,7 +181,7 @@ Achievements = {
         desc = [[HFD with the reversed "Duo" mod]],
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     },
 
     -- Mod Combo
@@ -197,7 +197,7 @@ Achievements = {
         name = "Deadlock",
         desc = [[HFDWUT "No Hold", "Messier Garbage" and "Double Hole" mods]],
         quote = [["Escape has become a distant dream, yet still we struggle..."]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'ASDHMS',
@@ -211,7 +211,6 @@ Achievements = {
         name = "The Grandmaster",
         desc = [[HFDWUT "Gravity" and "Invisible" mods]],
         quote = [[When the world descends into chaos, the grandmaster remains at peace.]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
         id = 'DHEXNH',
