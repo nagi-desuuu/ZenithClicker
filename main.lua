@@ -392,7 +392,7 @@ function ReleaseAchvBuffer()
     if TASK.getLock('achv_bulk') and AchvNotice.__canClear then TABLE.clear(AchvNotice) end
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
-        msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 3.55
+        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 1
         MSG(msg[1], msg[2], msgTime, true)
         if TASK.lock('achv_sfx_' .. msg[3], .26) then
             SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)
