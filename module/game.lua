@@ -66,7 +66,7 @@ local ins, rem = table.insert, table.remove
 ---@field gigaspeedEntered false | number
 ---@field atkBuffer number
 ---@field atkBufferCap number
----@field shuffleReady number | false
+---@field shuffleMessiness number | false
 ---
 ---@field gravDelay false | number
 ---@field gravTimer false | number
@@ -414,29 +414,35 @@ function GAME.sortCards()
     table.sort(CD, function(a, b) return a.initOrder < b.initOrder end)
 end
 
-function GAME.shuffleCards(maxDist)
+function GAME.weakShuffleCards(phase)
+    local sets =
+        phase % 2 == 0 and { { 1, 2, 3 }, { 5, 6, 7 } } or
+        phase % 2 == 1 and { { 3, 4, 5 }, { 7, 8, 9 } } or NONE
+
+    for i = 1, #sets do
+        local a, b = TABLE.popRandom(sets[i]), TABLE.popRandom(sets[i])
+        CD[a].tempOrder, CD[b].tempOrder = CD[b].tempOrder, CD[a].tempOrder
+    end
+    table.sort(CD, function(a, b) return a.tempOrder < b.tempOrder end)
+    GAME.refreshLayout()
+end
+
+function GAME.shuffleCards(messiness)
     local order = {}
     for i = 1, #CD do order[i] = i end
 
-    local r = {}
-    for i = 1, #CD - 1 do r[i] = i end
-    TABLE.shuffle(r)
-
-    for _, p in next, r do
-        order[p], order[p + 1] = order[p + 1], order[p]
-        local illegal
-        for j = 1, #order do
-            if abs(order[j] - j) > maxDist then
-                illegal = true
-                break
-            end
-        end
-        if illegal then
+    repeat
+        for _ = 1, 3 do
+            local p = rnd(#CD - 1)
             order[p], order[p + 1] = order[p + 1], order[p]
         end
-    end
 
-    for i = 1, #order do CD[i].tempOrder = order[i] end
+        local totalDist = 0
+        for i = 1, #order do
+            CD[i].tempOrder = order[i]
+            totalDist = totalDist + min(abs(order[i] - CD[i].initOrder), 2.6)
+        end
+    until totalDist >= messiness
     table.sort(CD, function(a, b) return a.tempOrder < b.tempOrder end)
 
     GAME.refreshLayout()
@@ -727,12 +733,12 @@ function GAME.upFloor()
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
     if GAME.floor > 1 then
-        if M.MS == 1 and Floors[GAME.floor].MSshuffle then
-            GAME.shuffleReady = 1
+        if M.MS == 1 then
+            GAME.shuffleMessiness = Floors[GAME.floor].MSshuffle or false
         elseif M.MS == 2 then
-            GAME.shuffleReady = ceil(GAME.floor / 2)
+            GAME.shuffleMessiness = GAME.floor * 2.6
         end
-        if GAME.shuffleReady then
+        if GAME.shuffleMessiness then
             SFX.play('rsg_go', 1, 0, 2 + M.GV)
             for _, C in ipairs(CD) do
                 C:shake()
@@ -1462,9 +1468,14 @@ function GAME.commit()
             end
         end
 
-        if GAME.shuffleReady then
-            GAME.shuffleCards(GAME.shuffleReady)
-            GAME.shuffleReady = false
+        if GAME.shuffleMessiness then
+            GAME.sortCards()
+            if M.MS == 1 then
+                GAME.weakShuffleCards(GAME.shuffleMessiness)
+            elseif M.MS == 2 then
+                GAME.shuffleCards(GAME.shuffleMessiness)
+            end
+            GAME.shuffleMessiness = false
         end
 
         return true
@@ -1499,7 +1510,10 @@ function GAME.commit()
 end
 
 local function task_startSpin()
-    for _, C in ipairs(CD) do if C.active then C:setActive(true) end end
+    for _, C in ipairs(CD) do
+        C.tempOrder = C.initOrder
+        if C.active then C:setActive(true) end
+    end
     for _, C in ipairs(CD) do
         C.lock = false
         if M.MS == 0 then
@@ -1511,8 +1525,10 @@ local function task_startSpin()
             TASK.yieldT(.01)
         end
     end
-    if M.MS > 0 then
-        GAME.shuffleCards(M.MS)
+    if M.MS == 1 then
+        GAME.weakShuffleCards(0)
+    elseif M.MS == 2 then
+        GAME.shuffleCards(2.6)
     end
 end
 function GAME.start()
@@ -1586,7 +1602,7 @@ function GAME.start()
     GAME.gigaspeedEntered = false
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
-    GAME.shuffleReady = false
+    GAME.shuffleMessiness = false
 
     -- rDP
     GAME.onAlly = false

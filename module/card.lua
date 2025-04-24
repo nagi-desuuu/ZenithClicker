@@ -16,7 +16,7 @@ function Card.new(d)
     ---@class Card
     local obj = setmetatable({
         initOrder = d.initOrder,
-        tempOrder = d.tempOrder,
+        tempOrder = d.initOrder,
         id = d.id,
         lockfull = d.lockfull,
 
