@@ -2028,7 +2028,7 @@ function GAME.update(dt)
                     Floors[GAME.floor - 1].top
                 )
             end
-            GAME.roundHeight = MATH.roundUnit(GAME.height, .01)
+            GAME.roundHeight = ceil(GAME.height * 100) / 100
 
             if GAME.height >= Floors[GAME.floor].top then
                 GAME.upFloor()
