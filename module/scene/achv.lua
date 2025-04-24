@@ -68,15 +68,15 @@ local function refreshAchvList(canShuffle)
     if M.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
 end
 
-local function submit(id, score)
-    if SubmitAchv(id, score) then TASK.yieldT(0.1) end
+local function submit(id, score, silent)
+    if SubmitAchv(id, score, silent) then TASK.yieldT(0.1) end
 end
 local function refreshAchivement()
     local MD = ModData
     for k, v in next, BEST.highScore do
         submit(k, v)
         local mp = #k / 2 + STRING.count(k, 'r') / 2
-        if mp >= 8 then submit(RevSwampName[mp]:sub(2, -2):lower(), v) end
+        if mp >= 8 then for m = mp, 8, -1 do submit(RevSwampName[m]:sub(2, -2):lower(), v) end end
     end
     submit('zenith_explorer', BEST.highScore[''] or 0)
     submit('zenith_speedrun', BEST.speedrun[''] or 2600)
