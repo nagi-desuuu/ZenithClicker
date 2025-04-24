@@ -414,10 +414,21 @@ function GAME.sortCards()
     table.sort(CD, function(a, b) return a.initOrder < b.initOrder end)
 end
 
+local shuffleSets = {
+    [0] = { { 2, 3 }, { 4, 5 }, { 5, 6 }, { 7, 8 }, pop = 3 },
+    { { 1, 2 },    { 3, 4 },    { 6, 7 },    { 8, 9 },    pop = 2 },
+    { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, pop = 1 },
+    { { 1, 3 },    { 2, 4 },    { 6, 8 },    { 7, 9 },    pop = 1 },
+    { { 1, 2, 3 }, { 5, 6, 7 }, { 3, 4, 5 }, { 7, 8, 9 }, pop = 0 },
+}
 function GAME.weakShuffleCards(phase)
-    local sets =
-        phase % 2 == 0 and { { 1, 2, 3 }, { 5, 6, 7 } } or
-        phase % 2 == 1 and { { 3, 4, 5 }, { 7, 8, 9 } } or NONE
+    GAME.sortCards()
+    for _, C in ipairs(CD) do C.tempOrder = C.initOrder end
+
+    local sets = TABLE.copyAll(shuffleSets[phase] or shuffleSets[4])
+    for _ = 1, sets.pop do
+        TABLE.popRandom(sets)
+    end
 
     for i = 1, #sets do
         local a, b = TABLE.popRandom(sets[i]), TABLE.popRandom(sets[i])

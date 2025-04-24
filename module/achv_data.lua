@@ -744,7 +744,7 @@ Achievements = {
     {
         id = 'carried',
         name = "Carried",
-        desc = [[HFD with only one player passing quests, with at least DP]],
+        desc = [[HFD with only one player alive, with at least DP]],
         quote = [["I have no idea how to play the game, can you unlock the mods for me?"]],
         credit = "@obsidian",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
