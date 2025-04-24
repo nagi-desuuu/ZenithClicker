@@ -655,7 +655,65 @@ function scene.draw()
             gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))
             gc_draw(TEXTS.mpPreview, 1370, 235, 0, 1, 1, TEXTS.mpPreview:getWidth())
         end
-    elseif GAME.chain >= 4 then
+    end
+
+    --- Result
+    if GAME.uiHide < 1 then
+        gc_replaceTransform(SCR.xOy_u)
+        gc_translate(0, -3.2 * GAME.uiHide * 70)
+        gc_setColor(1, 1, 1)
+        gc_draw(GAME.resIB, 400, 150, 0, .9)
+        gc_setColor(COLOR.D)
+        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
+        gc_mDraw(TEXTS.endFloor, 0, 204)
+        gc_mDraw(TEXTS.zpChange, 220, 95, 0, .626)
+        gc_draw(TEXTS.endResult, -541, 80, 0, .626)
+        gc_setColor(COLOR.L)
+        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
+        gc_mDraw(TEXTS.endFloor, 0, 201)
+        gc_draw(TEXTS.endResult, -540, 78, 0, .626)
+        gc_setColor(COLOR.dL)
+        gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
+    end
+
+    -- Daily Challenge Timer
+    if not GAME.playing then
+        gc_replaceTransform(SCR.xOy_ur)
+        gc_setColor(TextColor)
+        gc_mDraw(TEXTS.dcBest, -200, 100, nil, .626)
+        gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
+        if DailyActived then
+            gc_setAlpha(.42 + .1 * sin(t * 6.2))
+            gc_mRect('fill', -200, 126, 200, 80, 40)
+        end
+    end
+end
+
+local questStyle = {
+    { k = 1.4, y = 175 },
+    { k = 1.1, y = 95 },
+    { k = 0.9, y = 30 },
+}
+local questStyleDP = {
+    { k = 1.4, y = 175 },
+    { k = 1.4, y = 90 },
+    { k = 0.7, y = 25 },
+}
+function scene.overDraw()
+    local t = love.timer.getTime()
+    if GAME.zenithTraveler then return end
+
+    gc_translate(0, DeckPress)
+
+    -- Current combo
+    if not GAME.playing or M.IN < 2 then
+        gc_setColor(TextColor)
+        if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
+        local k = min(1, 760 / TEXTS.mod:getWidth())
+        gc_mDraw(TEXTS.mod, 800, 396, 0, k)
+    end
+
+    if GAME.playing and GAME.chain >= 4 then
         -- Chain Counter
         local c = GAME.chain
         local _t = GAME.questTime
@@ -720,62 +778,6 @@ function scene.draw()
             gc_draw(chain, 326, 268, 0, k * bk)
         end
     end
-
-    --- Result
-    if GAME.uiHide < 1 then
-        gc_replaceTransform(SCR.xOy_u)
-        gc_translate(0, -3.2 * GAME.uiHide * 70)
-        gc_setColor(1, 1, 1)
-        gc_draw(GAME.resIB, 400, 150, 0, .9)
-        gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
-        gc_mDraw(TEXTS.endFloor, 0, 204)
-        gc_mDraw(TEXTS.zpChange, 220, 95, 0, .626)
-        gc_draw(TEXTS.endResult, -541, 80, 0, .626)
-        gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
-        gc_mDraw(TEXTS.endFloor, 0, 201)
-        gc_draw(TEXTS.endResult, -540, 78, 0, .626)
-        gc_setColor(COLOR.dL)
-        gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
-    end
-
-    -- Daily Challenge Timer
-    if not GAME.playing then
-        gc_replaceTransform(SCR.xOy_ur)
-        gc_setColor(TextColor)
-        gc_mDraw(TEXTS.dcBest, -200, 100, nil, .626)
-        gc_mDraw(TEXTS.dcTimer, -200, 152, nil, .626)
-        if DailyActived then
-            gc_setAlpha(.42 + .1 * sin(t * 6.2))
-            gc_mRect('fill', -200, 126, 200, 80, 40)
-        end
-    end
-end
-
-local questStyle = {
-    { k = 1.4, y = 175 },
-    { k = 1.1, y = 95 },
-    { k = 0.9, y = 30 },
-}
-local questStyleDP = {
-    { k = 1.4, y = 175 },
-    { k = 1.4, y = 90 },
-    { k = 0.7, y = 25 },
-}
-function scene.overDraw()
-    local t = love.timer.getTime()
-    if GAME.zenithTraveler then return end
-
-    -- Current combo
-    if M.IN < 2 or not GAME.playing then
-        gc_setColor(TextColor)
-        if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
-        local k = min(1, 760 / TEXTS.mod:getWidth())
-        gc_mDraw(TEXTS.mod, 800, 396 + DeckPress, 0, k)
-    end
-
-    gc_translate(0, DeckPress)
 
     -- Glow
     for i = 1, #ImpactGlow do
