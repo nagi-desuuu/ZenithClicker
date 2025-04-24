@@ -265,8 +265,11 @@ function scene.draw()
                 gc_setBlendMode('alpha')
                 -- Wreath
                 if a.rank == 5 then
-                    gc_setColor(1, 1, 1)
-                    gc_mDraw(texture.wreath[floor(MATH.clampInterpolate(.166, 1, .999, 6, a.progress))], 65, 65, 0, .42)
+                    local wreathLevel = floor(MATH.clampInterpolate(0, 0, .999, 6, a.progress))
+                    if wreathLevel > 0 then
+                        gc_setColor(1, 1, 1)
+                        gc_mDraw(texture.wreath[wreathLevel], 65, 65, 0, .42)
+                    end
                 end
             end
 
