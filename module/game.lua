@@ -1684,7 +1684,6 @@ function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help2:setVisible(not GAME.zenithTraveler)
     SCN.scenes.tower.widgetList.daily:setVisible(not GAME.zenithTraveler)
     MSG.clear()
-    if GAME.time >= 26 and AchvNotice.__canClear then TABLE.clear(AchvNotice) end
 
     SFX.play(
         reason == 'forfeit' and 'detonated' or

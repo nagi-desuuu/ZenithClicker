@@ -32,6 +32,7 @@ local maxScroll = 0
 local tempText = GC.newText(FONT.get(30))
 local timer = 0
 local whenItsReady = false
+local clearNotice
 
 local function refreshAchvList(canShuffle)
     TABLE.clear(achvList)
@@ -142,6 +143,13 @@ function scene.load()
     refreshAchvList(true)
 
     maxScroll = max(ceil((#achvList - 12) / 2) * 140, 0)
+    clearNotice = false
+end
+
+function scene.unload()
+    if clearNotice then
+        TABLE.clear(AchvNotice)
+    end
 end
 
 function scene.mouseMove(_, _, _, dy)
@@ -172,7 +180,7 @@ function scene.update(dt)
     if timer < 2.6 then
         timer = timer + dt
         if timer > 2.6 then
-            AchvNotice.__canClear = true
+            clearNotice = true
             timer = 0
         end
     end
