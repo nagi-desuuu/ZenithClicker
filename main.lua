@@ -389,7 +389,6 @@ function SubmitAchv(id, score, silent)
 end
 
 function ReleaseAchvBuffer()
-    if TASK.getLock('achv_bulk') and AchvNotice.__canClear then TABLE.clear(AchvNotice) end
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
         msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 1
