@@ -146,12 +146,12 @@ end
 
 function scene.mouseMove(_, _, _, dy)
     if love.mouse.isDown(1, 2) then
-        scroll = MATH.clamp(scroll - dy * 1.626, 0, maxScroll)
+        scroll = MATH.clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
     end
 end
 
 function scene.touchMove(_, _, _, dy)
-    scroll = MATH.clamp(scroll - dy * 1.626, 0, maxScroll)
+    scroll = MATH.clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
 end
 
 function scene.keyDown(key, isRep)
@@ -165,7 +165,7 @@ function scene.keyDown(key, isRep)
 end
 
 function scene.wheelMove(_, dy)
-    scroll = MATH.clamp(scroll - dy * 260, 0, maxScroll)
+    scroll = MATH.clamp(scroll - dy * 100 * (1 + M.VL), 0, maxScroll)
 end
 
 function scene.update(dt)
@@ -295,7 +295,7 @@ function scene.draw()
 
             if M.IN > 0 and a.hidden then
                 gc_setColor(clr.D)
-                gc_setAlpha(M.IN * (.3 + .1 * sin(ceil(i/2) * 1.2 - t * 2.6)))
+                gc_setAlpha(M.IN * (.3 + .1 * sin(ceil(i / 2) * 1.2 - t * 2.6)))
                 gc_rectangle('fill', 0, 0, 600, 130)
             end
 
