@@ -938,7 +938,7 @@ if BEST.version == 167 then
     BEST.version = 168
 end
 if BEST.version == 168 or BEST.version == 169 then
-    if ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
+    if ACHV.patience_is_a_virtue and ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
     ACHV.mastery = nil
     ACHV.terminal_velocity = nil
     ACHV.false_god = nil
