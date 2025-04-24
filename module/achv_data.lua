@@ -290,7 +290,7 @@ Achievements = {
         desc = [[Highest Back-to-Back chain reached without any mods]],
         quote = [["With this divine power, we'll be unstoppable!" -Mathis, Core Engineer]],
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
-        rank = numberRank(0, 20, 40, 65, 85, 100, 160),
+        rank = numberRank(0, 20, 40, 65, 90, 120, 180),
     },
     {
         id = 'the_responsible_one',
@@ -298,7 +298,7 @@ Achievements = {
         desc = [[Highest amount of revivals performed in a single duo run]],
         quote = [["Could you please stop dying?"]],
         scoreSimp = function(b2b) return b2b .. " Revives" end,
-        rank = numberRank(0, 3, 6, 9, 12, 15, 18),
+        rank = numberRank(0, 3, 6, 9, 12, 14, 16),
     },
     {
         id = 'guardian_angel',
@@ -574,7 +574,7 @@ Achievements = {
         desc = [[HFDWUT rGV rAS mods]],
         quote = [["I felt enchanted!"  But soon after, disaster struck...]],
         credit = "@GameTilDead",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
         hide = function() return GAME.completion.GV == 0 or GAME.completion.AS == 0 end,
     },
 
@@ -585,7 +585,7 @@ Achievements = {
         desc = [[Highest Back-to-Back chain reached]],
         quote = [[Supercharged Any%]],
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
-        rank = numberRank(0, 20, 40, 65, 85, 100, 180),
+        rank = numberRank(0, 20, 40, 65, 90, 120, 180),
     },
     {
         id = 'clicker_speedrun',
