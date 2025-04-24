@@ -295,7 +295,7 @@ function scene.draw()
 
             if M.IN > 0 and a.hidden then
                 gc_setColor(clr.D)
-                gc_setAlpha(M.IN * (.3 + .1 * sin(i * .626 - t * 1.626)))
+                gc_setAlpha(M.IN * (.3 + .1 * sin(ceil(i/2) * 1.2 - t * 2.6)))
                 gc_rectangle('fill', 0, 0, 600, 130)
             end
 
