@@ -118,7 +118,7 @@ Achievements = {
         desc = [[HFD with the reversed "Expert Mode" mod]],
         quote = [[Fear, oppression, and limitless ambition.]],
         hide = function() return GAME.completion.EX == 0 end,
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
     },
     {
         id = 'rNH',
@@ -166,7 +166,7 @@ Achievements = {
         desc = [[HFD with the reversed "Invisible" mod]],
         quote = [[Never underestimate blind faith.]],
         hide = function() return GAME.completion.IN == 0 end,
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'rAS',
@@ -808,7 +808,7 @@ Achievements = {
         id = 'patience_is_a_virtue',
         name = "Patience is a Virtue",
         desc = [[HFD without manually commit]],
-        quote = [[Good things come to those who wait.]],
+        quote = [[Opportunities always favor those who are prepared and wait.]],
         credit = "@The_111thBlitzer",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return GAME.completion.GV == 0 end,

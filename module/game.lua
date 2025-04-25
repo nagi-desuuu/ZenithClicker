@@ -786,8 +786,13 @@ function GAME.upFloor()
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = duration,
     }
-    if GAME.floor > 1 then SFX.play('zenith_levelup_g', 1, 0, M.GV) end
-    if GAME.gigaspeed then SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV) end
+
+    if GAME.gigaspeed then
+        SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
+    elseif GAME.floor > 1 then
+        SFX.play('zenith_levelup_g', 1, 0, M.GV)
+    end
+
     if GAME.floor >= 10 then
         local roundTime = MATH.roundUnit(GAME.time, .001)
         if GAME.gigaspeed then
