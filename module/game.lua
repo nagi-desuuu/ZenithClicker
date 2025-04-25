@@ -1942,6 +1942,7 @@ function GAME.finish(reason)
     GAME.refreshPBText()
     TASK.unlock('dcTimer')
     GAME.refreshDailyChallengeText()
+    GAME.prevPB = max(GAME.prevPB, GAME.height)
 
     if unlockDuo then
         CD.DP.lock = true
