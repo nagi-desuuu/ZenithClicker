@@ -74,9 +74,23 @@ local function submit(id, score, silent)
 end
 local function refreshAchivement()
     local MD = ModData
+    local sw = {
+        'swamp_water_lite',
+        'swamp_water',
+        'swamp_water_pro',
+        'swamp_water_x',
+    }
     for k, v in next, BEST.highScore do
         submit(k, v)
-        local mp = #k / 2 + STRING.count(k, 'r') / 2
+        local revCount = STRING.count(k, 'r')
+        local count = (#k - revCount) / 2
+        if count == 9 or count >= 7 and not k:find('DP') then
+            for i = count, 7, -1 do
+                SubmitAchv(sw[i - 6], v)
+                if revCount > 0 then SubmitAchv(sw[i - 6] .. '_plus', v) end
+            end
+        end
+        local mp = count + revCount
         if mp >= 8 then for m = mp, 8, -1 do submit(RevSwampName[m]:sub(2, -2):lower(), v) end end
     end
     submit('zenith_explorer', BEST.highScore[''] or 0)

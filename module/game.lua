@@ -1914,14 +1914,14 @@ function GAME.finish(reason)
                 SubmitAchv(name, GAME.roundHeight, mp < GAME.comboMP)
             end
         elseif #hand == 9 or #hand >= 7 and not TABLE.find(hand, 'DP') then
-            local name =
-                #hand == 7 and 'swamp_water_lite' or
-                #hand == 8 and 'swamp_water' or
-                #hand == 9 and 'swamp_water_pro' or
-                'swamp_water_x'
-            SubmitAchv(name .. (GAME.anyRev and '_plus' or ''), GAME.roundHeight)
-            if name == 'swamp_water' then
-                SubmitAchv('swamp_water_lite' .. (GAME.anyRev and '_plus' or ''), GAME.roundHeight, true)
+            local sw = {
+                'swamp_water_lite',
+                'swamp_water',
+                'swamp_water_pro',
+                'swamp_water_x',
+            }
+            for i = #hand, 7, -1 do
+                SubmitAchv(sw[i - 6] .. (GAME.anyRev and '_plus' or ''), GAME.roundHeight)
             end
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)
