@@ -344,10 +344,6 @@ function IssueAchv(id, silent)
     local A = Achievements[id]
     if not A or ACHV[id] then return end
 
-    ACHV[id] = 0
-    AchvNotice[id] = true
-    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
-
     if not silent then
         table.insert(bufferedMsg, { 'achv_issued', {
             AchvData[6].fg, A.name .. "\n",
@@ -358,6 +354,11 @@ function IssueAchv(id, silent)
             ReleaseAchvBuffer()
         end
     end
+
+    ACHV[id] = 0
+    AchvNotice[id] = true
+    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
+
     return true
 end
 
@@ -369,22 +370,23 @@ function SubmitAchv(id, score, silent)
     -- printf("%s: %.1f(%.2f) -> %.1f(%.2f)", id, oldScore, R0, score, R1)
     if R1 == 0 or not A.comp(score, oldScore) then return end
 
-    ACHV[id] = score
-    AchvNotice[id] = true
-    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
-
     if not silent and R1 >= 1 then
         local rank = math.floor(R1)
         local scoreText = A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")" or "")
         table.insert(bufferedMsg, { AchvData[rank].id, {
             AchvData[rank].fg, A.name .. "   >>   " .. scoreText,
-            COLOR.LD, "    Previous: " .. (A.scoreFull or A.scoreSimp)(oldScore) .. "\n",
+            COLOR.LD, (ACHV[id] and "    Previous: " .. (A.scoreFull or A.scoreSimp)(oldScore) or "") .. "\n",
             COLOR.dL, A.desc .. "\n", COLOR.LD, A.quote,
         }, rank <= 2 and 1 or rank <= 4 and 2 or 3 })
         if not GAME.playing then
             ReleaseAchvBuffer()
         end
     end
+
+    ACHV[id] = score
+    AchvNotice[id] = true
+    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
+
     return true
 end
 
