@@ -204,7 +204,7 @@ Achievements = {
         name = "The Escape Artist",
         desc = [[HFDWUT "Messier Garbage", "Double Hole" and "All-Spin" mods]],
         quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'GVIN',
@@ -246,13 +246,6 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     {
-        id = 'EXMS',
-        name = "Block Rationing",
-        desc = [[HFDWUT "Expert Mode" and "Messier Garbage" mods]],
-        quote = [[Adversity favors the resourceful.]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-    },
-    {
         id = 'swamp_water_lite',
         name = "Swamp Water Lite",
         desc = [[HFDWUT all 7/8 of the difficulty mods ("Duo" not allowed)]],
@@ -267,7 +260,7 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     },
 
-    -- General
+    -- Others
     {
         id = 'zenith_explorer',
         name = "Zenith Explorer",
@@ -315,8 +308,16 @@ Achievements = {
         quote = [[Reaching deep down but coming back empty every time.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
+    {
+        id = 'block_rationing',
+        name = "Block Rationing",
+        desc = [[Highest altitude on 40 quests WUT "Expert Mode" and "Messier Garbage" mods]],
+        quote = [[Adversity favors the resourceful.]],
+        scoreSimp = heightNumber,
+        rank = numberRank(0, 100, 260, 360, 420, 495, 626),
+    },
 
-    -- Others
+    -- Special
     {
         id = 'lovers_promise',
         name = "Lover's Promise",
@@ -1003,7 +1004,7 @@ for i = 1, #Achievements do
 
     assert(achv.desc, "Missing field 'desc' - " .. id)
     achv.desc = achv.desc
-        :gsub("HFDWUT", "Highest floor discovered while using the")
+        :gsub("WUT", "while using the")
         :gsub("HFD", "Highest floor discovered")
 
     assert(achv.quote, "Missing field 'quote' - " .. id)

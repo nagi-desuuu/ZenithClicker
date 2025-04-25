@@ -1470,6 +1470,8 @@ function GAME.commit()
                 local noTSR
                 if GAME.comboStr == '' then noTSR = SubmitAchv('clicker_speedrun', GAME.time) end
                 SubmitAchv('typer_speedrun', GAME.time, noTSR)
+            elseif GAME.totalQuest == 41 then
+                if GAME.comboStr == 'EXMS' then SubmitAchv('block_rationing', GAME.roundHeight) end
             end
         end
 
@@ -1889,6 +1891,7 @@ function GAME.finish(reason)
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.roundHeight) end
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.roundHeight) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
+        if GAME.comboStr == 'EXMS' and GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
         if GAME.comboStr == 'DP' then
             if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then

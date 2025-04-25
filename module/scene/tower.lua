@@ -733,72 +733,6 @@ function scene.overDraw()
         gc_mDraw(TEXTS.mod, 800, 396, 0, k)
     end
 
-    if GAME.playing and GAME.chain >= 4 then
-        -- Chain Counter
-        local c = GAME.chain
-        local _t = GAME.questTime
-        local bk = _t < .12 and 1 + 62 * _t * (.12 - _t) or 1
-        local k = clampInterpolate(6, .7, 26, 2, c)
-
-        local r, g, b, a
-        if GAME.fault then
-            local l = M.AS < 2 and .62 or .42
-            r, g, b, a = l, l, l, c < 8 and .26 or 1
-        elseif M.AS < 2 then
-            r, g, b, a = COLOR.HSL(
-                26 / (c + 22) + 1.3, 1,
-                icLerp(-260, 420, c),
-                c < 8 and .26 or 1
-            )
-        else
-            r, g, b, a = COLOR.HSV(
-                clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
-                .16
-            )
-            gc_setColor(0, 0, 0)
-            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
-        end
-
-        -- Spike ball
-        gc_setColor(r, g, b, a)
-        gc_blurCircle(-.26, 326, 270, 100 * k)
-        gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
-
-        -- Spark
-        gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
-        for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
-
-        -- "B2B x"
-        local x = 255 - 50 * k * bk
-        gc_setColor(COLOR.D)
-        gc_draw(TEXTS.b2b, x, 216)
-        gc_setColor(r, g, b)
-        gc_draw(TEXTS.b2b, x, 214)
-
-        -- Number
-        local chain = TEXTS[M.AS < 2 and 'chain' or 'chain2']
-        if M.AS < 2 then
-            if c >= 8 then
-                gc_setColor(COLOR.L)
-                gc_strokeDraw('full', k * 2, chain, 326, 268, 0, k * bk, nil,
-                    chain:getWidth() / 2, chain:getHeight() / 2)
-                gc_setColor(COLOR.D)
-            end
-            gc_mDraw(chain, 326, 268, 0, k * bk)
-        else
-            gc_draw(WoundPS, 326, 266)
-
-            if not GAME.fault then
-                gc_setColor(r, g, b, .26 + .1 * math.sin(GAME.time * 4.2))
-                gc_setBlendMode('add')
-                gc_strokeDraw('full', 3.55 * k, chain, 326, 268, 0, k * bk)
-                gc_setBlendMode('alpha')
-            end
-            gc_setColor(COLOR.L)
-            gc_draw(chain, 326, 268, 0, k * bk)
-        end
-    end
-
     -- Glow
     for i = 1, #ImpactGlow do
         local L = ImpactGlow[i]
@@ -821,8 +755,8 @@ function scene.overDraw()
     if GigaSpeed.textTimer then
         gc_setBlendMode('add', 'alphamultiply')
         gc_setColor(.26, .26, .26)
-        for t = -10, 10, 3 do
-            gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + t * .01) ^ 7 * 1800, 395, 0, 1.6)
+        for p = -10, 10, 3 do
+            gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 7 * 1800, 395, 0, 1.6)
         end
         gc_setBlendMode('alpha')
     end
@@ -843,6 +777,79 @@ function scene.overDraw()
     end
 
     if GAME.playing then
+        if GAME.totalQuest <= 40 then
+            -- Quest counter
+            setFont(30)
+            gc_setColor(TextColor)
+            gc.print(GAME.totalQuest, 1210, 230)
+        end
+
+        if GAME.chain >= 4 then
+            -- Chain Counter
+            local c = GAME.chain
+            local _t = GAME.questTime
+            local bk = _t < .12 and 1 + 62 * _t * (.12 - _t) or 1
+            local k = clampInterpolate(6, .7, 26, 2, c)
+
+            local r, g, b, a
+            if GAME.fault then
+                local l = M.AS < 2 and .62 or .42
+                r, g, b, a = l, l, l, c < 8 and .26 or 1
+            elseif M.AS < 2 then
+                r, g, b, a = COLOR.HSL(
+                    26 / (c + 22) + 1.3, 1,
+                    icLerp(-260, 420, c),
+                    c < 8 and .26 or 1
+                )
+            else
+                r, g, b, a = COLOR.HSV(
+                    clampInterpolate(4, .76, 26, 0.926, c), 1, 1,
+                    .16
+                )
+                gc_setColor(0, 0, 0)
+                gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
+            end
+
+            -- Spike ball
+            gc_setColor(r, g, b, a)
+            gc_blurCircle(-.26, 326, 270, 100 * k)
+            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
+
+            -- Spark
+            gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
+            for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
+
+            -- "B2B x"
+            local x = 255 - 50 * k * bk
+            gc_setColor(COLOR.D)
+            gc_draw(TEXTS.b2b, x, 216)
+            gc_setColor(r, g, b)
+            gc_draw(TEXTS.b2b, x, 214)
+
+            -- Number
+            local chain = TEXTS[M.AS < 2 and 'chain' or 'chain2']
+            if M.AS < 2 then
+                if c >= 8 then
+                    gc_setColor(COLOR.L)
+                    gc_strokeDraw('full', k * 2, chain, 326, 268, 0, k * bk, nil,
+                        chain:getWidth() / 2, chain:getHeight() / 2)
+                    gc_setColor(COLOR.D)
+                end
+                gc_mDraw(chain, 326, 268, 0, k * bk)
+            else
+                gc_draw(WoundPS, 326, 266)
+
+                if not GAME.fault then
+                    gc_setColor(r, g, b, .26 + .1 * math.sin(GAME.time * 4.2))
+                    gc_setBlendMode('add')
+                    gc_strokeDraw('full', 3.55 * k, chain, 326, 268, 0, k * bk)
+                    gc_setBlendMode('alpha')
+                end
+                gc_setColor(COLOR.L)
+                gc_draw(chain, 326, 268, 0, k * bk)
+            end
+        end
+
         -- Quests
         local style = M.DP == 0 and questStyle or questStyleDP
         for i = 1, #GAME.quests do
