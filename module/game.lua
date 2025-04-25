@@ -1872,10 +1872,10 @@ function GAME.finish(reason)
 
         _t = 0
         for id in next, MD.name do _t = _t + BEST.highScore[id] end
-        SubmitAchv('zenith_challenger', _t)
+        SubmitAchv('zenith_challenger', _t, true)
         _t = 0
         for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
-        SubmitAchv('divine_challenger', _t)
+        SubmitAchv('divine_challenger', _t, true)
 
         SubmitAchv('multitasker', MATH.roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)

@@ -1035,6 +1035,3 @@ for i = 1, #Achievements do
 
     achv.hide = achv.hide or FALSE
 end
-print(numberRank(12, 14, 15, 16, 17, 18, 20)(13))
-print(numberRank(12, 14, 15, 16, 17, 18, 20)(14))
-print(numberRank(12, 14, 15, 16, 17, 18, 20)(15))

@@ -72,6 +72,9 @@ end
 local function submit(id, score, silent)
     if SubmitAchv(id, score, silent) then TASK.yieldT(0.1) end
 end
+local function issue(id, silent)
+    if IssueAchv(id, silent) then TASK.yieldT(0.1) end
+end
 local function refreshAchivement()
     local MD = ModData
     local sw = {
@@ -80,6 +83,7 @@ local function refreshAchivement()
         'swamp_water_pro',
         'swamp_water_x',
     }
+    local maxMMP, maxZP = 0, 0
     for k, v in next, BEST.highScore do
         submit(k, v)
         local revCount = STRING.count(k, 'r')
@@ -92,36 +96,48 @@ local function refreshAchivement()
         end
         local mp = count + revCount
         if mp >= 8 then for m = mp, 8, -1 do submit(RevSwampName[m]:sub(2, -2):lower(), v) end end
+        maxMMP = max(maxMMP, v * mp)
+        local l = {}
+        for m in k:gmatch('r?%w%w') do l[m] = true end
+        maxZP = max(maxZP, v * GAME.getComboZP(l))
     end
+    submit('multitasker', maxMMP)
+    submit('effective', maxZP)
     submit('zenith_explorer', BEST.highScore[''] or 0)
     submit('zenith_speedrun', BEST.speedrun[''] or 2600)
     submit('zenith_explorer_plus', TABLE.maxAll(BEST.highScore) or 0)
     submit('zenith_speedrun_plus', TABLE.minAll(BEST.speedrun) or 2600)
-    if STAT.maxHeight >= 6200 then IssueAchv('skys_the_limit') end
-    if STAT.minTime <= 76.2 then IssueAchv('superluminal') end
-    submit('effective', STAT.dzp)
+    if STAT.maxHeight >= 6200 then issue('skys_the_limit') end
+    if STAT.minTime <= 76.2 then issue('superluminal') end
     local _t
     if not ACHV.terminal_velocity then
         _t = 0
         for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
-        if _t >= 9 then IssueAchv('terminal_velocity') end
+        if _t >= 9 then issue('terminal_velocity') end
     end
     if not ACHV.the_completionist then
         _t = 0
         for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
-        if _t >= 9 then IssueAchv('the_completionist') end
+        if _t >= 9 then issue('the_completionist') end
     end
     if not ACHV.mastery then
         _t = 0
         for id in next, MD.name do if BEST.highScore[id] >= 1650 then _t = _t + 1 end end
-        if _t >= 9 then IssueAchv('mastery') end
+        if _t >= 9 then issue('mastery') end
     end
     if not ACHV.supremacy then
         _t = 0
         for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
-        if _t >= 9 then IssueAchv('supremacy') end
+        if _t >= 9 then issue('supremacy') end
     end
-    if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
+    _t = 0
+    for id in next, MD.name do _t = _t + BEST.highScore[id] end
+    submit('zenith_challenger', _t, true)
+    _t = 0
+    for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
+    submit('divine_challenger', _t, true)
+
+    if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then issue('false_god', ACHV.supremacy) end
 
     if not ACHV.the_harbinger then
         local allRevF5 = true
@@ -132,7 +148,7 @@ local function refreshAchivement()
             end
         end
         if allRevF5 then
-            IssueAchv('the_harbinger')
+            issue('the_harbinger')
         end
     end
 
