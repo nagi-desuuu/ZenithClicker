@@ -12,6 +12,10 @@ local MD = ModData
 local cancelNextClick
 local cancelNextKeyClick
 
+RevUnlocked = false
+local usingTouch = MOBILE
+local revHold = {}
+
 ---@type Zenitha.Scene
 local scene = {}
 
@@ -198,6 +202,7 @@ function scene.load()
             "[WARNING]\nThe web version is for trial purposes only.\nPlease note that your progress may be lost without warning, and this cannot be fixed.\nDownload the desktop version to keep playing in the future, with far better performance.\nThank you for your support!",
             12.6)
     end
+    RevUnlocked = TABLE.countAll(GAME.completion, 0) < 9
 
     cancelNextClick = true
     cancelNextKeyClick = true
@@ -286,9 +291,24 @@ end
 
 function scene.touchMove(x, y, dx, dy) scene.mouseMove(x, y, dx, dy) end
 
-function scene.touchDown(x, y) scene.mouseDown(x, y, 1) end
+function scene.touchDown(x, y, id)
+    usingTouch = true
+    local x1, y1 = SCR.xOy_dl:inverseTransformPoint(SCR.xOy:transformPoint(x, y))
+    if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
+        revHold[id] = true
+        if TABLE.getSize(revHold) >= 3 then
+            scene.mouseDown(x, y, 3)
+            return
+        end
+    end
+    scene.mouseDown(x, y, next(revHold) and 2 or 1)
+end
 
-function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
+function scene.touchUp(_, _, id)
+    revHold[id] = nil
+end
+
+function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1) end
 
 function scene.keyDown(key)
     cancelNextKeyClick = false
@@ -989,7 +1009,16 @@ function scene.overDraw()
         gc_back()
     end
 
+    -- Rev trigger for touchscreen
+    if usingTouch and not GAME.playing and RevUnlocked then
+        gc_replaceTransform(SCR.xOy_dl)
+        gc_setColor(COLOR.S or COLOR.LD)
+        gc_setAlpha(next(revHold) and .42 or .26)
+        gc_draw(TEXTURE.transition, -200 * GAME.uiHide, -40, 0, 200 / 128, -560)
+    end
+
     -- Cards
+    gc_replaceTransform(SCR.xOy)
     gc_setColor(1, 1, 1)
     if FloatOnCard then
         for i = #Cards, 1, -1 do

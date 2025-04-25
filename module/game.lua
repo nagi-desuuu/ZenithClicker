@@ -1721,6 +1721,7 @@ function GAME.finish(reason)
                         else
                             unlockRev = true
                         end
+                        RevUnlocked = true
                     end
                     GAME.completion[k] = v
                 end
