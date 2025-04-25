@@ -951,6 +951,10 @@ if BEST.version == 168 or BEST.version == 169 then
     end)
     BEST.version = 170
 end
+if BEST.version == 170 then
+    ACHV.block_rationing = nil
+    BEST.version = 171
+end
 if BEST.version ~= oldVer then
     SaveStat()
     SaveBest()
