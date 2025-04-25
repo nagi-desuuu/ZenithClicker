@@ -237,6 +237,7 @@ Achievements = {
         name = "The Con Artist",
         desc = [[HFDWUT "Expert Mode", "Volatile Garbage" and "All-Spin" mods]],
         quote = [[Would the perfect lie not be an art worthy of admiration ?]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     {
         id = 'DPEX',
@@ -299,7 +300,7 @@ Achievements = {
         desc = [[Highest altitude to perform a successful revive at]],
         quote = [[An angel's intervention.]],
         scoreSimp = heightNumber,
-        rank = numberRank(0, 626, 942, 1620, 2600, 4200, 6200),
+        rank = numberRank(0, 626, 942, 1620, 2000, 2600, 4200),
     },
     {
         id = 'talentless',
@@ -314,7 +315,7 @@ Achievements = {
         desc = [[Highest altitude on 40 quests WUT "Expert Mode" and "Messier Garbage" mods]],
         quote = [[Adversity favors the resourceful.]],
         scoreSimp = heightNumber,
-        rank = numberRank(0, 100, 260, 360, 420, 495, 626),
+        rank = numberRank(0, 260, 340, 400, 450, 495, 600),
     },
 
     -- Special
