@@ -1,4 +1,4 @@
-local floor = math.floor
+local min, floor = math.min, math.floor
 local ilLerp = MATH.ilLerp
 local function floorRank(l0, l1, l2, l3, l4, l5, l6)
     local l = {
@@ -11,17 +11,17 @@ local function floorRank(l0, l1, l2, l3, l4, l5, l6)
         l6 <= 10 and Floors[l6 - 1].top or l6,
     }
     assert(#l == 7)
-    return function(h) return 5.9999 * ilLerp(l, h) end
+    return function(h) return min(6 * ilLerp(l, h), 5.9999) end
 end
 local function numberRank(...)
     local l = { ... }
     assert(#l == 7)
-    return function(s) return 5.9999 * ilLerp(l, s) end
+    return function(s) return min(6 * ilLerp(l, s), 5.9999) end
 end
 local function numberRankRev(...)
     local l = TABLE.reverse { ... }
     assert(#l == 7)
-    return function(s) return 5.9999 * (1 - ilLerp(l, s)) end
+    return function(s) return min(6 * (1 - ilLerp(l, s)), 5.9999) end
 end
 local function heightFloor(h)
     for i = 9, 0, -1 do
@@ -726,7 +726,7 @@ Achievements = {
         name = "TeraSpeed",
         desc = [[Highest rank reached]],
         quote = [[Speed is the key.]],
-        rank = numberRank(13, 14, 15, 16, 17, 18, 20),
+        rank = numberRank(12, 14, 15, 16, 17, 18, 20),
         scoreSimp = function(rank) return "Rank " .. rank end,
     },
     {
@@ -1035,3 +1035,6 @@ for i = 1, #Achievements do
 
     achv.hide = achv.hide or FALSE
 end
+print(numberRank(12, 14, 15, 16, 17, 18, 20)(13))
+print(numberRank(12, 14, 15, 16, 17, 18, 20)(14))
+print(numberRank(12, 14, 15, 16, 17, 18, 20)(15))
