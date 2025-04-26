@@ -521,6 +521,7 @@ function GAME.questReady()
 end
 
 function GAME.startRevive()
+    TABLE.clear(GAME.reviveTasks)
     if GAME.noRevive == 0 then
         local power = min(GAME.floor + GAME.reviveCount, 17)
         local maxOut = power == 17
@@ -541,7 +542,6 @@ function GAME.startRevive()
         end
         TABLE.delete(powerList, 0)
 
-        TABLE.clear(GAME.reviveTasks)
         for _, pow in next, powerList do
             local options = {} ---@type Prompt[]
             for _, opt in next, RevivePrompts do
