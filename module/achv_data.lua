@@ -76,6 +76,7 @@ Achievements = {
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 62.6),
+        hide = function() return STAT.totalGiga == 0 end,
     },
     { -- zenith_speedrun_plus
         ex = true,
@@ -87,6 +88,7 @@ Achievements = {
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 56.7),
+        hide = function() return STAT.totalGiga == 0 end,
     },
     { -- supercharged
         id = 'supercharged',
@@ -308,7 +310,7 @@ Achievements = {
         quote = [[Opportunities always favor those who are prepared and wait.]],
         credit = "@The_111thBlitzer",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
-        hide = function() return GAME.completion.GV == 0 end,
+        hide = function() return STAT.maxFloor < 4 end,
     },
     { -- fel_magic
         ex = true,
@@ -319,7 +321,7 @@ Achievements = {
         -- credit = "WoW",
         rank = numberRank(0, 6, 15, 26, 42, 62, 100),
         scoreSimp = function(rank) return floor(rank) .. " Quests" end,
-        hide = function() return GAME.completion.AS == 0 end,
+        hide = function() return GAME.completion.AS == 0 or STAT.totalGiga == 0 end,
     },
     { -- arrogance
         ex = true,
@@ -337,6 +339,7 @@ Achievements = {
         desc = [[HFD with 0 flip count increasing in statistics]],
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
+        hide = function() return STAT.maxFloor < 9 end,
     },
 
     -- Single Mod
@@ -980,8 +983,8 @@ Achievements = {
         name = "Speedrun Speedruning",
         desc = [[Enter GIGASPEED on F1]],
         quote = [[Not much of a speedrun]],
-        hide = function() return GAME.completion.EX == 0 end,
         type = 'issued',
+        hide = function() return GAME.completion.EX == 0 or STAT.totalGiga == 0 end,
     },
     { -- worn_out
         ex = true,
@@ -991,6 +994,7 @@ Achievements = {
         quote = [[You alright over there? You seem a bit tired from all that "speed"-running...]],
         credit = "@GameTilDead",
         type = 'issued',
+        hide = function() return STAT.totalGiga == 0 end,
     },
     { -- final_defiance
         ex = true,

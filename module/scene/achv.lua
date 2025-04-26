@@ -52,17 +52,29 @@ local function refreshAchvList(canShuffle)
         end
         tempText:set(achv.desc)
         repeat
-            if achv.hide() and not ACHV[achv.id] then break end
-            table.insert(achvList, {
-                id = achv.id,
-                name = achv.name:upper(),
-                desc = achv.desc,
-                descWidth = tempText:getWidth(),
-                rank = floor(rank),
-                progress = progress,
-                score = score,
-                hidden = achv.hide ~= FALSE,
-            })
+            if achv.hide() and not ACHV[achv.id] then
+                table.insert(achvList, {
+                    id = achv.id,
+                    name = "???",
+                    desc = "???",
+                    descWidth = 26,
+                    rank = floor(rank),
+                    progress = progress,
+                    score = score,
+                    hidden = true,
+                })
+            else
+                table.insert(achvList, {
+                    id = achv.id,
+                    name = achv.name:upper(),
+                    desc = achv.desc,
+                    descWidth = tempText:getWidth(),
+                    rank = floor(rank),
+                    progress = progress,
+                    score = score,
+                    hidden = achv.hide ~= FALSE,
+                })
+            end
         until true
     end
 

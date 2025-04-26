@@ -244,8 +244,8 @@ function RefreshProfile()
         -- Progress Bar
         GC.setColor(textColor)
         GC.line(7, bh - 30, MATH.lerp(7, bw - 7, rating % 1400 / (rank < 18 and 1400 or 1200)), bh - 30)
-        GC.ucs_back()
     end
+    GC.ucs_back()
 
     -- Height
     GC.ucs_move('m', 412.5, 370)
@@ -262,7 +262,7 @@ function RefreshProfile()
     t50:set(STAT.maxHeight <= 0 and "---" or tostring(STAT.maxHeight))
     dblMidDraw(t50, bw / 2, bh / 2 - 4)
     GC.setColor(textColor)
-    t30:set("M")
+    t30:set(STAT.maxHeight <= 0 and "" or "M")
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     GC.ucs_back()
 
@@ -281,7 +281,7 @@ function RefreshProfile()
     t50:set(STAT.minTime >= 1560 and "---" or tostring(STAT.minTime))
     dblMidDraw(t50, bw / 2, bh / 2 - 4)
     GC.setColor(textColor)
-    t30:set("S")
+    t30:set(STAT.minTime >= 1560 and "" or "S")
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
     GC.ucs_back()
 

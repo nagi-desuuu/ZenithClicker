@@ -285,7 +285,7 @@ STAT = {
     maxFloor = 1,
     maxHeight = 0,
     heightDate = "NO DATE",
-    minTime = 26 * 60,
+    minTime = 2600,
     timeDate = "NO DATE",
 
     zp = 0,
@@ -948,11 +948,6 @@ if BEST.version == 168 or BEST.version == 169 then
     ACHV.supremacy = nil
     ACHV.the_completionist = nil
     ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
-    TASK.new(function()
-        TASK.yieldT(1)
-        MSG('achv_none', "Some achievement are reset due to bug fix", 6.26)
-        SFX.play('staffwarning')
-    end)
     BEST.version = 170
 end
 if BEST.version == 170 then
@@ -1002,16 +997,14 @@ for i = 1, #Cards do
         end
     end
 end
-if STAT.maxHeight == 0 then STAT.maxHeight = math.max(STAT.maxHeight, (TABLE.maxAll(BEST.highScore))) end
-if STAT.minTime == 26 * 60 then STAT.minTime = math.min(STAT.minTime, (TABLE.minAll(BEST.speedrun))) end
 do
     -- Auto fixing
-    local realBestHeight = math.max(TABLE.maxAll(BEST.highScore), 0)
+    local realBestHeight = math.max(STAT.maxHeight, TABLE.maxAll(BEST.highScore), 0)
     if STAT.maxHeight > realBestHeight then
         STAT.maxHeight = realBestHeight
         STAT.heightDate = "NO DATE"
     end
-    local realBestTime = math.min(TABLE.minAll(BEST.speedrun), 26 * 60)
+    local realBestTime = math.min(STAT.minTime, TABLE.minAll(BEST.speedrun), 2600)
     if STAT.minTime < realBestTime then
         STAT.minTime = realBestTime
         STAT.timeDate = "NO DATE"
