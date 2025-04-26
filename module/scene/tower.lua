@@ -672,7 +672,7 @@ function scene.draw()
     gc_mRect('fill', 800, panelH - 303, 1586 + 6, -3)
 
     -- MP & ZP Preview
-    if not GAME.playing then
+    if not GAME.playing and STAT.maxFloor >= 10 then
         gc_setColor(TextColor)
         gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2)
         gc_draw(TEXTS.zpPreview, 1370, 275, 0, 1, 1, TEXTS.zpPreview:getWidth())
