@@ -1760,7 +1760,7 @@ function GAME.finish(reason)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
 
-        local oldZP, zpGain = STAT.zp, GAME.height * GAME.comboZP
+        local oldZP, zpGain = STAT.zp, GAME.roundHeight * GAME.comboZP
         if DailyActived then
             STAT.dzp = max(STAT.dzp, zpGain)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
