@@ -63,7 +63,7 @@ local ins, rem = table.insert, table.remove
 ---@field dmgTimer number
 ---@field chain number
 ---@field gigaspeed boolean
----@field gigaspeedEntered false | number
+---@field gigaspeedEntered false | number time when enter
 ---@field atkBuffer number
 ---@field atkBufferCap number
 ---@field shuffleMessiness number | false
@@ -451,7 +451,7 @@ function GAME.shuffleCards(messiness)
         local totalDist = 0
         for i = 1, #order do
             CD[i].tempOrder = order[i]
-            totalDist = totalDist + min(abs(order[i] - CD[i].initOrder), 2.6)
+            totalDist = totalDist + abs(order[i] - CD[i].initOrder) ^ 1.6
         end
     until totalDist >= messiness
     table.sort(CD, function(a, b) return a.tempOrder < b.tempOrder end)
@@ -724,7 +724,7 @@ function GAME.setGigaspeedAnim(on, finish)
     GAME.gigaspeed = on
     local s = GigaSpeed.alpha
     if on then
-        GAME.gigaspeedEntered = GAME.floor
+        GAME.gigaspeedEntered = GAME.time
         TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 1, t) end)
             :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
@@ -810,8 +810,6 @@ function GAME.upFloor()
                 SaveBest()
             end
 
-            if GAME.time <= 76.2 then IssueAchv('superluminal') end
-            if GAME.time >= 300 then IssueAchv('worn_out') end
             local _t
             if not ACHV.terminal_velocity then
                 _t = 0
@@ -823,6 +821,8 @@ function GAME.upFloor()
                 for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
                 if _t >= 9 then IssueAchv('the_completionist') end
             end
+            if GAME.time <= 76.2 then IssueAchv('superluminal') end
+            if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
         end
 
         -- SubmitAchv('the_pacifist', GAME.totalAttack)
@@ -1444,8 +1444,8 @@ function GAME.commit()
         -- rMS little shuffle
         if M.MS == 2 then
             local r1 = rnd(2, #CD - 1)
-            local r2, r3
-            repeat r2 = rnd(r1 - 2, r1 + 2) until r2 ~= r1 and MATH.between(r2, 1, #CD)
+            local r2 = r1 + MATH.coin(-1, 1)
+            local r3
             if GAME.floor <= 8 then
                 CD[r1], CD[r2] = CD[r2], CD[r1]
             else

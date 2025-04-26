@@ -184,6 +184,7 @@ TEXTURE = {
             competitive = assets 'achievements/competitive.png',
             hidden = assets 'achievements/hidden.png',
             event = assets 'achievements/event.png',
+            extra = assets 'achievements/extra.png',
         },
     },
 
@@ -541,6 +542,7 @@ function ReloadTexts()
     TEXTS.chain2:setFont(FONT.get(50, 'led'))
     for _, W in next, SCN.scenes.tower.widgetList do W:reset() end
     for _, W in next, SCN.scenes.stat.widgetList do W:reset() end
+    for _, W in next, SCN.scenes.achv.widgetList do W:reset() end
     for _, W in next, SCN.scenes.conf.widgetList do W:reset() end
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     if SCN.cur == 'stat' then RefreshProfile() end
@@ -956,6 +958,10 @@ end
 if BEST.version == 170 then
     ACHV.block_rationing = nil
     BEST.version = 171
+end
+if BEST.version == 171 then
+    ACHV.worn_out = nil
+    BEST.version = 172
 end
 if BEST.version ~= oldVer then
     SaveStat()

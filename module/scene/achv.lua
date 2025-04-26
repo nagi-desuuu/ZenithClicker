@@ -303,7 +303,7 @@ function scene.draw()
                 gc_setBlendMode('alpha')
                 -- Wreath
                 if a.rank == 5 then
-                    local wreathLevel = floor(MATH.clampInterpolate(0, 0, .999, 6, a.progress))
+                    local wreathLevel = floor(MATH.clampInterpolate(0, 0, .9999, 6, a.progress))
                     if wreathLevel > 0 then
                         gc_setColor(1, 1, 1)
                         gc_mDraw(texture.wreath[wreathLevel], 65, 65, 0, .42)
@@ -324,6 +324,10 @@ function scene.draw()
             gc_print(A.quote, 135, a.descWidth <= 1050 and 98 or 103, 0, .42)
             gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
             local x = 600 - 15
+            if A.ex then
+                gc_mDraw(texture.extra, x, 15, 0, .42)
+                x = x - 30
+            end
             if a.hidden then
                 gc_mDraw(texture.hidden, x, 15, 0, .2)
                 x = x - 30

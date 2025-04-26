@@ -615,15 +615,20 @@ function scene.draw()
 
     -- GigaSpeed BG
     if GigaSpeed.alpha > 0 then
-        gc_replaceTransform(SCR.origin)
-        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha)
-        local h1 = SCR.y + 470 * SCR.k
-        gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
-        gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
+        local gigaPower = (1 - clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)) ^ 1.5
+        if gigaPower > 0 then
+            gc_replaceTransform(SCR.origin)
+            gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha * gigaPower)
+            local h1 = SCR.y + 470 * SCR.k
+            gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
+            gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
 
-        gc_replaceTransform(SCR.xOy)
-        gc_setAlpha(GigaSpeed.alpha)
-        gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
+            gc_replaceTransform(SCR.xOy)
+            gc_setAlpha(GigaSpeed.alpha * gigaPower)
+            gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
+        else
+            gc_replaceTransform(SCR.xOy)
+        end
     else
         gc_replaceTransform(SCR.xOy)
     end
@@ -743,11 +748,17 @@ function scene.overDraw()
     -- GigaSpeed Timer
     if GigaSpeed.alpha > 0 then
         local w, h = TEXTS.gigatime:getDimensions()
-        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .2 * GigaSpeed.alpha)
+        local gigaFade = clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)
+        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .2 * (GigaSpeed.alpha - gigaFade))
         gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
         if M.DP < 2 then
             gc_setAlpha(GigaSpeed.alpha)
             gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+            if gigaFade > 0 then
+                local l = gigaFade == 1 and .5 or .8
+                gc_setColor(l, l, l, GigaSpeed.alpha * gigaFade)
+                gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+            end
         end
     end
 

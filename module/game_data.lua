@@ -168,7 +168,6 @@ ComboData = {
     { set = 'EX MS',             name = "block rationing",                    basic = true },
 
     -- Achievement combos
-    { set = "NH VL AS DP",       name = "midnight meal",                      menu = true, ex = true },
     { set = "rNH rGV rVL",       name = "sweatshop",                          menu = true },
     { set = "NH rAS",            name = "pristine",                           menu = true },
     { set = "rEX rDP",           name = "tyrannical dyarchy",                 menu = true },
