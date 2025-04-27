@@ -997,17 +997,30 @@ for i = 1, #Cards do
         end
     end
 end
-do
-    -- Auto fixing
+do -- Auto fixing
     local realBestHeight = math.max(STAT.maxHeight, TABLE.maxAll(BEST.highScore), 0)
-    if STAT.maxHeight > realBestHeight then
+    if STAT.maxHeight > realBestHeight + .1 then
         STAT.maxHeight = realBestHeight
         STAT.heightDate = "NO DATE"
     end
     local realBestTime = math.min(STAT.minTime, TABLE.minAll(BEST.speedrun), 2600)
-    if STAT.minTime < realBestTime then
+    if STAT.minTime < realBestTime - .1 then
         STAT.minTime = realBestTime
         STAT.timeDate = "NO DATE"
+    end
+    for cmb in next, BEST.highScore do
+        cmb = cmb:gsub('r', '')
+        local illegal
+        for i = 1, #cmb, 2 do
+            if not GAME.completion[cmb:sub(i, i + 1)] then
+                illegal = true
+                break
+            end
+        end
+        if illegal then
+            BEST.highScore[cmb] = nil
+            BEST.speedrun[cmb] = nil
+        end
     end
 end
 GAME.refreshLockState()
