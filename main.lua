@@ -909,95 +909,88 @@ if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(BEST, FILE.load('best.luaon', '-luaon') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon') or NONE)
 TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon') or NONE)
-if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
-if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
-if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
-local oldVer = BEST.version
-if BEST.version == nil then
-    for k in next, BEST.highScore do
-        if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
-            BEST.highScore[k] = nil
-        end
-    end
-    BEST.version = 162
-end
-if BEST.version == 162 then
-    TABLE.clear(BEST.speedrun)
-    BEST.version = 163
-end
-if BEST.version == 163 then
-    STAT.maxFloor = BEST.maxFloor or 1
-    BEST.maxFloor = nil
-    BEST.version = 166
-end
-if BEST.version == 166 then
-    STAT.sfx = STAT.sfx and 60 or 0
-    STAT.bgm = STAT.bgm and 100 or 0
-    BEST.version = 167
-end
-if BEST.version == 167 then
-    STAT.dzp = STAT.dailyHS or 0
-    STAT.dailyHS = nil
-    BEST.version = 168
-end
-if BEST.version == 168 or BEST.version == 169 then
-    if ACHV.patience_is_a_virtue and ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
-    ACHV.mastery = nil
-    ACHV.terminal_velocity = nil
-    ACHV.false_god = nil
-    ACHV.supremacy = nil
-    ACHV.the_completionist = nil
-    ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
-    BEST.version = 170
-end
-if BEST.version == 170 then
-    ACHV.block_rationing = nil
-    BEST.version = 171
-end
-if BEST.version == 171 then
-    ACHV.worn_out = nil
-    BEST.version = 172
-end
-if BEST.version ~= oldVer then
-    SaveStat()
-    SaveBest()
-    SaveAchv()
-end
-for k in next, ACHV do
-    if not Achievements[k] then
-        ACHV[k] = nil
-    end
-end
 
--- Some Initialization
-for i = 1, #Cards do
-    local f10 = Floors[9].top
-    local id = Cards[i].id
-    local rid = 'r' .. id
-    if BEST.highScore[rid] >= f10 then
-        GAME.completion[id] = 2
-    else
-        for cmb, h in next, BEST.highScore do
-            if h >= f10 and cmb:find(rid) then
-                GAME.completion[id] = 2
-                break
+function Initialize(save)
+    if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
+    if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
+    if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
+    local oldVer = BEST.version
+    if BEST.version == nil then
+        for k in next, BEST.highScore do
+            if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
+                BEST.highScore[k] = nil
             end
         end
+        BEST.version = 162
     end
-    if GAME.completion[id] ~= 2 then
-        if BEST.highScore[id] >= f10 then
-            GAME.completion[id] = 1
+    if BEST.version == 162 then
+        TABLE.clear(BEST.speedrun)
+        BEST.version = 163
+    end
+    if BEST.version == 163 then
+        STAT.maxFloor = BEST.maxFloor or 1
+        BEST.maxFloor = nil
+        BEST.version = 166
+    end
+    if BEST.version == 166 then
+        STAT.sfx = STAT.sfx and 60 or 0
+        STAT.bgm = STAT.bgm and 100 or 0
+        BEST.version = 167
+    end
+    if BEST.version == 167 then
+        STAT.dzp = STAT.dailyHS or 0
+        STAT.dailyHS = nil
+        BEST.version = 168
+    end
+    if BEST.version == 168 or BEST.version == 169 then
+        if ACHV.patience_is_a_virtue and ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
+        ACHV.mastery = nil
+        ACHV.terminal_velocity = nil
+        ACHV.false_god = nil
+        ACHV.supremacy = nil
+        ACHV.the_completionist = nil
+        ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
+        BEST.version = 170
+    end
+    if BEST.version == 170 then
+        ACHV.block_rationing = nil
+        BEST.version = 171
+    end
+    if BEST.version == 171 then
+        ACHV.worn_out = nil
+        BEST.version = 172
+    end
+
+    -- Some Initialization
+    for i = 1, #Cards do
+        local f10 = Floors[9].top
+        local id = Cards[i].id
+        local rid = 'r' .. id
+        if BEST.highScore[rid] >= f10 then
+            GAME.completion[id] = 2
         else
             for cmb, h in next, BEST.highScore do
-                if h >= f10 and (cmb:gsub('r', ''):find(id) or 0) % 2 == 1 then
-                    GAME.completion[id] = 1
+                if h >= f10 and cmb:find(rid) then
+                    GAME.completion[id] = 2
                     break
                 end
             end
         end
+        if GAME.completion[id] ~= 2 then
+            if BEST.highScore[id] >= f10 then
+                GAME.completion[id] = 1
+            else
+                for cmb, h in next, BEST.highScore do
+                    if h >= f10 and (cmb:gsub('r', ''):find(id) or 0) % 2 == 1 then
+                        GAME.completion[id] = 1
+                        break
+                    end
+                end
+            end
+        end
     end
-end
-do -- Auto fixing
+
+    -- Auto fixing
     local realBestHeight = math.max(STAT.maxHeight, TABLE.maxAll(BEST.highScore), 0)
     if STAT.maxHeight > realBestHeight + .1 then
         STAT.maxHeight = realBestHeight
@@ -1022,13 +1015,26 @@ do -- Auto fixing
             BEST.speedrun[cmb] = nil
         end
     end
-end
-GAME.refreshLockState()
-GAME.refreshPBText()
-love.window.setFullscreen(STAT.fullscreen)
-ApplySettings()
-GAME.refreshCursor()
+    for k in next, ACHV do
+        if not Achievements[k] then
+            ACHV[k] = nil
+        end
+    end
 
+    GAME.refreshLockState()
+    GAME.refreshPBText()
+    love.window.setFullscreen(STAT.fullscreen)
+    ApplySettings()
+    GAME.refreshCursor()
+
+    if save or BEST.version ~= oldVer then
+        SaveStat()
+        SaveBest()
+        SaveAchv()
+    end
+end
+
+Initialize()
 RefreshDaily()
 
 GAME.refreshCurrentCombo()

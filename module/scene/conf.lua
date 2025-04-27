@@ -248,7 +248,12 @@ scene.widgetList = {
             local d3 = STRING.split(data, ',')
             local suc1, res1 = pcall(STRING.unpackTable, d3[1])
             local suc2, res2 = pcall(STRING.unpackTable, d3[2])
-            local suc3, res3 = pcall(STRING.unpackTable, d3[3])
+            local suc3, res3
+            if d3[3] then
+                suc3, res3 = pcall(STRING.unpackTable, d3[3])
+            else
+                suc3, res3 = true, {}
+            end
             if not suc1 or not suc2 or not suc3 then
                 MSG('dark', "Invalid data format")
                 SFX.play('staffwarning')
@@ -262,9 +267,7 @@ scene.widgetList = {
                 STAT.system = SYSTEM
                 IssueAchv('zenith_relocation')
             end
-            SaveStat()
-            SaveBest()
-            SaveAchv()
+            Initialize(true)
             MSG('dark', "Progress imported!")
             SFX.play('social_notify_major')
         end,
