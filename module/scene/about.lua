@@ -137,13 +137,19 @@ function scene.update(dt)
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
 end
 
+local gc = love.graphics
+local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
+local gc_setColor, gc_rectangle, gc_print = gc.setColor, gc.rectangle, gc.print
+local gc_setAlpha, gc_setLineWidth = GC.setAlpha, GC.setLineWidth
+local gc_draw, gc_mDraw = GC.draw, GC.mDraw
+local gc_line = GC.line
 function scene.draw()
     DrawBG(26)
 
-    GC.replaceTransform(SCR.xOy_u)
-    GC.translate(0, 100 - scroll1)
+    gc_replaceTransform(SCR.xOy_u)
+    gc_translate(0, 100 - scroll1)
 
-    GC.setColor(1, 1, 1)
+    gc_setColor(1, 1, 1)
     local icon, kx, ky
     if GAME.mod.EX > 0 then
         icon = TEXTURE.logo_old
@@ -153,49 +159,53 @@ function scene.draw()
         kx, ky = .3, .3
     end
     if GAME.anyRev then ky = -ky end
-    GC.mDraw(icon, -170, 100, 0, kx, ky)
-    GC.draw(AboutText)
+    gc_mDraw(icon, -170, 100, 0, kx, ky)
+    gc_draw(AboutText)
 
-    GC.setColor(1, 1, 1, .2)
-    GC.setLineWidth(0.5)
+    gc_setColor(1, 1, 1, .2)
+    gc_setLineWidth(0.5)
     for i = 1, #lines do
-        GC.line(-600, lines[i], 600, lines[i])
+        gc_line(-600, lines[i], 600, lines[i])
     end
 
     if love.keyboard.isDown('space') then
-        GC.setColor(1, 1, 0)
+        gc_setColor(1, 1, 0)
         FONT.set(30)
         for x = -600, 600 - 100, 100 do
             for y = 0, 900 - 100, 100 do
-                GC.rectangle('line', x, y, 100, 100)
-                GC.print(x .. ',' .. y, x + 2.6, y, 0, .355)
+                gc_rectangle('line', x, y, 100, 100)
+                gc_print(x .. ',' .. y, x + 2.6, y, 0, .355)
             end
         end
     end
 
     -- Top bar & title
-    GC.replaceTransform(SCR.xOy_u)
-    GC.setColor(clr.D)
-    GC.rectangle('fill', -1300, 0, 2600, 70)
-    GC.setColor(clr.L)
-    GC.setAlpha(.626)
-    GC.rectangle('fill', -1300, 70, 2600, 3)
-    GC.replaceTransform(SCR.xOy_ul)
-    GC.setColor(clr.L)
+    gc_replaceTransform(SCR.xOy_u)
+    gc_setColor(clr.D)
+    gc_rectangle('fill', -1300, 0, 2600, 70)
+    gc_setColor(clr.L)
+    gc_setAlpha(.626)
+    gc_rectangle('fill', -1300, 70, 2600, 3)
+    gc_replaceTransform(SCR.xOy_ul)
+    gc_setColor(clr.L)
     FONT.set(50)
-    GC.print("ABOUT", 15, 0)
+    if GAME.anyRev then
+        gc_print("ABOUT", 15, 68, 0, 1, -1)
+    else
+        gc_print("ABOUT", 15, 0)
+    end
 
     -- Bottom bar & thanks
-    GC.replaceTransform(SCR.xOy_d)
-    GC.setColor(clr.D)
-    GC.rectangle('fill', -1300, 0, 2600, -50)
-    GC.setColor(clr.L)
-    GC.setAlpha(.626)
-    GC.rectangle('fill', -1300, -50, 2600, -3)
-    GC.replaceTransform(SCR.xOy_dl)
-    GC.setColor(clr.L)
+    gc_replaceTransform(SCR.xOy_d)
+    gc_setColor(clr.D)
+    gc_rectangle('fill', -1300, 0, 2600, -50)
+    gc_setColor(clr.L)
+    gc_setAlpha(.626)
+    gc_rectangle('fill', -1300, -50, 2600, -3)
+    gc_replaceTransform(SCR.xOy_dl)
+    gc_setColor(clr.L)
     FONT.set(30)
-    GC.print("THANK YOU FOR PLAYING ZENITH CLICKER!", 15, -45, 0, .85, 1)
+    gc_print("THANK YOU FOR PLAYING ZENITH CLICKER!", 15, -45, 0, .85, 1)
 end
 
 scene.widgetList = {

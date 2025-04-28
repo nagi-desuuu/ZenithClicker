@@ -39,38 +39,44 @@ end
 local w, h = 900, 800
 local baseX, baseY = (1600 - w) / 2, (1000 - h) / 2
 
+local gc = love.graphics
+local gc_replaceTransform = gc.replaceTransform
+local gc_setColor, gc_rectangle, gc_print = gc.setColor, gc.rectangle, gc.print
+local gc_ucs_move, gc_ucs_back = GC.ucs_move, GC.ucs_back
+local gc_setAlpha, gc_mRect, gc_mStr = GC.setAlpha, GC.mRect, GC.mStr
+
 local function drawSliderComponents(y, title, t1, t2, value)
-    GC.ucs_move('m', 0, y)
-    GC.setColor(0, 0, 0, .26)
-    GC.mRect('fill', w / 2, 0, w - 40, 65, 5)
-    GC.mRect('fill', w - 90, 0, 123, 48, 3)
+    gc_ucs_move('m', 0, y)
+    gc_setColor(0, 0, 0, .26)
+    gc_mRect('fill', w / 2, 0, w - 40, 65, 5)
+    gc_mRect('fill', w - 90, 0, 123, 48, 3)
     FONT.set(30)
-    GC.setColor(clr.T)
-    GC.print(title, 40, -20, 0, .85, 1)
-    GC.setAlpha(.42)
-    GC.print(t1, 326, 5, 0, .5)
-    GC.print(t2, w - 230, 5, 0, .5)
-    GC.setColor(clr.T)
-    GC.mStr(value, w - 100, -20)
-    GC.setColor(clr.L)
-    GC.print("%", w - 60, -20, 0, .85, 1)
-    GC.ucs_back()
+    gc_setColor(clr.T)
+    gc_print(title, 40, -20, 0, .85, 1)
+    gc_setAlpha(.42)
+    gc_print(t1, 326, 5, 0, .5)
+    gc_print(t2, w - 230, 5, 0, .5)
+    gc_setColor(clr.T)
+    gc_mStr(value, w - 100, -20)
+    gc_setColor(clr.L)
+    gc_print("%", w - 60, -20, 0, .85, 1)
+    gc_ucs_back()
 end
 
 function scene.draw()
     DrawBG(STAT.bgBrightness)
 
     -- Panel
-    GC.replaceTransform(SCR.xOy)
-    GC.ucs_move('m', 800 - w / 2, 500 - h / 2)
-    GC.setColor(clr.D)
-    GC.rectangle('fill', 0, 0, w, h)
-    GC.setColor(0, 0, 0, .26)
-    GC.rectangle('fill', 3, 3, w - 6, h - 6)
-    GC.setColor(1, 1, 1, .1)
-    GC.rectangle('fill', 0, 0, w, 3)
-    GC.setColor(1, 1, 1, .04)
-    GC.rectangle('fill', 0, 3, 3, h + 3)
+    gc_replaceTransform(SCR.xOy)
+    gc_ucs_move('m', 800 - w / 2, 500 - h / 2)
+    gc_setColor(clr.D)
+    gc_rectangle('fill', 0, 0, w, h)
+    gc_setColor(0, 0, 0, .26)
+    gc_rectangle('fill', 3, 3, w - 6, h - 6)
+    gc_setColor(1, 1, 1, .1)
+    gc_rectangle('fill', 0, 0, w, 3)
+    gc_setColor(1, 1, 1, .04)
+    gc_rectangle('fill', 0, 3, 3, h + 3)
 
     -- Sliders
     drawSliderComponents(300, "EFFECT VOLUME", "QUIET", "LOUD", STAT.sfx)
@@ -79,28 +85,32 @@ function scene.draw()
     drawSliderComponents(565, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
 
     -- Top bar & title
-    GC.replaceTransform(SCR.xOy_u)
-    GC.setColor(clr.D)
-    GC.rectangle('fill', -1300, 0, 2600, 70)
-    GC.setColor(clr.L)
-    GC.setAlpha(.626)
-    GC.rectangle('fill', -1300, 70, 2600, 3)
-    GC.replaceTransform(SCR.xOy_ul)
-    GC.setColor(clr.L)
+    gc_replaceTransform(SCR.xOy_u)
+    gc_setColor(clr.D)
+    gc_rectangle('fill', -1300, 0, 2600, 70)
+    gc_setColor(clr.L)
+    gc_setAlpha(.626)
+    gc_rectangle('fill', -1300, 70, 2600, 3)
+    gc_replaceTransform(SCR.xOy_ul)
+    gc_setColor(clr.L)
     FONT.set(50)
-    GC.print("CONFIG", 15, 0)
+    if GAME.anyRev then
+        gc_print("CONFIG", 15, 68, 0, 1, -1)
+    else
+        gc_print("CONFIG", 15, 0)
+    end
 
     -- Bottom bar & text
-    GC.replaceTransform(SCR.xOy_d)
-    GC.setColor(clr.D)
-    GC.rectangle('fill', -1300, 0, 2600, -50)
-    GC.setColor(clr.L)
-    GC.setAlpha(.626)
-    GC.rectangle('fill', -1300, -50, 2600, -3)
-    GC.replaceTransform(SCR.xOy_dl)
-    GC.setColor(clr.L)
+    gc_replaceTransform(SCR.xOy_d)
+    gc_setColor(clr.D)
+    gc_rectangle('fill', -1300, 0, 2600, -50)
+    gc_setColor(clr.L)
+    gc_setAlpha(.626)
+    gc_rectangle('fill', -1300, -50, 2600, -3)
+    gc_replaceTransform(SCR.xOy_dl)
+    gc_setColor(clr.L)
     FONT.set(30)
-    GC.print("TWEAK YOUR SETTINGS FOR A BETTER CLICKING EXPERIENCE", 15, -45, 0, .85, 1)
+    gc_print("TWEAK YOUR SETTINGS FOR A BETTER CLICKING EXPERIENCE", 15, -45, 0, .85, 1)
 end
 
 scene.widgetList = {

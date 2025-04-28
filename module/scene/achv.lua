@@ -358,7 +358,11 @@ function scene.draw()
     gc_replaceTransform(SCR.xOy_ul)
     gc_setColor(clr.L)
     FONT.set(50)
-    gc_print("ACHIEVEMENTS", 15, 0)
+    if colorRev then
+        gc_print("ACHIEVEMENTS", 15, 68, 0, 1, -1)
+    else
+        gc_print("ACHIEVEMENTS", 15, 0)
+    end
 
     -- Bottom bar & text
     gc_replaceTransform(SCR.xOy_d)
