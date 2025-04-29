@@ -21,6 +21,7 @@ local M = GAME.mod
 ---@field desc string
 ---@field descWidth number
 ---@field rank number
+---@field wreath? number
 ---@field progress number
 ---@field score table
 ---@field hidden boolean
@@ -38,32 +39,35 @@ local function refreshAchvList(canShuffle)
     TABLE.clear(achvList)
     for i = 1, #Achievements do
         local achv = Achievements[i]
-        local rank, score, progress
+        local rank, score, progress, wreath
         if achv.type == 'issued' then
             rank = ACHV[achv.id] and 6 or 0
             progress = 0
             score = ACHV[achv.id] and "DONE!" or "---"
         else
             rank = achv.rank(ACHV[achv.id] or achv.noScore or 0)
-            progress = rank == 5 and 1 or rank % 1
+            progress = rank < 5 and rank % 1 or rank % 1 / .9999
             score = not ACHV[achv.id] and "---" or
                 { COLOR.LL, achv.scoreSimp(ACHV[achv.id]), COLOR.DL, achv.scoreFull and
                 "   " .. achv.scoreFull(ACHV[achv.id]) or "" }
+            if rank >= 5 then
+                wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, rank % 1))
+                if wreath == 0 then wreath = nil end
+            end
         end
         tempText:set(achv.desc)
-        repeat
-            local hidden = achv.hide() and not ACHV[achv.id]
-            table.insert(achvList, {
-                id = achv.id,
-                name = hidden and "???" or achv.name:upper(),
-                desc = hidden and "???" or achv.desc,
-                descWidth = hidden and 26 or tempText:getWidth(),
-                rank = floor(rank),
-                progress = progress,
-                score = score,
-                hidden = achv.hide ~= FALSE,
-            })
-        until true
+        local hidden = achv.hide() and not ACHV[achv.id]
+        table.insert(achvList, {
+            id = achv.id,
+            name = hidden and "???" or achv.name:upper(),
+            desc = hidden and "???" or achv.desc,
+            descWidth = hidden and 26 or tempText:getWidth(),
+            rank = floor(rank),
+            wreath = wreath,
+            progress = progress,
+            score = score,
+            hidden = achv.hide ~= FALSE,
+        })
     end
 
     if M.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
@@ -303,13 +307,9 @@ function scene.draw()
                 gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
                 gc_mDraw(texture.glint_3, 65, 65, 0, .42)
                 gc_setBlendMode('alpha')
-                -- Wreath
-                if a.rank == 5 then
-                    local wreathLevel = floor(MATH.clampInterpolate(0, 0, .9999, 6, a.progress))
-                    if wreathLevel > 0 then
-                        gc_setColor(1, 1, 1)
-                        gc_mDraw(texture.wreath[wreathLevel], 65, 65, 0, .42)
-                    end
+                if a.wreath then
+                    gc_setColor(1, 1, 1)
+                    gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
                 end
             end
 
