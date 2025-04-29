@@ -552,7 +552,7 @@ end
 
 function RefreshDaily()
     local dateToday = os.date("!*t", os.time())
-    local dateLastDay = os.date("!*t", STAT.lastDay)
+    local dateLastDay = os.date("!*t", math.max(STAT.lastDay, 946656000)) -- at least 2000/1/1
     local time0Today = os.time({ year = dateToday.year, month = dateToday.month, day = dateToday.day })
     local time0LastDay = os.time({ year = dateLastDay.year, month = dateLastDay.month, day = dateLastDay.day })
     local dayPast = MATH.round((time0Today - time0LastDay) / 86400)
