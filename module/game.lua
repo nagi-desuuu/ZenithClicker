@@ -1182,6 +1182,9 @@ function GAME.commit()
     if #GAME.quests == 0 then return end
 
     local hand = TABLE.sort(GAME.getHand(false))
+
+    if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
+
     local q1 = TABLE.sort(GAME.quests[1].combo)
     local q2 = M.DP > 0 and TABLE.sort(GAME.quests[2].combo)
 
