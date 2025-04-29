@@ -76,6 +76,8 @@ local function issue(id, silent)
     if IssueAchv(id, silent) then TASK.yieldT(0.1) end
 end
 local function refreshAchivement()
+    if not STAT.uid:match('^ANON[-_]') or STAT.aboutme ~= "Click the Zenith!" then issue('identity') end
+    if BEST.highScore.DP > 0 then issue('intended_glitch') end
     local MD = ModData
     local sw = {
         'swamp_water_lite',
