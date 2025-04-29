@@ -587,7 +587,7 @@ Achievements = {
         desc = [[HFD with the reversed "Double Hole" mod]],
         quote = [[No more second chances.]],
         hide = function() return GAME.completion.DH == 0 end,
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     },
     { -- rIN
         id = 'rIN',
@@ -988,7 +988,7 @@ Achievements = {
         ex = true,
         id = 'and_then_nothing',
         name = "And Then... Nothing",
-        desc = [[Break B2B x 50 while one player is KO'd in rDP and survive]],
+        desc = [[Survive after breaking B2B x 50 while using rDP and one player is KO'd]],
         quote = [[Moral of the story: NEVER exploit your partner.]],
         credit = "@GameTilDead",
         hide = function() return GAME.completion.DP == 0 end,
