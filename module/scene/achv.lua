@@ -337,7 +337,11 @@ function scene.draw()
                 if a.title then
                     gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
                     gc_setColor(clr.L)
-                    gc_print(a.title, 10, 62, 0, 1.8)
+                    if colorRev then
+                        gc_print(a.title, 10, 134, 0, 1.8, -1.8)
+                    else
+                        gc_print(a.title, 10, 62, 0, 1.8)
+                    end
                     gc_ucs_back()
                 end
             else
