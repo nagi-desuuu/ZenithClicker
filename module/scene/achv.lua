@@ -8,12 +8,14 @@ local clr = {
     D = { COLOR.HEX '19311E' },
     L = { COLOR.HEX '4DA667' },
     T = { COLOR.HEX '6FAC82' },
-    LT = { COLOR.HEX 'CCEBB0' },
 }
 local colorRev = false
 
 local Achievements = Achievements
 local M = GAME.mod
+
+---@class EmptyAchv
+---@field title string
 
 ---@class AchvItem
 ---@field id string
@@ -26,7 +28,7 @@ local M = GAME.mod
 ---@field score table
 ---@field hidden boolean
 
----@type AchvItem[]
+---@type (AchvItem | EmptyAchv)[]
 local achvList = {}
 local scroll, scroll1 = 0, -620
 local maxScroll = 0
@@ -51,42 +53,46 @@ local function refreshAchvList(canShuffle)
     overallProgress.ptAll = 0
     TABLE.clear(achvList)
     for i = 1, #Achievements do
-        local achv = Achievements[i]
-        local rank, score, progress, wreath
-        if achv.type == 'issued' then
-            rank = ACHV[achv.id] and 6 or 0
-            progress = 0
-            score = ACHV[achv.id] and "DONE!" or "---"
+        local A = Achievements[i]
+        if not A.id then
+            table.insert(achvList, { title = A.title and A.title:upper() })
         else
-            local r = achv.rank(ACHV[achv.id] or achv.noScore or 0)
-            rank = floor(r)
-            progress = r < 5 and r % 1 or r % 1 / .9999
-            score = not ACHV[achv.id] and "---" or
-                { COLOR.LL, achv.scoreSimp(ACHV[achv.id]), COLOR.DL, achv.scoreFull and
-                "   " .. achv.scoreFull(ACHV[achv.id]) or "" }
-            if r >= 5 then
-                wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, r % 1))
+            local rank, score, progress, wreath
+            if A.type == 'issued' then
+                rank = ACHV[A.id] and 6 or 0
+                progress = 0
+                score = ACHV[A.id] and "DONE!" or "---"
+            else
+                local r = A.rank(ACHV[A.id] or A.noScore or 0)
+                rank = floor(r)
+                progress = r < 5 and r % 1 or r % 1 / .9999
+                score = not ACHV[A.id] and "---" or
+                    { COLOR.LL, A.scoreSimp(ACHV[A.id]), COLOR.DL, A.scoreFull and
+                    "   " .. A.scoreFull(ACHV[A.id]) or "" }
+                if r >= 5 then
+                    wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, r % 1))
+                end
+                if A.type == 'competitive' then
+                    overallProgress.rank[rank] = overallProgress.rank[rank] + 1
+                    if wreath then overallProgress.wreath[wreath] = overallProgress.wreath[wreath] + 1 end
+                    overallProgress.ptGet = overallProgress.ptGet + floor(rank)
+                    overallProgress.ptAll = overallProgress.ptAll + 5
+                end
             end
-            if achv.type == 'competitive' then
-                overallProgress.rank[rank] = overallProgress.rank[rank] + 1
-                if wreath then overallProgress.wreath[wreath] = overallProgress.wreath[wreath] + 1 end
-                overallProgress.ptGet = overallProgress.ptGet + floor(rank)
-                overallProgress.ptAll = overallProgress.ptAll + 5
-            end
+            tempText:set(A.desc)
+            local hidden = A.hide() and not ACHV[A.id]
+            table.insert(achvList, {
+                id = A.id,
+                name = hidden and "???" or A.name:upper(),
+                desc = hidden and "???" or A.desc,
+                descWidth = hidden and 26 or tempText:getWidth(),
+                rank = floor(rank),
+                wreath = wreath,
+                progress = progress,
+                score = score,
+                hidden = A.hide ~= FALSE,
+            })
         end
-        tempText:set(achv.desc)
-        local hidden = achv.hide() and not ACHV[achv.id]
-        table.insert(achvList, {
-            id = achv.id,
-            name = hidden and "???" or achv.name:upper(),
-            desc = hidden and "???" or achv.desc,
-            descWidth = hidden and 26 or tempText:getWidth(),
-            rank = floor(rank),
-            wreath = wreath,
-            progress = progress,
-            score = score,
-            hidden = achv.hide ~= FALSE,
-        })
     end
     if M.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
     overallProgress.ptText = overallProgress.ptGet .. "/" .. overallProgress.ptAll .. " Pts"
@@ -300,90 +306,99 @@ function scene.draw()
         local ea = (colorRev and -.5 or .5) * M.AS ^ 2 * t
         local ka = colorRev and -3.1416 or 3.1416
         local texture = TEXTURE.stat.achievement
-        gc_translate(0, -400 - scroll1)
+        gc_translate(0, -420 - scroll1)
         for i = 1 + 2 * max(floor(scroll1 / 140) - 1, 0), min(2 * (floor(scroll1 / 140) + 8), #achvList) do
             local a = achvList[i]
-            local A = Achievements[a.id]
-            gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
-            -- Bottom rectangle
-            gc_setColor(0, 0, 0, .626)
-            gc_rectangle('fill', 0, 0, 600, 130)
-            -- Flashing notice
-            if AchvNotice[a.id] then
-                gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + M.VL * 4.2)))
-                gc_rectangle('fill', 0, 0, 600, 130)
-            end
-            -- Badge base
-            gc_setColor(1, 1, 1)
-            gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
-            -- Progress ring
-            if a.progress > 0 then
-                if colorRev then gc_setColor(COLOR.lR) end
-                if a.progress < 1 then
-                    gc_stc_setComp()
-                    gc_stc_arc('pie', 65, 65,
-                        ea + -2.0944,
-                        ea + -2.0944 + ka * a.progress,
-                        63, 26)
-                    gc_stc_arc('pie', 65, 65,
-                        ea + 1.0472,
-                        ea + 1.0472 + ka * a.progress,
-                        63, 26)
+            if not a.id then
+                if a.title then
+                    gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
+                    gc_setColor(clr.L)
+                    gc_print(a.title, 10, 62,0,1.8)
+                    gc_ucs_back()
                 end
-                gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
-                gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
-                gc_stc_stop()
-            end
-            -- Glint
-            if a.rank >= 1 then
-                gc_setBlendMode('add', 'alphamultiply')
-                gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.1))
-                gc_mDraw(texture.glint_1, 65, 65, 0, .42)
-                gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.3))
-                gc_mDraw(texture.glint_2, 65, 65, 0, .42)
-                gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
-                gc_mDraw(texture.glint_3, 65, 65, 0, .42)
-                gc_setBlendMode('alpha')
-                if a.wreath and a.wreath > 0 then
-                    gc_setColor(1, 1, 1)
-                    gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
-                end
-            end
-
-            gc_setColor(AchvData[a.rank].fg2)
-            gc_print(a.score, 135, 35, 0)
-            gc_setColor(colorRev and COLOR.LR or COLOR.L)
-            gc_print(a.name, 135, 7, 0, .7)
-            if a.descWidth < 1050 then
-                gc_print(a.desc, 135, 77, 0, min(400 / a.descWidth, .4), .4)
             else
-                gc_printf(a.desc, 135, 73, 1100, 'left', 0, .4)
-            end
-            gc_setColor(colorRev and COLOR.dR or COLOR.LD)
-            gc_print(A.quote, 135, a.descWidth <= 1050 and 98 or 103, 0, .42)
-            gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
-            local x = 600 - 15
-            if A.ex then
-                gc_mDraw(texture.extra, x, 15, 0, .42)
-                x = x - 30
-            end
-            if a.hidden then
-                gc_mDraw(texture.hidden, x, 15, 0, .2)
-                x = x - 30
-            end
-            if A.type == 'competitive' then
-                gc_mDraw(texture.competitive, x, 15, 0, .2)
-            elseif A.type == 'event' then
-                gc_mDraw(texture.event, x, 15, 0, .2)
-            end
-
-            if M.IN > 0 and a.hidden then
-                gc_setColor(clr.D)
-                gc_setAlpha(M.IN * (.3 + .1 * sin(ceil(i / 2) * 1.2 - t * 2.6)))
+                local A = Achievements[a.id]
+                gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
+                -- Bottom rectangle
+                gc_setColor(0, 0, 0, .626)
                 gc_rectangle('fill', 0, 0, 600, 130)
-            end
+                -- Flashing notice
+                if AchvNotice[a.id] then
+                    gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + M.VL * 4.2)))
+                    gc_rectangle('fill', 0, 0, 600, 130)
+                end
+                -- Badge base
+                gc_setColor(1, 1, 1)
+                gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
+                -- Progress ring
+                if a.progress > 0 then
+                    if colorRev then gc_setColor(COLOR.lR) end
+                    if a.progress < 1 then
+                        gc_stc_setComp()
+                        gc_stc_arc('pie', 65, 65,
+                            ea + -2.0944,
+                            ea + -2.0944 + ka * a.progress,
+                            63, 26)
+                        gc_stc_arc('pie', 65, 65,
+                            ea + 1.0472,
+                            ea + 1.0472 + ka * a.progress,
+                            63, 26)
+                    end
+                    gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
+                    gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
+                    gc_stc_stop()
+                end
+                -- Glint
+                if a.rank >= 1 then
+                    gc_setBlendMode('add', 'alphamultiply')
+                    gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.1))
+                    gc_mDraw(texture.glint_1, 65, 65, 0, .42)
+                    gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.3))
+                    gc_mDraw(texture.glint_2, 65, 65, 0, .42)
+                    gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
+                    gc_mDraw(texture.glint_3, 65, 65, 0, .42)
+                    gc_setBlendMode('alpha')
+                    if a.wreath and a.wreath > 0 then
+                        gc_setColor(1, 1, 1)
+                        gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
+                    end
+                end
 
-            gc_ucs_back()
+                gc_setColor(AchvData[a.rank].fg2)
+                gc_print(a.score, 135, 35, 0)
+                gc_setColor(colorRev and COLOR.LR or COLOR.L)
+                gc_print(a.name, 135, 7, 0, .7)
+                if a.descWidth < 1050 then
+                    gc_print(a.desc, 135, 77, 0, min(400 / a.descWidth, .4), .4)
+                else
+                    gc_printf(a.desc, 135, 73, 1100, 'left', 0, .4)
+                end
+                gc_setColor(colorRev and COLOR.dR or COLOR.LD)
+                gc_print(A.quote, 135, a.descWidth <= 1050 and 98 or 103, 0, .42)
+                gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
+                local x = 600 - 15
+                if A.ex then
+                    gc_mDraw(texture.extra, x, 15, 0, .42)
+                    x = x - 30
+                end
+                if a.hidden then
+                    gc_mDraw(texture.hidden, x, 15, 0, .2)
+                    x = x - 30
+                end
+                if A.type == 'competitive' then
+                    gc_mDraw(texture.competitive, x, 15, 0, .2)
+                elseif A.type == 'event' then
+                    gc_mDraw(texture.event, x, 15, 0, .2)
+                end
+
+                if M.IN > 0 and a.hidden then
+                    gc_setColor(clr.D)
+                    gc_setAlpha(M.IN * (.3 + .1 * sin(ceil(i / 2) * 1.2 - t * 2.6)))
+                    gc_rectangle('fill', 0, 0, 600, 130)
+                end
+
+                gc_ucs_back()
+            end
         end
     end
 
