@@ -34,8 +34,21 @@ local tempText = GC.newText(FONT.get(30))
 local timer = 0
 local whenItsReady = false
 local clearNotice
+local overallProgress = {
+    rank = { 0, 0, 0, 0, 0 },
+    wreath = { [0] = 0, 0, 0, 0, 0, 0, 0 },
+    countStart = 0,
+    ptGet = 0,
+    ptAll = 0,
+    ptText = "0/0 Pts",
+}
 
 local function refreshAchvList(canShuffle)
+    overallProgress.rank = TABLE.new(0, 5)
+    overallProgress.wreath = TABLE.new(0, 6)
+    overallProgress.wreath[0] = 0
+    overallProgress.ptGet = 0
+    overallProgress.ptAll = 0
     TABLE.clear(achvList)
     for i = 1, #Achievements do
         local achv = Achievements[i]
@@ -45,14 +58,20 @@ local function refreshAchvList(canShuffle)
             progress = 0
             score = ACHV[achv.id] and "DONE!" or "---"
         else
-            rank = achv.rank(ACHV[achv.id] or achv.noScore or 0)
-            progress = rank < 5 and rank % 1 or rank % 1 / .9999
+            local r = achv.rank(ACHV[achv.id] or achv.noScore or 0)
+            rank = floor(r)
+            progress = r < 5 and r % 1 or r % 1 / .9999
             score = not ACHV[achv.id] and "---" or
                 { COLOR.LL, achv.scoreSimp(ACHV[achv.id]), COLOR.DL, achv.scoreFull and
                 "   " .. achv.scoreFull(ACHV[achv.id]) or "" }
-            if rank >= 5 then
-                wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, rank % 1))
-                if wreath == 0 then wreath = nil end
+            if r >= 5 then
+                wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, r % 1))
+            end
+            if achv.type == 'competitive' then
+                overallProgress.rank[rank] = overallProgress.rank[rank] + 1
+                if wreath then overallProgress.wreath[wreath] = overallProgress.wreath[wreath] + 1 end
+                overallProgress.ptGet = overallProgress.ptGet + floor(rank)
+                overallProgress.ptAll = overallProgress.ptAll + 5
             end
         end
         tempText:set(achv.desc)
@@ -69,8 +88,26 @@ local function refreshAchvList(canShuffle)
             hidden = achv.hide ~= FALSE,
         })
     end
-
     if M.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
+    overallProgress.ptText = overallProgress.ptGet .. "/" .. overallProgress.ptAll .. " Pts"
+    if overallProgress.ptGet < overallProgress.ptAll then
+        for i = 1, 5 do
+            if overallProgress.rank[i] > 0 then
+                overallProgress.countStart = i
+                break
+            end
+        end
+    else
+        for i = 0, 6 do
+            if overallProgress.wreath[i] > 0 then
+                overallProgress.countStart = i
+                break
+            end
+        end
+        if overallProgress.countStart == 6 then
+            overallProgress.countStart = false
+        end
+    end
 end
 
 local function submit(id, score, silent)
@@ -307,7 +344,7 @@ function scene.draw()
                 gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
                 gc_mDraw(texture.glint_3, 65, 65, 0, .42)
                 gc_setBlendMode('alpha')
-                if a.wreath then
+                if a.wreath and a.wreath > 0 then
                     gc_setColor(1, 1, 1)
                     gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
                 end
@@ -364,6 +401,30 @@ function scene.draw()
         gc_print("ACHIEVEMENTS", 15, 68, 0, 1, -1)
     else
         gc_print("ACHIEVEMENTS", 15, 0)
+    end
+
+    -- Badge (wreath) count
+    if STAT.maxFloor >= 10 then
+        gc_replaceTransform(SCR.xOy_ur)
+        if overallProgress.ptGet < overallProgress.ptAll then
+            for i = overallProgress.countStart, 5 do gc_print(overallProgress.rank[i], -1250 + 40 + 150 * i) end
+            gc_printf(overallProgress.ptText, -360, 0, 350, 'right')
+            gc_setColor(1, 1, 1)
+            for i = overallProgress.countStart, 5 do
+                gc_mDraw(TEXTURE.stat.achievement.frame[i], -1250 + 150 * i, 35, 0, .26)
+            end
+        elseif overallProgress.countStart then
+            for i = overallProgress.countStart, 6 do gc_print(overallProgress.wreath[i], -1100 + 40 + 160 * i) end
+            gc_setColor(1, 1, 1)
+            for i = overallProgress.countStart, 6 do
+                gc_mDraw(
+                    i > 0 and TEXTURE.stat.achievement.wreath[i] or TEXTURE.stat.achievement.frame[5],
+                    -1100 + 160 * i, 35, 0, .26
+                )
+            end
+        else
+            gc_printf("CONGRATULATIONS!   THANKS FOR PLAYING.", -1610, 0, 1600, 'right')
+        end
     end
 
     -- Bottom bar & text
