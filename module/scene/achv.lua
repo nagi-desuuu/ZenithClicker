@@ -268,18 +268,18 @@ function scene.draw()
             local a = achvList[i]
             local A = Achievements[a.id]
             gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
-            -- Bottom
+            -- Bottom rectangle
             gc_setColor(0, 0, 0, .626)
             gc_rectangle('fill', 0, 0, 600, 130)
-            -- Flash Notice
+            -- Flashing notice
             if AchvNotice[a.id] then
                 gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + M.VL * 4.2)))
                 gc_rectangle('fill', 0, 0, 600, 130)
             end
-            -- Badge
+            -- Badge base
             gc_setColor(1, 1, 1)
             gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
-            -- Progress
+            -- Progress ring
             if a.progress > 0 then
                 if colorRev then gc_setColor(COLOR.lR) end
                 if a.progress < 1 then
