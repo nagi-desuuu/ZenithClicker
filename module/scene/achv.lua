@@ -26,6 +26,7 @@ local M = GAME.mod
 ---@field wreath? number
 ---@field progress number
 ---@field score table
+---@field type string
 ---@field hidden boolean
 
 ---@type (AchvItem | EmptyAchv)[]
@@ -90,32 +91,48 @@ local function refreshAchvList(canShuffle)
                 wreath = wreath,
                 progress = progress,
                 score = score,
+                type = A.type,
                 hidden = A.hide ~= FALSE,
             })
         end
     end
     if canShuffle then
-        if M.MS == 1 then
-            local s, e
+        if M.NH == 2 then
+            TABLE.foreach(achvList, function(v) return not v.id end, true)
+        end
+
+        if M.DH == 2 then
             for i = 1, #achvList do
-                local a = achvList[i]
-                if not s then
-                    if a.id then
-                        s = i
-                    end
-                elseif not e then
-                    if not a.id or i == #achvList then
-                        e = i - 1
-                    end
-                end
-                if e then
-                    for j, a2 in next, TABLE.shuffle(TABLE.sub(achvList, s, e)) do achvList[s + j - 1] = a2 end
-                    s, e = nil, nil
+                if achvList[i].name then
+                    local a = achvList[i]
+                    a.name =
+                        a.name:sub(1, 1) ..
+                        table.concat(TABLE.shuffle(a.name:sub(2, -2):atomize())) ..
+                        a.name:sub(-1)
                 end
             end
-        elseif M.MS == 2 then
-            TABLE.foreach(achvList, function(v) return not v.id end, true)
-            TABLE.shuffle(achvList)
+        end
+
+        local s, e
+        for i = 1, #achvList do
+            if not s then
+                if achvList[i].id then
+                    s = i
+                end
+            elseif not e then
+                if not achvList[i].id then
+                    e = i - 1
+                elseif i == #achvList then
+                    e = i
+                end
+            end
+            if e then
+                local buffer = TABLE.sub(achvList, s, e)
+                if M.MS > 0 then TABLE.shuffle(buffer) end
+                if M.GV > 0 then table.sort(buffer, function(i1, i2) return (i1.name < i2.name) == (M.GV == 1) end) end
+                for j, a2 in next, buffer do achvList[s + j - 1] = a2 end
+                s, e = nil, nil
+            end
         end
     end
 
@@ -287,6 +304,7 @@ function scene.update(dt)
             timer = 0
         end
     end
+    if M.EX == 2 then scroll = min(scroll + .26, maxScroll) end
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
 end
 
@@ -346,9 +364,19 @@ function scene.draw()
                 end
             else
                 local A = Achievements[a.id]
-                gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
+                if M.DP == 0 then
+                    gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
+                elseif M.DP == 1 then
+                    gc_ucs_move('m', i % 2 == 1 and -600 or 0, floor((i - 1) / 2) * 140)
+                else
+                    gc_ucs_move('m', i % 2 == 1 and -626 or 26, floor((i - 1) / 2) * 140)
+                end
                 -- Bottom rectangle
-                gc_setColor(0, 0, 0, .626)
+                if M.EX > 0 and a.type ~= 'issued' and (a.wreath or 0) < 6 then
+                    gc_setColor(.26 + .1 * sin(t * 2.6 + ceil(i / 2) * 1.2), 0, 0, .626)
+                else
+                    gc_setColor(0, 0, 0, .626)
+                end
                 gc_rectangle('fill', 0, 0, 600, 130)
                 -- Flashing notice
                 if AchvNotice[a.id] then
