@@ -94,7 +94,31 @@ local function refreshAchvList(canShuffle)
             })
         end
     end
-    if M.MS == 2 and canShuffle then TABLE.shuffle(achvList) end
+    if canShuffle then
+        if M.MS == 1 then
+            local s, e
+            for i = 1, #achvList do
+                local a = achvList[i]
+                if not s then
+                    if a.id then
+                        s = i
+                    end
+                elseif not e then
+                    if not a.id or i == #achvList then
+                        e = i - 1
+                    end
+                end
+                if e then
+                    for j, a2 in next, TABLE.shuffle(TABLE.sub(achvList, s, e)) do achvList[s + j - 1] = a2 end
+                    s, e = nil, nil
+                end
+            end
+        elseif M.MS == 2 then
+            TABLE.foreach(achvList, function(v) return not v.id end, true)
+            TABLE.shuffle(achvList)
+        end
+    end
+
     overallProgress.ptText = overallProgress.ptGet .. "/" .. overallProgress.ptAll .. " Pts"
     if overallProgress.ptGet < overallProgress.ptAll then
         for i = 1, 5 do
@@ -313,7 +337,7 @@ function scene.draw()
                 if a.title then
                     gc_ucs_move('m', i % 2 == 1 and -605 or 5, floor((i - 1) / 2) * 140)
                     gc_setColor(clr.L)
-                    gc_print(a.title, 10, 62,0,1.8)
+                    gc_print(a.title, 10, 62, 0, 1.8)
                     gc_ucs_back()
                 end
             else
