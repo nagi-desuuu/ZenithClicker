@@ -152,7 +152,7 @@ scene.widgetList = {
                     MSG('dark', "New name is the same as the old one.")
                     break
                 end
-                if newName:sub(1, 4) == 'ANON-' or newName:sub(1, 4) == 'ANON_' then
+                if newName:match('^ANON[-_]') then
                     MSG('dark', "You can’t enter ANON as your new name.")
                     break
                 end
