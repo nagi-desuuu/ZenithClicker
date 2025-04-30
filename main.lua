@@ -21,6 +21,8 @@ local function q(oy, n, size)
         1971, 1608
     )
 end
+local function aq(x, y) return { 1, GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 2048, 2304) } end
+local function aq2(x, y) return { 2, GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 2048, 2304) } end
 TEXTURE = {
     star0 = assets 'crystal-dark.png',
     star1 = assets 'crystal.png',
@@ -159,33 +161,154 @@ TEXTURE = {
             assets 'rank/x.png',
             assets 'rank/x+.png',
         },
-        achievement = {
-            frame = {
-                [0] = assets 'achievements/frames/none.png',
-                assets 'achievements/frames/bronze.png',
-                assets 'achievements/frames/silver.png',
-                assets 'achievements/frames/gold.png',
-                assets 'achievements/frames/platinum.png',
-                assets 'achievements/frames/diamond.png',
-                assets 'achievements/frames/issued.png',
-                ring = assets 'achievements/frames/ring-piece.png'
-            },
-            wreath = {
-                assets 'achievements/wreaths/t100.png',
-                assets 'achievements/wreaths/t50.png',
-                assets 'achievements/wreaths/t25.png',
-                assets 'achievements/wreaths/t10.png',
-                assets 'achievements/wreaths/t5.png',
-                assets 'achievements/wreaths/t3.png',
-            },
-            glint_1 = assets 'achievements/glint-a.png',
-            glint_2 = assets 'achievements/glint-b.png',
-            glint_3 = assets 'achievements/glint-c.png',
-            competitive = assets 'achievements/competitive.png',
-            hidden = assets 'achievements/hidden.png',
-            event = assets 'achievements/event.png',
-            extra = assets 'achievements/extra.png',
+    },
+    achievement = {
+        icons = {
+            assets 'achievements/icons1.png',
+            assets 'achievements/icons2.png',
         },
+        iconQuad = {
+            _undef = aq(8, 8),
+            zenith_explorer = aq(2, 3),
+            zenith_explorer_plus = aq(2, 3),
+            zenith_speedrun = aq(2, 6),
+            zenith_speedrun_plus = aq(2, 6),
+            zenith_speedrunner = aq(2, 6),
+            supercharged = aq(5, 6),
+            supercharged_plus = aq(5, 6),
+            clicker_speedrun = aq(5, 1),
+            typer_speedrun = aq(5, 1),
+            perfect_speedrun = aq(5, 6),
+            museum_heist = aq(5, 6),
+            ultra_dash = aq(5, 6),
+            the_perfectionist = aq(5, 6),
+            teraspeed = aq(5, 6),
+            EX = aq(3, 3),
+            NH = aq(7, 3),
+            MS = aq(8, 3),
+            GV = aq(6, 3),
+            VL = aq(5, 3),
+            DH = aq(4, 3),
+            IN = aq(1, 4),
+            AS = aq(2, 4),
+            DP = aq(3, 4),
+            zenith_challenger = aq(8, 2),
+            GVIN = aq(6, 4),
+            ASNH = aq(4, 6),
+            DPEX = aq(8, 5),
+            GVNH = aq(4, 4),
+            DHMSNH = aq(5, 4),
+            DHEXNH = aq(7, 4),
+            DHEXMSVL = aq(8, 4),
+            ASEXVL = aq(1, 7),
+            swamp_water_lite = aq(5, 7),
+            swamp_water = aq(2, 5),
+            -- swamp_water_pro = aq(), -- Need New
+            rEX = aq(7, 9),
+            rNH = aq(3, 9),
+            rMS = aq(4, 9),
+            rGV = aq(2, 9),
+            rVL = aq(1, 9),
+            rDH = aq(8, 9),
+            rIN = aq(5, 9),
+            rAS = aq(6, 9),
+            rDP = aq(7, 7),
+            the_harbinger = aq(5, 8),
+            divine_challenger = aq2(3, 1),
+            -- DHEXrGV = aq(), -- Need New: Demonic Speed
+            -- rASrGV = aq(), -- Need New: Whizzing Wizard
+            -- NHrAS = aq(), -- Need New: Pristine
+            -- GVrASrDH = aq(), -- Need New: Storage Overload
+            -- DHNHrASrIN = aq(), -- Need New: Steganography
+            -- rGVrNHrVL = aq(), -- Need New: Sweatshop
+            -- DPGVMSrNH = aq(), -- Need New: Grand-Master! Rounds
+            -- rINrNH = aq(), -- Need New: Instant Memory
+            -- EXGVNHrMS = aq(), -- Need New: Bnuuy
+            -- rDPrEX = aq(), -- Need New: Tyrannical Dyarchy
+            VLrDPrIN = aq2(1, 5), -- Painful Relapse
+            -- rDHrIN = aq(), -- Need New: Brain Capacity
+            swamp_water_lite_plus = aq2(5, 1),
+            swamp_water_plus = aq2(6, 1),
+            -- swamp_water_pro_plus = aq(), -- Need rev of swamp_water_pro
+            multitasker = aq(7, 2),
+            effective = aq(7, 2),
+            blight = aq(1, 2),       -- Need New
+            desolation = aq(1, 2),   -- Need New
+            havoc = aq(1, 2),        -- Need New
+            pandemonium = aq(1, 2),  -- Need New
+            inferno = aq(1, 2),      -- Need New
+            purgatory = aq(1, 2),    -- Need New
+            perdition = aq(1, 2),    -- Need New
+            cataclysm = aq(1, 2),    -- Need New
+            annihilation = aq(1, 2), -- Need New
+            armageddon = aq(1, 2),   -- Need New
+            abyss = aq(1, 2),        -- Need New
+            block_rationing = aq(2, 7),
+            talentless = aq(3, 7),
+            the_responsible_one = aq(1, 6),
+            guardian_angel = aq(3, 6),
+            lovers_promise = aq(8, 7),
+            -- moon_struck = aq(),
+            -- powerless = aq(), -- Need New
+            -- the_pacifist = aq(), -- Need New
+            sunk_cost = aq(5, 2),
+            knife_edge = aq(6, 2),
+            divine_rejection = aq(6, 7),
+            carried = aq(3, 8),
+            -- honeymoon = aq(),
+            -- break_up = aq(),
+            -- patience_is_a_virtue = aq(), -- Need New
+            the_escape_artist = aq(1, 5),
+            -- fel_magic = aq(), -- Need New
+            -- arrogance = aq(), -- Need New
+            -- psychokinesis = aq(), -- Need New
+            -- identity = aq(), -- Need New
+            -- zenith_relocation = aq(), -- Need New
+            respectful = aq(2, 1),
+            zenith_traveler = aq(1, 8),
+            -- intended_glitch = aq(), -- Need New
+            somersault = aq(4, 1),
+            dark_force = aq(3, 1),
+            skys_the_limit = aq(5, 10),
+            superluminal = aq(7, 10),
+            mastery = aq2(1, 2),
+            terminal_velocity = aq2(1, 2),
+            and_then_nothing = aq(4, 8),
+            fruitless_effort = aq(6, 7),
+            -- speedrun_speedruning = aq(), -- Need New
+            -- worn_out = aq(), -- Need New
+            final_defiance = aq(3, 2),
+            royal_resistance = aq2(1, 1),
+            lovers_stand = aq2(1, 1),
+            false_god = aq(2, 8),
+            supremacy = aq2(2, 2),
+            the_completionist = aq2(2, 2),
+        },
+        frame = {
+            [0] = assets 'achievements/frames/none.png',
+            assets 'achievements/frames/bronze.png',
+            assets 'achievements/frames/silver.png',
+            assets 'achievements/frames/gold.png',
+            assets 'achievements/frames/platinum.png',
+            assets 'achievements/frames/diamond.png',
+            assets 'achievements/frames/issued.png',
+        },
+        ring = assets 'achievements/frames/ring-piece.png',
+        wreath = {
+            assets 'achievements/wreaths/t100.png',
+            assets 'achievements/wreaths/t50.png',
+            assets 'achievements/wreaths/t25.png',
+            assets 'achievements/wreaths/t10.png',
+            assets 'achievements/wreaths/t5.png',
+            assets 'achievements/wreaths/t3.png',
+        },
+        glint_1 = assets 'achievements/glint-a.png',
+        glint_2 = assets 'achievements/glint-b.png',
+        glint_3 = assets 'achievements/glint-c.png',
+        competitive = assets 'achievements/competitive.png',
+        hidden = assets 'achievements/hidden.png',
+        event = assets 'achievements/event.png',
+        extra = assets 'achievements/extra.png',
     },
 
     logo = assets 'icon.png',
@@ -336,7 +459,7 @@ AchvData = {
     { id = 'achv_diamond',  bg = COLOR.DP,          fg = COLOR.lP, fg2 = COLOR.lB },
     { id = 'achv_issued',   bg = COLOR.DM,          fg = COLOR.lM, fg2 = COLOR.lM },
 }
-for i = 0, 6 do MSG.addCategory(AchvData[i].id, AchvData[i].bg, COLOR.L, TEXTURE.stat.achievement.frame[i]) end
+for i = 0, 6 do MSG.addCategory(AchvData[i].id, AchvData[i].bg, COLOR.L, TEXTURE.achievement.frame[i]) end
 
 local msgTime = 0
 local bufferedMsg = {}

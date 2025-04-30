@@ -38,7 +38,7 @@ local timer = 0
 local whenItsReady = false
 local clearNotice
 local overallProgress = {
-    rank = { 0, 0, 0, 0, 0 },
+    rank = { [0] = 0, 0, 0, 0, 0, 0 },
     wreath = { [0] = 0, 0, 0, 0, 0, 0, 0 },
     countStart = 0,
     ptGet = 0,
@@ -48,6 +48,7 @@ local overallProgress = {
 
 local function refreshAchvList(canShuffle)
     overallProgress.rank = TABLE.new(0, 5)
+    overallProgress.rank[0] = 0
     overallProgress.wreath = TABLE.new(0, 6)
     overallProgress.wreath[0] = 0
     overallProgress.ptGet = 0
@@ -138,7 +139,7 @@ local function refreshAchvList(canShuffle)
 
     overallProgress.ptText = overallProgress.ptGet .. "/" .. overallProgress.ptAll .. " Pts"
     if overallProgress.ptGet < overallProgress.ptAll then
-        for i = 1, 5 do
+        for i = 0, 5 do
             if overallProgress.rank[i] > 0 then
                 overallProgress.countStart = i
                 break
@@ -220,6 +221,9 @@ local function refreshAchivement()
         for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
         if _t >= 9 then issue('supremacy') end
     end
+    _t = 0
+    for id in next, MD.name do _t = _t + BEST.speedrun[id] end
+    submit('zenith_speedrunner', _t, true)
     _t = 0
     for id in next, MD.name do _t = _t + BEST.highScore[id] end
     submit('zenith_challenger', _t, true)
@@ -312,7 +316,7 @@ local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
 local gc_setColor, gc_rectangle, gc_print, gc_printf = gc.setColor, gc.rectangle, gc.print, gc.printf
 local gc_ucs_move, gc_ucs_back = GC.ucs_move, GC.ucs_back
-local gc_setAlpha, gc_mRect, gc_mDraw = GC.setAlpha, GC.mRect, GC.mDraw
+local gc_setAlpha, gc_mRect, gc_mDraw, gc_mDrawQ = GC.setAlpha, GC.mRect, GC.mDraw, GC.mDrawQ
 local gc_stc_setComp, gc_stc_arc, gc_stc_stop = GC.stc_setComp, GC.stc_arc, GC.stc_stop
 local gc_setBlendMode = GC.setBlendMode
 function scene.draw()
@@ -347,7 +351,8 @@ function scene.draw()
         local t = love.timer.getTime()
         local ea = (colorRev and -.5 or .5) * M.AS ^ 2 * t
         local ka = colorRev and -3.1416 or 3.1416
-        local texture = TEXTURE.stat.achievement
+        local texture = TEXTURE.achievement
+        local notAllRank5 = overallProgress.ptGet < overallProgress.ptAll
         gc_translate(0, -420 - scroll1)
         for i = 1 + 2 * max(floor(scroll1 / 140) - 1, 0), min(2 * (floor(scroll1 / 140) + 8), #achvList) do
             local a = achvList[i]
@@ -372,7 +377,7 @@ function scene.draw()
                     gc_ucs_move('m', i % 2 == 1 and -626 or 26, floor((i - 1) / 2) * 140)
                 end
                 -- Bottom rectangle
-                if M.EX > 0 and a.type ~= 'issued' and (a.wreath or 0) < 6 then
+                if M.EX > 0 and a.type == 'competitive' and (notAllRank5 and a.rank < 5 or not notAllRank5 and (a.wreath or 0) < 6) then
                     gc_setColor(.26 + .1 * sin(t * 2.6 + ceil(i / 2) * 1.2), 0, 0, .626)
                 else
                     gc_setColor(0, 0, 0, .626)
@@ -400,8 +405,8 @@ function scene.draw()
                             ea + 1.0472 + ka * a.progress,
                             63, 26)
                     end
-                    gc_mDraw(texture.frame.ring, 65, 65, 0, .42)
-                    gc_mDraw(texture.frame.ring, 65, 65, 3.1416, .42)
+                    gc_mDraw(texture.ring, 65, 65, 0, .42)
+                    gc_mDraw(texture.ring, 65, 65, 3.1416, .42)
                     gc_stc_stop()
                 end
                 -- Glint
@@ -414,12 +419,24 @@ function scene.draw()
                     gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.6))
                     gc_mDraw(texture.glint_3, 65, 65, 0, .42)
                     gc_setBlendMode('alpha')
-                    if a.wreath and a.wreath > 0 then
-                        gc_setColor(1, 1, 1)
-                        gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
+                end
+
+                -- Icon
+                if a.rank > 0 then
+                    local slice = texture.iconQuad[a.id]
+                    if slice then
+                        gc_setColor(0, 0, 0, .872)
+                        gc_mDrawQ(texture.icons[slice[1]], slice[2] or texture.iconQuad._undef, 65, 65, 0, .24)
                     end
                 end
 
+                -- Wreath
+                if a.wreath and a.wreath > 0 then
+                    gc_setColor(1, 1, 1)
+                    gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
+                end
+
+                -- Texts
                 gc_setColor(AchvData[a.rank].fg2)
                 gc_print(a.score, 135, 35, 0)
                 gc_setColor(colorRev and COLOR.LR or COLOR.L)
@@ -478,18 +495,18 @@ function scene.draw()
     if STAT.maxFloor >= 10 then
         gc_replaceTransform(SCR.xOy_ur)
         if overallProgress.ptGet < overallProgress.ptAll then
-            for i = overallProgress.countStart, 5 do gc_print(overallProgress.rank[i], -1250 + 40 + 150 * i) end
+            for i = overallProgress.countStart, 5 do gc_print(overallProgress.rank[i], -1150 + 40 + 140 * i) end
             gc_printf(overallProgress.ptText, -360, 0, 350, 'right')
             gc_setColor(1, 1, 1)
             for i = overallProgress.countStart, 5 do
-                gc_mDraw(TEXTURE.stat.achievement.frame[i], -1250 + 150 * i, 35, 0, .26)
+                gc_mDraw(TEXTURE.achievement.frame[i], -1150 + 140 * i, 35, 0, .26)
             end
         elseif overallProgress.countStart then
             for i = overallProgress.countStart, 6 do gc_print(overallProgress.wreath[i], -1100 + 40 + 160 * i) end
             gc_setColor(1, 1, 1)
             for i = overallProgress.countStart, 6 do
                 gc_mDraw(
-                    i > 0 and TEXTURE.stat.achievement.wreath[i] or TEXTURE.stat.achievement.frame[5],
+                    i > 0 and TEXTURE.achievement.wreath[i] or TEXTURE.achievement.frame[5],
                     -1100 + 160 * i, 35, 0, .26
                 )
             end

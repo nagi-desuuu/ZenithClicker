@@ -145,6 +145,7 @@ function Card:setActive(auto, key)
                     local l = { -3, -2, -1, 1, 2, 3 }
                     CD[(p + table.remove(l, rnd(4, 6)) - 1) % #CD + 1]:setActive(true)
                     CD[(p + table.remove(l, rnd(1, 3)) - 1) % #CD + 1]:setActive(true)
+                    GAME.achv_escapeBurnt = true
                     if M.AS == 2 then
                         CD[(p + table.remove(l, rnd(3, 4)) - 1) % #CD + 1]:setActive(true)
                         CD[(p + table.remove(l, rnd(1, 2)) - 1) % #CD + 1]:setActive(true)

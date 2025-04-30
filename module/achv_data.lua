@@ -61,14 +61,6 @@ Achievements = {
         desc = [[HFD without any mods]],
         quote = [[Uncover the mysteries of the Zenith Tower.]],
     },
-    { -- zenith_explorer_plus
-        ex = true,
-        id = 'zenith_explorer_plus',
-        name = "Zenith Explorer+",
-        desc = [[HFD]],
-        quote = [[Uncover the mysteries of the Zenith Tower.]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 8000),
-    },
     { -- zenith_speedrun
         id = 'zenith_speedrun',
         name = "Zenith Speedrun",
@@ -79,6 +71,14 @@ Achievements = {
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 62.6),
         hide = function() return STAT.totalGiga == 0 end,
+    },
+    { -- zenith_explorer_plus
+        ex = true,
+        id = 'zenith_explorer_plus',
+        name = "Zenith Explorer+",
+        desc = [[HFD]],
+        quote = [[Uncover the mysteries of the Zenith Tower.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 8000),
     },
     { -- zenith_speedrun_plus
         ex = true,
@@ -92,6 +92,28 @@ Achievements = {
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 56.7),
         hide = function() return STAT.totalGiga == 0 end,
     },
+    { -- zenith_challenger
+        ex = true,
+        id = 'zenith_challenger',
+        name = "Zenith Challenger",
+        desc = [[Total best altitude with 1 mod enabled]],
+        quote = [[Challenge the reality of the Zenith Tower.]],
+        credit = "@5han",
+        rank = numberRank(0, 14000, 26000, 36000, 42000, 46000, 60000),
+        scoreSimp = function(h) return string.format("%.0fm", h) end,
+        hide = TRUE,
+    },
+    { -- zenith_speedrunner
+        id = 'zenith_speedrunner',
+        name = "Zenith Speedrunner",
+        desc = [[Sum of best F10 with GIGASPEED time using each mod]],
+        quote = [[F10 All%]],
+        comp = '<',
+        noScore = 2600,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(2600, 2000, 1500, 1260, 1100, 1000, 900),
+        hide = function() return STAT.totalGiga == 0 end,
+    },
     { -- supercharged
         id = 'supercharged',
         name = "Supercharged",
@@ -100,18 +122,6 @@ Achievements = {
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
         rank = numberRank(0, 20, 40, 65, 90, 120, 180),
     },
-    { -- supercharged_plus
-        ex = true,
-        id = 'supercharged_plus',
-        name = "Supercharged+",
-        desc = [[Highest Back-to-Back chain reached]],
-        quote = [[Supercharged Any%]],
-        scoreSimp = function(b2b) return "B2B x" .. b2b end,
-        rank = numberRank(0, 20, 40, 65, 90, 120, 180),
-    },
-
-    { title = "Supercharged", quote = [[禁忌「フォーオブアカインド」]] }, -- placeholder
-    { quote = [[禁忌「カゴメカゴメ」]] }, -- placeholder
     { -- clicker_speedrun
         ex = true,
         id = 'clicker_speedrun',
@@ -122,6 +132,15 @@ Achievements = {
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(94.2, 72, 55, 42, 33, 26, 20),
+    },
+    { -- supercharged_plus
+        ex = true,
+        id = 'supercharged_plus',
+        name = "Supercharged+",
+        desc = [[Highest Back-to-Back chain reached]],
+        quote = [[Supercharged Any%]],
+        scoreSimp = function(b2b) return "B2B x" .. b2b end,
+        rank = numberRank(0, 20, 40, 65, 90, 120, 180),
     },
     { -- typer_speedrun
         ex = true,
@@ -134,61 +153,30 @@ Achievements = {
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(72, 55, 42, 33, 26, 22, 19),
     },
-    { -- perfect_speedrun
+    { -- multitasker
         ex = true,
-        id = 'perfect_speedrun',
-        name = "Perfect Speedrun",
-        desc = [[Reach 75 Back-to-Back as fast as possible]],
-        quote = [[Supercharged B75%]],
-        comp = '<',
-        noScore = 2600,
-        scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(150, 115, 90, 70, 55, 45, 40),
+        id = 'multitasker',
+        name = "Multitasker",
+        desc = [[Highest altitude*modPoints]],
+        quote = [[Master doing everything, then master doing everything.]],
+        credit = "@Flowerling",
+        rank = numberRank(0, 4200, 6200, 9420, 12600, 16200, 26000),
+        scoreSimp = function(rank) return floor(rank) .. "m·MP" end,
+        hide = TRUE,
     },
-    { -- museum_heist
+    { -- effective
         ex = true,
-        id = 'museum_heist',
-        name = "Museum Heist",
-        desc = [[Shortest time spent in F5 with DH DP]],
-        quote = [[Less time, less evidence.]],
-        comp = '<',
-        noScore = 2600,
-        scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(35, 26, 20, 12, 6.2, 4.2, 2.6),
-        hide = function() return STAT.maxFloor < 8 end,
+        id = 'effective',
+        name = "Effective",
+        desc = [[Highest altitude*ZPmul]],
+        quote = [[Master doing everything efficiently.]],
+        rank = numberRank(0, 2600, 4200, 6200, 10000, 12600, 16200),
+        scoreSimp = function(rank) return floor(rank) .. " ZP" end,
+        hide = TRUE,
     },
-    { -- ultra_dash
-        ex = true,
-        id = 'ultra_dash',
-        name = "Ultra Dash",
-        desc = [[Shortest time spent in F9]],
-        quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
-        comp = '<',
-        noScore = 2600,
-        scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(62, 26, 16, 12, 6.2, 2.6, 1.0),
-    },
-    { -- the_perfectionist
-        ex = true,
-        id = 'the_perfectionist',
-        name = "The Perfectionist",
-        desc = [[HFD with no imperfect pass or getting hurt]],
-        quote = [[Supercharged Perf%]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-    },
-    { -- teraspeed
-        ex = true,
-        id = 'teraspeed',
-        name = "TeraSpeed",
-        desc = [[Highest rank reached]],
-        quote = [[Supercharged Inf%]],
-        rank = numberRank(12, 14, 15, 16, 17, 18, 20),
-        scoreSimp = function(rank) return "Rank " .. rank end,
-    },
-    { quote = [[禁忌「恋の迷路」]] }, -- placeholder
 
-    { title = "Mods", quote = [[禁弾「スターボウブレイク」]] }, -- placeholder
-    { quote = [[禁弾「カタディオプトリック」]] }, -- placeholder
+    { title = "Mods", quote = [[禁忌「フォーオブアカインド」]] }, -- placeholder
+    { quote = [[禁忌「カゴメカゴメ」]] }, -- placeholder
     { -- EX
         id = 'EX',
         name = "The Emperor",
@@ -255,17 +243,6 @@ Achievements = {
         quote = [[Love, and resign yourself to the fate of another.]],
         hide = function() return STAT.maxFloor < 8 end,
     },
-    { -- zenith_challenger
-        ex = true,
-        id = 'zenith_challenger',
-        name = "Zenith Challenger",
-        desc = [[Total best altitude with 1 mod enabled]],
-        quote = [[Challenge the reality of the Zenith Tower.]],
-        credit = "@5han",
-        rank = numberRank(0, 14000, 26000, 36000, 42000, 46000, 60000),
-        scoreSimp = function(h) return string.format("%.0fm", h) end,
-        hide = TRUE,
-    },
     { -- GVIN
         id = 'GVIN',
         name = "The Grandmaster",
@@ -303,14 +280,6 @@ Achievements = {
         quote = [["Escape has become a distant dream, yet still we struggle..."]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return STAT.maxFloor < 6 end,
-    },
-    { -- ASDHMS
-        id = 'ASDHMS',
-        name = "The Escape Artist",
-        desc = [[HFD WUT "Messier Garbage", "Double Hole" and "All-Spin" mods]],
-        quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- DHEXNH
         id = 'DHEXNH',
@@ -362,8 +331,8 @@ Achievements = {
         hide = function() return STAT.maxFloor < 9 end,
     },
 
-    { title = "Reversed Mods", quote = [[禁弾「過去を刻む時計」]] }, -- placeholder
-    { quote = [[秘弾「そして誰もいなくなるか？」]] }, -- placeholder
+    { title = "Reversed Mods", quote = [[禁忌「恋の迷路」]] }, -- placeholder
+    { quote = [[禁弾「スターボウブレイク」]] }, -- placeholder
     { -- rEX
         id = 'rEX',
         name = "The Tyrant",
@@ -597,28 +566,9 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
-    { -- multitasker
-        ex = true,
-        id = 'multitasker',
-        name = "Multitasker",
-        desc = [[Highest altitude*modPoints]],
-        quote = [[Master doing everything, then master doing everything.]],
-        credit = "@Flowerling",
-        rank = numberRank(0, 2600, 4200, 6200, 10000, 16200, 26000),
-        scoreSimp = function(rank) return floor(rank) .. "m·MP" end,
-    },
-    { -- effective
-        ex = true,
-        id = 'effective',
-        name = "Effective",
-        desc = [[Highest altitude*ZPmul]],
-        quote = [[Master doing everything efficiently.]],
-        rank = numberRank(0, 2600, 4200, 6200, 10000, 12600, 16200),
-        scoreSimp = function(rank) return floor(rank) .. " ZP" end,
-    },
 
-    { title = "Why", quote = [[QED「495年の波紋」]] }, -- placeholder
-    { quote = [[禁忌「フォービドゥンフルーツ」]] }, -- placeholder
+    { title = "Why", quote = [[禁弾「カタディオプトリック」]] }, -- placeholder
+    { quote = [[禁弾「過去を刻む時計」]] }, -- placeholder
     { -- blight
         ex = true,
         id = 'blight',
@@ -718,10 +668,10 @@ Achievements = {
         rank = floorRank(1, 1, 1, 1, 1, 2, 3),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
-    { quote = [[禁忌「禁じられた遊び」]] }, -- placeholder
+    { quote = [[秘弾「そして誰もいなくなるか？」]] }, -- placeholder
 
-    { title = "Special", quote = [[紅魔符「ブラッディカタストロフ」]] }, -- placeholder
-    { quote = [[紅神符「十七条のカタストロフ」]] }, -- placeholder
+    { title = "Special", quote = [[QED「495年の波紋」]] }, -- placeholder
+    { quote = [[禁忌「フォービドゥンフルーツ」]] }, -- placeholder
     { -- block_rationing
         id = 'block_rationing',
         name = "Block Rationing",
@@ -783,8 +733,6 @@ Achievements = {
         desc = [[HFD without building up surge]],
         quote = [["We have a similar goal to climb the Zenith Tower in many ways."]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
-        credit = "@cmdingo",
-        notUsed = true,
     },
     { -- the_pacifist
         ex = true,
@@ -792,11 +740,11 @@ Achievements = {
         name = "The Pacifist",
         desc = [[Minimum attack before reaching F10]],
         quote = [[Give evil nothing to oppose and it will disappear by itself.]],
+        credit = "@wah",
         rank = numberRankRev(2600, 600, 540, 480, 440, 420, 400),
         scoreSimp = function(atk) return atk .. " Attack" end,
         comp = '<',
         noScore = 2600,
-        credit = "@wah",
         notUsed = true,
     },
     { -- sunk_cost
@@ -823,6 +771,7 @@ Achievements = {
         desc = [[Finish the run exactly before F10]],
         quote = [["And in the end, it doesn't even matter..."]],
         rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
+        scoreSimp = function(h) return string.format("%.2fm", h) end,
     },
     { -- carried
         ex = true,
@@ -860,6 +809,15 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return STAT.maxFloor < 4 end,
     },
+    { -- the_escape_artist
+        id = 'the_escape_artist',
+        name = "The Escape Artist",
+        desc = [[Quest passed with wound triggered WUT "Double Hole Garbage", "Messier Garbage" and "All-Spin" mods]],
+        quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
+        rank = numberRank(0, 10, 26, 50, 70, 90, 126),
+        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
+        hide = function() return STAT.maxFloor < 8 end,
+    },
     { -- fel_magic
         ex = true,
         id = 'fel_magic',
@@ -888,6 +846,62 @@ Achievements = {
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
         hide = function() return STAT.maxFloor < 9 end,
+    },
+    { quote = [[禁忌「禁じられた遊び」]] }, -- placeholder
+
+    { title = "Supercharged Clone", quote = [[紅魔符「ブラッディカタストロフ」]] }, -- placeholder -- @Garbo
+    { quote = [[紅神符「十七条のカタストロフ」]] }, -- placeholder
+    { -- museum_heist
+        ex = true,
+        id = 'museum_heist',
+        name = "Museum Heist",
+        desc = [[Shortest time spent in F5 with DH DP]],
+        quote = [[Less time, less evidence.]],
+        credit = "@Baron",
+        comp = '<',
+        noScore = 2600,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(35, 26, 20, 12, 6.2, 4.2, 2.6),
+        hide = function() return STAT.maxFloor < 8 end,
+    },
+    { -- ultra_dash
+        ex = true,
+        id = 'ultra_dash',
+        name = "Ultra Dash",
+        desc = [[Shortest time spent in F9]],
+        quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
+        comp = '<',
+        noScore = 2600,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(62, 26, 16, 12, 6.2, 2.6, 1.0),
+    },
+    { -- perfect_speedrun
+        ex = true,
+        id = 'perfect_speedrun',
+        name = "Perfect Speedrun",
+        desc = [[Reach 75 Back-to-Back as fast as possible]],
+        quote = [[Supercharged B75%]],
+        comp = '<',
+        noScore = 2600,
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(150, 115, 90, 70, 55, 45, 40),
+    },
+    { -- the_perfectionist
+        ex = true,
+        id = 'the_perfectionist',
+        name = "The Perfectionist",
+        desc = [[HFD with no imperfect pass or getting hurt]],
+        quote = [[Supercharged Perf%]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+    },
+    { -- teraspeed
+        ex = true,
+        id = 'teraspeed',
+        name = "TeraSpeed",
+        desc = [[Highest rank reached]],
+        quote = [[Supercharged Inf%]],
+        rank = numberRank(12, 14, 15, 16, 17, 18, 20),
+        scoreSimp = function(rank) return "Rank " .. rank end,
     },
     { quote = [[紅星符「超人カタストロフ行脚」]] }, -- placeholder
 
@@ -926,16 +940,6 @@ Achievements = {
         desc = [[Enter traveler mode]],
         quote = [[Also known as background debugging mode]],
         type = 'issued',
-    },
-    { -- uninspired
-        ex = true,
-        id = 'uninspired',
-        name = "Uninspired",
-        desc = [[Consecutively restart 100 times]],
-        quote = [[Without the will to even begin, how will you ever improve?]],
-        credit = "@shig @Winterfrost",
-        type = 'issued',
-        notUsed = true,
     },
     { -- intended_glitch
         ex = true,

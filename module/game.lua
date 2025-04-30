@@ -131,7 +131,6 @@ local GAME = {
 
     zenithTraveler = false,
 
-    achv_consecRestart = 0,
     achv_perfectionistH = nil,
     achv_balanceH = nil,
     achv_carriedH = nil,
@@ -141,6 +140,8 @@ local GAME = {
     achv_talentlessH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
+    achv_escapeBurnt = nil,
+    achv_escapeQuest = nil,
     achv_felMagicBurnt = nil,
     achv_felMagicQuest = nil,
 }
@@ -1415,6 +1416,10 @@ function GAME.commit()
 
         SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
 
+        if GAME.achv_escapeBurnt then
+            GAME.achv_escapeBurnt = false
+            GAME.achv_escapeQuest = GAME.achv_escapeQuest + 1
+        end
         if GAME.achv_felMagicBurnt then
             GAME.achv_felMagicBurnt = false
             GAME.achv_felMagicQuest = GAME.achv_felMagicQuest + 1
@@ -1672,7 +1677,6 @@ function GAME.start()
     TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
 
-    GAME.achv_consecRestart = GAME.achv_consecRestart + 1
     GAME.achv_perfectionistH = false
     GAME.achv_balanceH = false
     GAME.achv_carriedH = false
@@ -1682,9 +1686,10 @@ function GAME.start()
     GAME.achv_talentlessH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
+    GAME.achv_escapeBurnt = false
+    GAME.achv_escapeQuest = 0
     GAME.achv_felMagicBurnt = false
     GAME.achv_felMagicQuest = 0
-    if GAME.achv_consecRestart == 100 then IssueAchv('uninspired') end
     if M.DP == 1 then IssueAchv('intended_glitch') end
 end
 
@@ -1851,7 +1856,6 @@ function GAME.finish(reason)
         GAME.refreshResultModIcon()
 
         -- Achievements
-        GAME.achv_consecRestart = 0
         local _t
         if not ACHV.mastery then
             _t = 0
@@ -1879,6 +1883,9 @@ function GAME.finish(reason)
         end
 
         _t = 0
+        for id in next, MD.name do _t = _t + BEST.speedrun[id] end
+        SubmitAchv('zenith_speedrunner', _t, true)
+        _t = 0
         for id in next, MD.name do _t = _t + BEST.highScore[id] end
         SubmitAchv('zenith_challenger', _t, true)
         _t = 0
@@ -1893,7 +1900,7 @@ function GAME.finish(reason)
         if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.roundHeight) end
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
-        -- SubmitAchv('powerless', GAME.achv_powerless2H or roundedH)
+        SubmitAchv('powerless', GAME.achv_powerlessH or GAME.roundHeight)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.roundHeight) end
@@ -1904,6 +1911,8 @@ function GAME.finish(reason)
             if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_talentlessH or GAME.roundHeight)
+        elseif GAME.comboStr == 'ASDHMS' then
+            SubmitAchv('the_escape_artist', GAME.achv_escapeQuest)
         elseif GAME.comboStr == 'rAS' then
             SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
