@@ -243,6 +243,8 @@ function Card:setActive(auto, key)
         end
     else
         SFX.play('card_slide_' .. rnd(4))
+        SFX.play('floor')
+        SFX.play('hold')
     end
 end
 
