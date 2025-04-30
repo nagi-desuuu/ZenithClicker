@@ -319,7 +319,7 @@ function Card:revJump()
                         if C ~= self then
                             local r = rnd()
                             if self.id == 'EX' then r = r * 2.6 end
-                            if self.id == 'MS' then r = max((r - .5) ^ .3333 / 1.5874 + .5, 0) end
+                            if self.id == 'MS' then r = max(sign((r - .5)) * abs(r - .5) ^ .3333 / 1.5874 + .5, 0) end
                             if self.id == 'GV' then r = r * .26 end
                             C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
                         end
