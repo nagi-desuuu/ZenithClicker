@@ -1021,10 +1021,10 @@ Achievements = {
         hide = function() return GAME.completion.EX == 0 end,
         type = 'issued',
     },
-    { -- speedrun_speedruning
+    { -- speedrun_speedrunning
         ex = true,
-        id = 'speedrun_speedruning',
-        name = "Speedrun Speedruning",
+        id = 'speedrun_speedrunning',
+        name = "Speedrun Speedrunning",
         desc = [[Enter GIGASPEED on F1]],
         quote = [[Not much of a speedrun]],
         type = 'issued',

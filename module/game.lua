@@ -731,7 +731,7 @@ function GAME.setGigaspeedAnim(on, finish)
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
 
-        if GAME.floor == 1 then IssueAchv('speedrun_speedruning') end
+        if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
     else
         TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
             :setUnique('giga'):run()

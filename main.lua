@@ -170,19 +170,18 @@ TEXTURE = {
         iconQuad = {
             _undef = aq(8, 8),
             zenith_explorer = aq(2, 3),
-            zenith_explorer_plus = aq(2, 3),
             zenith_speedrun = aq(2, 6),
+            zenith_explorer_plus = aq(2, 3),
             zenith_speedrun_plus = aq(2, 6),
+            zenith_challenger = aq(8, 2),
             zenith_speedrunner = aq(2, 6),
             supercharged = aq(5, 6),
-            supercharged_plus = aq(5, 6),
             clicker_speedrun = aq(5, 1),
+            supercharged_plus = aq(5, 6),
             typer_speedrun = aq(5, 1),
-            perfect_speedrun = aq(5, 6),
-            museum_heist = aq(5, 6),
-            ultra_dash = aq(5, 6),
-            the_perfectionist = aq(5, 6),
-            teraspeed = aq(5, 6),
+            multitasker = aq(7, 2),
+            effective = aq(7, 2),
+
             EX = aq(3, 3),
             NH = aq(7, 3),
             MS = aq(8, 3),
@@ -192,7 +191,6 @@ TEXTURE = {
             IN = aq(1, 4),
             AS = aq(2, 4),
             DP = aq(3, 4),
-            zenith_challenger = aq(8, 2),
             GVIN = aq(6, 4),
             ASNH = aq(4, 6),
             DPEX = aq(8, 5),
@@ -204,6 +202,7 @@ TEXTURE = {
             swamp_water_lite = aq(5, 7),
             swamp_water = aq(2, 5),
             -- swamp_water_pro = aq(), -- Need New
+
             rEX = aq(7, 9),
             rNH = aq(3, 9),
             rMS = aq(4, 9),
@@ -230,8 +229,7 @@ TEXTURE = {
             swamp_water_lite_plus = aq2(5, 1),
             swamp_water_plus = aq2(6, 1),
             -- swamp_water_pro_plus = aq(), -- Need rev of swamp_water_pro
-            multitasker = aq(7, 2),
-            effective = aq(7, 2),
+
             blight = aq(1, 2),       -- Need New
             desolation = aq(1, 2),   -- Need New
             havoc = aq(1, 2),        -- Need New
@@ -243,6 +241,7 @@ TEXTURE = {
             annihilation = aq(1, 2), -- Need New
             armageddon = aq(1, 2),   -- Need New
             abyss = aq(1, 2),        -- Need New
+
             the_escape_artist = aq(1, 5),
             talentless = aq(3, 7),
             block_rationing = aq(2, 7),
@@ -250,7 +249,7 @@ TEXTURE = {
             guardian_angel = aq(3, 6),
             lovers_promise = aq(8, 7),
             -- moon_struck = aq(),
-            -- powerless = aq(), -- Need New
+            powerless = aq(4, 5),
             -- the_pacifist = aq(), -- Need New
             sunk_cost = aq(5, 2),
             knife_edge = aq(6, 2),
@@ -261,8 +260,15 @@ TEXTURE = {
             patience_is_a_virtue = aq(7, 5),
             -- fel_magic = aq(), -- Need New
             arrogance = aq(3, 5),
-            -- psychokinesis = aq(), -- Need New
-            -- identity = aq(), -- Need New
+            psychokinesis = aq(8, 6),
+
+            museum_heist = aq(5, 6),
+            ultra_dash = aq(5, 6),
+            perfect_speedrun = aq(5, 6),
+            the_perfectionist = aq(5, 6),
+            teraspeed = aq(5, 6),
+
+            identity = aq(6, 6),
             zenith_relocation = aq(4, 7),
             respectful = aq(2, 1),
             zenith_traveler = aq(1, 8),
@@ -275,7 +281,7 @@ TEXTURE = {
             terminal_velocity = aq2(1, 2),
             and_then_nothing = aq(4, 8),
             fruitless_effort = aq(6, 7),
-            -- speedrun_speedruning = aq(), -- Need New
+            -- speedrun_speedrunning = aq(), -- Need New
             -- worn_out = aq(), -- Need New
             final_defiance = aq(3, 2),
             royal_resistance = aq2(1, 1),
@@ -1082,6 +1088,10 @@ function Initialize(save)
     if BEST.version == 171 then
         ACHV.worn_out = nil
         BEST.version = 172
+    end
+    if BEST.version == 172 then
+        ACHV.speedrun_speedrunning = ACHV.speedrun_speedruning
+        BEST.version = 173
     end
 
     -- Some Initialization
