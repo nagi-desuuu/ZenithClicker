@@ -696,7 +696,7 @@ Achievements = {
         desc = [[Highest altitude on 40 quests WUT "Expert Mode" and "Messier Garbage" mods]],
         quote = [[Adversity favors the resourceful.]],
         scoreSimp = heightNumber,
-        rank = numberRank(0, 260, 340, 400, 450, 495, 600),
+        rank = numberRank(0, 260, 360, 450, 495, 550, 600),
         hide = function() return STAT.maxFloor < 9 end,
     },
     { -- the_responsible_one
@@ -1000,6 +1000,7 @@ Achievements = {
         desc = [[Speedrun all single mods]],
         quote = [[Reaching for the stars again and again.]],
         credit = "@The_111thBlitzer",
+        hide = function() return STAT.totalGiga == 0 end,
         type = 'issued',
     },
     { -- and_then_nothing
