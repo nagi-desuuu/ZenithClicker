@@ -140,6 +140,8 @@ local GAME = {
     achv_talentlessH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
+    achv_totalDmg = nil,
+    achv_clutchQuest = nil,
     achv_escapeBurnt = nil,
     achv_escapeQuest = nil,
     achv_felMagicBurnt = nil,
@@ -650,6 +652,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
         'damage_large', .872
     )
 
+    GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
     if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
 
     if GAME[k] <= 0 then
@@ -826,7 +829,7 @@ function GAME.upFloor()
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
         end
 
-        -- SubmitAchv('the_pacifist', GAME.totalAttack)
+        SubmitAchv('the_pacifist', GAME.totalAttack)
         if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', roundTime) end
         SubmitAchv('zenith_speedrun_plus', roundTime)
     end
@@ -1255,6 +1258,10 @@ function GAME.commit()
                     GAME.incrementPrompt('pass_windup3')
                 end
             end
+        end
+
+        if GAME.lifeState == 'danger' then
+            GAME.achv_clutchQuest = GAME.achv_clutchQuest + 1
         end
 
         GAME.heal((dblCorrect and 3 or 1) * GAME.dmgHeal)
@@ -1686,6 +1693,8 @@ function GAME.start()
     GAME.achv_talentlessH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
+    GAME.achv_totalDmg = 0
+    GAME.achv_clutchQuest = 0
     GAME.achv_escapeBurnt = false
     GAME.achv_escapeQuest = 0
     GAME.achv_felMagicBurnt = false
@@ -1911,6 +1920,8 @@ function GAME.finish(reason)
             if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_talentlessH or GAME.roundHeight)
+        elseif GAME.comboStr == 'NHrGV' then
+            SubmitAchv('clutch_main', GAME.achv_clutchQuest)
         elseif GAME.comboStr == 'ASDHMS' then
             SubmitAchv('the_escape_artist', GAME.achv_escapeQuest)
         elseif GAME.comboStr == 'rAS' then

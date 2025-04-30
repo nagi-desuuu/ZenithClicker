@@ -181,6 +181,7 @@ ComboData = {
     { set = "NH DH rIN rAS",     name = "steganography",                      menu = true },
     { set = "rGV rAS",           name = "whizzing wizard",                    menu = true },
     { set = "DH DP",             name = "museum heist",                       menu = true },
+    { set = "NH rGV",            name = "clutch main",                        menu = true },
 
     -- rDH database
     { set = 'MS IN',             name = "scrambled rainbow",                  ex = true },
