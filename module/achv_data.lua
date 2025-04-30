@@ -104,9 +104,10 @@ Achievements = {
         hide = TRUE,
     },
     { -- zenith_speedrunner
+        ex = true,
         id = 'zenith_speedrunner',
         name = "Zenith Speedrunner",
-        desc = [[Sum of best F10 with GIGASPEED time using each mod]],
+        desc = [[Sum of best F10 time with GIGASPEED using each mod]],
         quote = [[F10 All%]],
         comp = '<',
         noScore = 2600,
@@ -672,14 +673,14 @@ Achievements = {
 
     { title = "Special", quote = [[QED「495年の波紋」]] }, -- placeholder
     { quote = [[禁忌「フォービドゥンフルーツ」]] }, -- placeholder
-    { -- block_rationing
-        id = 'block_rationing',
-        name = "Block Rationing",
-        desc = [[Highest altitude on 40 quests WUT "Expert Mode" and "Messier Garbage" mods]],
-        quote = [[Adversity favors the resourceful.]],
-        scoreSimp = heightNumber,
-        rank = numberRank(0, 260, 340, 400, 450, 495, 600),
-        hide = function() return STAT.maxFloor < 9 end,
+    { -- the_escape_artist
+        id = 'the_escape_artist',
+        name = "The Escape Artist",
+        desc = [[Quest passed with wound triggered WUT "Double Hole Garbage", "Messier Garbage" and "All-Spin" mods]],
+        quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
+        rank = numberRank(0, 10, 26, 50, 70, 90, 126),
+        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
+        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- talentless
         id = 'talentless',
@@ -688,6 +689,15 @@ Achievements = {
         quote = [[Reaching deep down but coming back empty every time.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
         hide = function() return STAT.maxFloor < 8 end,
+    },
+    { -- block_rationing
+        id = 'block_rationing',
+        name = "Block Rationing",
+        desc = [[Highest altitude on 40 quests WUT "Expert Mode" and "Messier Garbage" mods]],
+        quote = [[Adversity favors the resourceful.]],
+        scoreSimp = heightNumber,
+        rank = numberRank(0, 260, 340, 400, 450, 495, 600),
+        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- the_responsible_one
         id = 'the_responsible_one',
@@ -732,7 +742,7 @@ Achievements = {
         name = "Powerless",
         desc = [[HFD without building up surge]],
         quote = [["We have a similar goal to climb the Zenith Tower in many ways."]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
     },
     { -- the_pacifist
         ex = true,
@@ -741,7 +751,7 @@ Achievements = {
         desc = [[Minimum attack before reaching F10]],
         quote = [[Give evil nothing to oppose and it will disappear by itself.]],
         credit = "@wah",
-        rank = numberRankRev(2600, 600, 540, 480, 440, 420, 400),
+        rank = numberRankRev(2600, 410, 405, 400, 395, 390, 380),
         scoreSimp = function(atk) return atk .. " Attack" end,
         comp = '<',
         noScore = 2600,
@@ -808,15 +818,6 @@ Achievements = {
         credit = "@The_111thBlitzer",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return STAT.maxFloor < 4 end,
-    },
-    { -- the_escape_artist
-        id = 'the_escape_artist',
-        name = "The Escape Artist",
-        desc = [[Quest passed with wound triggered WUT "Double Hole Garbage", "Messier Garbage" and "All-Spin" mods]],
-        quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
-        rank = numberRank(0, 10, 26, 50, 70, 90, 126),
-        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- fel_magic
         ex = true,
