@@ -426,6 +426,14 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
         hide = function() return GAME.completion.GV == 0 or GAME.completion.AS == 0 end,
     },
+    { -- rGVrIN
+        id = 'rGVrIN',
+        name = "The Grandmaster+",
+        desc = [[HFD WUT rGV rIN mods]],
+        quote = [[Even when the universe collapsed, the real grandmaster still remains at peace.]],
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+        hide = function() return GAME.completion.GV == 0 or GAME.completion.IN == 0 end,
+    },
     { -- NHrAS
         ex = true,
         id = 'NHrAS',
@@ -560,6 +568,7 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
+    {},
 
     { title = "Why" },
     {},
@@ -649,7 +658,7 @@ Achievements = {
         id = 'armageddon',
         name = "Armageddon",
         desc = [[HFD with 17+ mod points]],
-        quote = [[Big crunch is about to happen...]],
+        quote = [[The Big Crunch is about to happen...]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 4),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 1 end,
     },

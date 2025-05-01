@@ -170,6 +170,7 @@ ComboData = {
     -- Achievement combos
     { set = "EX rGV DH",         name = "demonic speed",                      menu = true },
     { set = "rGV rAS",           name = "whizzing wizard",                    menu = true },
+    { set = "rGV rIN",           name = "the grandmaster+",                   menu = true },
     { set = "NH rAS",            name = "pristine",                           menu = true },
     { set = "GV rDH rAS",        name = "storage overload",                   menu = true },
     { set = "NH DH rIN rAS",     name = "steganography",                      menu = true },
