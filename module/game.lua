@@ -260,7 +260,16 @@ function GAME.getComboName(list, extend, ingame)
             return { COLOR.dL, ComboData[str].name }
         end
 
-        table.sort(list, modSortFunc)
+        if M.DH == 2 then
+            TABLE.shuffle(list)
+        else
+            table.sort(list, modSortFunc)
+            if M.DH == 1 and MATH.roll((#list - 1) / 6.26) then
+                local r1, r2 = rnd(#list), rnd(#list - 1)
+                if r2 >= r1 then r2 = r2 + 1 end
+                list[r1], list[r2] = list[r2], list[r1]
+            end
+        end
 
         for i = 1, len - 1 do
             ins(fstr, MD.textColor[list[i]])
