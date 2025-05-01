@@ -177,6 +177,17 @@ Achievements = {
 
     { title = "Mods" },
     {},
+    { -- zenith_challenger
+        ex = true,
+        id = 'zenith_challenger',
+        name = "Zenith Challenger",
+        desc = [[Total best altitude with 1 mod enabled]],
+        quote = [[Challenge the reality of the Zenith Tower.]],
+        credit = "@5han",
+        rank = numberRank(0, 14000, 26000, 36000, 42000, 46000, 60000),
+        scoreSimp = function(h) return string.format("%.0fm", h) end,
+        hide = TRUE,
+    },
     { -- EX
         id = 'EX',
         name = "The Emperor",
@@ -233,17 +244,6 @@ Achievements = {
         name = "The Lovers",
         desc = [[HFD with the "Duo" mod]],
         quote = [[Love, and resign yourself to the fate of another.]],
-    },
-    { -- zenith_challenger
-        ex = true,
-        id = 'zenith_challenger',
-        name = "Zenith Challenger",
-        desc = [[Total best altitude with 1 mod enabled]],
-        quote = [[Challenge the reality of the Zenith Tower.]],
-        credit = "@5han",
-        rank = numberRank(0, 14000, 26000, 36000, 42000, 46000, 60000),
-        scoreSimp = function(h) return string.format("%.0fm", h) end,
-        hide = TRUE,
     },
     { -- GVIN
         id = 'GVIN',
@@ -325,6 +325,16 @@ Achievements = {
 
     { title = "Reversed Mods" },
     {},
+    { -- divine_challenger
+        ex = true,
+        id = 'divine_challenger',
+        name = "Divine Challenger",
+        desc = [[Total best altitude with 1 rev mod enabled]],
+        quote = [[Expose the darkness of the Zenith Tower.]],
+        rank = numberRank(0, 10000, 16000, 20000, 24000, 26000, 30000),
+        scoreSimp = function(h) return string.format("%.0fm", h) end,
+        hide = TRUE,
+    },
     { -- rEX
         id = 'rEX',
         name = "The Tyrant",
@@ -395,16 +405,6 @@ Achievements = {
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
-    },
-    { -- divine_challenger
-        ex = true,
-        id = 'divine_challenger',
-        name = "Divine Challenger",
-        desc = [[Total best altitude with 1 rev mod enabled]],
-        quote = [[Expose the darkness of the Zenith Tower.]],
-        rank = numberRank(0, 10000, 16000, 20000, 24000, 26000, 30000),
-        scoreSimp = function(h) return string.format("%.0fm", h) end,
-        hide = TRUE,
     },
     { -- DHEXrGV
         ex = true,
