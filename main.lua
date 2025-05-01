@@ -263,6 +263,7 @@ TEXTURE = {
             patience_is_a_virtue = aq2(2, 4),
             -- fel_magic = aq(), -- Need New
             arrogance = aq(3, 5),
+            -- the_unreliable_one = aq2(), -- Need New
             psychokinesis = aq(8, 6),
 
             museum_heist = aq(5, 6),

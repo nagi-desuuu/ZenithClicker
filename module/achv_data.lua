@@ -704,7 +704,7 @@ Achievements = {
     { -- lovers_promise
         id = 'lovers_promise',
         name = "Lover's Promise",
-        desc = [[Highest altitude reached with DP on 14th day of a month]],
+        desc = [[Highest altitude reached with DP on 14th day of a month (No CR)]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
         type = 'event',
@@ -829,6 +829,15 @@ Achievements = {
         rank = floorRank(1, 1, 1, 1, 2, 3, 4),
         hide = function() return GAME.completion.AS == 0 end,
     },
+    { -- the_unreliable_one
+        ex = true,
+        id = 'the_unreliable_one',
+        name = "The Unreliable One",
+        desc = [[Highest amount of kills performed in a single rDP run]],
+        quote = [["I won't stop killling."]],
+        scoreSimp = function(b2b) return b2b .. " Kills" end,
+        rank = numberRank(0, 2, 3, 4, 5, 7, 10),
+    },
     { -- psychokinesis
         ex = true,
         id = 'psychokinesis',
@@ -837,7 +846,6 @@ Achievements = {
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
     },
-    {},
 
     { title = "Supercharged Clone", credit = "@Garbo" },
     {},

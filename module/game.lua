@@ -75,7 +75,8 @@ local ins, rem = table.insert, table.remove
 ---@field life2 number
 ---@field rankLimit number
 ---@field reviveCount number
----@field noRevive 0|1
+---@field reviveDifficulty number
+---@field killCount number
 ---@field currentTask ReviveTask |false
 ---@field DPlock boolean
 ---@field lastFlip number | false
@@ -525,8 +526,8 @@ end
 
 function GAME.startRevive()
     TABLE.clear(GAME.reviveTasks)
-    if GAME.noRevive == 0 then
-        local power = min(GAME.floor + GAME.reviveCount, 17)
+    if GAME.reviveDifficulty < 9999 then
+        local power = min(GAME.floor + GAME.reviveDifficulty, 17)
         local maxOut = power == 17
         local powerList = TABLE.new(floor(power / 3), 3)
         if power % 3 == 1 then
@@ -596,6 +597,7 @@ function GAME.incrementPrompt(prompt, value)
             else
                 GAME.currentTask = false
                 GAME.reviveCount = GAME.reviveCount + 1
+                GAME.reviveDifficulty = GAME.reviveDifficulty + 1
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
@@ -659,6 +661,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
             if toAlly then
                 SFX.play('elim')
+                GAME.killCount = GAME.killCount + 1
             else
                 GAME.swapControl()
             end
@@ -1642,7 +1645,8 @@ function GAME.start()
     GAME.life2 = 20
     GAME.rankLimit = 26000
     GAME.reviveCount = 0
-    GAME.noRevive = 0
+    GAME.reviveDifficulty = 0
+    GAME.killCount = 0
     GAME.currentTask = false
     GAME.DPlock = false
     GAME.lastFlip = false
@@ -1940,6 +1944,7 @@ function GAME.finish(reason)
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
+            if M.DP == 2 then SubmitAchv('the_unreliable_one', GAME.killCount) end
         end
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.roundHeight)
