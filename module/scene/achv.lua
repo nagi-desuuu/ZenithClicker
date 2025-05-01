@@ -189,7 +189,7 @@ local function refreshAchivement()
             end
         end
         local mp = count + revCount
-        if mp >= 8 then for m = mp, 8, -1 do submit(RevSwampName[m]:sub(2, -2):lower(), v) end end
+        if revCount >= 2 and mp >= 8 then for m = mp, 8, -1 do submit(RevSwampName[m]:sub(2, -2):lower(), v) end end
         maxMMP = max(maxMMP, v * mp)
         local l = {}
         for m in k:gmatch('r?%w%w') do l[m] = true end
