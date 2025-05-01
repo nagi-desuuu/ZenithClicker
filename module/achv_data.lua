@@ -53,8 +53,8 @@ end
 
 ---@type Map<Achievement>
 Achievements = {
-    { title = "General", quote = [[禁忌「クランベリートラップ」]] }, -- placeholder
-    { quote = [[禁忌「レーヴァテイン」]] }, -- placeholder
+    { title = "General" },
+    {},
     { -- zenith_explorer
         id = 'zenith_explorer',
         name = "Zenith Explorer",
@@ -176,8 +176,8 @@ Achievements = {
         hide = TRUE,
     },
 
-    { title = "Mods", quote = [[禁忌「フォーオブアカインド」]] }, -- placeholder
-    { quote = [[禁忌「カゴメカゴメ」]] }, -- placeholder
+    { title = "Mods" },
+    {},
     { -- EX
         id = 'EX',
         name = "The Emperor",
@@ -312,8 +312,8 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     },
 
-    { title = "Reversed Mods", quote = [[禁忌「恋の迷路」]] }, -- placeholder
-    { quote = [[禁弾「スターボウブレイク」]] }, -- placeholder
+    { title = "Reversed Mods" },
+    {},
     { -- rEX
         id = 'rEX',
         name = "The Tyrant",
@@ -548,8 +548,8 @@ Achievements = {
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
 
-    { title = "Why", quote = [[禁弾「カタディオプトリック」]] }, -- placeholder
-    { quote = [[禁弾「過去を刻む時計」]] }, -- placeholder
+    { title = "Why" },
+    {},
     { -- blight
         ex = true,
         id = 'blight',
@@ -649,10 +649,10 @@ Achievements = {
         rank = floorRank(1, 1, 1, 1, 1, 2, 3),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
-    { quote = [[秘弾「そして誰もいなくなるか？」]] }, -- placeholder
+    {},
 
-    { title = "Special", quote = [[QED「495年の波紋」]] }, -- placeholder
-    { quote = [[禁忌「フォービドゥンフルーツ」]] }, -- placeholder
+    { title = "Special" },
+    {},
     { -- the_escape_artist
         id = 'the_escape_artist',
         name = "The Escape Artist",
@@ -824,14 +824,14 @@ Achievements = {
         ex = true,
         id = 'psychokinesis',
         name = "Psychokinesis",
-        desc = [[HFD with 0 flip count increasing in statistics]],
+        desc = [[HFD with 0 flip in the result]],
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
     },
-    { quote = [[禁忌「禁じられた遊び」]] }, -- placeholder
+    {},
 
-    { title = "Supercharged Clone", quote = [[紅魔符「ブラッディカタストロフ」]] }, -- placeholder -- @Garbo
-    { quote = [[紅神符「十七条のカタストロフ」]] }, -- placeholder
+    { title = "Supercharged Clone", credit = "@Garbo" },
+    {},
     { -- museum_heist
         ex = true,
         id = 'museum_heist',
@@ -883,10 +883,18 @@ Achievements = {
         rank = numberRank(12, 14, 15, 16, 17, 18, 20),
         scoreSimp = function(rank) return "Rank " .. rank end,
     },
-    { quote = [[紅星符「超人カタストロフ行脚」]] }, -- placeholder
+    { -- stable_rise
+        ex = true,
+        id = 'stable_rise',
+        name = "Stable Rise",
+        desc = [[Highest rank stayed at least 1 min in one run]],
+        quote = [[Supercharged Stay%]],
+        rank = numberRank(9, 11, 13, 14, 15, 16, 17),
+        scoreSimp = function(rank) return "Rank " .. (rank == 26 and "26 (Max)" or rank) end,
+    },
 
-    { title = "Issued (No CR)", quote = [[禁忌「レックレスバレット」]] }, -- placeholder
-    { quote = [[禁忌「ケルベロスクリッパー」]] }, -- placeholder
+    { title = "Issued (No CR)" },
+    {},
     { -- identity
         ex = true,
         id = 'identity',

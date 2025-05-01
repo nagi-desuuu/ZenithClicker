@@ -1589,7 +1589,7 @@ function GAME.start()
     GAME.totalAttack = 0
     GAME.heightBonus = 0
     GAME.peakRank = 1
-    GAME.rankTimer = TABLE.new(0, 16)
+    GAME.rankTimer = TABLE.new(0, 26)
 
     -- Time
     GAME.time = 0
@@ -1843,7 +1843,7 @@ function GAME.finish(reason)
         end
 
         local maxCSP = {}
-        for i = 1, #GAME.rankTimer do ins(maxCSP, { i < 16 and i or "16+", GAME.rankTimer[i] }) end
+        for i = 1, #GAME.rankTimer do ins(maxCSP, { i, GAME.rankTimer[i] }) end
         table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
         TEXTS.endResult:set({
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
@@ -1855,8 +1855,8 @@ function GAME.finish(reason)
             MATH.roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
             COLOR.L, "Speed  " .. MATH.roundUnit(GAME.height / GAME.time, .1) .. "m/s",
             COLOR.LD, "  (",
-            MATH.roundUnit(maxCSP[1][2], .1) .. "s@" .. maxCSP[1][1], ", ",
-            MATH.roundUnit(maxCSP[2][2], .1) .. "s@" .. maxCSP[2][1], ")\n",
+            MATH.roundUnit(maxCSP[1][2], .1) .. "s@" .. (maxCSP[1][1] == 26 and "26+" or maxCSP[1][1]), ", ",
+            MATH.roundUnit(maxCSP[2][2], .1) .. "s@" .. (maxCSP[2][1] == 26 and "26+" or maxCSP[2][1]), ")\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
             COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
             COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
@@ -1904,6 +1904,14 @@ function GAME.finish(reason)
         SubmitAchv('multitasker', MATH.roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
+        table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
+        print(TABLE.dump(maxCSP))
+        for i = 1, #maxCSP do
+            if maxCSP[i][2] >= 60 then
+                SubmitAchv('stable_rise', maxCSP[i][1])
+                break
+            end
+        end
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.roundHeight)
         SubmitAchv('sunk_cost', GAME.achv_balanceH or GAME.roundHeight)
         if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.roundHeight) end
@@ -2002,7 +2010,7 @@ function GAME.update(dt)
 
         GAME.time = GAME.time + dt
 
-        local r = min(GAME.rank, 16)
+        local r = min(GAME.rank, 26)
         GAME.rankTimer[r] = GAME.rankTimer[r] + dt
 
         if GAME.gigaspeed then

@@ -269,6 +269,7 @@ TEXTURE = {
             perfect_speedrun = aq(5, 6),
             the_perfectionist = aq(5, 6),
             teraspeed = aq(5, 6),
+            stable_rise = aq(5, 6),
 
             identity = aq(6, 6),
             zenith_relocation = aq(4, 7),
