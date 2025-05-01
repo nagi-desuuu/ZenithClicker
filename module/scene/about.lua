@@ -1,8 +1,8 @@
 ---@type Zenitha.Scene
 local scene = {}
 
-local scroll = 0
-local scroll1 = 0
+local scroll, scroll1 = 0, 0
+local maxScroll = 200
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
@@ -105,12 +105,12 @@ end
 
 function scene.mouseMove(_, _, _, dy)
     if love.mouse.isDown(1, 2) then
-        scroll = MATH.clamp(scroll - dy, 0, 200)
+        scroll = MATH.clamp(scroll - dy, 0, maxScroll)
     end
 end
 
 function scene.touchMove(_, _, _, dy)
-    scroll = MATH.clamp(scroll - dy, 0, 200)
+    scroll = MATH.clamp(scroll - dy, 0, maxScroll)
 end
 
 function scene.keyDown(key, isRep)
@@ -124,7 +124,7 @@ function scene.keyDown(key, isRep)
 end
 
 function scene.wheelMove(_, dy)
-    scroll = MATH.clamp(scroll - dy * 42, 0, 200)
+    scroll = MATH.clamp(scroll - dy * 42, 0, maxScroll)
 end
 
 function scene.update(dt)
@@ -134,6 +134,7 @@ function scene.update(dt)
             IssueAchv('respectful')
         end
     end
+    if GAME.mod.EX == 2 then scroll = math.min(scroll + .26, maxScroll) end
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
 end
 
