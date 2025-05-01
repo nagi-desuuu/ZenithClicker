@@ -503,6 +503,16 @@ Achievements = {
         rank = floorRank(1, 2, 3, 4, 6, 7, 8),
         hide = function() return GAME.completion.EX == 0 or GAME.completion.DP == 0 end,
     },
+    { -- INMSrDHrEX
+        ex = true,
+        id = 'INMSrDHrEX',
+        name = "Sisyphean Monarchy",
+        desc = [[HFD WUT rEX MS rDH IN mods]],
+        quote = [[Ruling an unruly empire on the brink of collapse.]],
+        credit = "@Syakegohan",
+        rank = floorRank(1, 2, 3, 4, 6, 7, 8),
+        hide = function() return GAME.completion.EX == 0 or GAME.completion.DH == 0 end,
+    },
     { -- VLrDPrIN
         ex = true,
         id = 'VLrDPrIN',
@@ -550,7 +560,6 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
-    {},
 
     { title = "Why" },
     {},

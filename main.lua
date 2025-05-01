@@ -224,6 +224,7 @@ TEXTURE = {
             -- rINrNH = aq(), -- Need New: Instant Memory
             -- EXGVNHrMS = aq(), -- Need New: Bnuuy
             -- rDPrEX = aq(), -- Need New: Tyrannical Dyarchy
+            -- INMSrDHrEX = aq(), -- Need New: Sisyphean Monarchy
             VLrDPrIN = aq2(1, 4), -- Painful Relapse
             -- rDHrIN = aq(), -- Need New: Brain Capacity
             swamp_water_lite_plus = aq2(5, 1),
