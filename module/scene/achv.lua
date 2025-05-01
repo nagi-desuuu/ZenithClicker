@@ -46,6 +46,9 @@ local overallProgress = {
     ptText = "0/0 Pts",
 }
 
+local function nameSortLT(i1, i2) return i1.name < i2.name end
+local function nameSortGT(i1, i2) return i1.name > i2.name end
+
 local function refreshAchvList(canShuffle)
     overallProgress.rank = TABLE.new(0, 5)
     overallProgress.rank[0] = 0
@@ -130,7 +133,7 @@ local function refreshAchvList(canShuffle)
             if e then
                 local buffer = TABLE.sub(achvList, s, e)
                 if M.MS > 0 then TABLE.shuffle(buffer) end
-                if M.GV > 0 then table.sort(buffer, function(i1, i2) return (i1.name < i2.name) == (M.GV == 1) end) end
+                if M.GV > 0 then table.sort(buffer, M.GV == 1 and nameSortLT or nameSortGT) end
                 for j, a2 in next, buffer do achvList[s + j - 1] = a2 end
                 s, e = nil, nil
             end
