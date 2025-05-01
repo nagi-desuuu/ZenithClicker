@@ -767,6 +767,15 @@ Achievements = {
         comp = '<',
         noScore = 2600,
     },
+    { -- divine_rejection
+        ex = true,
+        id = 'divine_rejection',
+        name = "Divine Rejection",
+        desc = [[Finish the run exactly before F10]],
+        quote = [["And in the end, it doesn't even matter..."]],
+        rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
+        scoreSimp = function(h) return string.format("%.2fm", h) end,
+    },
     { -- sunk_cost
         ex = true,
         id = 'sunk_cost',
@@ -783,15 +792,6 @@ Achievements = {
         quote = [[A delicate dance on the cutting edge.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return STAT.maxFloor < 9 end,
-    },
-    { -- divine_rejection
-        ex = true,
-        id = 'divine_rejection',
-        name = "Divine Rejection",
-        desc = [[Finish the run exactly before F10]],
-        quote = [["And in the end, it doesn't even matter..."]],
-        rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
-        scoreSimp = function(h) return string.format("%.2fm", h) end,
     },
     { -- carried
         ex = true,

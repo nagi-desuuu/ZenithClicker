@@ -308,6 +308,16 @@ function scene.update(dt)
             timer = 0
         end
     end
+    for mp = 8, 18 do
+        if TASK.lock('revswamp_icon_' .. mp, 1.26 / (mp - 4)) then
+            local name = RevSwampName[mp]:sub(2, -2):lower()
+            local r = math.random(94, 126)
+            TEXTURE.achievement.iconQuad[name][2]:setViewport(
+                math.random(.5 * 256, 7.5 * 256) - r, math.random(.5 * 256, 7.5 * 256) - r,
+                2 * r, 2 * r, 2048, 2304
+            )
+        end
+    end
     if M.EX == 2 then scroll = min(scroll + .26, maxScroll) end
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
 end
