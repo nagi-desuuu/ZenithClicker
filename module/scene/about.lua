@@ -172,7 +172,7 @@ function scene.draw()
         gc_setColor(1, 1, 0)
         FONT.set(30)
         for x = -600, 600 - 100, 100 do
-            for y = 0, 900 - 100, 100 do
+            for y = 0, 1000 - 100, 100 do
                 gc_rectangle('line', x, y, 100, 100)
                 gc_print(x .. ',' .. y, x + 2.6, y, 0, .355)
             end

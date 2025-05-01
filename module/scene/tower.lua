@@ -1271,6 +1271,16 @@ scene.widgetList = {
         end,
     },
     WIDGET.new {
+        name = 'help2', type = 'hint',
+        pos = { 1, 0 }, x = -190, y = 275, w = 60, cornerR = 30,
+        color = TextColor,
+        fontSize = 50, text = "?",
+        sound_hover = 'menutap',
+        labelPos = 'leftBottom',
+        floatFontSize = 30,
+        floatText = "", -- Dynamic text
+    },
+    WIDGET.new {
         name = 'help', type = 'hint',
         pos = { 1, 0 }, x = -50, y = 126, w = 80, cornerR = 40,
         color = TextColor,
@@ -1284,16 +1294,11 @@ scene.widgetList = {
             There's no leaderboards yet, but how high can you reach?
             Space: Commit    Z: Reset    Esc: Forfeit/Quit
         ]],
-    },
-    WIDGET.new {
-        name = 'help2', type = 'hint',
-        pos = { 1, 0 }, x = -190, y = 275, w = 60, cornerR = 30,
-        color = TextColor,
-        fontSize = 50, text = "?",
-        sound_hover = 'menutap',
-        labelPos = 'leftBottom',
-        floatFontSize = 30,
-        floatText = "", -- Dynamic text
+        onPress = function()
+            PieceSFXID = (PieceSFXID or 0) % 7 + 1
+            SFX.play(('zsjltoi'):sub(PieceSFXID, PieceSFXID), 1, 0, 6 + M.GV)
+            ZENITHA.setShowFPS(PieceSFXID == 7)
+        end,
     },
 }
 
