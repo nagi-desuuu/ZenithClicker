@@ -181,6 +181,7 @@ TEXTURE = {
             typer_speedrun = aq(5, 1),
             multitasker = aq(7, 2),
             effective = aq(7, 2),
+            the_spike_of_all_time = aq(4, 2),
 
             EX = aq(3, 3),
             NH = aq(7, 3),
@@ -270,6 +271,7 @@ TEXTURE = {
             the_perfectionist = aq(5, 6),
             teraspeed = aq(5, 6),
             stable_rise = aq(5, 6),
+            the_spike_of_all_time_plus = aq(5, 6),
 
             identity = aq(6, 6),
             zenith_relocation = aq(4, 7),
