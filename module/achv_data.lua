@@ -184,14 +184,12 @@ Achievements = {
         desc = [[HFD with the "Expert Mode" mod]],
         quote = [[A display of power for those willing to bear its burden.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- NH
         id = 'NH',
         name = "Temperance",
         desc = [[HFD with the "No Hold" mod]],
         quote = [[Use each piece as they come and embrace the natural flow of stacking.]],
-        hide = function() return STAT.maxFloor < 2 end,
     },
     { -- MS
         id = 'MS',
@@ -199,35 +197,30 @@ Achievements = {
         desc = [[HFD with the "Messier Garbage" mod]],
         quote = [[The only constant in life is change.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
-        hide = function() return STAT.maxFloor < 3 end,
     },
     { -- GV
         id = 'GV',
         name = "The Tower",
         desc = [[HFD with the "Gravity" mod]],
         quote = [[What will you do when it all comes crumbling down?]],
-        hide = function() return STAT.maxFloor < 4 end,
     },
     { -- VL
         id = 'VL',
         name = "Strength",
         desc = [[HFD with the "Volatile Garbage" mod]],
         quote = [[Match great obstacles with greater determination.]],
-        hide = function() return STAT.maxFloor < 5 end,
     },
     { -- DH
         id = 'DH',
         name = "The Devil",
         desc = [[HFD with the "Double Hole" mod]],
         quote = [[Redifine your limits or succumb to his chains.]],
-        hide = function() return STAT.maxFloor < 6 end,
     },
     { -- IN
         id = 'IN',
         name = "The Hermit",
         desc = [[HFD with the "Invisible" mod]],
         quote = [[When the outside world fails you, trust the voice within to light a path.]],
-        hide = function() return STAT.maxFloor < 7 end,
     },
     { -- AS
         id = 'AS',
@@ -235,28 +228,24 @@ Achievements = {
         desc = [[HFD with the "All-Spin" mod]],
         quote = [[Inspiration is nothing short of magic.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 7200),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- DP
         id = 'DP',
         name = "The Lovers",
         desc = [[HFD with the "Duo" mod]],
         quote = [[Love, and resign yourself to the fate of another.]],
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- GVIN
         id = 'GVIN',
         name = "The Grandmaster",
         desc = [[HFD WUT "Gravity" and "Invisible" mods]],
         quote = [[When the world descends into chaos, the grandmaster remains at peace.]],
-        hide = function() return STAT.maxFloor < 7 end,
     },
     { -- ASNH
         id = 'ASNH',
         name = "The Starving Artist",
         desc = [[HFD WUT "No Hold" and "All-Spin" mods]],
         quote = [[Creativity cultivated trough limitation.]],
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- DPEX
         id = 'DPEX',
@@ -264,7 +253,6 @@ Achievements = {
         desc = [[HFD WUT "Expert Mode" and "Duo" mods]],
         quote = [[Partners in expertise.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- GVNH
         id = 'GVNH',
@@ -272,7 +260,6 @@ Achievements = {
         desc = [[HFD WUT "No Hold" and "Gravity" mods]],
         quote = [[Times were different back then...]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
-        hide = function() return STAT.maxFloor < 4 end,
     },
     { -- DHMSNH
         id = 'DHMSNH',
@@ -280,7 +267,6 @@ Achievements = {
         desc = [[HFD WUT "No Hold", "Messier Garbage" and "Double Hole" mods]],
         quote = [["Escape has become a distant dream, yet still we struggle..."]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return STAT.maxFloor < 6 end,
     },
     { -- DHEXNH
         id = 'DHEXNH',
@@ -288,7 +274,6 @@ Achievements = {
         desc = [[HFD WUT "Expert Mode", "No Hold" and "Double Hole" mods]],
         quote = [[The Devil's lesson in humility.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- DHEXMSVL
         id = 'DHEXMSVL',
@@ -296,7 +281,6 @@ Achievements = {
         desc = [[HFD WUT "Expert Mode", "Messier Garbage", "Volatile Garbage" and "Double Hole" mods]],
         quote = [[The universe is yours.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- ASEXVL
         id = 'ASEXVL',
@@ -304,7 +288,6 @@ Achievements = {
         desc = [[HFD WUT "Expert Mode", "Volatile Garbage" and "All-Spin" mods]],
         quote = [[Would the perfect lie not be an art worthy of admiration ?]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- swamp_water_lite
         id = 'swamp_water_lite',
@@ -312,7 +295,6 @@ Achievements = {
         desc = [[HFD WUT all 7/8 of the difficulty mods ("Duo" not allowed)]],
         quote = [[Comes in 8 different flavors!]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- swamp_water
         id = 'swamp_water',
@@ -320,7 +302,6 @@ Achievements = {
         desc = [[HFD WUT all mods other than "Duo" at the same time]],
         quote = [[The worst of all worlds.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- swamp_water_pro
         ex = true,
@@ -329,7 +310,6 @@ Achievements = {
         desc = [[HFD WUT all mods at the same time]],
         quote = [[How did you find someone as insane as you to do it together?]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
-        hide = function() return STAT.maxFloor < 9 end,
     },
 
     { title = "Reversed Mods", quote = [[禁忌「恋の迷路」]] }, -- placeholder
@@ -680,7 +660,6 @@ Achievements = {
         quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
         rank = numberRank(0, 10, 26, 50, 70, 90, 126),
         scoreSimp = function(rank) return floor(rank) .. " Quests" end,
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- talentless
         id = 'talentless',
@@ -688,7 +667,6 @@ Achievements = {
         desc = [[HFD WUT "All-Spin" mod without using keyboard]],
         quote = [[Reaching deep down but coming back empty every time.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- block_rationing
         id = 'block_rationing',
@@ -697,7 +675,6 @@ Achievements = {
         quote = [[Adversity favors the resourceful.]],
         scoreSimp = heightNumber,
         rank = numberRank(0, 260, 360, 450, 495, 550, 600),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- the_responsible_one
         id = 'the_responsible_one',
@@ -706,7 +683,6 @@ Achievements = {
         quote = [["Could you please stop dying?"]],
         scoreSimp = function(b2b) return b2b .. " Revives" end,
         rank = numberRank(0, 3, 6, 9, 12, 14, 16),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- guardian_angel
         id = 'guardian_angel',
@@ -715,7 +691,6 @@ Achievements = {
         quote = [[An angel's intervention.]],
         scoreSimp = heightNumber,
         rank = numberRank(0, 626, 942, 1620, 2000, 2600, 4200),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- lovers_promise
         id = 'lovers_promise',
@@ -723,7 +698,6 @@ Achievements = {
         desc = [[Highest altitude reached with DP on 14th day of a month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
-        hide = function() return STAT.maxFloor < 8 end,
         type = 'event',
     },
     { -- moon_struck
@@ -791,7 +765,6 @@ Achievements = {
         desc = [[HFD without losing rank, with at least EX]],
         quote = [[A delicate dance on the cutting edge.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { -- carried
         ex = true,
@@ -801,7 +774,6 @@ Achievements = {
         quote = [["I have no idea how to play the game, can you unlock the mods for me?"]],
         credit = "@obsidian",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- honeymoon
         ex = true,
@@ -827,7 +799,6 @@ Achievements = {
         quote = [[Opportunities always favor those who are prepared and wait.]],
         credit = "@The_111thBlitzer",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
-        hide = function() return STAT.maxFloor < 4 end,
     },
     { -- fel_magic
         ex = true,
@@ -856,7 +827,6 @@ Achievements = {
         desc = [[HFD with 0 flip count increasing in statistics]],
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
-        hide = function() return STAT.maxFloor < 9 end,
     },
     { quote = [[禁忌「禁じられた遊び」]] }, -- placeholder
 
@@ -873,7 +843,6 @@ Achievements = {
         noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(35, 26, 20, 12, 6.2, 4.2, 2.6),
-        hide = function() return STAT.maxFloor < 8 end,
     },
     { -- ultra_dash
         ex = true,
@@ -958,7 +927,6 @@ Achievements = {
         name = "Intended Glitch",
         desc = [[Play Duo]],
         quote = [[This is not a bug, it's a feature.]],
-        hide = function() return STAT.maxFloor < 8 end,
         type = 'issued',
     },
     { -- somersault
