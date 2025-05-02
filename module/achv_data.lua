@@ -319,7 +319,7 @@ Achievements = {
         name = "Swamp Water Pro",
         desc = [[HFD WUT all mods at the same time]],
         quote = [[How did you find someone as insane as you to do it together?]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
     {},
 
@@ -565,7 +565,7 @@ Achievements = {
         name = "Swamp Water Pro+",
         desc = [[HFD WUT 1rev+8 mods]],
         quote = [[The cup is about to overflow!]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     {},
