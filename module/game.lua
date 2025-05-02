@@ -425,6 +425,7 @@ end
 
 function GAME.sortCards()
     table.sort(CD, function(a, b) return a.initOrder < b.initOrder end)
+    for _, C in ipairs(CD) do C.tempOrder = C.initOrder end
 end
 
 local shuffleSets = {
@@ -435,9 +436,6 @@ local shuffleSets = {
     { { 1, 2, 3 }, { 7, 8, 9 }, { 5, 6, 7 }, { 3, 4, 5 }, pop = 0 },
 }
 function GAME.weakShuffleCards(phase)
-    GAME.sortCards()
-    for _, C in ipairs(CD) do C.tempOrder = C.initOrder end
-
     local sets = TABLE.copyAll(shuffleSets[phase] or shuffleSets[4])
     for _ = 1, sets.pop do
         TABLE.popRandom(sets)
@@ -753,25 +751,25 @@ function GAME.setGigaspeedAnim(on, finish)
     end
 end
 
+function GAME.readyShuffle(messiness)
+    if not messiness then return end
+    GAME.shuffleMessiness = messiness
+    SFX.play('rsg_go', 1, 0, 2 + M.GV)
+    for _, C in ipairs(CD) do C:shake() end
+end
+
 function GAME.upFloor()
     if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
     if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.floorTime) end
 
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
-    if GAME.floor > 1 then
-        if M.MS == 1 then
-            GAME.shuffleMessiness = Floors[GAME.floor].MSshuffle or false
-        elseif M.MS == 2 then
-            GAME.shuffleMessiness = GAME.floor * 2.6
-        end
-        if GAME.shuffleMessiness then
-            SFX.play('rsg_go', 1, 0, 2 + M.GV)
-            for _, C in ipairs(CD) do
-                C:shake()
-            end
-        end
+    if M.MS == 1 then
+        GAME.readyShuffle(Floors[GAME.floor].MSshuffle)
+    elseif M.MS == 2 then
+        GAME.readyShuffle(GAME.floor * 2.6)
     end
+
     GAME.questFavor =
         M.VL == 2 and 50 or (
             (M.EX > 0 and 0 or 33)
@@ -1523,7 +1521,7 @@ function GAME.commit()
             GAME.shuffleMessiness = false
         end
 
-        return true
+        if M.MS == 1 and GAME.floor >= 10 and GAME.totalQuest % 40 == 0 then GAME.readyShuffle(4) end
     else
         if GAME.currentTask then
             if #hand >= 7 and not TABLE.find(hand, 'DP') then
