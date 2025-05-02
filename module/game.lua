@@ -68,6 +68,12 @@ local ins, rem = table.insert, table.remove
 ---@field atkBufferCap number
 ---@field shuffleMessiness number | false
 ---
+---@field spikeTimer number
+---@field spikeCounter number
+---@field spikeCounterWeak number
+---@field maxSpike number
+---@field maxSpikeWeak number
+---
 ---@field gravDelay false | number
 ---@field gravTimer false | number
 ---
@@ -154,6 +160,8 @@ GAME.fullHealth = 20
 GAME.life = 0
 GAME.life2 = 0
 GAME.time = 0
+GAME.spikeCounter = 0
+GAME.spikeTimer = 0
 GAME.floorTime = 2.6
 GAME.floor = 1
 GAME.rank = 1
@@ -634,7 +642,7 @@ end
 
 function GAME.heal(hp)
     local k = GAME.getLifeKey()
-    hp = max(min(hp, GAME.fullHealth - GAME[k]), 0)
+    hp = MATH.clamp(hp, 0, GAME.fullHealth - GAME[k])
     GAME[k] = GAME[k] + hp
     GAME.incrementPrompt('heal', hp)
 
@@ -1281,6 +1289,7 @@ function GAME.commit()
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
+        local surge = 0
         local xp = 0
         if dp and M.EX < 2 then attack = attack + 2 end
         local check_achv_and_then_nothing
@@ -1328,7 +1337,7 @@ function GAME.commit()
                 end
                 if GAME[k] > oldLife then GAME.incrementPrompt('heal', GAME[k] - oldLife) end
                 if GAME.chain > 0 then
-                    attack = attack + GAME.chain
+                    surge = GAME.chain
                 end
             end
             GAME.chain = 0
@@ -1444,6 +1453,24 @@ function GAME.commit()
             GAME.achv_felMagicQuest = GAME.achv_felMagicQuest + 1
         end
 
+        -- Spike
+        if GAME.spikeTimer <= 0 then
+            GAME.spikeTimer = 0
+            GAME.spikeCounter = 0
+            GAME.spikeCounterWeak = 0
+        end
+        if GAME.spikeCounter < 8 then
+            GAME.spikeTimer = max(GAME.spikeTimer, 1)
+        end
+        GAME.spikeTimer = min(GAME.spikeTimer + (attack + surge) / (8.72 + GAME.spikeCounter / 10), 6.2)
+        GAME.spikeCounter = GAME.spikeCounter + attack + surge
+        GAME.maxSpike = max(GAME.maxSpike, GAME.spikeCounter)
+        GAME.spikeCounterWeak = GAME.spikeCounterWeak + attack
+        GAME.maxSpikeWeak = max(GAME.maxSpikeWeak, GAME.spikeCounterWeak)
+        if GAME.spikeCounter >= 8 then TEXTS.spike:set(tostring(GAME.spikeCounter)) end
+
+        attack = attack + surge
+
         if M.DP > 0 then
             if M.DP == 2 then
                 if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
@@ -1455,11 +1482,12 @@ function GAME.commit()
             if GAME[GAME.getLifeKey(true)] == 0 then
                 xp = xp / 2
                 attack = attack / 2
-                attack = floor(attack) + (MATH.roll(attack % 1) and 1 or 0)
             elseif not GAME.achv_carriedH then
                 GAME.achv_carriedH = GAME.roundHeight
             end
         end
+
+        attack = MATH.roundRnd(attack)
 
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
@@ -1648,6 +1676,13 @@ function GAME.start()
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
     GAME.shuffleMessiness = false
+
+    -- Spike
+    GAME.spikeTimer = 0
+    GAME.spikeCounter = 0
+    GAME.spikeCounterWeak = 0
+    GAME.maxSpike = 0
+    GAME.maxSpikeWeak = 0
 
     -- rDP
     GAME.onAlly = false
@@ -1930,6 +1965,8 @@ function GAME.finish(reason)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
         SubmitAchv('powerless', GAME.achv_powerlessH or GAME.roundHeight)
+        SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
+        SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.roundHeight) end
@@ -1957,6 +1994,7 @@ function GAME.finish(reason)
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.roundHeight)
             SubmitAchv('supercharged', GAME.achv_maxChain)
+            SubmitAchv('the_spike_of_nomod_time', GAME.maxSpike)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
             for mp = GAME.comboMP, 8, -1 do
                 local name = RevSwampName[min(mp, #RevSwampName)]:sub(2, -2):lower()
@@ -2014,6 +2052,7 @@ function GAME.finish(reason)
 end
 
 function GAME.update(dt)
+    GAME.spikeTimer = GAME.spikeTimer - dt
     if GAME.playing then
         -- if love.keyboard.isDown('[') then
         --     GAME.addHeight(dt * 260)

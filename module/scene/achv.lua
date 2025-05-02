@@ -454,16 +454,16 @@ function scene.draw()
 
                 -- Texts
                 gc_setColor(AchvData[a.rank].fg2)
-                gc_print(a.score, 135, 35, 0)
+                gc_print(a.score, 130, 35, 0)
                 gc_setColor(colorRev and COLOR.LR or COLOR.L)
-                gc_print(a.name, 135, 7, 0, .7)
+                gc_print(a.name, 130, 7, 0, .7)
                 if a.descWidth < 1050 then
-                    gc_print(a.desc, 135, 77, 0, min(400 / a.descWidth, .4), .4)
+                    gc_print(a.desc, 130, 77, 0, min(400 / a.descWidth, .4), .4)
                 else
-                    gc_printf(a.desc, 135, 73, 1100, 'left', 0, .4)
+                    gc_printf(a.desc, 130, 73, 1100, 'left', 0, .4)
                 end
                 gc_setColor(colorRev and COLOR.dR or COLOR.LD)
-                gc_print(A.quote, 135, a.descWidth <= 1050 and 98 or 103, 0, .42)
+                gc_print(A.quote, 130, a.descWidth <= 1050 and 98 or 103, 0, .42)
                 gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
                 local x = 600 - 15
                 if A.ex then

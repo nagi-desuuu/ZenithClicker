@@ -738,6 +738,20 @@ function scene.overDraw()
         gc_mDraw(TEXTS.mod, 800, 396, 0, k)
     end
 
+    if GAME.spikeCounter >= 8 and GAME.spikeTimer > 0 then
+        gc_push('transform')
+        gc_translate(1226, 300)
+        local _t = GAME.questTime
+        local bk = _t < .12 and 1 + 62 * _t * (.12 - _t) or 1
+        gc_scale(min(GAME.spikeCounter / 60, 1) + bk)
+        local ox, oy = TEXTS.spike:getWidth() / 2, TEXTS.spike:getHeight() / 2
+        gc_setColor(1, 1, 1, GAME.spikeTimer * .62)
+        gc_strokeDraw('full', 2, TEXTS.spike, 0, 0, 0, 1, 1, ox, oy)
+        gc_setColor(0, 0, 0, GAME.spikeTimer * 2.6)
+        gc_draw(TEXTS.spike, 0, 0, 0, 1, 1, ox, oy)
+        gc_pop()
+    end
+
     -- Glow
     for i = 1, #ImpactGlow do
         local L = ImpactGlow[i]

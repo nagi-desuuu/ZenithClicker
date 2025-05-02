@@ -217,7 +217,7 @@ TEXTURE = {
             -- DHEXrGV = aq(), -- Need New: Demonic Speed
             -- rASrGV = aq(), -- Need New: Whizzing Wizard
             rGVrIN = aq2(1, 2), -- The Grandmaster+
-            NHrAS = aq(1, 2), -- Pristine
+            NHrAS = aq(1, 2),   -- Pristine
             -- GVrASrDH = aq(), -- Need New: Storage Overload
             -- DHNHrASrIN = aq(), -- Need New: Steganography
             rGVrNHrVL = aq(1, 3), -- Sweatshop
@@ -273,6 +273,7 @@ TEXTURE = {
             the_perfectionist = aq(5, 6),
             teraspeed = aq(5, 6),
             stable_rise = aq(5, 6),
+            the_spike_of_nomod_time = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
             identity = aq(6, 6),
@@ -367,10 +368,12 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     chain      = GC.newText(FONT.get(50)),
     chain2     = GC.newText(FONT.get(50, 'led')),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
+    spike      = GC.newText(FONT.get(50)),
     gigaspeed  = GC.newText(FONT.get(50), {
         COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
         COLOR.K, "A", COLOR.G, "S", COLOR.J, "P",
-        COLOR.C, "E", COLOR.S, "E", COLOR.B, "D" }),
+        COLOR.C, "E", COLOR.S, "E", COLOR.B, "D"
+    }),
     gigatime   = GC.newText(FONT.get(50)),
     slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
