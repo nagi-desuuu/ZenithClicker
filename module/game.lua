@@ -475,15 +475,15 @@ function GAME.genQuest()
     local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + MATH.icLerp(6200, 10000, GAME.height)
     local var = GAME.floor * .26 * GAME.extraQuestVar
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxQuestSize)
-    if M.DP == 0 then
-        GAME.atkBuffer = GAME.atkBuffer + r
-        if GAME.atkBuffer > GAME.atkBufferCap then
-            r = r - (GAME.atkBuffer - GAME.atkBufferCap)
-            GAME.atkBuffer = GAME.atkBufferCap
-        end
-        GAME.atkBuffer = max(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4)), 0)
-    elseif GAME[GAME.getLifeKey(true)] == 0 then
-        r = r * 1.26
+
+    GAME.atkBuffer = GAME.atkBuffer + r
+    if GAME.atkBuffer > GAME.atkBufferCap then
+        r = r - (GAME.atkBuffer - GAME.atkBufferCap)
+        GAME.atkBuffer = GAME.atkBufferCap
+    end
+    GAME.atkBuffer = max(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4)), 0)
+    if M.DP > 0 then
+        r = r * (GAME[GAME.getLifeKey(true)] == 0 and 1.26 or 1.1)
     end
 
     local pool = TABLE.copyAll(MD.weight)
