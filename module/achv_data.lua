@@ -919,7 +919,7 @@ Achievements = {
         name = "Stable Rise",
         desc = [[Highest rank stayed at least 1 min in one run]],
         quote = [[Supercharged Stay%]],
-        rank = numberRank(9, 11, 13, 14, 15, 16, 17),
+        rank = numberRank(9, 11, 13, 14, 15, 16, 18),
         scoreSimp = function(rank) return "Rank " .. (rank == 26 and "26 (Max)" or rank) end,
     },
     { -- the_spike_of_all_time_plus
