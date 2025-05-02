@@ -1665,9 +1665,9 @@ function GAME.start()
     end
 
     if M.DP > 0 then
-        GAME.life = 10
-        GAME.life2 = 10
-        GAME.fullHealth = 10
+        GAME.life = 15
+        GAME.life2 = 15
+        GAME.fullHealth = 15
     end
 
     GAME.refreshModIcon()
