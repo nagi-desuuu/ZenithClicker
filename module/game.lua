@@ -691,15 +691,11 @@ end
 
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
-    if GAME.xpLockLevel < 5 and GAME.rankupLast and GAME.xp >= 2 * GAME.rank then
-        GAME.xpLockLevel = 5
-    end
     local oldRank = GAME.rank
     local oldLockTimer = GAME.xpLockTimer
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
-        GAME.rankupLast = true
         GAME.xpLockTimer = GAME.xpLockLevel
         GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
 
@@ -719,6 +715,7 @@ function GAME.addXP(xp)
         GAME.xp = 4 * GAME.rank
     end
     if GAME.rank ~= oldRank then
+        GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
@@ -732,6 +729,7 @@ function GAME.addXP(xp)
     else
         GAME.xpLockTimer = oldLockTimer
     end
+    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = 5 end
 end
 
 function GAME.setGigaspeedAnim(on, finish)
