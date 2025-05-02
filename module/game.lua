@@ -752,8 +752,10 @@ end
 function GAME.readyShuffle(messiness)
     if not messiness then return end
     GAME.shuffleMessiness = messiness
-    SFX.play('rsg_go', 1, 0, 2 + M.GV)
-    for _, C in ipairs(CD) do C:shake() end
+    if GAME.totalQuest > 0 then
+        SFX.play('rsg_go', 1, 0, 2 + M.GV)
+        for _, C in ipairs(CD) do C:shake() end
+    end
 end
 
 function GAME.upFloor()
@@ -762,10 +764,12 @@ function GAME.upFloor()
 
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
-    if M.MS == 1 then
-        GAME.readyShuffle(Floors[GAME.floor].MSshuffle)
-    elseif M.MS == 2 then
-        GAME.readyShuffle(GAME.floor * 2.6)
+    if GAME.floor > 1 then
+        if M.MS == 1 then
+            GAME.readyShuffle(Floors[GAME.floor].MSshuffle)
+        elseif M.MS == 2 then
+            GAME.readyShuffle(GAME.floor * 2.6)
+        end
     end
 
     GAME.questFavor =
