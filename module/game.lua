@@ -1460,8 +1460,8 @@ function GAME.commit()
             GAME.spikeCounterWeak = 0
         end
         GAME.spikeTimer = MATH.clamp(
-            GAME.spikeTimer + (attack + surge) / (8.72 + GAME.spikeCounter / 10),
-            GAME.spikeCounter < 8 and 1 or .42,
+            GAME.spikeTimer + (attack + surge) / (12.6 + GAME.spikeCounter / 26),
+            GAME.spikeCounter < 8 and 1 or .62,
             6.2
         )
         GAME.spikeCounter = GAME.spikeCounter + attack + surge
