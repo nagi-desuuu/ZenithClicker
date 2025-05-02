@@ -1459,10 +1459,11 @@ function GAME.commit()
             GAME.spikeCounter = 0
             GAME.spikeCounterWeak = 0
         end
-        if GAME.spikeCounter < 8 then
-            GAME.spikeTimer = max(GAME.spikeTimer, 1)
-        end
-        GAME.spikeTimer = min(GAME.spikeTimer + (attack + surge) / (8.72 + GAME.spikeCounter / 10), 6.2)
+        GAME.spikeTimer = MATH.clamp(
+            GAME.spikeTimer + (attack + surge) / (8.72 + GAME.spikeCounter / 10),
+            GAME.spikeCounter < 8 and 1 or .42,
+            6.2
+        )
         GAME.spikeCounter = GAME.spikeCounter + attack + surge
         GAME.maxSpike = max(GAME.maxSpike, GAME.spikeCounter)
         GAME.spikeCounterWeak = GAME.spikeCounterWeak + attack

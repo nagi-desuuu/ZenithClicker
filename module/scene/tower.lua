@@ -738,6 +738,7 @@ function scene.overDraw()
         gc_mDraw(TEXTS.mod, 800, 396, 0, k)
     end
 
+    -- Spike counter
     if GAME.spikeCounter >= 8 and GAME.spikeTimer > 0 then
         gc_push('transform')
         gc_translate(1226, 300)
