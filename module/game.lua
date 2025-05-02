@@ -1916,7 +1916,6 @@ function GAME.finish(reason)
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
-        print(TABLE.dump(maxCSP))
         for i = 1, #maxCSP do
             if maxCSP[i][2] >= 60 then
                 SubmitAchv('stable_rise', maxCSP[i][1])
