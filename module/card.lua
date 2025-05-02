@@ -3,6 +3,7 @@ local abs, rnd = math.abs, math.random
 local sin, cos = math.sin, math.cos
 local sign, lerp = MATH.sign, MATH.lerp
 local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
+local getTime = love.timer.getTime
 
 local M = GAME.mod
 local CD = Cards
@@ -111,9 +112,8 @@ function Card:setActive(auto, key)
         GAME.incrementPrompt('flip')
     end
 
-    local noSpin
     self.active = not self.active
-    local revOn
+    local noSpin, revOn
     if GAME.playing then
         if not auto then
             self.touchCount = self.touchCount + 1
@@ -531,12 +531,12 @@ function Card:draw()
                 if revMastery then
                     gc_setColor(.2, .2, .2)
                     gc_blurCircle(blur, -x, -y, cr * 260)
-                    gc_setColor(1, .7 + .15 * sin(love.timer.getTime() * 62 + self.x), .2)
+                    gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
                     gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
                 end
                 gc_setColor(.2, .2, .2)
                 gc_blurCircle(blur, x, y, cr * 260)
-                gc_setColor(1, .7 + .15 * sin(love.timer.getTime() * 62 + self.x), .2)
+                gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
                 gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
             end
             -- Float star
@@ -558,13 +558,14 @@ function Card:draw()
     -- Debug
     -- if not self.upright then gc_rotate(3.1416) end
     -- gc_setColor(ModData.color[self.id])
-    -- gc.rectangle('fill', 260, -350, -60, 60)
+    -- local w, h = 260, 350
+    -- gc.rectangle('fill', w, -h, -62, 62)
     -- gc_setColor(1, 1, 1)
     -- gc.setLineWidth(2)
-    -- GC.mRect('line', 0, 0, 260 * 2, 350 * 2)
+    -- GC.mRect('line', 0, 0, w * 2, h * 2)
     -- FONT.set(30)
-    -- gc.print(self.upright and self.id or "r" .. self.id, -260, -450)
-    -- gc.print("r = " .. MATH.round(self.r / 3.1416 * 180), -260, -420)
+    -- gc.print(self.upright and self.id or "r" .. self.id, -w, -h - 100)
+    -- gc.print("r = " .. MATH.round(self.r / 3.1416 * 180), -w, -h - 70)
 
     gc_pop()
 end
