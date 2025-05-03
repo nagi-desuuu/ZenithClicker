@@ -84,32 +84,12 @@ Each mod twists the rules and creates unique experience.
 - Quests are a bit harder.
 - TODO: specifics on tasks
 
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
-## SPOILERS AHEAD
+## SPOILERS
+
+<details>
+<summary>
+Make sure you've discovered most contents before reading this section!
+</summary>
 
 ### The Tyrant (`rEX`)
 
@@ -218,6 +198,7 @@ STAT.zp = max(
 Total ZP decays ~2.6%/d. `ZP*= e^(-0.026)`
 
 Also, DC Highscore decays ~6%/d. `DC*= e^(-0.0626)`
+</details>
 
 ## TODO
 
