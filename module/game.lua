@@ -242,11 +242,10 @@ end
 local function modSortFunc(a, b) return MD.prio_name[a] < MD.prio_name[b] end
 
 ---@param list string[] WILL BE SORTED!!!
----@param extend? boolean use extended combo lib from community
----@param ingame? boolean return a color-string table instead
-function GAME.getComboName(list, extend, ingame)
+---@param mode? 'ingame' | 'button' | 'rpc'
+function GAME.getComboName(list, mode)
     local len = #list
-    if ingame then
+    if mode == 'ingame' then
         if len == 0 then return {} end
 
         local fstr = {}
@@ -264,7 +263,7 @@ function GAME.getComboName(list, extend, ingame)
         end
 
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or extend and ComboData[str].ex) then
+        if ComboData[str] and (ComboData[str].basic or M.DH == 2 and ComboData[str].ex) then
             return { COLOR.dL, ComboData[str].name }
         end
 
@@ -309,28 +308,34 @@ function GAME.getComboName(list, extend, ingame)
         if len == 0 then return "" end
         if len == 1 then return MD.noun[list[1]] end
 
+        local usingExtend = mode == 'button' and not GAME.playing or mode == 'rpc'
+
         -- Super Set
-        if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
-            local mp = GAME.getComboMP(list)
-            if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
-        elseif len == 9 or len >= 7 and not TABLE.find(list, 'DP') then
-            return
-                GAME.anyRev and (
-                    len == 7 and [["SWAMP WATER LITE+"]] or
-                    len == 8 and [["SWAMP WATER+"]] or
-                    len == 9 and [["SWAMP WATER PRO+"]] or
-                    [["SWAMP WATER X+"]]
-                ) or (
-                    len == 7 and [["SWAMP WATER LITE"]] or
-                    len == 8 and [["SWAMP WATER"]] or
-                    len == 9 and [["SWAMP WATER PRO"]] or
-                    [["SWAMP WATER X"]]
-                )
+        if usingExtend then
+            if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
+                local mp = GAME.getComboMP(list)
+                if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
+            elseif len == 9 or len >= 7 and not TABLE.find(list, 'DP') then
+                return
+                    GAME.anyRev and (
+                        len == 7 and [["SWAMP WATER LITE+"]] or
+                        len == 8 and [["SWAMP WATER+"]] or
+                        len == 9 and [["SWAMP WATER PRO+"]] or
+                        [["SWAMP WATER X+"]]
+                    ) or (
+                        len == 7 and [["SWAMP WATER LITE"]] or
+                        len == 8 and [["SWAMP WATER"]] or
+                        len == 9 and [["SWAMP WATER PRO"]] or
+                        [["SWAMP WATER X"]]
+                    )
+            end
+        elseif not TABLE.find(list, 'DP') and len >= 7 then
+            return len == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
         end
 
         -- Normal Combo
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or ComboData[str].menu or ComboData[str].ex and extend) then
+        if ComboData[str] and (ComboData[str].basic or usingExtend) then
             return ComboData[str].name
         end
 
@@ -524,7 +529,7 @@ function GAME.genQuest()
 
     ins(GAME.quests, {
         combo = combo,
-        name = GC.newText(FONT.get(70), GAME.getComboName(TABLE.copy(combo), M.DH == 2, true)),
+        name = GC.newText(FONT.get(70), GAME.getComboName(TABLE.copy(combo), 'ingame')),
     })
 end
 
@@ -874,7 +879,7 @@ function GAME.refreshRPC()
         end
         stateStr = stateStr .. "F" .. GAME.floor
         local hand = GAME.getHand(true)
-        if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, M.DH == 2) end
+        if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, 'rpc') end
     else
         stateStr = "Enjoying to music"
         if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
@@ -971,7 +976,7 @@ end
 
 function GAME.refreshCurrentCombo()
     local hand = GAME.getHand(not GAME.playing)
-    TEXTS.mod:set(GAME.getComboName(hand, M.DH == 2))
+    TEXTS.mod:set(GAME.getComboName(hand, 'button'))
     if not GAME.playing then
         GAME.comboMP = GAME.getComboMP(hand)
         GAME.comboZP = GAME.getComboZP(hand)

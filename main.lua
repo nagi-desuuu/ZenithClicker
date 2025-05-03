@@ -220,6 +220,7 @@ TEXTURE = {
             NHrAS = aq(1, 2),   -- Pristine
             -- GVrASrDH = aq(), -- Need New: Storage Overload
             -- DHNHrASrIN = aq(), -- Need New: Steganography
+            -- DHGVNHrMS = aq(), -- Need New: Trench Warfare
             rGVrNHrVL = aq(1, 3), -- Sweatshop
             -- DPGVMSrNH = aq(), -- Need New: Grand-Master! Rounds
             -- rINrNH = aq(), -- Need New: Instant Memory
@@ -1180,8 +1181,6 @@ end
 
 Initialize()
 RefreshDaily()
-
-GAME.refreshCurrentCombo()
 
 -- Test
 TASK.new(function()

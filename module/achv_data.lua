@@ -462,6 +462,16 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
+    { -- DHGVNHrMS
+        ex = true,
+        id = 'DHGVNHrMS',
+        name = "Trench Warfare",
+        desc = [[HFD WUT NH rMS GV DH mods]],
+        quote = [[Dig deep, move fast, and keep your head low.]],
+        credit = "@Tizago",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+        hide = function() return GAME.completion.MS == 0 end,
+    },
     { -- rGVrNHrVL
         ex = true,
         id = 'rGVrNHrVL',
@@ -567,7 +577,6 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
-    {},
 
     { title = "Why" },
     {},
