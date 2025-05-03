@@ -335,7 +335,7 @@ function GAME.getComboName(list, mode)
 
         -- Normal Combo
         local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or usingExtend) then
+        if ComboData[str] and (ComboData[str].basic or usingExtend and ComboData[str].menu) then
             return ComboData[str].name
         end
 
