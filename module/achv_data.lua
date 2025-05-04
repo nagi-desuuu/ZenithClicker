@@ -378,7 +378,7 @@ Achievements = {
         id = 'rDH',
         name = "Damnation",
         desc = [[HFD with the reversed "Double Hole" mod]],
-        quote = [[No more second chances.]],
+        quote = [[Neither the freedom of life or peace of death.]],
         hide = function() return GAME.completion.DH == 0 end,
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
     },
