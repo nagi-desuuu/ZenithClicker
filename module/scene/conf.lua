@@ -10,8 +10,10 @@ local clr = {
     cbFrame = { COLOR.HEX '6A82A7' },
 }
 local colorRev = false
+local bindBuffer
 
 function scene.load()
+    bindBuffer = nil
     SetMouseVisible(true)
     if GAME.anyRev ~= colorRev then
         colorRev = GAME.anyRev
@@ -25,11 +27,58 @@ end
 --     SaveStat()
 -- end
 
+local bindHint = {
+    "CARD-1",
+    "CARD-2",
+    "CARD-3",
+    "CARD-4",
+    "CARD-5",
+    "CARD-6",
+    "CARD-7",
+    "CARD-8",
+    "CARD-9",
+    "CARD-1 (2nd)",
+    "CARD-2 (2nd)",
+    "CARD-3 (2nd)",
+    "CARD-4 (2nd)",
+    "CARD-5 (2nd)",
+    "CARD-6 (2nd)",
+    "CARD-7 (2nd)",
+    "CARD-8 (2nd)",
+    "CARD-9 (2nd)",
+    "COMMIT",
+    "RESET",
+    "LEFTCLK",
+    "RIGHTCLK",
+}
+
 function scene.keyDown(key, isRep)
     if isRep then return true end
     if key == 'escape' or key == 'f1' then
-        SFX.play('menuclick')
-        SCN.back('none')
+        if bindBuffer then
+            bindBuffer = nil
+            MSG('dark', "Keybinding cancelled")
+            SFX.play('staffwarning')
+        else
+            SFX.play('menuclick')
+            SCN.back('none')
+        end
+    elseif bindBuffer and (#key == 1 or key == 'space') then
+        if TABLE.find(bindBuffer, key) then
+            MSG('dark', "Keybinding should not repeat!", 1)
+            SFX.play('finessefault')
+        else
+            table.insert(bindBuffer, key)
+            if #bindBuffer >= 22 then
+                STAT.keybind = bindBuffer
+                bindBuffer = nil
+                SaveStat()
+                MSG('dark', "Keybinding updated.")
+                SFX.play('social_notify_major')
+            else
+                SFX.play('irs')
+            end
+        end
     end
     ZENITHA.setCursorVis(true)
     return true
@@ -68,7 +117,7 @@ function scene.draw()
 
     -- Panel
     gc_replaceTransform(SCR.xOy)
-    gc_ucs_move('m', 800 - w / 2, 510 - h / 2)
+    gc.translate(800 - w / 2, 510 - h / 2)
     gc_setColor(clr.D)
     gc_rectangle('fill', 0, 0, w, h)
     gc_setColor(0, 0, 0, .26)
@@ -79,10 +128,17 @@ function scene.draw()
     gc_rectangle('fill', 0, 3, 3, h + 3)
 
     -- Sliders
-    drawSliderComponents(310, "EFFECT VOLUME", "QUIET (F3)", "LOUD", STAT.sfx)
-    drawSliderComponents(380, "MUSIC VOLUME", "QUIET (F4)", "LOUD", STAT.bgm)
+    drawSliderComponents(310, "EFFECT VOLUME", "QUIET (F3)", "LOUD (F3)", STAT.sfx)
+    drawSliderComponents(380, "MUSIC VOLUME", "QUIET (F4)", "LOUD (F4)", STAT.bgm)
     drawSliderComponents(520, "CARD  BRIGHTNESS", "DARK (F5)", "BRIGHT (F6)", STAT.cardBrightness)
     drawSliderComponents(590, "BG  BRIGHTNESS", "DARK (F7)", "BRIGHT (F8)", STAT.bgBrightness)
+
+    -- Keybind
+    if bindBuffer then
+        FONT.set(30)
+        gc_print("Press key for...", 610, 680, 0, .872)
+        gc_print(bindHint[#bindBuffer + 1], 610, 710, 0, .872)
+    end
 
     -- Top bar & title
     gc_replaceTransform(SCR.xOy_u)
@@ -114,6 +170,7 @@ function scene.draw()
 end
 
 scene.widgetList = {
+    -- ACCOUNT
     WIDGET.new {
         type = 'text', alignX = 'left',
         text = "ACCOUNT",
@@ -123,9 +180,9 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
-        x = baseX + 220, y = baseY + 115, w = 360, h = 50,
+        x = baseX + 230, y = baseY + 115, w = 380, h = 50,
         color = clr.L,
-        fontSize = 30, textColor = clr.LT, text = "CHANGE USERNAME",
+        fontSize = 30, textColor = clr.LT, text = "CHANGE  USERNAME",
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
@@ -169,9 +226,9 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
-        x = baseX + 610, y = baseY + 115, w = 360, h = 50,
+        x = baseX + 640, y = baseY + 115, w = 380, h = 50,
         color = clr.L,
-        fontSize = 30, textColor = clr.LT, text = "CHANGE ABOUT ME",
+        fontSize = 30, textColor = clr.LT, text = "CHANGE  ABOUT ME",
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
@@ -214,9 +271,9 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'export', type = 'button',
-        x = baseX + 220, y = baseY + 185, w = 360, h = 50,
+        x = baseX + 230, y = baseY + 185, w = 380, h = 50,
         color = clr.L,
-        fontSize = 30, textColor = clr.LT, text = "EXPORT PROGRESS",
+        fontSize = 30, textColor = clr.LT, text = "EXPORT  PROGRESS",
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
@@ -234,9 +291,9 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'import', type = 'button',
-        x = baseX + 610, y = baseY + 185, w = 360, h = 50,
+        x = baseX + 640, y = baseY + 185, w = 380, h = 50,
         color = clr.L,
-        fontSize = 30, textColor = clr.LT, text = "IMPORT PROGRESS",
+        fontSize = 30, textColor = clr.LT, text = "IMPORT  PROGRESS",
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
@@ -282,6 +339,8 @@ scene.widgetList = {
             SFX.play('social_notify_major')
         end,
     },
+
+    -- AUDIO
     WIDGET.new {
         type = 'text', alignX = 'left',
         text = "AUDIO",
@@ -313,6 +372,8 @@ scene.widgetList = {
         end,
         sound_drag = 'rotate',
     },
+
+    -- VIDEO
     WIDGET.new {
         type = 'text', alignX = 'left',
         text = "VIDEO",
@@ -371,6 +432,42 @@ scene.widgetList = {
             love.window.setFullscreen(STAT.fullscreen)
         end,
     },
+
+    -- KEYBIND
+    WIDGET.new {
+        name = 'export', type = 'button',
+        x = baseX + 740, y = baseY + 790, w = 260, h = 50,
+        color = clr.L,
+        fontSize = 30, textColor = clr.LT, text = "REBIND  KEY",
+        sound_hover = 'menutap',
+        sound_release = 'menuclick',
+        onClick = function()
+            if bindBuffer then
+                bindBuffer = {}
+                SFX.play('b2bcharge_danger', .8)
+            else
+                MSG.clear()
+                if TASK.lock('rebind_control', 12) then
+                    SFX.play('notify')
+                    MSG('dark',
+                        "Current Keybinding:\n" ..
+                        table.concat(TABLE.sub(STAT.keybind, 1, 9), ', ') .. "\n" ..
+                        table.concat(TABLE.sub(STAT.keybind, 10, 18), ', ') .. "\n" ..
+                        "Commit: " .. STAT.keybind[19] .. "\n" ..
+                        "Reset: " .. STAT.keybind[20] .. "\n" ..
+                        "Click L/R: " .. STAT.keybind[21] .. ", " .. STAT.keybind[22] .. "\n" ..
+                        "Click again to rebind",
+                        12
+                    )
+                else
+                    TASK.unlock('rebind_control')
+                    bindBuffer = {}
+                    SFX.play('b2bcharge_danger', .8)
+                end
+            end
+        end,
+    },
+
     WIDGET.new {
         name = 'back', type = 'button',
         pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,

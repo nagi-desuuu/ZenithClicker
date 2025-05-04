@@ -8,6 +8,7 @@ local lerp, iLerp, cLerp, icLerp, lLerp = MATH.lerp, MATH.iLerp, MATH.cLerp, MAT
 
 local M = GAME.mod
 local MD = ModData
+local shortcut = {}
 
 local cancelNextClick
 local cancelNextKeyClick
@@ -94,7 +95,8 @@ for i = 1, 9 do keyMap['' .. i] = i end
 for n, k in next, ("qwertyuio"):atomize() do keyMap[k] = n end
 for n, k in next, ("asdfghjkl"):atomize() do keyMap[k] = n end
 local function keyPress(key)
-    if keyMap[key] and (M.AS > 0 or (not GAME.playing and keyMap[key] == 8)) then
+    local bindID = TABLE.find(STAT.keybind, key)
+    if bindID and (bindID <= 18 and (M.AS > 0 or (not GAME.playing and bindID % 9 == 8))) then
         local C = Cards[keyMap[key]]
         if C then
             if GAME.playing or not C.lock then
@@ -125,7 +127,7 @@ local function keyPress(key)
                 SCN.back()
             end
         end
-    elseif key == 'z' then
+    elseif bindID == 20 then
         if M.NH == 2 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.reset
@@ -135,12 +137,12 @@ local function keyPress(key)
         if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
         GAME.cancelAll()
         if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
-    elseif key == 'x' or key == 'c' then
+    elseif bindID == 21 or bindID == 22 then
         if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
-        scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, key == 'x' and 1 or 2)
+        scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, bindID == 21 and 1 or 2)
         if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
-    elseif key == 'space' then
+    elseif bindID == 19 then
         if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.start
@@ -197,6 +199,8 @@ local function keyPress(key)
 end
 
 function scene.load()
+    MSG.clear()
+
     if SYSTEM == 'Web' and TASK.lock('web_warn') then
         MSG('warn',
             "[WARNING]\nThe web version is for trial purposes only.\nPlease note that your progress may be lost without warning, and this cannot be fixed.\nDownload the desktop version to keep playing in the future, with far better performance.\nThank you for your support!",
@@ -206,6 +210,22 @@ function scene.load()
 
     cancelNextClick = true
     cancelNextKeyClick = true
+
+    shortcut = TABLE.applyeach(TABLE.sub(STAT.keybind, 1, 9), function(v)
+        if v == 'space' then
+            return "_"
+        else
+            return v:sub(1, 2):upper()
+        end
+    end)
+
+    scene.widgetList.help.floatText = (STRING.trimIndent [[
+        Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
+        The higher you go in the tower, the more tricky players you'll encounter!
+        There's no leaderboards yet, but how high can you reach?
+        Commit: $1    Reset: $2    Forfeit/Quit: Esc
+    ]]):repD(STAT.keybind[19]:upper(), STAT.keybind[20]:upper())
+    scene.widgetList.help:reset()
 
     GAME.refreshDailyChallengeText()
 end
@@ -406,7 +426,6 @@ end
 TextColor = { .7, .5, .3 }
 ShadeColor = { .3, .15, 0 }
 ComboColor = {}
-local shortcut = ('QWERTYUIO'):atomize()
 local rankColor = {
     [0] = { 1, 1, 1, .26 },
     { 1,  .1, 0 },
@@ -1303,12 +1322,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 30,
-        floatText = STRING.trimIndent [[
-            Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
-            The higher you go in the tower, the more tricky players you'll encounter!
-            There's no leaderboards yet, but how high can you reach?
-            Space: Commit    Z: Reset    Esc: Forfeit/Quit
-        ]],
+        floatText = "NO DATA",
         onPress = function()
             PieceSFXID = (PieceSFXID or 0) % 7 + 1
             SFX.play(('zsjltoi'):sub(PieceSFXID, PieceSFXID), 1, 0, 6 + M.GV)

@@ -425,6 +425,11 @@ STAT = {
     joinDate = os.date("%b %Y"),
     hid = os.date("%d%S%m%M%y%H") .. math.random(2600000000, 6200000000),
     uid = "ANON-" .. os.date("%d_") .. math.random(2600, 6200),
+    keybind = {
+        "q", "w", "e", "r", "t", "y", "u", "i", "o",
+        "a", "s", "d", "f", "g", "h", "j", "k", "l",
+        "space", "z", "x", "c"
+    },
     aboutme = "Click the Zenith!",
     maxFloor = 1,
     maxHeight = 0,
@@ -1184,6 +1189,7 @@ end
 
 Initialize()
 RefreshDaily()
+GAME.refreshCurrentCombo()
 
 -- Test
 TASK.new(function()

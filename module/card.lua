@@ -166,7 +166,7 @@ function Card:setActive(auto, key)
         end
     else
         TASK.unlock('cannotStart')
-        revOn = self.active and (key == 2 or KBIsDown('lctrl', 'rctrl'))
+        revOn = self.active and (key == 2 or KBIsDown('lctrl', 'lalt', 'rctrl', 'ralt'))
         if revOn and completion[self.id] == 0 then
             revOn = false
             noSpin = true
