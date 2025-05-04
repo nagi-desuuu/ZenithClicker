@@ -60,7 +60,7 @@ local function refreshAchvList(canShuffle)
     for i = 1, #Achievements do
         local A = Achievements[i]
         if not A.id then
-            table.insert(achvList, { title = A.title and A.title:upper() })
+            table.insert(achvList, { title = A.hide() and "???" or A.title and A.title:upper() })
         else
             local rank, score, progress, wreath
             if A.type == 'issued' then

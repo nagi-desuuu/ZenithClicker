@@ -322,7 +322,7 @@ Achievements = {
     },
     {},
 
-    { title = "Reversed Mods" },
+    { title = "Reversed Mods", hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end },
     {},
     { -- divine_challenger
         ex = true,
@@ -462,16 +462,6 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.IN == 0 or GAME.completion.AS == 0 end,
     },
-    { -- DHGVNHrMS
-        ex = true,
-        id = 'DHGVNHrMS',
-        name = "Trench Warfare",
-        desc = [[HFD WUT NH rMS GV DH mods]],
-        quote = [[Dig deep, move fast, and keep your head low.]],
-        credit = "@Tizago",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        hide = function() return GAME.completion.MS == 0 end,
-    },
     { -- DHrMSrNH
         ex = true,
         id = 'DHrMSrNH',
@@ -491,6 +481,16 @@ Achievements = {
         credit = "@obsidian",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return GAME.completion.NH == 0 or GAME.completion.GV == 0 or GAME.completion.VL == 0 end,
+    },
+    { -- DHGVNHrMS
+        ex = true,
+        id = 'DHGVNHrMS',
+        name = "Trench Warfare",
+        desc = [[HFD WUT NH rMS GV DH mods]],
+        quote = [[Dig deep, move fast, and keep your head low.]],
+        credit = "@Tizago",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
+        hide = function() return GAME.completion.MS == 0 end,
     },
     { -- DPGVMSrNH
         ex = true,
@@ -528,7 +528,7 @@ Achievements = {
         desc = [[HFD WUT rEX rVL DH mods]],
         quote = [[Putting your blood, sweat, and tears to the climb, or fall.]],
         credit = "@Tizago",
-        rank = floorRank(1, 3, 5, 6, 7, 8, 10),
+        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
         hide = function() return GAME.completion.EX == 0 end,
     },
     { -- MSrDPrGV
@@ -609,7 +609,7 @@ Achievements = {
     },
     {},
 
-    { title = "Why" },
+    { title = "Why", hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end },
     {},
     { -- blight
         ex = true,
@@ -1225,7 +1225,6 @@ for i = 1, #Achievements do
 
         if achv.type == nil then achv.type = 'competitive' end
         assert(type(achv.type) == 'string', "Invalid field 'type' - " .. id)
-
-        achv.hide = achv.hide or FALSE
     end
+    achv.hide = achv.hide or FALSE
 end
