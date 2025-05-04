@@ -1,6 +1,7 @@
 local max, min = math.max, math.min
 local floor, ceil = math.floor, math.ceil
 local abs, rnd = math.abs, math.random
+local roundUnit = MATH.roundUnit
 
 local ins, rem = table.insert, table.remove
 
@@ -823,7 +824,7 @@ function GAME.upFloor()
     end
 
     if GAME.floor >= 10 then
-        local roundTime = MATH.roundUnit(GAME.time, .001)
+        local roundTime = roundUnit(GAME.time, .001)
         if GAME.gigaspeed then
             if GAME.time < STAT.minTime then
                 STAT.minTime = roundTime
@@ -1820,13 +1821,13 @@ function GAME.finish(reason)
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
         STAT.totalGame = STAT.totalGame + 1
-        STAT.totalTime = MATH.roundUnit(STAT.totalTime + GAME.time, .001)
+        STAT.totalTime = roundUnit(STAT.totalTime + GAME.time, .001)
         STAT.totalFlip = STAT.totalFlip + GAME.totalFlip
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalPerfect = STAT.totalPerfect + GAME.totalPerfect
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
-        STAT.totalHeight = MATH.roundUnit(STAT.totalHeight + GAME.height, .01)
-        STAT.totalBonus = MATH.roundUnit(STAT.totalBonus + GAME.heightBonus, .01)
+        STAT.totalHeight = roundUnit(STAT.totalHeight + GAME.height, .01)
+        STAT.totalBonus = roundUnit(STAT.totalBonus + GAME.heightBonus, .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
@@ -1899,22 +1900,22 @@ function GAME.finish(reason)
         local maxCSP = {}
         for i = 1, #GAME.rankTimer do ins(maxCSP, { i, GAME.rankTimer[i] }) end
         table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
+        local spd1, spd2 = maxCSP[1], maxCSP[2]
         TEXTS.endResult:set({
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
             COLOR.LD, GAME.gigaTime and "  (F10 " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
             COLOR.L, "Flip  " .. GAME.totalFlip,
-            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalFlip / GAME.time, .01) .. "/s)\n",
+            COLOR.LD, "  (" .. roundUnit(GAME.totalFlip / GAME.time, .01) .. "/s)\n",
             COLOR.L, "Quest  " .. GAME.totalQuest,
-            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
-            MATH.roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
-            COLOR.L, "Speed  " .. MATH.roundUnit(GAME.height / GAME.time, .1) .. "m/s",
-            COLOR.LD, "  (",
-            MATH.roundUnit(maxCSP[1][2], .1) .. "s@" .. (maxCSP[1][1] == 26 and "26+" or maxCSP[1][1]), ", ",
-            MATH.roundUnit(maxCSP[2][2], .1) .. "s@" .. (maxCSP[2][1] == 26 and "26+" or maxCSP[2][1]), ")\n",
+            COLOR.LD, "  (" .. roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
+            roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
+            COLOR.L, "Speed  " .. roundUnit(GAME.height / GAME.time, .1) .. "m/s",
+            COLOR.LD, ("  (%.1fs@%s"):format(spd1[2], spd1[1] == 26 and "26+" or spd1[1]),
+            spd2[2] > 0 and (", %.1fs@%s)\n"):format(spd2[2], spd2[1] == 26 and "26+" or spd2[1]) or ")\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
-            COLOR.LD, "  (" .. MATH.roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
-            COLOR.L, "Bonus  " .. MATH.roundUnit(GAME.heightBonus, .1) .. "m",
-            COLOR.LD, "  (" .. MATH.roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%)\n",
+            COLOR.LD, "  (" .. roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
+            COLOR.L, "Bonus  " .. roundUnit(GAME.heightBonus, .1) .. "m",
+            COLOR.LD, "  (" .. roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%)\n",
         })
         GAME.refreshResultModIcon()
 
@@ -1955,7 +1956,7 @@ function GAME.finish(reason)
         for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
         SubmitAchv('divine_challenger', _t, true)
 
-        SubmitAchv('multitasker', MATH.roundUnit(GAME.height * GAME.comboMP, .01))
+        SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)
         SubmitAchv('teraspeed', GAME.maxRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
