@@ -36,12 +36,12 @@ function scene.keyDown(key, isRep)
 end
 
 -- Panel size
-local w, h = 900, 800
+local w, h = 900, 830
 local baseX, baseY = (1600 - w) / 2, (1000 - h) / 2
 
 local gc = love.graphics
 local gc_replaceTransform = gc.replaceTransform
-local gc_setColor, gc_rectangle, gc_print = gc.setColor, gc.rectangle, gc.print
+local gc_setColor, gc_rectangle, gc_print, gc_printf = gc.setColor, gc.rectangle, gc.print, gc.printf
 local gc_ucs_move, gc_ucs_back = GC.ucs_move, GC.ucs_back
 local gc_setAlpha, gc_mRect, gc_mStr = GC.setAlpha, GC.mRect, GC.mStr
 
@@ -55,7 +55,7 @@ local function drawSliderComponents(y, title, t1, t2, value)
     gc_print(title, 40, -20, 0, .85, 1)
     gc_setAlpha(.42)
     gc_print(t1, 326, 5, 0, .5)
-    gc_print(t2, w - 230, 5, 0, .5)
+    gc_printf(t2, w - 355, 5, 355, 'right', 0, .5)
     gc_setColor(clr.T)
     gc_mStr(value, w - 100, -20)
     gc_setColor(clr.L)
@@ -68,7 +68,7 @@ function scene.draw()
 
     -- Panel
     gc_replaceTransform(SCR.xOy)
-    gc_ucs_move('m', 800 - w / 2, 500 - h / 2)
+    gc_ucs_move('m', 800 - w / 2, 510 - h / 2)
     gc_setColor(clr.D)
     gc_rectangle('fill', 0, 0, w, h)
     gc_setColor(0, 0, 0, .26)
@@ -79,10 +79,10 @@ function scene.draw()
     gc_rectangle('fill', 0, 3, 3, h + 3)
 
     -- Sliders
-    drawSliderComponents(300, "EFFECT VOLUME", "QUIET", "LOUD", STAT.sfx)
-    drawSliderComponents(370, "MUSIC VOLUME", "QUIET", "LOUD", STAT.bgm)
-    drawSliderComponents(495, "CARD  BRIGHTNESS", "DARK", "BRIGHT", STAT.cardBrightness)
-    drawSliderComponents(565, "BG  BRIGHTNESS", "DARK", "BRIGHT", STAT.bgBrightness)
+    drawSliderComponents(310, "EFFECT VOLUME", "QUIET (F3)", "LOUD", STAT.sfx)
+    drawSliderComponents(380, "MUSIC VOLUME", "QUIET (F4)", "LOUD", STAT.bgm)
+    drawSliderComponents(520, "CARD  BRIGHTNESS", "DARK (F5)", "BRIGHT (F6)", STAT.cardBrightness)
+    drawSliderComponents(590, "BG  BRIGHTNESS", "DARK (F7)", "BRIGHT (F8)", STAT.bgBrightness)
 
     -- Top bar & title
     gc_replaceTransform(SCR.xOy_u)
@@ -123,7 +123,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
-        x = baseX + 220, y = baseY + 110, w = 360, h = 50,
+        x = baseX + 220, y = baseY + 115, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE USERNAME",
         sound_hover = 'menutap',
@@ -169,7 +169,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
-        x = baseX + 610, y = baseY + 110, w = 360, h = 50,
+        x = baseX + 610, y = baseY + 115, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "CHANGE ABOUT ME",
         sound_hover = 'menutap',
@@ -214,7 +214,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'export', type = 'button',
-        x = baseX + 220, y = baseY + 175, w = 360, h = 50,
+        x = baseX + 220, y = baseY + 185, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "EXPORT PROGRESS",
         sound_hover = 'menutap',
@@ -234,7 +234,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         name = 'import', type = 'button',
-        x = baseX + 610, y = baseY + 175, w = 360, h = 50,
+        x = baseX + 610, y = baseY + 185, w = 360, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "IMPORT PROGRESS",
         sound_hover = 'menutap',
@@ -287,11 +287,11 @@ scene.widgetList = {
         text = "AUDIO",
         color = clr.T,
         fontSize = 50,
-        x = baseX + 30, y = baseY + 235,
+        x = baseX + 30, y = baseY + 250,
     },
     WIDGET.new {
         type = 'slider',
-        x = baseX + 240 + 85, y = baseY + 300, w = 400,
+        x = baseX + 240 + 85, y = baseY + 310, w = 400,
         axis = { 0, 100, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.sfx end,
@@ -303,7 +303,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'slider',
-        x = baseX + 240 + 85, y = baseY + 370, w = 400,
+        x = baseX + 240 + 85, y = baseY + 380, w = 400,
         axis = { 0, 100, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.bgm end,
@@ -318,11 +318,11 @@ scene.widgetList = {
         text = "VIDEO",
         color = clr.T,
         fontSize = 50,
-        x = baseX + 30, y = baseY + 430,
+        x = baseX + 30, y = baseY + 460,
     },
     WIDGET.new {
         type = 'slider',
-        x = baseX + 240 + 85, y = baseY + 500, w = 400,
+        x = baseX + 240 + 85, y = baseY + 520, w = 400,
         axis = { 80, 100, 5 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.cardBrightness end,
@@ -331,7 +331,7 @@ scene.widgetList = {
     },
     WIDGET.new {
         type = 'slider',
-        x = baseX + 240 + 85, y = baseY + 570, w = 400,
+        x = baseX + 240 + 85, y = baseY + 590, w = 400,
         axis = { 30, 80, 10 },
         frameColor = 'dD', fillColor = clr.D,
         disp = function() return STAT.bgBrightness end,
@@ -343,7 +343,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
-        x = baseX + 55, y = baseY + 630,
+        x = baseX + 55, y = baseY + 670,
         disp = function() return STAT.bg end,
         code = function() STAT.bg = not STAT.bg end,
     },
@@ -352,7 +352,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "STAR FORCE  (F10)",
-        x = baseX + 55, y = baseY + 690,
+        x = baseX + 55, y = baseY + 730,
         disp = function() return not STAT.syscursor end,
         code = function()
             STAT.syscursor = not STAT.syscursor
@@ -364,7 +364,7 @@ scene.widgetList = {
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
         textColor = clr.T, text = "FULLSCREEN  (F11)",
-        x = baseX + 55, y = baseY + 750,
+        x = baseX + 55, y = baseY + 790,
         disp = function() return STAT.fullscreen end,
         code = function()
             STAT.fullscreen = not STAT.fullscreen
