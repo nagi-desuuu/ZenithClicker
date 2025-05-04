@@ -609,7 +609,7 @@ Achievements = {
     },
     {},
 
-    { title = "Why", hide = function() return TABLE.countAll(GAME.completion, 0) <= 7 end },
+    { title = "Why", hide = function() return TABLE.countAll(GAME.completion, 0) >= 8 end },
     {},
     { -- blight
         ex = true,
