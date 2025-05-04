@@ -155,9 +155,6 @@ local function refreshAchvList(canShuffle)
                 break
             end
         end
-        if overallProgress.countStart == 6 then
-            overallProgress.countStart = false
-        end
     end
 end
 
@@ -518,6 +515,7 @@ function scene.draw()
                 gc_mDraw(TEXTURE.achievement.frame[i], -1150 + 140 * i, 35, 0, .26)
             end
         elseif overallProgress.countStart then
+            if overallProgress.countStart == 6 then gc_print("THANKS FOR PLAYING.", -760, 0) end
             for i = overallProgress.countStart, 6 do gc_print(overallProgress.wreath[i], -1100 + 40 + 160 * i) end
             gc_setColor(1, 1, 1)
             for i = overallProgress.countStart, 6 do
@@ -526,8 +524,6 @@ function scene.draw()
                     -1100 + 160 * i, 35, 0, .26
                 )
             end
-        else
-            gc_printf("CONGRATULATIONS!   THANKS FOR PLAYING.", -1610, 0, 1600, 'right')
         end
     end
 
