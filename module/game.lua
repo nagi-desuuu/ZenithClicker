@@ -68,6 +68,7 @@ local ins, rem = table.insert, table.remove
 ---@field atkBuffer number
 ---@field atkBufferCap number
 ---@field shuffleMessiness number | false
+---@field lastCommit string[]
 ---
 ---@field spikeTimer number
 ---@field spikeCounter number
@@ -146,6 +147,8 @@ local GAME = {
     achv_powerlessH = nil,
     achv_patienceH = nil,
     achv_talentlessH = nil,
+    achv_honeymoonH = nil,
+    achv_break_upH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
     achv_totalDmg = nil,
@@ -1215,6 +1218,16 @@ function GAME.commit()
 
     if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
 
+    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_break_upH) and GAME.totalQuest >= 2 then
+        local noRep = #TABLE.subtract(TABLE.copy(hand), GAME.lastCommit) == #hand
+        if noRep then
+            if not GAME.achv_honeymoonH then GAME.achv_honeymoonH = GAME.roundHeight end
+        else
+            if not GAME.achv_break_upH then GAME.achv_break_upH = GAME.roundHeight end
+        end
+    end
+    GAME.lastCommit = TABLE.copy(hand)
+
     local q1 = TABLE.sort(GAME.quests[1].combo)
     local q2 = M.DP > 0 and TABLE.sort(GAME.quests[2].combo)
 
@@ -1659,6 +1672,7 @@ function GAME.start()
     GAME.heightBuffer = 0
     GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
     GAME.fatigue = 1
+    GAME.lastCommit = {}
 
     -- Params
     GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
@@ -1746,6 +1760,8 @@ function GAME.start()
     GAME.achv_powerlessH = false
     GAME.achv_patienceH = false
     GAME.achv_talentlessH = false
+    GAME.achv_honeymoonH = false
+    GAME.achv_break_upH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
     GAME.achv_totalDmg = 0
@@ -2000,6 +2016,8 @@ function GAME.finish(reason)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
             if M.DP == 2 then SubmitAchv('the_unreliable_one', GAME.killCount) end
+            SubmitAchv('honeymoon', GAME.achv_honeymoonH or GAME.roundHeight)
+            SubmitAchv('break_up', GAME.achv_break_upH or GAME.roundHeight)
         end
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.roundHeight)
