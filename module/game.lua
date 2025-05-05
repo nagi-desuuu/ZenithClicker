@@ -1950,6 +1950,9 @@ function GAME.finish(reason)
         for id in next, MD.name do _t = _t + BEST.speedrun[id] end
         SubmitAchv('zenith_speedrunner', _t, true)
         _t = 0
+        for id in next, MD.name do _t = _t + BEST.speedrun['r' .. id] end
+        SubmitAchv('divine_speedrunner', _t, true)
+        _t = 0
         for id in next, MD.name do _t = _t + BEST.highScore[id] end
         SubmitAchv('zenith_challenger', _t, true)
         _t = 0

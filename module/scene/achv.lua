@@ -225,6 +225,9 @@ local function refreshAchivement()
     for id in next, MD.name do _t = _t + BEST.speedrun[id] end
     submit('zenith_speedrunner', _t, true)
     _t = 0
+    for id in next, MD.name do _t = _t + BEST.speedrun['r' .. id] end
+    submit('divine_speedrunner', _t, true)
+    _t = 0
     for id in next, MD.name do _t = _t + BEST.highScore[id] end
     submit('zenith_challenger', _t, true)
     _t = 0
