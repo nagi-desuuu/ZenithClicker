@@ -238,7 +238,7 @@ function Card:setActive(auto, key)
         )
         if revOn then
             self:revJump()
-        elseif not noSpin then
+        elseif M.NH < 2 and not noSpin then
             self:spin()
         end
     else
