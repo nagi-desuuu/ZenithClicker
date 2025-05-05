@@ -181,8 +181,8 @@ local function refreshAchivement()
         local count = (#k - revCount) / 2
         if count == 9 or count >= 7 and not k:find('DP') then
             for i = count, 7, -1 do
-                SubmitAchv(sw[i - 6], v)
-                if revCount > 0 then SubmitAchv(sw[i - 6] .. '_plus', v) end
+                SubmitAchv(sw[i - 6], v, true)
+                if revCount > 0 then SubmitAchv(sw[i - 6] .. '_plus', v, true) end
             end
         end
         local mp = count + revCount

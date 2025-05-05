@@ -2015,7 +2015,8 @@ function GAME.finish(reason)
                 'swamp_water_x',
             }
             for i = #hand, 7, -1 do
-                SubmitAchv(sw[i - 6] .. (GAME.anyRev and '_plus' or ''), GAME.roundHeight)
+                SubmitAchv(sw[i - 6], GAME.roundHeight)
+                if GAME.anyRev then SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight) end
             end
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)
