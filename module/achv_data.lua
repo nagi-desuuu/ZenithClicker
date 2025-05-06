@@ -208,7 +208,7 @@ Achievements = {
     { -- vip_list
         id = 'vip_list',
         name = "Vip List",
-        desc = [[Master the daily combo with at least one reversed mod.]],
+        desc = [[Master the daily combo with any reversed mod included.]],
         quote = [[Unparalleled luxury for a select few.]],
         rank = numberRank(0, 0, 0, 1, 2, 4, 6),
         scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
@@ -1195,6 +1195,16 @@ Achievements = {
         quote = [[Elegant backflip]],
         hide = TRUE,
         type = 'issued',
+    },
+    { -- its_super_rare
+        id = 'its_super_rare',
+        name = "It's Super Rare!",
+        desc = [[Master the daily combo with 2 reversed mods.]],
+        quote = [[Those lucky and capable of completing challenges deserve a lifetime reward.]],
+        credit = "@GameTilDead",
+        rank = numberRank(0, 0, 0, 1, 2, 4, 6),
+        scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
+        hide = TRUE,
     },
 }
 

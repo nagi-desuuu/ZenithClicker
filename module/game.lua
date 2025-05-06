@@ -1860,9 +1860,12 @@ function GAME.finish(reason)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
             if GAME.floor >= 10 and not STAT.dailyMastered then
                 STAT.dailyMastered = true
-                if GAME.anyRev then
+                if GAME.comboStr:find('r') then
                     STAT.vipListCount = STAT.vipListCount + 1
                     SubmitAchv('vip_list', STAT.vipListCount)
+                    if GAME.comboStr:count('r') >= 2 then
+                        IssueAchv('its_super_rare')
+                    end
                 end
             end
             -- TODO: send to online leaderboard
