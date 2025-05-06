@@ -917,6 +917,17 @@ Achievements = {
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
     },
+    { -- detail_oriented
+        id = 'detail_oriented',
+        name = "Detail Oriented",
+        desc = [[Reach F10 with the fewest flips]],
+        quote = [[Theoretically efficient can quickly become gloriously impractical.]],
+        rank = numberRankRev(260, 240, 220, 200, 180, 150, 100),
+        scoreSimp = function(flip) return floor(flip) .. " Flips" end,
+        comp = '<',
+        noScore = 2600,
+    },
+    {},
 
     { title = "Supercharged Clone", credit = "@Garbo" },
     {},

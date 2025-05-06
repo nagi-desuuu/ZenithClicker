@@ -2058,6 +2058,7 @@ function GAME.finish(reason)
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)
+        SubmitAchv('detail_oriented', GAME.totalFlip)
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
