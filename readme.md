@@ -63,6 +63,7 @@ Each mod twists the rules and creates unique experience.
 ### Double Hole (`DH`)
 
 - Quests are harder.
+- Quests sometimes slightly shuffled.
 - TODO: add specifics to difficulty change
 
 ### Invisible (`IN`)
@@ -131,11 +132,24 @@ Make sure you've discovered most contents before reading this section!
 - **ALL the effects of Invisible, except...**
 - Quest hints are **not shown** at all!
 - Quests **fade away** after a short time (faster at higher floors), but reappear if you make a wrong commit.
-- TODO: specifics on fade time
+
+| Floor | rNH Protection | Fade Time |
+| :---: | :------------: | :-------: |
+|   1   |     0.026s     |   2.37s   |
+|   2   |     0.052s     |   1.47s   |
+|   3   |     0.078s     |   1.06s   |
+|   4   |     0.104s     |   0.83s   |
+|   5   |     0.130s     |   0.68s   |
+|   6   |     0.156s     |   0.58s   |
+|   7   |     0.182s     |   0.50s   |
+|   8   |     0.208s     |   0.45s   |
+|   9   |     0.234s     |   0.40s   |
+|  10   |     0.260s     |   0.36s   |
 
 ### The Warlock (`rAS`)
 
 - **ALL the effects of All-Spin, except...**
+- SPIN 2x faster
 - Wounds flip **four cards** instead of two.
 - Burn will **not be removed** over time, nor on SPIN, nor on wrong commit!
 - B2B >= 4 sends **+1 attack**, but passing imperfectly **sends none**!
