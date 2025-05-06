@@ -1216,6 +1216,7 @@ Achievements = {
         rank = numberRank(0, 0, 0, 1, 2, 4, 6),
         scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
         hide = TRUE,
+        type = 'issued',
     },
 }
 
