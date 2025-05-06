@@ -255,7 +255,6 @@ local function getBtnPressed()
     local btnPressed = 0
     if msIsDown(1) then btnPressed = btnPressed + 1 end
     if msIsDown(2) then btnPressed = btnPressed + 1 end
-    if msIsDown(3) then btnPressed = btnPressed + 1 end
     if msIsDown(4) then btnPressed = btnPressed + 1 end
     if msIsDown(5) then btnPressed = btnPressed + 1 end
     if msIsDown(6) then btnPressed = btnPressed + 1 end
@@ -270,8 +269,9 @@ function scene.mouseDown(x, y, k)
     cancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
     GAME.nixPrompt('keep_no_mouse')
+    if k == 3 then return true end
 
-    if getBtnPressed() > 1 + math.floor(M.VL / 2) then return end
+    if getBtnPressed() > 1 + math.floor(M.VL / 2) then return true end
     if M.EX == 0 then
         SFX.play('move')
         mousePress(x, y, k)
@@ -286,6 +286,7 @@ end
 function scene.mouseClick(x, y, k)
     if GAME.zenithTraveler then return end
     GAME.nixPrompt('keep_no_mouse')
+    if k == 3 then return end
 
     if getBtnPressed() > math.floor(M.VL / 2) then return end
     if cancelNextClick then
