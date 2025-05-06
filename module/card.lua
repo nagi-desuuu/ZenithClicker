@@ -465,17 +465,15 @@ function Card:draw()
     local r2, g2, b2, a2
     if playing then
         if self.active then
-            if self.required and self.required2 then
-                r1, g1, b1 = 1, .26, 0
-                r2, g2, b2 = .942, .626, .872
-                a1 = .6 + .4 * self.float
-                a2 = a1
-            elseif self.required then
-                r1, g1, b1 = 1, .26, 0
-                a1 = .6 + .4 * self.float
-            elseif self.required2 then
-                r1, g1, b1 = .942, .626, .872
-                a1 = .6 + .4 * self.float
+            if self.required or self.required2 then
+                if self.required then
+                    r1, g1, b1 = 1, .26, 0
+                    a1 = .6 + .4 * self.float
+                end
+                if self.required2 then
+                    r2, g2, b2 = .942, .626, .872
+                    a2 = .6 + .4 * self.float
+                end
             else
                 r1, g1, b1 = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
                 a1 = 1
@@ -499,7 +497,7 @@ function Card:draw()
                     end
                     if self.required2 then
                         r2, g2, b2 = 1, 1, 1
-                        a2 = a * .626
+                        a2 = a * .42
                     end
                 end
             end
