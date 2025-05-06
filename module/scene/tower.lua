@@ -1322,12 +1322,13 @@ scene.widgetList = {
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 30,
-        floatText = "NO DATA",
+        floatText = "", -- Dynamic text
         onPress = function()
             PieceSFXID = (PieceSFXID or 0) % 7 + 1
             SFX.play(('zsjltoi'):sub(PieceSFXID, PieceSFXID), 1, 0, 6 + M.GV)
             ZENITHA.setShowFPS(PieceSFXID == 7)
         end,
+        visibleFunction = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
 }
 
