@@ -326,7 +326,8 @@ scene.widgetList = {
                 SFX.play('staffwarning')
                 return
             end
-            STAT, BEST, ACHV = res1, res2, res3
+            TABLE.update(STAT, res1)
+            BEST, ACHV = res2, res3
             setmetatable(BEST.highScore, Metatable.best_highscore)
             setmetatable(BEST.speedrun, Metatable.best_speedrun)
             GAME.refreshLockState()
