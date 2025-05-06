@@ -1210,7 +1210,7 @@ Achievements = {
     { -- its_kinda_rare
         id = 'its_kinda_rare',
         name = "It's Kinda Rare!",
-        desc = [[Master the daily combo with 2 reversed mods.]],
+        desc = [[Master the daily combo including 2 reversed mods.]],
         quote = [[Those who are capable and also fortunate deserve a lifetime reward.]],
         credit = "@GameTilDead",
         rank = numberRank(0, 0, 0, 1, 2, 4, 6),
