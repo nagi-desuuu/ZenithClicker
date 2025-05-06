@@ -264,7 +264,7 @@ function scene.load()
     if TASK.lock('achv_init') then
         TASK.new(refreshAchivement)
     else
-        whenItsReady = MATH.roll(.01)
+        whenItsReady = MATH.roll(.01 + M.IN * .026)
     end
 
     refreshAchvList(true)
