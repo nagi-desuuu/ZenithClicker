@@ -1858,6 +1858,13 @@ function GAME.finish(reason)
         if DailyActived then
             STAT.dzp = max(STAT.dzp, zpGain)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
+            if GAME.floor >= 10 and not STAT.dailyMastered then
+                STAT.dailyMastered = true
+                if GAME.anyRev then
+                    STAT.vipListCount = STAT.vipListCount + 1
+                    SubmitAchv('vip_list', STAT.vipListCount)
+                end
+            end
             -- TODO: send to online leaderboard
         end
         STAT.zp = max(

@@ -205,8 +205,15 @@ Achievements = {
         rank = numberRank(0, 12, 20, 26, 42, 62, 100),
         scoreSimp = function(atk) return floor(atk) .. " Spike" end,
     },
-    {},
-
+    { -- vip_list
+        id = 'vip_list',
+        name = "Vip List",
+        desc = [[Master the daily combo with at least one reversed mod.]],
+        quote = [[Unparalleled luxury for a select few.]],
+        rank = numberRank(0, 0, 0, 1, 2, 4, 6),
+        scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
+        hide = TRUE,
+    },
 
     { title = "Mods" },
     {},

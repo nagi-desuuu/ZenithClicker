@@ -184,6 +184,7 @@ TEXTURE = {
             zenith_speedrunner = aq(2, 6),
             divine_speedrunner = aq2(5, 1),
             the_spike_of_all_time = aq(4, 2),
+            vip_list = aq(6, 6),
 
             EX = aq(3, 3),
             NH = aq(7, 3),
@@ -441,7 +442,9 @@ STAT = {
     zp = 0,
     dzp = 0,
     dailyBest = 0,
+    dailyMastered = false,
     lastDay = 0,
+    vipListCount = 0,
 
     totalGame = 0,
     totalTime = 0,
@@ -714,6 +717,7 @@ function RefreshDaily()
         STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
         STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
         STAT.dailyBest = 0
+        STAT.dailyMastered = false
         -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
         STAT.lastDay = os.time()
     end
