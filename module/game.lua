@@ -861,6 +861,7 @@ function GAME.upFloor()
         SubmitAchv('the_pacifist', GAME.totalAttack)
         if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', roundTime) end
         SubmitAchv('zenith_speedrun_plus', roundTime)
+        SubmitAchv('detail_oriented', GAME.totalFlip)
     end
     GAME.updateBgm('ingame')
     GAME.refreshRPC()
@@ -1199,7 +1200,7 @@ function GAME.task_cancelAll(instant)
                 list[i].burn = false
             end
             if not instant then
-                TASK.yieldT(.026)
+                TASK.yieldT(M.AS == 2 and .02 or .04)
             end
         end
     end
@@ -2052,7 +2053,6 @@ function GAME.finish(reason)
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)
         SubmitAchv('supercharged_plus', GAME.achv_maxChain)
-        SubmitAchv('detail_oriented', GAME.totalFlip)
     else
         TEXTS.endHeight:set("")
         TEXTS.endFloor:set("")
