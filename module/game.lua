@@ -1179,13 +1179,7 @@ function GAME.swapControl()
 end
 
 function GAME.cancelAll(instant)
-    if M.NH == 2 then
-        if M.AS == 1 then
-            GAME.cancelBurn()
-            GAME.fault = true
-        end
-        return
-    end
+    if M.NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
     if GAME.gravTimer then GAME.gravTimer = GAME.gravDelay end

@@ -116,7 +116,7 @@ Achievements = {
         quote = [[Master doing everything, then master doing everything.]],
         credit = "@Flowerling",
         rank = numberRank(0, 4200, 6200, 9420, 12600, 16200, 26000),
-        scoreSimp = function(score) return floor(score) .. "m·MP" end,
+        scoreSimp = function(mmp) return floor(mmp) .. "m·MP" end,
         hide = TRUE,
     },
     { -- effective
@@ -126,7 +126,7 @@ Achievements = {
         desc = [[Highest altitude*ZPmul]],
         quote = [[Master doing everything efficiently.]],
         rank = numberRank(0, 2600, 4200, 6200, 10000, 12600, 16200),
-        scoreSimp = function(score) return floor(score) .. " ZP" end,
+        scoreSimp = function(zp) return floor(zp) .. " ZP" end,
         hide = TRUE,
     },
     { -- zenith_speedrun
@@ -203,7 +203,7 @@ Achievements = {
         desc = [[Largest spike sent (excluding Surge)]],
         quote = [[Flashy techniques are a staple amongst the glory-seeking competitors.]],
         rank = numberRank(0, 12, 20, 26, 42, 62, 100),
-        scoreSimp = function(atk) return floor(atk) .. " Spike" end,
+        scoreSimp = function(spike) return floor(spike) .. " Spike" end,
     },
     { -- vip_list
         id = 'vip_list',
@@ -738,7 +738,7 @@ Achievements = {
         desc = [[Quests passed with wound triggered WUT "Double Hole Garbage", "Messier Garbage" and "All-Spin" mods]],
         quote = [["An impossible situation! A daring illusionist! Will he make it out alive?"]],
         rank = numberRank(0, 10, 26, 50, 70, 90, 126),
-        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
+        scoreSimp = function(quest) return floor(quest) .. " Quests" end,
     },
     { -- talentless
         id = 'talentless',
@@ -760,7 +760,7 @@ Achievements = {
         name = "The Responsible One",
         desc = [[Highest amount of revivals performed in a single duo run]],
         quote = [["Could you please stop dying?"]],
-        scoreSimp = function(b2b) return b2b .. " Revives" end,
+        scoreSimp = function(revive) return revive .. " Revives" end,
         rank = numberRank(0, 3, 6, 9, 12, 14, 16),
     },
     { -- guardian_angel
@@ -797,7 +797,7 @@ Achievements = {
         quote = [[Your horses had better be held onto!]],
         credit = "@GameTilDead",
         rank = numberRank(0, 26, 42, 62, 94, 126, 180),
-        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
+        scoreSimp = function(quest) return floor(quest) .. " Quests" end,
         hide = function() return GAME.completion.GV == 0 end,
     },
     { -- powerless
@@ -871,7 +871,7 @@ Achievements = {
         quote = [["And what, Gul'dan, must we give it return?"]],
         -- credit = "WoW",
         rank = numberRank(0, 6, 15, 26, 42, 62, 100),
-        scoreSimp = function(rank) return floor(rank) .. " Quests" end,
+        scoreSimp = function(quest) return floor(quest) .. " Quests" end,
         hide = function() return GAME.completion.AS == 0 or STAT.totalGiga == 0 end,
     },
     { -- arrogance
@@ -905,7 +905,7 @@ Achievements = {
         name = "The Unreliable One",
         desc = [[Highest amount of KILLs performed in a single reversed duo run]],
         quote = [["I won't stop killling."]],
-        scoreSimp = function(b2b) return b2b .. " Kills" end,
+        scoreSimp = function(kill) return kill .. " Kills" end,
         rank = numberRank(0, 2, 3, 4, 5, 7, 10),
         hide = function() return GAME.completion.DP == 0 end,
     },
@@ -998,7 +998,7 @@ Achievements = {
         desc = [[Largest spike sent without any mods]],
         quote = [[Some climbers put their faith solely on divine power; not daring to ask for more.]],
         rank = numberRank(0, 26, 42, 70, 94, 126, 196),
-        scoreSimp = function(atk) return floor(atk) .. " Spike" end,
+        scoreSimp = function(spike) return floor(spike) .. " Spike" end,
     },
     { -- the_spike_of_all_time_plus
         ex = true,
@@ -1007,7 +1007,7 @@ Achievements = {
         desc = [[Largest spike sent]],
         quote = [[While some climbers also attempt to rewrite their destiny on power from outside.]],
         rank = numberRank(0, 10, 26, 42, 62, 126, 200),
-        scoreSimp = function(atk) return floor(atk) .. " Spike" end,
+        scoreSimp = function(spike) return floor(spike) .. " Spike" end,
     },
 
     { title = "Issued (No CR)" },
