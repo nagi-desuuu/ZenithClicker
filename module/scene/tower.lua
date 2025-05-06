@@ -253,7 +253,12 @@ local msIsDown = love.mouse.isDown
 local kbIsDown = love.keyboard.isDown
 local function getBtnPressed()
     local btnPressed = 0
-    for i = 1, 6 do if msIsDown(i) then btnPressed = btnPressed + 1 end end
+    if msIsDown(1) then btnPressed = btnPressed + 1 end
+    if msIsDown(2) then btnPressed = btnPressed + 1 end
+    if msIsDown(3) then btnPressed = btnPressed + 1 end
+    if msIsDown(4) then btnPressed = btnPressed + 1 end
+    if msIsDown(5) then btnPressed = btnPressed + 1 end
+    if msIsDown(6) then btnPressed = btnPressed + 1 end
     if not (M.NH == 2 and M.AS == 0) then
         if kbIsDown('x') then btnPressed = btnPressed + 1 end
         if kbIsDown('c') then btnPressed = btnPressed + 1 end
@@ -265,10 +270,6 @@ function scene.mouseDown(x, y, k)
     cancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
     GAME.nixPrompt('keep_no_mouse')
-    if k == 3 then
-        switchVisitor(true)
-        return true
-    end
 
     if getBtnPressed() > 1 + math.floor(M.VL / 2) then return end
     if M.EX == 0 then
@@ -285,7 +286,6 @@ end
 function scene.mouseClick(x, y, k)
     if GAME.zenithTraveler then return end
     GAME.nixPrompt('keep_no_mouse')
-    if k == 3 then return end
 
     if getBtnPressed() > math.floor(M.VL / 2) then return end
     if cancelNextClick then
@@ -1313,6 +1313,11 @@ scene.widgetList = {
         labelPos = 'leftBottom',
         floatFontSize = 30,
         floatText = "", -- Dynamic text
+        onPress = function()
+            PieceSFXID = (PieceSFXID or 0) % 7 + 1
+            SFX.play(('zsjltoi'):sub(PieceSFXID, PieceSFXID), 1, 0, 6 + M.GV)
+            ZENITHA.setShowFPS(PieceSFXID == 7)
+        end,
     },
     WIDGET.new {
         name = 'help', type = 'hint',
@@ -1324,11 +1329,9 @@ scene.widgetList = {
         floatFontSize = 30,
         floatText = "", -- Dynamic text
         onPress = function()
-            PieceSFXID = (PieceSFXID or 0) % 7 + 1
-            SFX.play(('zsjltoi'):sub(PieceSFXID, PieceSFXID), 1, 0, 6 + M.GV)
-            ZENITHA.setShowFPS(PieceSFXID == 7)
+            switchVisitor(true)
         end,
-        visibleFunction = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        visibleFunc = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
     },
 }
 
