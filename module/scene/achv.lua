@@ -393,7 +393,7 @@ function scene.draw()
                     gc_ucs_move('m', i % 2 == 1 and -626 or 26, floor((i - 1) / 2) * 140)
                 end
                 -- Bottom rectangle
-                if M.EX > 0 and a.type == 'competitive' and (notAllRank5 and a.rank < 5 or not notAllRank5 and (a.wreath or 0) < 6) then
+                if M.EX > 0 and a.type == 'competitive' and (notAllRank5 and a.rank or a.wreath or 0) == overallProgress.countStart then
                     gc_setColor(.26 + .1 * sin(t * 2.6 + ceil(i / 2) * 1.2), 0, 0, .626)
                 else
                     gc_setColor(0, 0, 0, .626)
