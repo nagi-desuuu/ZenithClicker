@@ -47,6 +47,12 @@ jobs:
         run: |
           BASE_NAME=Zenith_Clicker_${{ steps.app-info.outputs.version-string }}_${{ steps.git-info.outputs.commit-hash }}_#${{ GITHUB.RUN_NUMBER }}
           echo "base-name=$BASE_NAME" >> $GITHUB_OUTPUT
+      - name: Create release
+        if: github.ref_type == 'tag'
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          body: ${{ github.event.head_commit.message }}
 
   build-core:
     runs-on: ubuntu-latest
@@ -86,19 +92,16 @@ jobs:
           name: ${{ needs.get-info.outputs.base-name }}_Core
           path: ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}.love
       - name: Prepare for release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         shell: bash
         run: |
           mkdir -p ${{ env.RELEASE_FOLDER }}
           cp ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}.love ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Bare.love
       - name: Upload release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: true
           artifacts: ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Bare.love
-          body: ${{ github.event.head_commit.message }}
-          prerelease: ${{ startsWith(github.ref, 'refs/tags/pre') }}
 
   auto-test:
     runs-on: ubuntu-latest
@@ -113,7 +116,7 @@ jobs:
   build-android:
     runs-on: ubuntu-latest
     needs: [get-info, build-core, auto-test]
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref_type == 'tag'
     env:
       OUTPUT_FOLDER: ./build
       RELEASE_FOLDER: ./release
@@ -157,19 +160,16 @@ jobs:
           name: ${{ needs.get-info.outputs.base-name }}_Android_release
           path: ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}-release.apk
       - name: Prepare for release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         shell: bash
         run: |
           mkdir -p ${{ env.RELEASE_FOLDER }}
           cp ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}-release.apk ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Android.apk
       - name: Upload release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: true
           artifacts: ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Android.apk
-          body: ${{ github.event.head_commit.message }}
-          prerelease: ${{ startsWith(github.ref, 'refs/tags/pre') }}
 
   build-linux:
     runs-on: ubuntu-latest
@@ -219,22 +219,19 @@ jobs:
           name: ${{ needs.get-info.outputs.base-name }}_Linux_Debian
           path: ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}.deb
       - name: Prepare for release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         shell: bash
         run: |
           mkdir -p ${{ env.RELEASE_FOLDER }}
           cp ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}.AppImage ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Linux.AppImage
           cp ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}.deb ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Linux.deb
       - name: Upload release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: true
           artifacts: |
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Linux.AppImage
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Linux.deb
-          body: ${{ github.event.head_commit.message }}
-          prerelease: ${{ startsWith(github.ref, 'refs/tags/pre') }}
 
   build-web-compat:
     runs-on: ubuntu-latest
@@ -350,7 +347,7 @@ jobs:
           name: ${{ needs.get-info.outputs.base-name }}_Windows_installer
           path: ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_installer.exe
       - name: Prepare for release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         shell: bash
         run: |
           mkdir -p ${{ env.RELEASE_FOLDER }}
@@ -358,16 +355,13 @@ jobs:
           cp ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_x64.zip ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_x64.zip
           cp ${{ env.OUTPUT_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_installer.exe ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_installer.exe
       - name: Upload release
-        if: ${{ startsWith(github.ref, 'refs/tags/pre') || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.ref_type == 'tag'
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: true
           artifacts: |
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_x86.zip
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_x64.zip
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_installer.exe
-          body: ${{ github.event.head_commit.message }}
-          prerelease: ${{ startsWith(github.ref, 'refs/tags/pre') }}
 
   post-build:
     runs-on: ubuntu-latest
@@ -383,7 +377,7 @@ jobs:
         build-windows,
       ]
     env:
-      ACTION_TYPE: ${{ fromJSON('[["Development", "Pre-release"], ["Release", "Release"]]')[startsWith(github.ref, 'refs/tags/v')][startsWith(github.ref, 'refs/tags/pre')] }}
+      ACTION_TYPE: Release
     steps:
       - name: Cleanup
         uses: geekyeggo/delete-artifact@v5
