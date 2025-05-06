@@ -149,7 +149,7 @@ Make sure you've discovered most contents before reading this section!
 ### The Warlock (`rAS`)
 
 - **ALL the effects of All-Spin, except...**
-- SPIN 2x faster
+- SPIN faster
 - Wounds flip **four cards** instead of two.
 - Burn will **not be removed** over time, nor on SPIN, nor on wrong commit!
 - B2B >= 4 sends **+1 attack**, but passing imperfectly **sends none**!

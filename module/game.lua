@@ -1200,7 +1200,7 @@ function GAME.task_cancelAll(instant)
                 list[i].burn = false
             end
             if not instant then
-                TASK.yieldT(M.AS == 2 and .02 or .04)
+                TASK.yieldT(M.AS == 2 and .026 or .042)
             end
         end
     end
