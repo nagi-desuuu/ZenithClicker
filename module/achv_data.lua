@@ -890,7 +890,7 @@ Achievements = {
         name = "Break Up",
         desc = [[HFD without commiting any mod twice in a row, with at least (r)DP]],
         quote = [["Never let me see you again."]],
-        rank = floorRank(1, 2, 3, 4, 7, 9, 2000),
+        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
     },
     { -- the_unreliable_one
         ex = true,
