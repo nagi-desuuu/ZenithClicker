@@ -207,7 +207,7 @@ Achievements = {
     },
     { -- vip_list
         id = 'vip_list',
-        name = "Vip List",
+        name = "VIP List",
         desc = [[Master the daily combo with any reversed mod included.]],
         quote = [[Unparalleled luxury for a select few.]],
         rank = numberRank(0, 0, 0, 1, 2, 4, 6),
