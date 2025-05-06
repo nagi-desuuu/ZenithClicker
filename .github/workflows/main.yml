@@ -52,7 +52,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          body: ${{ github.event.head_commit.message }}
+          body: Automatically building... Come back 1 minute later if there's no files below that you need!
 
   build-core:
     runs-on: ubuntu-latest
@@ -102,6 +102,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          body: Automatically building... Come back 1 minute later if there's no files below that you need!
           artifacts: ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Bare.love
 
   auto-test:
@@ -171,6 +172,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          body: Automatically building... Come back 1 minute later if there's no files below that you need!
           artifacts: ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Android.apk
 
   build-linux:
@@ -232,6 +234,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          body: Automatically building... Come back 1 minute later if there's no files below that you need!
           artifacts: |
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Linux.AppImage
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Linux.deb
@@ -362,6 +365,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          body: Automatically building... Come back 1 minute later if there's no files below that you need!
           artifacts: |
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_x86.zip
             ${{ env.RELEASE_FOLDER }}/${{ steps.process-app-name.outputs.product-name }}_Windows_x64.zip
@@ -387,3 +391,9 @@ jobs:
         uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+      - name: Update Release Text
+        if: ${{ startsWith(github.ref, 'refs/tags')}}
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          body: ${{ github.event.head_commit.message }}
