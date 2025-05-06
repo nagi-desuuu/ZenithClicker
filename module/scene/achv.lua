@@ -514,7 +514,7 @@ function scene.draw()
     end
 
     -- Badge (wreath) count
-    if STAT.maxFloor >= 10 then
+    if STAT.maxFloor >= 10 and not whenItsReady then
         gc_replaceTransform(SCR.xOy_ur)
         if overallProgress.ptGet < overallProgress.ptAll then
             for i = overallProgress.countStart, 5 do gc_print(overallProgress.rank[i], -1150 + 40 + 140 * i) end
