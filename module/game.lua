@@ -543,9 +543,9 @@ function GAME.questReady()
     GAME.faultWrong = false
     GAME.dmgWrongExtra = 0
     GAME.gravTimer = false
-    for _, C in ipairs(CD) do C.touchCount, C.isCorrect = 0, false end
-    if M.DP > 0 then for _, v in next, GAME.quests[2].combo do CD[v].isCorrect = 2 end end
-    for _, v in next, GAME.quests[1].combo do CD[v].isCorrect = 1 end
+    for _, C in ipairs(CD) do C.touchCount, C.required, C.required2 = 0, false, false end
+    for _, v in next, GAME.quests[1].combo do CD[v].required = true end
+    if M.DP > 0 then for _, v in next, GAME.quests[2].combo do CD[v].required2 = true end end
 end
 
 function GAME.startRevive()
@@ -1793,7 +1793,8 @@ function GAME.finish(reason)
             C:setActive(true)
         end
         C.touchCount = 0
-        C.isCorrect = false
+        C.required = false
+        C.required2 = false
         C.burn = false
         C.charge = 0
     end

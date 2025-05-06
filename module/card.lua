@@ -10,7 +10,8 @@ local CD = Cards
 
 ---@class Card
 ---@field burn false | number
----@field isCorrect false | number
+---@field required boolean
+---@field required2 boolean
 local Card = {}
 Card.__index = Card
 function Card.new(d)
@@ -41,7 +42,8 @@ function Card.new(d)
 
         touchCount = 0,
         burn = false,
-        isCorrect = false,
+        required = false,
+        required2 = false,
         charge = 0,
     }, Card)
     return obj
@@ -377,7 +379,8 @@ function Card:flick()
     end):setUnique('flick_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
 end
 
-local activeFrame = GC.newImage('assets/card/outline.png')
+local activeFrame = GC.newImage('assets/card/outline1.png')
+local activeFrame2 = GC.newImage('assets/card/outline2.png')
 
 function Card:update(dt)
     self.x = expApproach(self.x, self.tx, dt * 16)
@@ -402,11 +405,10 @@ local gc_push, gc_pop = gc.push, gc.pop
 local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_draw = gc.draw
-local gc_setColor, gc_setShader = gc.setColor, gc.setShader
+local gc_setColor = gc.setColor
 local gc_mDraw = GC.mDraw
 local gc_blurCircle = GC.blurCircle
 
-local Shader_Coloring = Shader_Coloring
 function Card:draw()
     local texture = TEXTURE[self.id]
     local playing = GAME.playing
@@ -459,45 +461,68 @@ function Card:draw()
         gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
 
-    local r, g, b = 1, .26, 0
-    if not playing and not self.upright then
-        r, g, b = (1 - r) * .626, (1 - g) * .626, (1 - b) * .626
-    end
-    local a = 0
-
-    if self.active then
-        -- Active
-        if playing and not self.isCorrect and M.IN < 2 then
-            -- But wrong
-            a = 1
-            r, g, b = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
+    local r1, g1, b1, a1
+    local r2, g2, b2, a2
+    if playing then
+        if self.active then
+            if self.required and self.required2 then
+                r1, g1, b1 = 1, .26, 0
+                r2, g2, b2 = .942, .626, .872
+                a1 = .6 + .4 * self.float
+                a2 = a1
+            elseif self.required then
+                r1, g1, b1 = 1, .26, 0
+                a1 = .6 + .4 * self.float
+            elseif self.required2 then
+                r1, g1, b1 = .942, .626, .872
+                a1 = .6 + .4 * self.float
+            else
+                r1, g1, b1 = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
+                a1 = 1
+            end
         else
-            a = .6 + .4 * self.float
-            if self.isCorrect == 2 and M.IN < 2 then
-                -- Second quest!
-                r, g, b = .942, .626, .872
+            local a
+            local qt = GAME.questTime
+            if M.IN == 0 then
+                if GAME.hardMode then qt = qt - 1.5 end
+                a = clampInterpolate(1, 0, 2, .4, qt) +
+                    clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * sin(qt * 26 - self.x * .0026)
+            elseif M.IN == 1 then
+                if GAME.hardMode then qt = qt * .626 end
+                a = -.1 + .4 * sin(3.1416 + qt * 3)
+            end
+            if a then
+                if self.required or self.required2 then
+                    if self.required then
+                        r1, g1, b1 = 1, 1, 1
+                        a1 = a
+                    end
+                    if self.required2 then
+                        r2, g2, b2 = 1, 1, 1
+                        a2 = a * .626
+                    end
+                end
             end
         end
-    elseif self.isCorrect == 1 then
-        -- Inactive but need
-        r, g, b = 1, 1, 1
-        local qt = GAME.questTime
-        if M.IN == 0 then
-            if GAME.hardMode then qt = qt - 1.5 end
-            a = clampInterpolate(1, 0, 2, .4, qt) +
-                clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * sin(qt * 26 - self.x * .0026)
-        elseif M.IN == 1 then
-            if GAME.hardMode then qt = qt * .626 end
-            a = -.1 + .4 * sin(3.1416 + qt * 3)
-        else
-            a = 0
+    else
+        if self.active then
+            if not self.upright then
+                r1, g1, b1 = 0, .5, .7        -- Reversed
+            elseif self.id ~= 'DP' then
+                r1, g1, b1 = 1, .26, 0        -- Orange
+            else
+                r1, g1, b1 = .942, .626, .872 -- Pink
+            end
+            a1 = .6 + .4 * self.float
         end
     end
-    if a > 0 then
-        gc_setShader(Shader_Coloring)
-        gc_setColor(r, g, b, a)
+    if a1 then
+        gc_setColor(r1, g1, b1, a1)
         gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
-        gc_setShader()
+    end
+    if a2 then
+        gc_setColor(r2, g2, b2, a2)
+        gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
     end
 
     if not playing then
