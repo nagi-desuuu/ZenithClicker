@@ -130,7 +130,7 @@ return {
     -- btb_1=                       {507, 1},
     -- btb_2=                       {737, 1},
     -- btb_3=                       {437, 1},
-    -- btb_break=                   {363, 1},
+    btb_break = { 363, 1 },
     b2bcharge_start = { 657, 2 },
     b2bcharge_danger = { 647, 2 },
     b2bcharge_1 = { 164, 0.9 },

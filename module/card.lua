@@ -10,8 +10,6 @@ local CD = Cards
 
 ---@class Card
 ---@field burn false | number
----@field required boolean
----@field required2 boolean
 local Card = {}
 Card.__index = Card
 function Card.new(d)
@@ -44,6 +42,7 @@ function Card.new(d)
         burn = false,
         required = false,
         required2 = false,
+        inLastCommit = false,
         charge = 0,
     }, Card)
     return obj
@@ -404,8 +403,8 @@ local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
-local gc_draw = gc.draw
-local gc_setColor = gc.setColor
+local gc_draw, gc_circle = gc.draw, gc.circle
+local gc_setColor, gc_setAlpha, gc_setLineWidth = gc.setColor, GC.setAlpha, gc.setLineWidth
 local gc_mDraw = GC.mDraw
 local gc_blurCircle = GC.blurCircle
 
@@ -464,42 +463,52 @@ function Card:draw()
     local r1, g1, b1, a1
     local r2, g2, b2, a2
     if playing then
-        if self.active then
-            if self.required or self.required2 then
-                if self.required then
-                    r1, g1, b1 = 1, .26, 0
-                    a1 = .6 + .4 * self.float
-                end
-                if self.required2 then
-                    r2, g2, b2 = .942, .626, .872
-                    a2 = .6 + .4 * self.float
+        if M.IN < 2 then
+            if self.active then
+                if self.required or self.required2 then
+                    if self.required then
+                        r1, g1, b1 = 1, .26, 0
+                        a1 = .6 + .4 * self.float
+                    end
+                    if self.required2 then
+                        r2, g2, b2 = .942, .626, .872
+                        a2 = .6 + .4 * self.float
+                    end
+                else
+                    r1, g1, b1 = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
+                    a1 = 1
                 end
             else
-                r1, g1, b1 = .4 + .1 * sin(GAME.time * 42 - self.x * .0026), 0, 0
-                a1 = 1
-            end
-        else
-            local a
-            local qt = GAME.questTime
-            if M.IN == 0 then
-                if GAME.hardMode then qt = qt - 1.5 end
-                a = clampInterpolate(1, 0, 2, .4, qt) +
-                    clampInterpolate(1.2, 0, 2.6, 1, qt) * .2 * sin(qt * 26 - self.x * .0026)
-            elseif M.IN == 1 then
-                if GAME.hardMode then qt = qt * .626 end
-                a = -.1 + .4 * sin(3.1416 + qt * 3)
-            end
-            if a then
                 if self.required or self.required2 then
                     if self.required then
                         r1, g1, b1 = 1, 1, 1
-                        a1 = a
+                        local qt = GAME.questTime
+                        if M.IN == 0 then
+                            if GAME.hardMode then qt = qt - 1.5 end
+                            a1 = clampInterpolate(1, 0, 2, .4, qt) +
+                                clampInterpolate(1.2, 0, 2.6, .2, qt) * sin(qt * 26 - self.x * .0026)
+                        elseif M.IN == 1 then
+                            if GAME.hardMode then qt = qt * .626 end
+                            a1 = -.1 + .4 * sin(3.1416 + qt * 3)
+                        end
                     end
                     if self.required2 then
                         r2, g2, b2 = 1, 1, 1
-                        a2 = a * .42
+                        local qt = GAME.questTime
+                        if M.IN == 0 then
+                            if GAME.hardMode then qt = qt - 1.5 end
+                            a2 = clampInterpolate(1, 0, 2, .2, qt)
+                        elseif M.IN == 1 then
+                            if GAME.hardMode then qt = qt * .626 end
+                            a2 = -.1 + .2 * sin(3.1416 + qt * 3)
+                        end
                     end
                 end
+            end
+        else
+            if self.active then
+                r1, g1, b1 = 1, .26, 0
+                a1 = .6 + .4 * self.float
             end
         end
     else
@@ -523,6 +532,23 @@ function Card:draw()
         gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
     end
 
+    if img == texture.front then
+        gc_setColor(ModData.textColor[self.id])
+        if M.EX == 0 then
+            if self.inLastCommit then
+                gc_setLineWidth(6)
+                gc_circle('line', 156.5, -246, 68, 4)
+                gc_setAlpha(.62)
+                gc_circle('fill', 156.5, -246, 72, 4)
+            else
+                gc_setLineWidth(4)
+                gc_circle('line', 156.5, -246, 72, 4)
+            end
+        elseif self.inLastCommit then
+            gc_setAlpha(.62)
+            gc_circle('fill', 156.5, -246, 72, 4)
+        end
+    end
     if not playing then
         if not self.upright and GAME.revDeckSkin and img == texture.front then
             gc_setColor(1, 1, 1, ThrobAlpha.card)

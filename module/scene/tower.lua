@@ -1081,7 +1081,7 @@ function scene.overDraw()
         for i = #Cards, 1, -1 do Cards[i]:draw() end
     end
 
-    -- Allspin Keyboard Hint
+    -- Allspin keyboard hint
     if M.AS > 0 then
         setFont(50)
         for i = 1, #Cards do

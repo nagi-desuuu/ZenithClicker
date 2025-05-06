@@ -1218,15 +1218,19 @@ function GAME.commit()
 
     if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
 
-    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_break_upH) and GAME.totalQuest >= 2 then
+    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_break_upH) then
         local noRep = #TABLE.subtract(TABLE.copy(hand), GAME.lastCommit) == #hand
         if noRep then
             if not GAME.achv_honeymoonH then GAME.achv_honeymoonH = GAME.roundHeight end
         else
             if not GAME.achv_break_upH then GAME.achv_break_upH = GAME.roundHeight end
         end
+        if GAME.achv_honeymoonH and GAME.achv_break_upH then SFX.play('btb_break', 1, 0, M.GV) end
     end
+
+    for _, id in next, GAME.lastCommit do CD[id].inLastCommit = false end
     GAME.lastCommit = TABLE.copy(hand)
+    for _, id in next, GAME.lastCommit do CD[id].inLastCommit = true end
 
     local q1 = TABLE.sort(GAME.quests[1].combo)
     local q2 = M.DP > 0 and TABLE.sort(GAME.quests[2].combo)
@@ -1795,6 +1799,7 @@ function GAME.finish(reason)
         C.touchCount = 0
         C.required = false
         C.required2 = false
+        C.inLastCommit = false
         C.burn = false
         C.charge = 0
     end
