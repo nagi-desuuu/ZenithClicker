@@ -17,6 +17,7 @@ local ins, rem = table.insert, table.remove
 
 ---@class Game
 ---@field playing boolean
+---@field finishTime number
 ---
 ---@field prevPB number
 ---@field comboStr string
@@ -160,6 +161,7 @@ local GAME = {
 }
 
 GAME.playing = false
+GAME.finishTime = -2600
 GAME.fullHealth = 20
 GAME.life = 0
 GAME.life2 = 0
@@ -1793,7 +1795,7 @@ function GAME.finish(reason)
             C:setActive(true)
         end
         C.touchCount = 0
-        C.required = false
+        -- C.required = false
         C.required2 = false
         C.inLastCommit = false
         C.burn = false
@@ -1803,6 +1805,7 @@ function GAME.finish(reason)
     GAME.refreshLayout()
 
     GAME.playing = false
+    if M.DH == 2 then GAME.finishTime = love.timer.getTime() end
     GAME.life, GAME.life2 = 0, 0
     GAME.currentTask = false
 

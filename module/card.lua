@@ -522,6 +522,11 @@ function Card:draw()
             end
             a1 = .6 + .4 * self.float
         end
+        if self.required then
+            r2, g2, b2 = 1, 0, .26
+            a2 = getTime() % .1 < .0626 and 1 - (getTime() - GAME.finishTime) * .26
+            if a2 and a2 <= 0 then self.required = false end
+        end
     end
     if a1 then
         gc_setColor(r1, g1, b1, a1)
