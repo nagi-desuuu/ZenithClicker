@@ -272,6 +272,7 @@ TEXTURE = {
             -- break_up = aq(), -- Need New
             the_unreliable_one = aq2(7, 1),
             psychokinesis = aq(8, 6),
+            detail_oriented = aq(8, 6),
 
             museum_heist = aq(5, 6),
             ultra_dash = aq(5, 6),

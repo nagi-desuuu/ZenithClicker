@@ -1300,6 +1300,7 @@ function GAME.commit()
 
         if GAME.lifeState == 'danger' then
             GAME.achv_clutchQuest = GAME.achv_clutchQuest + 1
+            SFX.play('clutch')
         end
 
         GAME.heal((dblCorrect and 3 or 1) * GAME.dmgHeal)
@@ -1625,7 +1626,7 @@ local function task_startSpin()
 end
 function GAME.start()
     if TASK.getLock('cannotStart') then
-        SFX.play('clutch')
+        SFX.play('garbagerise')
         return
     end
     SCN.scenes.tower.widgetList.help:setVisible(false)
