@@ -1860,7 +1860,7 @@ function GAME.finish(reason)
                     STAT.vipListCount = STAT.vipListCount + 1
                     SubmitAchv('vip_list', STAT.vipListCount)
                     if GAME.comboStr:count('r') >= 2 then
-                        IssueAchv('its_super_rare')
+                        IssueAchv('its_kinda_rare')
                     end
                 end
             end

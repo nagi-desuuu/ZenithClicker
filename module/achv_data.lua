@@ -1207,11 +1207,11 @@ Achievements = {
         hide = TRUE,
         type = 'issued',
     },
-    { -- its_super_rare
-        id = 'its_super_rare',
-        name = "It's Super Rare!",
+    { -- its_kinda_rare
+        id = 'its_kinda_rare',
+        name = "It's Kinda Rare!",
         desc = [[Master the daily combo with 2 reversed mods.]],
-        quote = [[Those lucky and capable of completing challenges deserve a lifetime reward.]],
+        quote = [[Those who are capable and also fortunate deserve a lifetime reward.]],
         credit = "@GameTilDead",
         rank = numberRank(0, 0, 0, 1, 2, 4, 6),
         scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
