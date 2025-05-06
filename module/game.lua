@@ -1218,7 +1218,7 @@ function GAME.commit()
 
     if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
 
-    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_break_upH) then
+    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_break_upH) and GAME.totalQuest >= 1 then
         local noRep = #TABLE.subtract(TABLE.copy(hand), GAME.lastCommit) == #hand
         if noRep then
             if not GAME.achv_honeymoonH then GAME.achv_honeymoonH = GAME.roundHeight end
