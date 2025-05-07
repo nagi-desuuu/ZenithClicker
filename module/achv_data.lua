@@ -76,7 +76,6 @@ Achievements = {
         desc = [[Minimal time on 40 quests without any mods]],
         quote = [[Supercharged Q40%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(94.2, 72, 55, 42, 33, 26, 20),
     },
@@ -87,7 +86,6 @@ Achievements = {
         desc = [[Minimal time on 40 quests]],
         quote = [[Supercharged AnyQ40%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(72, 55, 42, 33, 26, 22, 19),
     },
@@ -135,7 +133,6 @@ Achievements = {
         desc = [[Reach F10 as fast as possible while retaining GIGASPEED without any mods]],
         quote = [[F10 Hyper%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 62.6),
         hide = function() return STAT.totalGiga == 0 end,
@@ -147,7 +144,6 @@ Achievements = {
         desc = [[Reach F10 as fast as possible while retaining GIGASPEED]],
         quote = [[F10 Any%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 56.7),
         hide = function() return STAT.totalGiga == 0 end,
@@ -180,7 +176,6 @@ Achievements = {
         desc = [[Sum of best F10 time with GIGASPEED using each mod]],
         quote = [[F10 All%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(2600, 2000, 1500, 1260, 1100, 1000, 900),
         hide = TRUE,
@@ -192,7 +187,6 @@ Achievements = {
         desc = [[Sum of best F10 time with GIGASPEED using each rev mod]],
         quote = [[F10 All+%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(12600, 9420, 8720, 7023, 6200, 3600, 1260),
         hide = TRUE,
@@ -815,10 +809,9 @@ Achievements = {
         desc = [[Minimum attack before reaching F10]],
         quote = [[Give evil nothing to oppose and it will disappear by itself.]],
         credit = "@wah",
+        comp = '<',
         rank = numberRankRev(500, 426, 412, 400, 395, 390, 380),
         scoreSimp = function(atk) return atk .. " Attack" end,
-        comp = '<',
-        noScore = 2600,
     },
     { -- divine_rejection
         ex = true,
@@ -922,10 +915,9 @@ Achievements = {
         name = "Detail Oriented",
         desc = [[Reach F10 with the fewest flips]],
         quote = [[Theoretically efficient can quickly become gloriously impractical.]],
+        comp = '<',
         rank = numberRankRev(260, 240, 220, 200, 180, 150, 100),
         scoreSimp = function(flip) return floor(flip) .. " Flips" end,
-        comp = '<',
-        noScore = 2600,
     },
     {},
 
@@ -939,7 +931,6 @@ Achievements = {
         quote = [[Less time, less evidence.]],
         credit = "@Baron",
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(35, 26, 20, 12, 6.2, 4.2, 2.6),
     },
@@ -950,7 +941,6 @@ Achievements = {
         desc = [[Shortest time spent in F9]],
         quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(62, 26, 16, 12, 6.2, 2.6, 1.0),
     },
@@ -961,7 +951,6 @@ Achievements = {
         desc = [[Reach 75 Back-to-Back as fast as possible]],
         quote = [[Supercharged B75%]],
         comp = '<',
-        noScore = 2600,
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(150, 115, 90, 70, 55, 45, 40),
     },
@@ -1250,6 +1239,7 @@ for i = 1, #Achievements do
             achv.comp = compFunc['>']
         elseif compFunc[achv.comp] then
             achv.comp = compFunc[achv.comp]
+            if achv.comp == '<' then achv.noScore = 26000 end
         elseif type(achv.comp) ~= 'function' then
             error("Invalid field 'comp' - " .. id)
         end
