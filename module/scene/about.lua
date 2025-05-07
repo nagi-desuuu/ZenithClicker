@@ -99,6 +99,8 @@ addText({
 addText({
     COLOR.O, "SOME ACHV ICONS BY ",
     COLOR.L, "Lorc ",
+    COLOR.O, "& ",
+    COLOR.L, "Delapouite ",
     COLOR.O, "FROM ",
     COLOR.L, "game-icons.net"
 }, 0, 985, .32)
