@@ -1238,8 +1238,8 @@ for i = 1, #Achievements do
         if achv.comp == nil then
             achv.comp = compFunc['>']
         elseif compFunc[achv.comp] then
-            achv.comp = compFunc[achv.comp]
             if achv.comp == '<' then achv.noScore = 26000 end
+            achv.comp = compFunc[achv.comp]
         elseif type(achv.comp) ~= 'function' then
             error("Invalid field 'comp' - " .. id)
         end
