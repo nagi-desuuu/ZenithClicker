@@ -888,7 +888,7 @@ function GAME.refreshRPC()
         local hand = GAME.getHand(true)
         if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, 'rpc') end
     else
-        stateStr = "Enjoying to music"
+        stateStr = "Enjoying music"
         if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
         if M.IN > 0 then
