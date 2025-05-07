@@ -87,14 +87,21 @@ addText({
     clr.asrial, "DJ Asriel ",
     COLOR.O, "& ",
     clr.z, "MrZ"
-}, 0, 926, .32)
+}, 0, 915, .32)
 
 addText({
     COLOR.O, "FONTS BY ",
     COLOR.L, "Adrian Frutiger (D-Din-Pro) ",
     COLOR.O, "& ",
     COLOR.L, "Mooniak (AbhayaLibre)"
-}, 0, 970, .32)
+}, 0, 950, .32)
+
+addText({
+    COLOR.O, "SOME ACHV ICONS BY ",
+    COLOR.L, "Lorc ",
+    COLOR.O, "FROM ",
+    COLOR.L, "game-icons.net"
+}, 0, 985, .32)
 
 local timer
 function scene.load()

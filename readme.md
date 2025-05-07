@@ -24,6 +24,7 @@ Credits:
 *Garbo*: Game & world design of tetr.io  
 *Frutigеr*: Font designer (D-Din-Pro)  
 *Mooniak*: Font designer (AbhayaLibre-Regular)
+*Lorc*: Some achievement icons (on https://game-icons.net, CC BY 3.0)
 
 ## How to Play
 
