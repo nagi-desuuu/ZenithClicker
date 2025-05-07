@@ -271,8 +271,8 @@ TEXTURE = {
             honeymoon = aq2(3, 4),
             break_up = aq2(1, 4),
             the_unreliable_one = aq2(7, 1),
-            psychokinesis = aq(8, 6),
             detail_oriented = aq(8, 6),
+            psychokinesis = aq(8, 6),
 
             museum_heist = aq(5, 6),
             ultra_dash = aq(5, 6),

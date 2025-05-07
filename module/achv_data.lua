@@ -902,14 +902,6 @@ Achievements = {
         rank = numberRank(0, 2, 3, 4, 5, 7, 10),
         hide = function() return GAME.completion.DP == 0 end,
     },
-    { -- psychokinesis
-        ex = true,
-        id = 'psychokinesis',
-        name = "Psychokinesis",
-        desc = [[HFD with 0 flip in the result]],
-        quote = [[Real magic exists!]],
-        rank = floorRank(1, 1, 1, 1, 2, 3, 5),
-    },
     { -- detail_oriented
         id = 'detail_oriented',
         name = "Detail Oriented",
@@ -918,6 +910,14 @@ Achievements = {
         comp = '<',
         rank = numberRankRev(260, 240, 220, 200, 180, 150, 100),
         scoreSimp = function(flip) return floor(flip) .. " Flips" end,
+    },
+    { -- psychokinesis
+        ex = true,
+        id = 'psychokinesis',
+        name = "Psychokinesis",
+        desc = [[HFD with 0 flip in the result]],
+        quote = [[Real magic exists!]],
+        rank = floorRank(1, 1, 1, 1, 2, 3, 5),
     },
     {},
 
@@ -1032,7 +1032,7 @@ Achievements = {
         id = 'intended_glitch',
         name = "Intended Glitch",
         desc = [[Play Duo]],
-        quote = [[This is not a bug, it's a feature.]],
+        quote = [[The heart's lock yields to the artful understanding of spin.]],
         type = 'issued',
     },
     { -- skys_the_limit

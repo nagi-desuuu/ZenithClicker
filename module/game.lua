@@ -1051,7 +1051,7 @@ function GAME.refreshLockState()
     CD.DH.lock = STAT.maxFloor < 6
     CD.IN.lock = STAT.maxFloor < 7
     CD.AS.lock = STAT.maxFloor < 8
-    CD.DP.lock = GAME.completion.DP == 0 -- Possible, try to find the way to play it
+    CD.DP.lock = not ACHV.intended_glitch
 end
 
 function GAME.refreshPBText()
