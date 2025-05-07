@@ -1062,7 +1062,7 @@ function GAME.refreshPBText()
     else
         local time = BEST.speedrun[setStr]
         if time < 1e99 then
-            TEXTS.pb:set(("%.1fm    %.3fs"):format(height, time))
+            TEXTS.pb:set(("BEST: %.1fm    GIGA: %.3fs"):format(height, time))
         else
             local f = 0
             for i = 1, #Floors do
@@ -1071,7 +1071,7 @@ function GAME.refreshPBText()
                     break
                 end
             end
-            TEXTS.pb:set(("%.1fm  <F%d>"):format(height, f))
+            TEXTS.pb:set(("BEST: %.1fm  <F%d>"):format(height, f))
         end
     end
 end
