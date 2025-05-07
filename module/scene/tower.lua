@@ -702,7 +702,7 @@ function scene.draw()
         end
     end
 
-    -- Daily Challenge Timer
+    -- Daily Challenge Button
     if not GAME.playing then
         gc_replaceTransform(SCR.xOy_ur)
         gc_setColor(TextColor)

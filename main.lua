@@ -721,6 +721,7 @@ function RefreshDaily()
         STAT.dailyMastered = false
         -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
         STAT.lastDay = os.time()
+        print("Daily Reset finished")
     end
 
     for x = 0, 0 do
