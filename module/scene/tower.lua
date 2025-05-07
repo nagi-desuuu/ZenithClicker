@@ -702,25 +702,6 @@ function scene.draw()
         end
     end
 
-    --- Result
-    if GAME.uiHide < 1 then
-        gc_replaceTransform(SCR.xOy_u)
-        gc_translate(0, -3.2 * GAME.uiHide * 70)
-        gc_setColor(1, 1, 1)
-        gc_draw(GAME.resIB, 400, 150, 0, .9)
-        gc_setColor(COLOR.D)
-        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
-        gc_mDraw(TEXTS.endFloor, 0, 204)
-        gc_mDraw(TEXTS.zpChange, 220, 95, 0, .626)
-        gc_draw(TEXTS.endResult, -541, 80, 0, .626)
-        gc_setColor(COLOR.L)
-        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
-        gc_mDraw(TEXTS.endFloor, 0, 201)
-        gc_draw(TEXTS.endResult, -540, 78, 0, .626)
-        gc_setColor(COLOR.dL)
-        gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
-    end
-
     -- Daily Challenge Timer
     if not GAME.playing then
         gc_replaceTransform(SCR.xOy_ur)
@@ -1060,6 +1041,25 @@ function scene.overDraw()
         gc_mDraw(TEXTS.height, 800, 978)
 
         gc_back()
+    end
+
+    -- Result
+    if GAME.uiHide < 1 then
+        gc_replaceTransform(SCR.xOy_u)
+        gc_translate(0, -420 * GAME.uiHide)
+        gc_setColor(.872, .872, .872)
+        gc_draw(GAME.resIB, 0, 138, 0, .9)
+        gc_setColor(COLOR.D)
+        gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
+        gc_mDraw(TEXTS.endFloor, 0, 204)
+        gc_mDraw(TEXTS.zpChange, 0, 87, 0, .626)
+        gc_draw(TEXTS.endResult, 250, 82, 0, .6)
+        gc_setColor(COLOR.L)
+        gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
+        gc_mDraw(TEXTS.endFloor, 0, 201)
+        gc_draw(TEXTS.endResult, 250, 80, 0, .6)
+        gc_setColor(COLOR.dL)
+        gc_mDraw(TEXTS.zpChange, 0, 85, 0, .626)
     end
 
     -- Rev trigger for touchscreen
