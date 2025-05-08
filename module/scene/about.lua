@@ -2,7 +2,7 @@
 local scene = {}
 
 local scroll, scroll1 = 0, 0
-local maxScroll = 200
+local maxScroll = 420
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
@@ -87,14 +87,14 @@ addText({
     clr.asrial, "DJ Asriel ",
     COLOR.O, "& ",
     clr.z, "MrZ"
-}, 0, 915, .32)
+}, 0, 920, .32)
 
 addText({
     COLOR.O, "FONTS BY ",
     COLOR.L, "Adrian Frutiger (D-Din-Pro) ",
     COLOR.O, "& ",
     COLOR.L, "Mooniak (AbhayaLibre)"
-}, 0, 950, .32)
+}, 0, 955, .32)
 
 addText({
     COLOR.O, "SOME ACHV ICONS BY ",
@@ -103,7 +103,17 @@ addText({
     COLOR.L, "Delapouite ",
     COLOR.O, "FROM ",
     COLOR.L, "game-icons.net"
-}, 0, 985, .32)
+}, 0, 990, .32)
+
+table.insert(lines, 1040)
+
+addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 1060, .3)
+
+addText({
+    "5HAN      BARON      CREEPERCRAFTYT      DJ ASRIEL\n",
+    "DOKTOROCELOT      FLOWERLING      GAMETILDEAD      MRZ\n",
+    "OBSIDIAN      SYAKEGOHAN      THE_111THBLITZER      TIZAGO      WAH",
+}, 0, 1100, .4)
 
 local timer
 function scene.load()
