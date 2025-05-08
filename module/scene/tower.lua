@@ -70,7 +70,7 @@ local function mouseMove(x, y)
     if FloatOnCard ~= new then
         FloatOnCard = new
         if new then
-            SFX.play('card_slide_' .. math.random(4), .5)
+            SFX.play('card_slide_' .. math.random(4), .626)
         end
         GAME.refreshLayout()
     end

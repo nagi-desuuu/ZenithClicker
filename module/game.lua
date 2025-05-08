@@ -3,6 +3,8 @@ local floor, ceil = math.floor, math.ceil
 local abs, rnd = math.abs, math.random
 local roundUnit = MATH.roundUnit
 local expApproach = MATH.expApproach
+local lerp, cLerp, icLerp = MATH.lerp, MATH.cLerp, MATH.icLerp
+local clampInterpolate = MATH.clampInterpolate
 
 local ins, rem = table.insert, table.remove
 
@@ -389,8 +391,8 @@ function GAME.updateBgm(event)
         end
     elseif event == 'ingame' then
         if GAME.floor < 10 then
-            BGM.set('staccato', 'volume', MATH.clampInterpolate(1, 1, 6, .26, GAME.floor))
-            BGM.set('bass', 'volume', MATH.clampInterpolate(1, .26, 9, 1, GAME.floor))
+            BGM.set('staccato', 'volume', clampInterpolate(1, 1, 6, .26, GAME.floor))
+            BGM.set('bass', 'volume', clampInterpolate(1, .26, 9, 1, GAME.floor))
         else
             local f = GAME.fatigue
             BGM.set('staccato', 'volume', f == 1 and 0 or 1)
@@ -409,13 +411,13 @@ function GAME.anim_setMenuHide(t)
     GAME.uiHide = t
     local w = SCN.scenes.tower.widgetList
     ---@cast w -nil
-    w.stat.x = MATH.cLerp(60, -90, t * 1.5 - .5)
+    w.stat.x = cLerp(60, -90, t * 1.5 - .5)
     w.stat:resetPos()
-    w.achv.x = MATH.cLerp(60, -90, t * 1.5)
+    w.achv.x = cLerp(60, -90, t * 1.5)
     w.achv:resetPos()
-    w.conf.x = MATH.cLerp(-60, 90, t * 1.5 - .5)
+    w.conf.x = cLerp(-60, 90, t * 1.5 - .5)
     w.conf:resetPos()
-    w.about.x = MATH.cLerp(-60, 90, t * 1.5)
+    w.about.x = cLerp(-60, 90, t * 1.5)
     w.about:resetPos()
     MSG.setSafeY(75 * (1 - GAME.uiHide))
 end
@@ -495,7 +497,7 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + MATH.icLerp(6200, 10000, GAME.height)
+    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + icLerp(6200, 10000, GAME.height)
     local var = GAME.floor * .26 * GAME.extraQuestVar
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxQuestSize)
 
@@ -713,6 +715,7 @@ function GAME.addHeight(h)
     h = h * GAME.rank / 4
     GAME.heightBonus = GAME.heightBonus + h
     GAME.heightBuffer = GAME.heightBuffer + h
+    if h >= 6 and TASK.lock('speed_tick_whirl', .626) then SFX.play('speed_tick_whirl') end
 end
 
 function GAME.addXP(xp)
@@ -763,14 +766,14 @@ function GAME.setGigaspeedAnim(on, finish)
     local s = GigaSpeed.alpha
     if on then
         GAME.gigaspeedEntered = GAME.time
-        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 1, t) end)
+        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 1, t) end)
             :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
 
         if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
     else
-        TWEEN.new(function(t) GigaSpeed.alpha = MATH.lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
+        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
             :setUnique('giga'):run()
     end
 end
@@ -1112,15 +1115,15 @@ function GAME.refreshRev()
         local s, e = GAME.revTimer, hasRev and 1 or 0
         local x = (GAME.bgX + 1024) % 2048 - 1024
         TWEEN.new(function(t)
-            GAME.bgX = MATH.lerp(x, 0, t)
-            t = MATH.lerp(s, e, t)
+            GAME.bgX = lerp(x, 0, t)
+            t = lerp(s, e, t)
             GAME.revTimer = t
-            TextColor[1] = MATH.lerp(.7, .62, t)
-            TextColor[2] = MATH.lerp(.5, .1, t)
-            TextColor[3] = MATH.lerp(.3, .1, t)
-            ShadeColor[1] = MATH.lerp(.3, .1, t)
-            ShadeColor[2] = MATH.lerp(.15, 0, t)
-            ShadeColor[3] = MATH.lerp(.0, 0, t)
+            TextColor[1] = lerp(.7, .62, t)
+            TextColor[2] = lerp(.5, .1, t)
+            TextColor[3] = lerp(.3, .1, t)
+            ShadeColor[1] = lerp(.3, .1, t)
+            ShadeColor[2] = lerp(.15, 0, t)
+            ShadeColor[3] = lerp(.0, 0, t)
         end):setUnique('revSwitched'):setDuration(.26):run()
 
         GAME.updateBgm('revSwitched')
@@ -1355,7 +1358,7 @@ function GAME.commit()
                     'b2bcharge_blast_4'
                 )
                 if GAME.chain >= 8 then
-                    SFX.play('thunder' .. rnd(6), MATH.clampInterpolate(8, .7, 16, 1, GAME.chain))
+                    SFX.play('thunder' .. rnd(6), clampInterpolate(8, .7, 16, 1, GAME.chain))
                 end
                 local k = GAME.onAlly and 'life2' or 'life'
                 local oldLife = GAME[k]
@@ -1437,7 +1440,7 @@ function GAME.commit()
                     if GAME.chain == 4 then
                         WoundPS:reset()
                     end
-                    local r = MATH.clampInterpolate(4, 26, 26, 62, GAME.chain)
+                    local r = clampInterpolate(4, 26, 26, 62, GAME.chain)
                     WoundPS:setEmissionArea('uniform', r, r, 0, false)
                 end
                 if GAME.chain % 4 == 0 then
@@ -1447,8 +1450,8 @@ function GAME.commit()
                         WoundPS:setSizes(0, 1 * s, .9 * s, .8 * s, .7 * s, .6 * s, .42 * s)
                     end
                 end
-                WoundPS:setEmissionRate(MATH.clampInterpolate(16, 1, 2600, 6.26, GAME.chain ^ 2))
-                WoundPS:setLinearDamping(MATH.clampInterpolate(4, 1.2, 42, 0.626, GAME.chain))
+                WoundPS:setEmissionRate(clampInterpolate(16, 1, 2600, 6.26, GAME.chain ^ 2))
+                WoundPS:setLinearDamping(clampInterpolate(4, 1.2, 42, 0.626, GAME.chain))
 
                 TEXTS.chain2:clear()
                 local s = tostring(GAME.chain)
@@ -1929,7 +1932,7 @@ function GAME.finish(reason)
             if GAME.gigaTime then s = s .. "   in " .. STRING.time_simp(GAME.gigaTime) end
             local l = s:atomize()
             local len = #l
-            for i = len, 1, -1 do ins(l, i, { COLOR.HSV(MATH.lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
+            for i = len, 1, -1 do ins(l, i, { COLOR.HSV(lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
             TEXTS.endFloor:set(l)
         else
             TEXTS.endFloor:set("F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
@@ -2211,9 +2214,11 @@ function GAME.update(dt)
             GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
             releaseHeight = releaseHeight - GAME.heightBuffer
 
+            local oldHeight = GAME.height
+
             GAME.height = GAME.height + releaseHeight
             if M.EX < 2 then
-                GAME.height = GAME.height + GAME.rank / 4 * dt * MATH.icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
+                GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
             else
                 GAME.height = max(
                     GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
@@ -2222,8 +2227,10 @@ function GAME.update(dt)
             end
             GAME.roundHeight = ceil(GAME.height * 100) / 100
 
-            if GAME.height >= Floors[GAME.floor].top then
-                GAME.upFloor()
+            if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
+
+            if floor(GAME.height * 2) > floor(oldHeight * 2) and TASK.lock('speed_tick', .026) then
+                SFX.play('speed_tick_' .. rnd(4), clampInterpolate(4, 1, 12, .8, GAME.rank))
             end
 
             if GAME.xpLockTimer > 0 then
