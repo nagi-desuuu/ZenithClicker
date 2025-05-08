@@ -103,7 +103,13 @@ local function dblMidDraw(obj, x, y)
     GC.setAlpha(.626)
     GC.mDraw(obj, x, y + 2.6)
 end
+local t30, t50
 function RefreshProfile()
+    if not t30 then
+        t30 = GC.newText(FONT.get(30))
+        t50 = GC.newText(FONT.get(50))
+    end
+
     ---@diagnostic disable
     local pnlColor = TABLE.copy(baseColor)
     local boxColor = TABLE.copy(areaColor)
@@ -123,9 +129,6 @@ function RefreshProfile()
     GC.setCanvas(setup)
     GC.origin()
     GC.clear(pnlColor[1], pnlColor[2], pnlColor[3], 0)
-
-    local t30 = GC.newText(FONT.get(30))
-    local t50 = GC.newText(FONT.get(50))
 
     -- Banner
     GC.setColor(.42, .42, .42)

@@ -560,6 +560,11 @@ function GAME.questReady()
 end
 
 function GAME.startRevive()
+    TABLE.foreach(GAME.reviveTasks,function(t)
+        t.textObj:release()
+        t.shortObj:release()
+        t.progObj:release()
+    end)
     TABLE.clear(GAME.reviveTasks)
     if GAME.reviveDifficulty < 9999 then
         local power = min(GAME.floor + GAME.reviveDifficulty, 17)
@@ -1549,7 +1554,7 @@ function GAME.commit()
         for i = dblCorrect and 2 or 1, 1, -1 do
             local p = dblCorrect and i or correct
             GAME.genQuest()
-            rem(GAME.quests, p)
+            rem(GAME.quests, p).name:release()
             local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
             if #combo >= 4 then
                 local pwr = #combo * 2 - 7
