@@ -2110,6 +2110,7 @@ function GAME.finish(reason)
         TASK.lock('cannotStart', 1)
         TASK.lock('cannotFlip', .626)
     end
+    collectgarbage()
 end
 
 local questStyle = {
