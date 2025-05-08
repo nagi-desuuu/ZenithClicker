@@ -2112,7 +2112,7 @@ local questStyle = {
 }
 local questStyleDP = {
     { k = 1.4,  y = 175, a = 1 },
-    { k = 1.42, y = 90,  a = 1 },
+    { k = 1.4, y = 90,  a = 1 },
     { k = 0.7,  y = 25,  a = .7 },
 }
 
