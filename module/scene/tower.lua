@@ -715,16 +715,6 @@ function scene.draw()
     end
 end
 
-local questStyle = {
-    { k = 1.4, y = 175 },
-    { k = 1.1, y = 95 },
-    { k = 0.9, y = 30 },
-}
-local questStyleDP = {
-    { k = 1.4, y = 175 },
-    { k = 1.4, y = 90 },
-    { k = 0.7, y = 25 },
-}
 function scene.overDraw()
     local t = love.timer.getTime()
     if GAME.zenithTraveler then return end
@@ -878,11 +868,11 @@ function scene.overDraw()
         end
 
         -- Quests
-        local style = M.DP == 0 and questStyle or questStyleDP
         for i = 1, #GAME.quests do
-            local text = GAME.quests[i].name
-            local kx = min(style[i].k, 1550 / text:getWidth())
-            local ky = max(kx, style[i].k)
+            local Q = GAME.quests[i]
+            local text = Q.name
+            local kx = min(Q.k, 1550 / text:getWidth())
+            local ky = max(kx, Q.k)
             local a = 1
             if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
                 a = clamp(
@@ -891,10 +881,11 @@ function scene.overDraw()
                 )
             end
             if a > 0 then
+                a = a * Q.a
                 gc_setColor(.2 * a, .2 * a, .2 * a, a)
-                gc_mDraw(text, 800, style[i].y + 5, 0, kx, ky)
+                gc_mDraw(text, 800, Q.y + 5, 0, kx, ky)
                 gc_setColor(1, 1, 1, a)
-                gc_mDraw(text, 800, style[i].y, 0, kx, ky)
+                gc_mDraw(text, 800, Q.y, 0, kx, ky)
             end
         end
 

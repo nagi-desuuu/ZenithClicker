@@ -2,12 +2,16 @@ local max, min = math.max, math.min
 local floor, ceil = math.floor, math.ceil
 local abs, rnd = math.abs, math.random
 local roundUnit = MATH.roundUnit
+local expApproach = MATH.expApproach
 
 local ins, rem = table.insert, table.remove
 
 ---@class Question
 ---@field combo string[]
 ---@field name love.Text
+---@field y number
+---@field k number
+---@field a number
 
 ---@class ReviveTask:Prompt
 ---@field progress number
@@ -536,6 +540,9 @@ function GAME.genQuest()
     ins(GAME.quests, {
         combo = combo,
         name = GC.newText(FONT.get(70), GAME.getComboName(TABLE.copy(combo), 'ingame')),
+        y = -260,
+        k = .5,
+        a = 0,
     })
 end
 
@@ -2095,6 +2102,17 @@ function GAME.finish(reason)
     end
 end
 
+local questStyle = {
+    { k = 1.4, y = 175, a = 1 },
+    { k = 1.1, y = 95,  a = .8 },
+    { k = 0.9, y = 30,  a = .6 },
+}
+local questStyleDP = {
+    { k = 1.4,  y = 175, a = 1 },
+    { k = 1.42, y = 90,  a = 1 },
+    { k = 0.7,  y = 25,  a = .7 },
+}
+
 function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
     if GAME.playing then
@@ -2103,6 +2121,16 @@ function GAME.update(dt)
         -- elseif love.keyboard.isDown(']') then
         --     GAME.addXP(dt * 42)
         -- end
+
+        if GAME.questTime < .4 then
+            local style = M.DP == 0 and questStyle or questStyleDP
+            for i = 1, #GAME.quests do
+                local Q = GAME.quests[i]
+                Q.y = expApproach(Q.y, style[i].y, dt * 35)
+                Q.k = expApproach(Q.k, style[i].k, dt * 26)
+                Q.a = expApproach(Q.a, style[i].a, dt * 12)
+            end
+        end
 
         GAME.time = GAME.time + dt
 
