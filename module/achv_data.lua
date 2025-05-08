@@ -569,7 +569,7 @@ Achievements = {
         name = "Sisyphean Monarchy",
         desc = [[HFD WUT rEX MS rDH IN mods]],
         quote = [[Ruling an unruly empire on the brink of collapse.]],
-        credit = "@Syakegohan",
+        credit = "@Tizago",
         rank = floorRank(1, 2, 3, 4, 6, 7, 8),
         hide = function() return GAME.completion.EX == 0 or GAME.completion.DH == 0 end,
     },

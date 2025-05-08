@@ -112,7 +112,7 @@ addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 1060, .3)
 addText({
     "5HAN      BARON      CREEPERCRAFTYT      DJ ASRIEL\n",
     "DOKTOROCELOT      FLOWERLING      GAMETILDEAD      MRZ\n",
-    "OBSIDIAN      SYAKEGOHAN      THE_111THBLITZER      TIZAGO      WAH",
+    "OBSIDIAN      THE_111THBLITZER      TIZAGO      WAH",
 }, 0, 1100, .4)
 
 local timer
