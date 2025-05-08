@@ -26,6 +26,7 @@ function scene.update(dt)
             local _ = TEXTURE.panel.glass_a, TEXTURE.panel.glass_b, TEXTURE.panel.throb_a, TEXTURE.panel.throb_b
             for i = 1, 9 do TEXTURE.towerBG[i]:setWrap('mirroredrepeat', 'mirroredrepeat') end
             TEXTURE.towerBG[10]:setWrap('mirroredrepeat', 'clampzero')
+            TEXTURE.ruler:setWrap('repeat', 'repeat')
             _, _ = TEXTURE.moon, TEXTURE.stars
         end
     elseif t2 > 0 then

@@ -666,7 +666,7 @@ function GAME.heal(hp)
     GAME[k] = GAME[k] + hp
     GAME.incrementPrompt('heal', hp)
 
-    GAME.freshLifeState()
+    GAME.refreshLifeState()
 end
 
 ---@param dmg number
@@ -707,7 +707,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
             return true
         end
     else
-        GAME.freshLifeState()
+        GAME.refreshLifeState()
     end
 end
 
@@ -715,7 +715,7 @@ function GAME.addHeight(h)
     h = h * GAME.rank / 4
     GAME.heightBonus = GAME.heightBonus + h
     GAME.heightBuffer = GAME.heightBuffer + h
-    if h >= 6 and TASK.lock('speed_tick_whirl', .626) then SFX.play('speed_tick_whirl') end
+    if h >= 6 and TASK.lock('speed_tick_whirl', 2.6) then SFX.play('speed_tick_whirl') end
 end
 
 function GAME.addXP(xp)
@@ -1130,7 +1130,7 @@ function GAME.refreshRev()
     end
 end
 
-function GAME.freshLifeState()
+function GAME.refreshLifeState()
     local oldState = GAME.lifeState
     local hp = GAME[GAME.getLifeKey()]
     local newState
@@ -1186,7 +1186,7 @@ end
 function GAME.swapControl()
     if GAME[GAME.getLifeKey(true)] > 0 then
         GAME.onAlly = not GAME.onAlly
-        GAME.freshLifeState()
+        GAME.refreshLifeState()
         return true
     end
 end
@@ -1738,6 +1738,8 @@ function GAME.start()
         GAME.fullHealth = 15
     end
 
+    GAME.refreshLifeState()
+
     GAME.refreshModIcon()
     TABLE.clear(ComboColor)
     for k, v in next, M do
@@ -2111,9 +2113,9 @@ local questStyle = {
     { k = 0.9, y = 30,  a = .6 },
 }
 local questStyleDP = {
-    { k = 1.4,  y = 175, a = 1 },
+    { k = 1.4, y = 175, a = 1 },
     { k = 1.4, y = 90,  a = 1 },
-    { k = 0.7,  y = 25,  a = .7 },
+    { k = 0.7, y = 25,  a = .7 },
 }
 
 function GAME.update(dt)
