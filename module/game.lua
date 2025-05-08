@@ -2271,6 +2271,8 @@ function GAME.update(dt)
                 GAME.commit()
             end
         end
+
+        if GAME.floor >= 10 and TASK.lock('kmTimer', 1) then TEXTS.lineKM:set(tostring(MATH.roundUnit(GAME.bgH, 1000))) end
     end
 end
 

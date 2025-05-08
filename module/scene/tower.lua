@@ -593,28 +593,43 @@ function DrawBG(brightness)
     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 
     -- Ruler
-    gc_replaceTransform(SCR.xOy_m)
-    gc_setBlendMode('add', 'alphamultiply')
-    gc_setColor(1, 1, 1, .626)
-    rulerQuad:setViewport(0, 480 - 960 / 50 * GAME.bgH, 60, 960, TEXTURE.ruler:getDimensions())
-    gc_mDrawQ(TEXTURE.ruler, rulerQuad, 0, 0, 0, 2)
-    gc_setBlendMode('alpha')
+    if GAME.bgH < 1700 then
+        gc_replaceTransform(SCR.xOy_m)
+        gc_setBlendMode('add', 'alphamultiply')
+        gc_setColor(1, 1, 1, GAME.bgH <= 1650 and .626 or .626 * (1700 - GAME.bgH) / 50)
+        rulerQuad:setViewport(0, 480 - 960 / 50 * GAME.bgH, 60, 960, TEXTURE.ruler:getDimensions())
+        gc_mDrawQ(TEXTURE.ruler, rulerQuad, 0, 0, 0, 2)
+        gc_setBlendMode('alpha')
+    end
 end
 
-local function drawPBline(h, r)
+local function drawPBline(h, pb, spd, textObj)
     gc_replaceTransform(SCR.xOy_r)
-    local over = clampInterpolate(-6, 0, 10, 1, GAME.bgH - h)
-    local y = 32 * (GAME.bgH - h)
-    gc_setColor(r, .8 + over * .2, over * 1, 1 - over * .626)
-    gc_rectangle('fill', -TEXTS.prevPB:getWidth() - 20, y - 2, -2600, 4)
-    gc_draw(TEXTS.prevPB, 0, y, 0, 1, 1, TEXTS.prevPB:getWidth() + 10, TEXTS.prevPB:getHeight() / 2)
+
+    local obj = textObj or TEXTS.linePB
+    local y = (spd or 32.6) * (GAME.bgH - h)
+
+    -- Text
+    local ox, oy = obj:getWidth() + 6, obj:getHeight() / 2
+    gc_setColor(0, 0, 0, .62)
+    gc_strokeDraw('full', 2, obj, 0, y, 0, 1.26, 1.26, ox, oy)
+    if pb then
+        local over = clampInterpolate(-6, 0, 10, 1, GAME.bgH - h)
+        gc_setColor(1, .8 + over * .2, over * 1, 1 - over * .626)
+    else
+        gc_setColor(COLOR.lD)
+    end
+    gc_draw(obj, 0, y, 0, 1.26, 1.26, ox, oy)
+
+    -- Line
+    gc_rectangle('fill', -1.26 * (obj:getWidth() + 12), y - 2, -2600, 4)
 end
 
 function scene.draw()
     local t = love.timer.getTime()
     if GAME.zenithTraveler then
         DrawBG(100)
-        drawPBline(STAT.maxHeight, .26)
+        drawPBline(STAT.maxHeight, true)
         return
     else
         DrawBG(STAT.bgBrightness)
@@ -639,8 +654,14 @@ function scene.draw()
         gc_draw(WindBatch)
     end
 
-    -- Previous PB Line
-    drawPBline(GAME.prevPB, 1)
+    -- PB Line
+    drawPBline(GAME.prevPB, true)
+
+    -- 500m Line
+    if GAME.floor >= 10 then
+        gc_setColor(1, 1, 1, GAME.uiHide)
+        drawPBline(MATH.roundUnit(GAME.bgH, 1000), false, 6, TEXTS.lineKM)
+    end
 
     local panelH = 697 + GAME.uiHide * (420 + GAME.height / 6.2)
 
@@ -657,12 +678,10 @@ function scene.draw()
             gc_replaceTransform(SCR.xOy)
             gc_setAlpha(GigaSpeed.alpha * gigaPower)
             gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
-        else
-            gc_replaceTransform(SCR.xOy)
         end
-    else
-        gc_replaceTransform(SCR.xOy)
     end
+
+    gc_replaceTransform(SCR.xOy)
 
     -- Mod icons
     if GAME.uiHide > 0 then
@@ -683,6 +702,7 @@ function scene.draw()
     end
 
     -- Card Panel
+    gc_replaceTransform(SCR.xOy)
     gc_translate(0, DeckPress)
     gc_setColor(ShadeColor)
     gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 6.26, 1586, 0, 1)
