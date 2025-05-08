@@ -185,6 +185,7 @@ ComboData = {
     { set = "rEX rDP",           name = "Tyrannical Dyarchy",                 menu = true },
     { set = "rEX MS rDH IN",     name = "Sisyphean Monarchy",                 menu = true },
     { set = "VL rIN rDP",        name = "Painful Relapse",                    menu = true },
+    { set = "MS rDH IN rDP",     name = "Uneasy Alliance",                    menu = true },
     { set = "rDH rIN",           name = "Brain Capacity",                     menu = true },
     { set = "NH rGV",            name = "Clutch Main",                        menu = true },
     { set = "DH DP",             name = "Museum Heist",                       menu = true },

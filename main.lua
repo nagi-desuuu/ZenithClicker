@@ -233,6 +233,7 @@ TEXTURE = {
             rDPrEX = aq2(4, 2),     -- Tyrannical Dyarchy
             INMSrDHrEX = aq2(7, 5), -- Sisyphean Monarchy
             VLrDPrIN = aq2(1, 5),   -- Painful Relapse
+            -- INMSrDHrDP = aq2(), -- Need New: Uneasy Alliance
             rDHrIN = aq2(5, 5),     --  Brain Capacity
             swamp_water_lite_plus = aq2(6, 2),
             swamp_water_plus = aq2(7, 2),

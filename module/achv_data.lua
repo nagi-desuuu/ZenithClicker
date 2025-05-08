@@ -583,6 +583,16 @@ Achievements = {
         rank = floorRank(1, 2, 3, 4, 5, 6, 7),
         hide = function() return GAME.completion.IN == 0 or GAME.completion.DP == 0 end,
     },
+    { -- INMSrDHrDP
+        ex = true,
+        id = 'INMSrDHrDP',
+        name = "Uneasy Alliance",
+        desc = [[HFD WUT MS rDH IN rDP mods]],
+        quote = [[Held together by a single string of lies and sins]],
+        credit = "@Tizago",
+        rank = floorRank(1, 2, 3, 4, 5, 6, 7),
+        hide = function() return GAME.completion.DH == 0 or GAME.completion.DP == 0 end,
+    },
     { -- rDHrIN
         ex = true,
         id = 'rDHrIN',
@@ -620,6 +630,7 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
+    {},
 
     { title = "Why", hide = function() return TABLE.countAll(GAME.completion, 0) >= 8 end },
     {},
