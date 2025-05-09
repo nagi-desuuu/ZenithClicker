@@ -277,6 +277,8 @@ TEXTURE = {
             psychokinesis = aq(8, 6),
 
             museum_heist = aq(5, 6),
+            human_experiment = aq(5, 6),
+            core_meltdown = aq(5, 6),
             ultra_dash = aq(5, 6),
             perfect_speedrun = aq(5, 6),
             the_perfectionist = aq(5, 6),

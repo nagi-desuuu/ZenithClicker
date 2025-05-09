@@ -795,6 +795,8 @@ end
 
 function GAME.upFloor()
     if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
+    if GAME.floor == 7 and GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
+    if GAME.floor == 8 and GAME.comboStr == 'DHEXGV' then SubmitAchv('core_meltdown', GAME.floorTime) end
     if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.floorTime) end
 
     GAME.floor = GAME.floor + 1

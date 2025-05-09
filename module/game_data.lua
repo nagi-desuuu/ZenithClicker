@@ -189,6 +189,8 @@ ComboData = {
     { set = "rDH rIN",           name = "Brain Capacity",                     menu = true },
     { set = "NH rGV",            name = "Clutch Main",                        menu = true },
     { set = "DH DP",             name = "Museum Heist",                       menu = true },
+    { set = "MS VL AS",          name = "Human Experiment",                   menu = true },
+    { set = "EX GV DH",          name = "Core Meltdown",                      menu = true },
 
     -- rDH database
     { set = 'MS IN',             name = "scrambled rainbow",                  ex = true },
