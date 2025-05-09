@@ -499,7 +499,7 @@ local reviveQuad = {
 local reviveMove = { -155, -147, -154 }
 local reviveRot = { -.095, .15, -.17 }
 
-function DrawBG(brightness)
+function DrawBG(brightness, showRuler)
     gc_replaceTransform(SCR.origin)
     local bgFloor = GAME.getBgFloor()
     if STAT.bg then
@@ -593,10 +593,10 @@ function DrawBG(brightness)
     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 
     -- Ruler
-    if GAME.bgH < 1700 then
+    if showRuler and GAME.bgH < 1700 then
         gc_replaceTransform(SCR.xOy_m)
         gc_setBlendMode('add', 'alphamultiply')
-        gc_setColor(1, 1, 1, GAME.bgH <= 1650 and .626 or .626 * (1700 - GAME.bgH) / 50)
+        gc_setColor(1, 1, 1, GAME.bgH <= 1650 and .626 or .626 * (1700 - GAME.bgH) / 50 * brightness / 100)
         rulerQuad:setViewport(0, 480 - 960 / 50 * GAME.bgH, 60, 960, TEXTURE.ruler:getDimensions())
         gc_mDrawQ(TEXTURE.ruler, rulerQuad, 0, 0, 0, 2)
         gc_setBlendMode('alpha')
@@ -628,11 +628,11 @@ end
 function scene.draw()
     local t = love.timer.getTime()
     if GAME.zenithTraveler then
-        DrawBG(100)
+        DrawBG(100, true)
         drawPBline(STAT.maxHeight, true)
         return
     else
-        DrawBG(STAT.bgBrightness)
+        DrawBG(STAT.bgBrightness, true)
     end
 
     -- Wind Particles
