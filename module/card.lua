@@ -443,7 +443,7 @@ function Card:draw()
         gc_scale(1 - abs(D))
     end
 
-    -- Draw card
+    -- Card
     if self.burn then
         gc_setColor(
             self.burn and (
@@ -460,6 +460,7 @@ function Card:draw()
         gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
     end
 
+    -- Outline
     local r1, g1, b1, a1
     local r2, g2, b2, a2
     if playing then
@@ -537,10 +538,12 @@ function Card:draw()
         gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
     end
 
+    -- Icon cover
     if img == texture.front then
         gc_setColor(ModData.textColor[self.id])
+        local active = playing and self.inLastCommit or not playing and self.active
         if M.EX == 0 then
-            if self.inLastCommit then
+            if active then
                 gc_setLineWidth(6)
                 gc_circle('line', 156.5, -246, 68, 4)
                 gc_setAlpha(.62)
@@ -549,11 +552,13 @@ function Card:draw()
                 gc_setLineWidth(4)
                 gc_circle('line', 156.5, -246, 72, 4)
             end
-        elseif self.inLastCommit then
+        elseif active then
             gc_setAlpha(.62)
             gc_circle('fill', 156.5, -246, 72, 4)
         end
     end
+
+    -- Menu UI
     if not playing then
         if not self.upright and GAME.revDeckSkin and img == texture.front then
             gc_setColor(1, 1, 1, ThrobAlpha.card)
