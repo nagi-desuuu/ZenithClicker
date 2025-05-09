@@ -53,6 +53,7 @@ local ins, rem = table.insert, table.remove
 ---@field heightBuffer number
 ---@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string}[]
 ---@field fatigue number
+---@field animDuration number
 ---
 ---@field queueLen number
 ---@field maxQuestSize number
@@ -542,7 +543,7 @@ function GAME.genQuest()
     ins(GAME.quests, {
         combo = combo,
         name = GC.newText(FONT.get(70), GAME.getComboName(TABLE.copy(combo), 'ingame')),
-        y = -260,
+        y = -100,
         k = .5,
         a = 0,
     })
@@ -560,7 +561,7 @@ function GAME.questReady()
 end
 
 function GAME.startRevive()
-    TABLE.foreach(GAME.reviveTasks,function(t)
+    TABLE.foreach(GAME.reviveTasks, function(t)
         t.textObj:release()
         t.shortObj:release()
         t.progObj:release()
@@ -1689,6 +1690,7 @@ function GAME.start()
     GAME.heightBuffer = 0
     GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
     GAME.fatigue = 1
+    GAME.animDuration = 1
     GAME.lastCommit = {}
 
     -- Params
@@ -2133,14 +2135,13 @@ function GAME.update(dt)
         --     GAME.addXP(dt * 42)
         -- end
 
-        if GAME.questTime < .4 then
-            local style = M.DP == 0 and questStyle or questStyleDP
-            for i = 1, #GAME.quests do
-                local Q = GAME.quests[i]
-                Q.y = expApproach(Q.y, style[i].y, dt * 35)
-                Q.k = expApproach(Q.k, style[i].k, dt * 26)
-                Q.a = expApproach(Q.a, style[i].a, dt * 12)
-            end
+        local style = M.DP == 0 and questStyle or questStyleDP
+        for i = 1, #GAME.quests do
+            local Q = GAME.quests[i]
+            local k = dt / GAME.animDuration
+            Q.y = expApproach(Q.y, style[i].y, k * 35)
+            Q.k = expApproach(Q.k, style[i].k, k * 26)
+            Q.a = expApproach(Q.a, style[i].a, k * 26)
         end
 
         GAME.time = GAME.time + dt
