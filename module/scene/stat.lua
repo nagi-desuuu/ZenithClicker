@@ -68,13 +68,13 @@ local function calculateRating()
     -- Mod Speedrun (2K)
     cr = cr + 2000 * norm(MATH.icLerp(0, 18, crProgress.sr), .62)
 
-    -- Zenith Points (3K)
+    -- Zenith Point (3K)
     cr = cr + 3000 * norm(MATH.icLerp(0, 26e4, STAT.zp), 4.2)
 
     -- Daily Challenge (2K)
     cr = cr + 2000 * norm(MATH.icLerp(0, 6200, STAT.dzp), 2.6)
 
-    -- TODO: Achievement (5K)
+    -- Achievement (5K)
     cr = cr + 5000 * norm(MATH.icLerp(0, crProgress.achvAll, crProgress.achvGet), 2.6)
 
     return MATH.round(cr)
