@@ -21,6 +21,11 @@ function scene.load()
             C[1], C[3] = C[3], C[1]
         end
     end
+    TASK.unlock('changeName')
+    TASK.unlock('changeAboutme')
+    TASK.unlock('export')
+    TASK.unlock('import')
+    TASK.unlock('rebind_control')
 end
 
 -- function scene.unload()
@@ -52,9 +57,19 @@ local bindHint = {
     "RIGHTCLK",
 }
 
+local function isLegalKey(key)
+    if key:find('ctrl') or key:find('alt') or key == 'f1' or key == 'f2' or key == 'tab' or key == '`' then
+        SFX.play('finessefault', .626)
+        return false
+    elseif key:match('^f%d%d?$') then
+        return false
+    else
+        return true
+    end
+end
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' or key == 'f1' then
+    if key == 'escape' or (key == 'f1' and not bindBuffer) then
         if bindBuffer then
             bindBuffer = nil
             MSG('dark', "Keybinding cancelled")
@@ -63,7 +78,7 @@ function scene.keyDown(key, isRep)
             SFX.play('menuclick')
             SCN.back('none')
         end
-    elseif bindBuffer and (#key == 1 or key == 'space') then
+    elseif bindBuffer and isLegalKey(key) then
         if TABLE.find(bindBuffer, key) then
             MSG('dark', "Keybinding should not repeat!", 1)
             SFX.play('finessefault')
@@ -195,7 +210,7 @@ scene.widgetList = {
             newName = newName:trim()
             if TASK.lock('changeName', 2.6) then
                 SFX.play('notify')
-                MSG('dark', "Change your name to clipboard text? ('" .. newName .. "')\nClick again to confirm", 2.6)
+                MSG('dark', "Change your name to clipboard text? ('" .. newName .. "')\nPress again to confirm", 2.6)
                 return
             end
             TASK.unlock('changeName')
@@ -241,7 +256,7 @@ scene.widgetList = {
             newText = newText:trim()
             if TASK.lock('changeAboutme', 2.6) then
                 SFX.play('notify')
-                MSG('dark', "Change your about me text to clipboard text?\nClick again to confirm", 2.6)
+                MSG('dark', "Change your about me text to clipboard text?\nPress again to confirm", 2.6)
                 return
             end
             TASK.unlock('changeAboutme')
@@ -280,7 +295,7 @@ scene.widgetList = {
             MSG.clear()
             if TASK.lock('export', 2.6) then
                 SFX.play('notify')
-                MSG('dark', "Export your progress to clipboard?\nClick again to confirm", 2.6)
+                MSG('dark', "Export your progress to clipboard?\nPress again to confirm", 2.6)
                 return
             end
             TASK.unlock('export')
@@ -307,7 +322,7 @@ scene.widgetList = {
             if TASK.lock('import', 4.2) then
                 SFX.play('notify')
                 MSG('dark',
-                    "Import data from clipboard text?\nThe version must match; all progress you made so far will be permanently lost!\nClick again to confirm",
+                    "Import data from clipboard text?\nThe version must match; all progress you made so far will be permanently lost!\nPress again to confirm",
                     4.2)
                 return
             end
@@ -450,14 +465,16 @@ scene.widgetList = {
                 MSG.clear()
                 if TASK.lock('rebind_control', 12) then
                     SFX.play('notify')
-                    MSG('dark',
-                        "Current Keybinding:\n" ..
-                        table.concat(TABLE.sub(STAT.keybind, 1, 9), ', ') .. "\n" ..
-                        table.concat(TABLE.sub(STAT.keybind, 10, 18), ', ') .. "\n" ..
-                        "Commit: " .. STAT.keybind[19] .. "\n" ..
-                        "Reset: " .. STAT.keybind[20] .. "\n" ..
-                        "Click L/R: " .. STAT.keybind[21] .. ", " .. STAT.keybind[22] .. "\n" ..
-                        "Click again to rebind",
+                    MSG('dark', {
+                            "Current Keybinding:\n" ..
+                            table.concat(TABLE.sub(STAT.keybind, 1, 9), ', ') .. "\n" ..
+                            table.concat(TABLE.sub(STAT.keybind, 10, 18), ', ') .. "\n" ..
+                            "Commit: " .. STAT.keybind[19] .. "\n" ..
+                            "Reset: " .. STAT.keybind[20] .. "\n" ..
+                            "Click L/R: " .. STAT.keybind[21] .. ", " .. STAT.keybind[22] .. "\n",
+                            COLOR.F, "PRESS AGAIN TO REBIND\n",
+                            COLOR.LD, "(F1-F12 ` Tab Ctrl Alt are not allowed)"
+                        },
                         12
                     )
                 else
