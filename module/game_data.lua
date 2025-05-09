@@ -52,7 +52,7 @@ ModData = {
         AS = "ENABLE KEYBOARD, BUT DOUBLE CLICKING IS PENALIZED",
         DP = "FLOOD THE TOWER WITH SOMEONE WHO DOESN'T EXIST",
         lock = "REACH HIGHER FLOOR TO UNLOCK",
-        lockDP = "MASTER THIS MOD TO UNLOCK",
+        lockDP = "PLAY THIS MOD ONCE TO UNLOCK",
     },
     revName = {
         EX = "> THE TYRANT <",
