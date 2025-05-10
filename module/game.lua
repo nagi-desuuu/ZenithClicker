@@ -1977,9 +1977,11 @@ function GAME.finish(reason)
             COLOR.LD, ("  (%.1fs@%s"):format(spd1[2], spd1[1] == 26 and "26+" or spd1[1]),
             spd2[2] > 0 and (", %.1fs@%s)\n"):format(spd2[2], spd2[1] == 26 and "26+" or spd2[1]) or ")\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
-            COLOR.LD, "  (" .. roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. " eff)\n",
+            COLOR.LD, "  (" .. roundUnit(GAME.totalAttack / GAME.time * 60, .1) .. "apm  ",
+            roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. "eff)\n",
             COLOR.L, "Bonus  " .. roundUnit(GAME.heightBonus, .1) .. "m",
-            COLOR.LD, "  (" .. roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%)\n",
+            COLOR.LD, "  (" .. roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%  ",
+            roundUnit(GAME.heightBonus / GAME.totalQuest, .1) .. "m/quest)",
         })
         GAME.refreshResultModIcon()
 
