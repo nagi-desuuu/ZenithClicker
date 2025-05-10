@@ -243,7 +243,7 @@ struct score {
     string username,
     number rank,
     number altitude, -- altitude (meter)
-    number time, -- F10 speedrun time (seconds)
+    number? time, -- F10 speedrun time (seconds) (no value if speedrun not completed)
 }
 
 request: GET {string? special_unique_id}
