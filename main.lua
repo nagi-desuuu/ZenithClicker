@@ -765,6 +765,23 @@ end
 love.mouse.setVisible(false)
 ZENITHA.globalEvent.drawCursor = NULL
 ZENITHA.globalEvent.clickFX = NULL
+function ZENITHA.globalEvent.fileDrop(file)
+    local data = file:read('data')
+    local suc, res = pcall(GC.newImage, data)
+    if suc then
+        if AVATAR then AVATAR:release() end
+        AVATAR = res
+        love.filesystem.write('avatar', data)
+        IssueAchv('identity')
+        SFX.play('supporter')
+        MSG('dark', "Your avatar was updated!")
+    else
+        MSG('dark', "Invalid image file.")
+    end
+    file:close()
+    file:release()
+    if SCN.cur == 'stat' then RefreshProfile() end
+end
 
 function ZENITHA.globalEvent.resize()
     BgScale = math.max(SCR.w / 1024, SCR.h / 640)
@@ -1075,7 +1092,10 @@ if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
 TABLE.update(BEST, FILE.load('best.luaon', '-luaon') or NONE)
 TABLE.update(STAT, FILE.load('stat.luaon', '-luaon') or NONE)
 TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon') or NONE)
-
+if FILE.exist('avatar') then
+    local suc, res = pcall(GC.newImage, 'avatar')
+    if suc then AVATAR = res end
+end
 function Initialize(save)
     if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
     if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end

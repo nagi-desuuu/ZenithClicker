@@ -167,10 +167,11 @@ function RefreshProfile()
     GC.print("CLOSE", 1068 - 10, 45 - 3, 0, 1.2)
 
     -- PFP
+    local avatar = AVATAR or TEXTURE.stat.avatar
     GC.setColor(1, 1, 1)
     GC.stc_setComp()
     GC.stc_rect(30, 0, 120, 120, 6)
-    GC.draw(TEXTURE.stat.avatar, 20, 0, 0, 130 / TEXTURE.stat.avatar:getWidth())
+    GC.draw(avatar, 30, 0, 0, 120 / math.min(avatar:getDimensions()))
     GC.stc_stop()
 
     -- ID
