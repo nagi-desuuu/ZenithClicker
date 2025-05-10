@@ -556,7 +556,7 @@ end
 function ReleaseAchvBuffer()
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
-        msgTime = TASK.lock('achv_bulk', 1) and 4.2 or msgTime + 1
+        msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 2.6
         MSG { msg[1], msg[2], time = msgTime, last = true, alpha = .75 }
         if TASK.lock('achv_sfx_' .. msg[3], .08) then
             SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)
