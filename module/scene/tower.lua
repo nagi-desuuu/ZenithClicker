@@ -90,18 +90,16 @@ local function mousePress(x, y, k)
     end
 end
 
-local keyMap = {}
-for i = 1, 9 do keyMap['' .. i] = i end
-for n, k in next, ("qwertyuio"):atomize() do keyMap[k] = n end
-for n, k in next, ("asdfghjkl"):atomize() do keyMap[k] = n end
 local function keyPress(key)
     local bindID = TABLE.find(STAT.keybind, key)
-    if bindID and (bindID <= 18 and (M.AS > 0 or (not GAME.playing and bindID % 9 == 8))) then
-        local C = Cards[keyMap[key]]
+    print(key, bindID)
+    if bindID and bindID <= 18 and (M.AS > 0 or (not GAME.playing and (bindID == 8 or bindID == 17))) then
+        if bindID > 9 then bindID = bindID - 9 end
+        local C = Cards[bindID]
         if C then
             if GAME.playing or not C.lock then
                 GAME.nixPrompt('keep_no_keyboard')
-                FloatOnCard = keyMap[key]
+                FloatOnCard = bindID
                 SetMouseVisible(false)
                 MX, MY = C.x + math.random(-126, 126), C.y + math.random(-260, 260)
                 C:setActive()
