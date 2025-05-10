@@ -643,6 +643,7 @@ function GAME.incrementPrompt(prompt, value)
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
                 GAME.achv_maxReviveH = max(GAME.achv_maxReviveH or 0, GAME.roundHeight)
+                if GAME.fatigueSet == Fatigue.rDP and GAME.fatigue > 19 then IssueAchv('benevolent_ambition') end
             end
         end
         t.progObj:set(floor(t.progress) .. "/" .. t.target)
