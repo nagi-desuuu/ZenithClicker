@@ -2,12 +2,12 @@ local min, floor = math.min, math.floor
 local ilLerp = MATH.ilLerp
 local function floorRank(l0, l1, l2, l3, l4, l5, l6)
     local l = {
-        Floors[l0 - 1].top,
-        Floors[l1 - 1].top,
-        Floors[l2 - 1].top,
-        Floors[l3 - 1].top,
-        Floors[l4 - 1].top,
-        Floors[l5 - 1].top,
+        l0 <= 10 and Floors[l0 - 1].top or l0,
+        l1 <= 10 and Floors[l1 - 1].top or l1,
+        l2 <= 10 and Floors[l2 - 1].top or l2,
+        l3 <= 10 and Floors[l3 - 1].top or l3,
+        l4 <= 10 and Floors[l4 - 1].top or l4,
+        l5 <= 10 and Floors[l5 - 1].top or l5,
         l6 <= 10 and Floors[l6 - 1].top or l6,
     }
     assert(#l == 7)
@@ -877,7 +877,7 @@ Achievements = {
         name = "Arrogance",
         desc = [[HFD with rAS and no perfect pass]],
         quote = [[Maintaining arrogance constantly is also not easy.]],
-        rank = floorRank(1, 1, 1, 1, 2, 3, 4),
+        rank = floorRank(11, 11, 26, 42, 2, 3, 4),
         hide = function() return GAME.completion.AS == 0 end,
     },
     { -- honeymoon
