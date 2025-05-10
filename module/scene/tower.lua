@@ -8,7 +8,8 @@ local lerp, iLerp, cLerp, icLerp, lLerp = MATH.lerp, MATH.iLerp, MATH.cLerp, MAT
 
 local M = GAME.mod
 local MD = ModData
-local shortcut = {}
+ShortCut = {}
+for i = 1, 9 do ShortCut[i] = GC.newText(FONT.get(50)) end
 
 local cancelNextClick
 local cancelNextKeyClick
@@ -208,13 +209,7 @@ function scene.load()
     cancelNextClick = true
     cancelNextKeyClick = true
 
-    shortcut = TABLE.applyeach(TABLE.sub(STAT.keybind, 1, 9), function(v)
-        if v == 'space' then
-            return "_"
-        else
-            return v:sub(1, 2):upper()
-        end
-    end)
+    for i = 1, 9 do ShortCut[i]:set(STAT.keybind[i]:upper()) end
 
     scene.widgetList.help.floatText = (STRING.trimIndent [[
         Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
@@ -1106,7 +1101,16 @@ function scene.overDraw()
     if M.AS > 0 then
         setFont(50)
         for i = 1, #Cards do
-            gc_strokePrint('full', 4, ShadeColor, COLOR.lR, shortcut[i], Cards[i].x + 80, Cards[i].y + 120)
+            local obj = ShortCut[i]
+            local x, y = Cards[i].x + 90, Cards[i].y + 155
+            local k = min(60 / obj:getWidth(), 1)
+            gc_setColor(ShadeColor)
+            gc_strokeDraw(
+                'full', 3 * k, obj, x, y, 0, k, k,
+                obj:getWidth() / 2, obj:getHeight() / 2
+            )
+            gc_setColor(COLOR.lR)
+            gc_mDraw(obj, x, y, 0, k)
         end
     end
 
