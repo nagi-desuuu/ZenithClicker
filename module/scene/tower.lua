@@ -92,7 +92,6 @@ end
 
 local function keyPress(key)
     local bindID = TABLE.find(STAT.keybind, key)
-    print(key, bindID)
     if bindID and bindID <= 18 and (M.AS > 0 or (not GAME.playing and (bindID == 8 or bindID == 17))) then
         if bindID > 9 then bindID = bindID - 9 end
         local C = Cards[bindID]
