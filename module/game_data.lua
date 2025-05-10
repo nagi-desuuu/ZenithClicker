@@ -509,7 +509,7 @@ Fatigue = {
         { time = 320,  event = { 'reviveDifficulty', 9999 },                      text = "GOODBYE.",                                   desc = "NO REVIVE" },
         { time = 360,  event = { 'dmgHeal', 1, 'animDuration', 1 }, --[[ 1.5 ]]   text = "\"I MISS YOU\"",                             desc = "Heal+++",       color = 'lO' },
         { time = 380,  event = { 'dmgHeal', 1 }, --[[ 2.5 ]]                      text = "MAYBE IT CAN STILL WORK_?",                  desc = "Heal+",         color = 'lO' },
-        { time = 400,  event = { 'dmgTimeMul', -.5 },                             text = "GOODBYE.",                                   desc = "TimerSpeed++++" },
+        { time = 400,  event = { 'dmgTimeMul', -.5, 'animDuration', 4 },          text = "GOODBYE.",                                   desc = "TimerSpeed++++" },
         { time = 1e99, text = "" }, -- Total: dmgTimeMul-70%
     },
 }
