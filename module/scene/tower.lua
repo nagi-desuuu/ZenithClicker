@@ -1018,42 +1018,43 @@ function scene.overDraw()
         gc_move('m', 0, h)
 
         -- Thruster
-        local rank = GAME.DPlock and 1 or GAME.rank
+        local rank = GAME.rank
         gc_setColor(rankColor[rank - 1] or COLOR.dL)
+        if GAME.DPlock then gc_setAlpha(.26) end
         gc_setLineWidth(6)
-        gc_mRect('line', 800, 965, 420, 26)
-        if not GAME.DPlock then
-            gc_rectangle('fill', 800 - 35, 985, 70, 6)
-            for i = 1, min(rank - 1, 6) do
-                gc_rectangle('fill', 800 + 15 + 28 * i, 985, 22, 6)
-                gc_rectangle('fill', 800 - 15 - 28 * i, 985, -22, 6)
-            end
-            if rank >= 8 then
-                for i = 0, min(rank - 8, 3) do
-                    gc_rectangle('fill', 800 - 220 + 45 * i, 945, 35, -10)
-                    gc_rectangle('fill', 800 + 220 - 45 * i, 945, -35, -10)
-                end
-                if rank >= 12 then
-                    for i = 0, rank - 12 do
-                        gc_rectangle('fill', 800 + 218 + 15 * i, 955, 10, 32)
-                        gc_rectangle('fill', 800 - 218 - 15 * i, 955, -10, 32)
-                    end
-                end
-            end
-            if GAME.rankupLast then
-                if GAME.xpLockLevel < 5 then
-                    gc_setLineWidth(2)
-                    gc_mRect('line', 800, 965, 210, 26)
-                end
-            else
-                gc_mRect('fill', 800, 965, 420, 2)
-            end
-            gc_setColor(rankColor[rank] or COLOR.L)
-            if GAME.xpLockTimer > 0 then
-                gc_setAlpha(sin(6200 / (GAME.xpLockTimer + 4.2) ^ 3) * .26 + .74)
-            end
-            gc_mRect('fill', 800, 965, 420 * GAME.xp / (4 * rank), 3 + GAME.xpLockLevel)
+        gc_mRect('line', 800, 965, 420 + 6, 26)
+        gc_rectangle('fill', 800 - 35, 985, 70, 6)
+        for i = 1, min(rank - 1, 6) do
+            gc_rectangle('fill', 800 + 15 + 28 * i, 985, 22, 6)
+            gc_rectangle('fill', 800 - 15 - 28 * i, 985, -22, 6)
         end
+        if rank >= 8 then
+            for i = 0, min(rank - 8, 3) do
+                gc_rectangle('fill', 800 - 220 + 45 * i, 945, 35, -10)
+                gc_rectangle('fill', 800 + 220 - 45 * i, 945, -35, -10)
+            end
+            if rank >= 12 then
+                for i = 0, rank - 12 do
+                    gc_rectangle('fill', 800 + 222 + 15 * i, 955, 10, 32)
+                    gc_rectangle('fill', 800 - 222 - 15 * i, 955, -10, 32)
+                end
+            end
+        end
+        if GAME.rankupLast then
+            if GAME.xpLockLevel < 5 then
+                gc_mRect('fill', 800 - 105, 965, 2, 26 - 4)
+                gc_mRect('fill', 800 + 105, 965, 2, 26 - 4)
+            end
+        else
+            gc_mRect('fill', 800, 965, 420, 2)
+        end
+        gc_setColor(rankColor[rank] or COLOR.L)
+        if GAME.xpLockTimer > 0 then
+            gc_setAlpha((sin(6200 / (GAME.xpLockTimer + 4.2) ^ 3) * .26 + .74) * (GAME.DPlock and .26 or 1))
+        elseif GAME.DPlock then
+            gc_setAlpha(.26)
+        end
+        gc_mRect('fill', 800, 965, 420 * GAME.xp / (4 * rank), 3 + GAME.xpLockLevel)
 
         -- Height & Time
         TEXTS.height:set(("%.1fm"):format(GAME.height))
