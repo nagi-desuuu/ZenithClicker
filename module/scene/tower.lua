@@ -225,6 +225,7 @@ function scene.load()
     scene.widgetList.help:reset()
 
     GAME.refreshDailyChallengeText()
+    TASK.unlock('sure_quit')
 end
 
 function scene.unload()
