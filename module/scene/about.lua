@@ -2,7 +2,7 @@
 local scene = {}
 
 local scroll, scroll1 = 0, 0
-local maxScroll = 420
+local maxScroll = 462
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
@@ -110,9 +110,11 @@ table.insert(lines, 1040)
 addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 1060, .3)
 
 addText({
-    "5HAN      BARON      CREEPERCRAFTYT      DJ ASRIEL\n",
-    "DOKTOROCELOT      FLOWERLING      GAMETILDEAD      MRZ\n",
-    "OBSIDIAN      THE_111THBLITZER      TIZAGO      WAH",
+    "5HAN   ARGHENA   AXYE   BARON   BUDDY\n",
+    "CABBAGE   CAT_NOISES   COOLKAT   CREEPERCRAFTYT\n",
+    "DJ ASRIEL   DOKTOROCELOT   FLLEAF   FLOWERLING\n",
+    "GAMETILDEAD   KHGB   MRZ   OBSIDIAN   PATRICKMLG\n",
+    "THE_111THBLITZER   TIZAGO   WAH   WATERSTONE   XP2\n",
 }, 0, 1100, .4)
 
 local timer
