@@ -4,6 +4,7 @@ local abs, rnd = math.abs, math.random
 local roundUnit = MATH.roundUnit
 local expApproach = MATH.expApproach
 local lerp, cLerp, icLerp = MATH.lerp, MATH.cLerp, MATH.icLerp
+local lLerp = MATH.lLerp
 local clampInterpolate = MATH.clampInterpolate
 
 local ins, rem = table.insert, table.remove
@@ -277,7 +278,30 @@ function GAME.getComboName(list, mode)
 
         local str = table.concat(TABLE.sort(list), ' ')
         if ComboData[str] and (ComboData[str].basic or M.DH == 2 and ComboData[str].ex) then
-            return { COLOR.dL, ComboData[str].name }
+            fstr = ComboData[str].name:atomize()
+            for i = #fstr, 1, -1 do
+                ins(fstr, i, { MATH.rand(.872, 1), MATH.rand(.872, 1), MATH.rand(.872, 1) })
+            end
+            local colors = {}
+            for i = 1, #list do ins(colors, MD.color[list[i]]) end
+            if #colors == 1 then
+                for i = 1, #fstr, 2 do
+                    local org = fstr[i]
+                    org[1] = expApproach(org[1], colors[1][1], .42)
+                    org[2] = expApproach(org[2], colors[1][2], .42)
+                    org[3] = expApproach(org[3], colors[1][3], .42)
+                end
+            else
+                colors = TABLE.transposeNew(TABLE.shuffle(colors))
+                for i = 1, #fstr, 2 do
+                    local org = fstr[i]
+                    local t = (i - 2) / (#fstr - 3)
+                    org[1] = expApproach(org[1], lLerp(colors[1], t), .42)
+                    org[2] = expApproach(org[2], lLerp(colors[2], t), .42)
+                    org[3] = expApproach(org[3], lLerp(colors[3], t), .42)
+                end
+            end
+            return fstr
         end
 
         if M.DH == 2 then
