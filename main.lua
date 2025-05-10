@@ -276,6 +276,9 @@ TEXTURE = {
             detail_oriented = aq(8, 6),
             psychokinesis = aq(8, 6),
 
+            love_hotel = aq(5, 6),
+            financially_responsible = aq(5, 6),
+            unfair_battle = aq(5, 6),
             museum_heist = aq(5, 6),
             human_experiment = aq(5, 6),
             core_meltdown = aq(5, 6),

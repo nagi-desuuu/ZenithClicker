@@ -54,7 +54,6 @@ end
 ---@type Map<Achievement>
 Achievements = {
     { title = "General" },
-    {},
     { -- zenith_explorer
         id = 'zenith_explorer',
         name = "Zenith Explorer",
@@ -210,7 +209,6 @@ Achievements = {
     },
 
     { title = "Mods" },
-    {},
     { -- EX
         id = 'EX',
         name = "The Emperor",
@@ -346,7 +344,6 @@ Achievements = {
     },
 
     { title = "Reversed Mods", hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end },
-    {},
     { -- rEX
         id = 'rEX',
         name = "The Tyrant",
@@ -630,10 +627,8 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
-    {},
 
-    { title = "Why", hide = function() return TABLE.countAll(GAME.completion, 0) >= 8 end },
-    {},
+    { title = "Why",           hide = function() return TABLE.countAll(GAME.completion, 0) >= 8 end },
     { -- blight
         ex = true,
         id = 'blight',
@@ -733,10 +728,8 @@ Achievements = {
         rank = floorRank(1, 1, 1, 1, 1, 2, 3),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
-    {},
 
     { title = "Special" },
-    {},
     { -- the_escape_artist
         id = 'the_escape_artist',
         name = "The Escape Artist",
@@ -930,10 +923,41 @@ Achievements = {
         quote = [[Real magic exists!]],
         rank = floorRank(1, 1, 1, 1, 2, 3, 5),
     },
-    {},
 
     { title = "Supercharged Clone", credit = "@Garbo" },
-    {},
+    { -- love_hotel
+        ex = true,
+        id = 'love_hotel',
+        name = "Love Hotel",
+        desc = [[Shortest time spent in F2 with EX VL rIN rDP]],
+        quote = [[A nice place for a quick visit.]],
+        credit = "@obsidian",
+        comp = '<',
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(26, 20, 16, 12, 9.4, 6.2, 4.2),
+    },
+    { -- financially_responsible
+        ex = true,
+        id = 'financially_responsible',
+        name = "Financially Responsible",
+        desc = [[Shortest time spent in F3 with EX MS AS]],
+        quote = [[No time for distractions, focus on your main goal.]],
+        credit = "@GameTilDead",
+        comp = '<',
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(26, 22, 18, 15, 12, 9.4, 6.2),
+    },
+    { -- unfair_battle
+        ex = true,
+        id = 'unfair_battle',
+        name = "Unfair Battle",
+        desc = [[Shortest time spent in F4 with EX rVL rDP]],
+        quote = [[Quick moves and careful maneuvers, this round can be over in the blink of an eye!]],
+        credit = "@Tizago",
+        comp = '<',
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(26, 22, 18, 15, 12, 9.4, 6.2),
+    },
     { -- museum_heist
         ex = true,
         id = 'museum_heist',
@@ -953,7 +977,7 @@ Achievements = {
         quote = [[You can assure me that this is safe, right?"]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 4.2),
+        rank = numberRankRev(42, 26, 16, 12, 9.4, 6.2, 4.2),
     },
     { -- core_meltdown
         ex = true,
@@ -1032,7 +1056,6 @@ Achievements = {
     },
 
     { title = "Issued (No CR)" },
-    {},
     { -- identity
         ex = true,
         id = 'identity',
@@ -1247,8 +1270,21 @@ local compFunc = {
 }
 local defaultFloorRank = floorRank(1, 3, 5, 7, 9, 10, 6200)
 
-TABLE.foreach(Achievements, function(v) return v.notUsed end, true)
-
+do
+    TABLE.foreach(Achievements, function(v) return v.notUsed end, true)
+    local i = 1
+    repeat
+        local achv = Achievements[i]
+        if achv.title then
+            if i % 2 == 0 then
+                table.insert(Achievements, i, {})
+                i = i + 1
+            end
+            table.insert(Achievements, i + 1, {})
+        end
+        i = i + 1
+    until i > #Achievements
+end
 for i = 1, #Achievements do
     local achv = Achievements[i]
     local id = achv.id

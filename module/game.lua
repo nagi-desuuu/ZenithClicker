@@ -794,10 +794,21 @@ function GAME.readyShuffle(messiness)
 end
 
 function GAME.upFloor()
-    if GAME.floor == 5 and GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
-    if GAME.floor == 7 and GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
-    if GAME.floor == 8 and GAME.comboStr == 'DHEXGV' then SubmitAchv('core_meltdown', GAME.floorTime) end
-    if GAME.floor == 9 then SubmitAchv('ultra_dash', GAME.floorTime) end
+    if GAME.floor == 2 then
+        if GAME.comboStr == 'EXVLrDPrIN' then SubmitAchv('love_hotel', GAME.floorTime) end
+    elseif GAME.floor == 3 then
+        if GAME.comboStr == 'ASEXMS' then SubmitAchv('financially_responsible', GAME.floorTime) end
+    elseif GAME.floor == 4 then
+        if GAME.comboStr == 'EXrDPrVL' then SubmitAchv('unfair_battle', GAME.floorTime) end
+    elseif GAME.floor == 5 then
+        if GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
+    elseif GAME.floor == 7 then
+        if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
+    elseif GAME.floor == 8 then
+        if GAME.comboStr == 'DHEXGV' then SubmitAchv('core_meltdown', GAME.floorTime) end
+    elseif GAME.floor == 9 then
+        SubmitAchv('ultra_dash', GAME.floorTime)
+    end
 
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
@@ -1533,8 +1544,8 @@ function GAME.commit()
         GAME.totalAttack = GAME.totalAttack + attack
         if not GAME.DPlock then
             GAME.addHeight(attack)
-            GAME.addXP(attack + xp)
         end
+        GAME.addXP(attack + xp)
 
         -- rMS little shuffle
         if M.MS == 2 then
@@ -2243,26 +2254,26 @@ function GAME.update(dt)
             if floor(GAME.height * 2) > floor(oldHeight * 2) and TASK.lock('speed_tick', .026) then
                 SFX.play('speed_tick_' .. rnd(4), clampInterpolate(4, 1, 12, .8, GAME.rank))
             end
+        end
 
-            if GAME.xpLockTimer > 0 then
-                GAME.xpLockTimer = GAME.xpLockTimer - dt
-            else
-                GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
-                if GAME.xp <= 0 then
-                    GAME.xp = 0
-                    if GAME.rank > 1 then
-                        GAME.rank = GAME.rank - 1
-                        GAME.xp = 4 * GAME.rank
-                        GAME.rankupLast = false
-                        if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
-                            GAME.setGigaspeedAnim(false)
-                            SFX.play('zenith_speedrun_end')
-                            SFX.play('zenith_speedrun_end')
-                        end
-                        TEXTS.rank:set("R-" .. GAME.rank)
-                        SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
-                        if not GAME.achv_balanceH then GAME.achv_balanceH = GAME.roundHeight end
+        if GAME.xpLockTimer > 0 then
+            GAME.xpLockTimer = GAME.xpLockTimer - dt
+        else
+            GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+            if GAME.xp <= 0 then
+                GAME.xp = 0
+                if GAME.rank > 1 then
+                    GAME.rank = GAME.rank - 1
+                    GAME.xp = 4 * GAME.rank
+                    GAME.rankupLast = false
+                    if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
+                        GAME.setGigaspeedAnim(false)
+                        SFX.play('zenith_speedrun_end')
+                        SFX.play('zenith_speedrun_end')
                     end
+                    TEXTS.rank:set("R-" .. GAME.rank)
+                    SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
+                    if not GAME.achv_balanceH then GAME.achv_balanceH = GAME.roundHeight end
                 end
             end
         end
