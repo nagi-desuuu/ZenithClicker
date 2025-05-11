@@ -5,7 +5,7 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText(require 'version'.appVer)
+ZENITHA.setVersionText((require 'version'.appVer).."                                                                                                                                                            .")
 ZENITHA.setClickDist(62)
 
 STRING.install()
