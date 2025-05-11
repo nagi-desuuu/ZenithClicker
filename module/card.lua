@@ -514,14 +514,26 @@ function Card:draw()
     end
 
     if GlassCard then
-        -- Debug
         local w, h = 260, 350
-        gc_setColor(ModData.textColor[self.id])
+        gc_setColor((img == texture.front and ModData.textColor or ModData.color)[self.id])
         gc_setAlpha(.872)
         gc_mRect('fill', 0, 0, w * 2, h * 2, 26)
+
         gc_setColor(1, 1, 1)
         FONT.set(50)
-        gc.print(self.id, -w + 26, -h, 0, 2.6)
+        if img == texture.front then
+            GC.scale(2.6)
+            GC.mStr(self.id, 0, -42)
+            GC.scale(1 / 2.6)
+        else
+            GC.scale(2)
+            GC.mStr("TETR.IO", 0, -42)
+            GC.scale(1 / 2)
+        end
+
+        gc_setColor(1, 1, 1, .62)
+        gc_setLineWidth(4)
+        gc_mRect('line', 0, 0, w * 2 - 3, h * 2 - 3, 26)
 
         -- Outline (draw)
         if a1 then
