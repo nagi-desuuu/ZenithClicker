@@ -836,6 +836,8 @@ function GAME.upFloor()
         if GAME.comboStr == 'EXrDPrVL' then SubmitAchv('unfair_battle', GAME.floorTime) end
     elseif GAME.floor == 5 then
         if GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
+    elseif GAME.floor == 6 then
+        if GAME.comboStr == 'EXVLrGV' then SubmitAchv('workaholic', GAME.floorTime) end
     elseif GAME.floor == 7 then
         if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
     elseif GAME.floor == 8 then

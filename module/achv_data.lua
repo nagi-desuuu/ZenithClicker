@@ -969,6 +969,17 @@ Achievements = {
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(42, 26, 16, 12, 6.2, 4.2, 2.6),
     },
+    { -- workaholic
+        ex = true,
+        id = 'workaholic',
+        name = "Workaholic",
+        desc = [[Shortest time spent in F6 with EX rGV VL]],
+        quote = [[An unhealthy obsession over never-ending papers and unrealistic deadlines...]],
+        credit = "@flomikel",
+        comp = '<',
+        scoreSimp = function(time) return string.format("%.2fs", time) end,
+        rank = numberRankRev(42, 26, 16, 12, 9.4, 6.2, 4.2),
+    },
     { -- human_experiment
         ex = true,
         id = 'human_experiment',

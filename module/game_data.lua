@@ -191,6 +191,7 @@ ComboData = {
         { set = "EX MS AS",      name = "Financially Responsible" },
         { set = "EX rVL rDP",    name = "Unfair Battle" },
         { set = "DH DP",         name = "Museum Heist" },
+        { set = "EX rGV VL",     name = "Workaholic" },
         { set = "MS VL AS",      name = "Human Experiment" },
         { set = "EX GV DH",      name = "Core Meltdown" },
     },

@@ -280,6 +280,7 @@ TEXTURE = {
             financially_responsible = aq(5, 6),
             unfair_battle = aq(5, 6),
             museum_heist = aq(5, 6),
+            workaholic = aq(5, 6),
             human_experiment = aq(5, 6),
             core_meltdown = aq(5, 6),
             ultra_dash = aq(5, 6),
