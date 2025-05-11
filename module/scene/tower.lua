@@ -19,7 +19,6 @@ local usingTouch = MOBILE
 local revHold = {}
 
 local TimeMul = 1
-local CardVisible = true
 
 ---@type Zenitha.Scene
 local scene = {}
@@ -1093,34 +1092,32 @@ function scene.overDraw()
         gc_draw(TEXTURE.transition, -200 * GAME.uiHide, -40, 0, 200 / 128, -560)
     end
 
-    if CardVisible then
-        -- Cards
-        gc_replaceTransform(SCR.xOy)
-        gc_setColor(1, 1, 1)
-        if FloatOnCard then
-            for i = #Cards, 1, -1 do
-                if i ~= FloatOnCard then Cards[i]:draw() end
-            end
-            Cards[FloatOnCard]:draw()
-        else
-            for i = #Cards, 1, -1 do Cards[i]:draw() end
+    -- Cards
+    gc_replaceTransform(SCR.xOy)
+    gc_setColor(1, 1, 1)
+    if FloatOnCard then
+        for i = #Cards, 1, -1 do
+            if i ~= FloatOnCard then Cards[i]:draw() end
         end
+        Cards[FloatOnCard]:draw()
+    else
+        for i = #Cards, 1, -1 do Cards[i]:draw() end
+    end
 
-        -- Allspin keyboard hint
-        if M.AS > 0 then
-            setFont(50)
-            for i = 1, #Cards do
-                local obj = ShortCut[i]
-                local x, y = Cards[i].x + 90, Cards[i].y + 155
-                local k = min(60 / obj:getWidth(), 1)
-                gc_setColor(ShadeColor)
-                gc_strokeDraw(
-                    'full', 3 * k, obj, x, y, 0, k, k,
-                    obj:getWidth() / 2, obj:getHeight() / 2
-                )
-                gc_setColor(COLOR.lR)
-                gc_mDraw(obj, x, y, 0, k)
-            end
+    -- Allspin keyboard hint
+    if M.AS > 0 and M.EX == 0 then
+        setFont(50)
+        for i = 1, #Cards do
+            local obj = ShortCut[i]
+            local x, y = Cards[i].x + 90, Cards[i].y + 155
+            local k = min(60 / obj:getWidth(), 1)
+            gc_setColor(ShadeColor)
+            gc_strokeDraw(
+                'full', 3 * k, obj, x, y, 0, k, k,
+                obj:getWidth() / 2, obj:getHeight() / 2
+            )
+            gc_setColor(COLOR.lR)
+            gc_mDraw(obj, x, y, 0, k)
         end
     end
 
@@ -1363,18 +1360,22 @@ scene.widgetList = {
             local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
             TimeMul = PieceSFXID == 1 and 2.6 or 1
             GlassCard = PieceSFXID == 2
-            CardVisible = PieceSFXID ~= 3
+            InvisCard = PieceSFXID == 3
             ZENITHA.setShowFPS(PieceSFXID == 7)
 
-            MSG('info', ({
-                "Z - Double Time",
-                "S - Glass Card",
-                "J - Invisible Card",
-                "L - ?",
-                "T - ?",
-                "O - ?",
-                "I - Show FPS",
-            })[PieceSFXID], 1.2)
+            MSG({
+                cat = 'dark',
+                str = ({
+                    "Z - Double Time",
+                    "S - Glass Card",
+                    "J - Invisible Card",
+                    "L - ?",
+                    "T - ?",
+                    "O - ?",
+                    "I - Show FPS",
+                })[PieceSFXID],
+                time = 1.2
+            })
 
             SFX.play(piece, 1, 0, 6 + M.GV)
         end,

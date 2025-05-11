@@ -412,13 +412,15 @@ function Card:draw()
     local texture = TEXTURE[self.id]
     local playing = GAME.playing
     local img, img2
+    local faceUp
     if self.lock and self.lockfull then
         img = texture.lock
     else
         if M.IN == 2 then
             img = texture.back
         else
-            img = self.kx * self.ky > 0 and texture.front or texture.back
+            faceUp = self.kx * self.ky > 0
+            img = faceUp and texture.front or texture.back
         end
         if self.lock then
             img2 = texture.lock
@@ -515,13 +517,13 @@ function Card:draw()
 
     if GlassCard then
         local w, h = 260, 350
-        gc_setColor((img == texture.front and ModData.textColor or ModData.color)[self.id])
-        gc_setAlpha(.872)
+        gc_setColor((faceUp and ModData.textColor or ModData.color)[self.id])
+        gc_setAlpha((STAT.cardBrightness / 100) ^ 2 * .872)
         gc_mRect('fill', 0, 0, w * 2, h * 2, 26)
 
         gc_setColor(1, 1, 1)
         FONT.set(50)
-        if img == texture.front then
+        if faceUp then
             GC.scale(2.6)
             GC.mStr(self.id, 0, -42)
             GC.scale(1 / 2.6)
@@ -548,20 +550,22 @@ function Card:draw()
         end
     else
         -- Card
-        if self.burn then
-            gc_setColor(
-                self.burn and (
-                    GAME.time % .16 < .08 and COLOR.LF
-                    or COLOR.lY
-                ) or COLOR.LL
-            )
-        else
-            local b = STAT.cardBrightness / 100
-            gc_setColor(b, b, b)
-        end
-        gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
-        if img2 then
-            gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
+        if not InvisCard then
+            if self.burn then
+                gc_setColor(
+                    self.burn and (
+                        GAME.time % .16 < .08 and COLOR.LF
+                        or COLOR.lY
+                    ) or COLOR.LL
+                )
+            else
+                local b = STAT.cardBrightness / 100
+                gc_setColor(b, b, b)
+            end
+            gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
+            if img2 then
+                gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
+            end
         end
 
         -- Outline (draw)
@@ -574,29 +578,10 @@ function Card:draw()
             gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
         end
 
-        -- Icon cover
-        if img == texture.front then
-            gc_setColor(ModData.textColor[self.id])
-            local active = playing and self.inLastCommit or not playing and self.active
-            if M.EX == 0 then
-                if active then
-                    gc_setLineWidth(6)
-                    gc_circle('line', 156.5, -246, 68, 4)
-                    gc_setAlpha(.62)
-                    gc_circle('fill', 156.5, -246, 72, 4)
-                else
-                    gc_setLineWidth(4)
-                    gc_circle('line', 156.5, -246, 72, 4)
-                end
-            elseif active then
-                gc_setAlpha(.62)
-                gc_circle('fill', 156.5, -246, 72, 4)
-            end
-        end
-
         -- Menu UI
         if not playing then
-            if not self.upright and GAME.revDeckSkin and img == texture.front then
+            gc_push('transform')
+            if not self.upright and GAME.revDeckSkin and faceUp then
                 gc_setColor(1, 1, 1, ThrobAlpha.card)
                 gc_draw(texture.throb, -texture.throb:getWidth() / 2, -texture.throb:getHeight() / 2)
             end
@@ -648,6 +633,27 @@ function Card:draw()
                     end
                 end
             end
+            gc_pop()
+        end
+    end
+
+    -- Icon cover
+    if faceUp then
+        gc_setColor((GlassCard and ModData.color or ModData.textColor)[self.id])
+        local active = playing and self.inLastCommit or not playing and self.active
+        if M.EX == 0 then
+            if active then
+                gc_setLineWidth(6)
+                gc_circle('line', 156.5, -246, 68, 4)
+                gc_setAlpha(.62)
+                gc_circle('fill', 156.5, -246, 72, 4)
+            else
+                gc_setLineWidth(4)
+                gc_circle('line', 156.5, -246, 72, 4)
+            end
+        elseif active then
+            gc_setAlpha(.62)
+            gc_circle('fill', 156.5, -246, 72, 4)
         end
     end
 
