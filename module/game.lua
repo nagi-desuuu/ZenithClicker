@@ -1709,6 +1709,7 @@ function GAME.start()
         SFX.play('garbagerise')
         return
     end
+    TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
     SCN.scenes.tower.widgetList.help2:setVisible(false)
     SCN.scenes.tower.widgetList.daily:setVisible(false)
