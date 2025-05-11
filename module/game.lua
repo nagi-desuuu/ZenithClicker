@@ -2005,7 +2005,7 @@ function GAME.finish(reason)
             roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. "eff)\n",
             COLOR.L, "Bonus  " .. roundUnit(GAME.heightBonus, .1) .. "m",
             COLOR.LD, "  (" .. roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%  ",
-            roundUnit(GAME.heightBonus / GAME.totalQuest, .1) .. "m/quest)",
+            roundUnit(GAME.heightBonus / GAME.totalQuest, .1) .. "mpq)",
         })
         GAME.refreshResultModIcon()
 
