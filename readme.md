@@ -21,9 +21,9 @@ Credits:
 *CreepercraftYT*: Detailed mod icons  
 *Dr Ocelot*: Audio & Music  
 *osk*: Founder & lead producer of tetr.io  
-*Garbo*: Game & world design of tetr.io  
+*Garbo*: Game & world designer of tetr.io  
 *Frutigеr*: Font designer (D-Din-Pro)  
-*Mooniak*: Font designer (AbhayaLibre)
+*Mooniak*: Font designer (AbhayaLibre)  
 *Lorc & Delapouite*: Some achievement icons (on https://game-icons.net, CC BY 3.0)
 
 ## How to Play
@@ -33,9 +33,9 @@ Select the mods which contained by the first (largest) one, then press `Start` b
 
 Pass quests with one click at most on each card to get "perfect pass", with extra attack and charging b2b.
 
-Each mod twists the rules and creates unique experience.
+Each mod creates unique experience with twisting the rules but also increases the difficulty **a bit**.
 
-## Mod Effects (from community, may not be exactly correct & complete)
+## Mod Effects (may not be exactly correct & complete)
 
 ### Expert (`EX`)
 
