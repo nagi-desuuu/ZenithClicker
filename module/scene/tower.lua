@@ -18,6 +18,8 @@ RevUnlocked = false
 local usingTouch = MOBILE
 local revHold = {}
 
+TimeMul = 1
+
 ---@type Zenitha.Scene
 local scene = {}
 
@@ -356,6 +358,7 @@ end
 local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
 local expApproach = MATH.expApproach
 function scene.update(dt)
+    dt = dt * TimeMul
     if GAME.zenithTraveler and M.EX == 2 then
         local f = GAME.getBgFloor()
         GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
@@ -1342,6 +1345,8 @@ scene.widgetList = {
         onPress = function()
             PieceSFXID = (PieceSFXID or 0) % 7 + 1
             SFX.play(('zsjltoi'):sub(PieceSFXID, PieceSFXID), 1, 0, 6 + M.GV)
+            CardHitBox = PieceSFXID == 1
+            TimeMul = PieceSFXID == 2 and 2.6 or 1
             ZENITHA.setShowFPS(PieceSFXID == 7)
         end,
     },

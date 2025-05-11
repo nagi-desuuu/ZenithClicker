@@ -615,16 +615,16 @@ function Card:draw()
     end
 
     -- Debug
-    -- if not self.upright then gc_rotate(3.1416) end
-    -- gc_setColor(ModData.color[self.id])
-    -- local w, h = 260, 350
-    -- gc.rectangle('fill', w, -h, -62, 62)
-    -- gc_setColor(1, 1, 1)
-    -- gc.setLineWidth(2)
-    -- GC.mRect('line', 0, 0, w * 2, h * 2)
-    -- FONT.set(30)
-    -- gc.print(self.upright and self.id or "r" .. self.id, -w, -h - 100)
-    -- gc.print("r = " .. MATH.round(self.r / 3.1416 * 180), -w, -h - 70)
+    if CardHitBox then
+        gc_setColor(ModData.color[self.id])
+        local w, h = 260, 350
+        gc.rectangle('fill', w, -h, -62, 62)
+        gc_setColor(1, 1, 1)
+        gc_setLineWidth(2)
+        GC.mRect('line', 0, 0, w * 2, h * 2)
+        FONT.set(50)
+        gc.print(self.id, -w, -h - 70)
+    end
 
     gc_pop()
 end

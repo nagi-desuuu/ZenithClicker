@@ -488,7 +488,7 @@ Fatigue = {
         { time = 240,  event = { 'dmgTimeMul', -.2 },                                   text = "YOUR POWER SLIPS_",               desc = "TimerSpeed++" },
         { time = 270,  event = { 'dmgWrong', 2 },                                       text = "WHISPERS OF DISCONTENT SPREAD_",  desc = "Damage++" },
         { time = 300,  event = { 'dmgCycle', -1, 'animDuration', 1 },                   text = "PROTESTERS LINE THE STREETS_",    desc = "DmgCycle--" },
-        { time = 330,  event = { 'dmgTimeMul', -.2, 'dmgWrong', 2, },                   text = "YOUR CLOSEST ALLIES DEFECT_",     desc = "TimerSpeed++   Damage++" },
+        { time = 330,  event = { 'dmgTimeMul', -.2, 'dmgWrong', 2 },                    text = "YOUR CLOSEST ALLIES DEFECT_",     desc = "TimerSpeed++   Damage++" },
         { time = 360,  event = { 'dmgTimeMul', -.2, 'dmgHeal', -1, 'animDuration', 1 }, text = "PARANOIA CLOUDS YOUR JUDGEMENT_", desc = "TimerSpeed++   Heal--" },
         { time = 390,  event = { 'dmgCycle', -.5, 'dmgWrong', 1 },                      text = "THE REVOLUTION HAS BEGUN_",       desc = "DmgCycle--   Damage++" },
         { time = 420,  event = { 'dmgTimeMul', -.3, 'animDuration', 1 },                text = "THE END OF AN ERA.",              desc = "TimerSpeed++++" },
