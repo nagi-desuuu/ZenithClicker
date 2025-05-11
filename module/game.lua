@@ -260,10 +260,12 @@ local function modSortFunc(a, b) return MD.prio_name[a] < MD.prio_name[b] end
 function GAME.getComboName(list, mode)
     local len = #list
     if mode == 'ingame' then
+        -- Empty
         if len == 0 then return {} end
 
         local fstr = {}
 
+        -- Super Set
         local comboText
         if not GAME.anyRev and not TABLE.find(list, 'DP') then
             comboText = len == 8 and [["SWAMP WATER"]] or len == 7 and [["SWAMP WATER LITE"]]
@@ -276,9 +278,10 @@ function GAME.getComboName(list, mode)
             end
         end
 
-        local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or M.DH == 2 and ComboData[str].ex) then
-            fstr = ComboData[str].name:atomize()
+        -- Named Combo
+        local combo = (M.DH == 2 and ComboData.gameEX or ComboData.game)[table.concat(TABLE.sort(list), ' ')]
+        if combo then
+            fstr = combo.name:atomize()
             for i = #fstr, 1, -1 do
                 ins(fstr, i, { MATH.rand(.872, 1), MATH.rand(.872, 1), MATH.rand(.872, 1) })
             end
@@ -304,6 +307,7 @@ function GAME.getComboName(list, mode)
             return fstr
         end
 
+        -- Sort & Shuffle
         if M.DH == 2 then
             TABLE.shuffle(list)
         else
@@ -315,6 +319,7 @@ function GAME.getComboName(list, mode)
             end
         end
 
+        -- General
         for i = 1, len - 1 do
             ins(fstr, MD.textColor[list[i]])
             ins(fstr, MD.adj[list[i]] .. " ")
@@ -341,8 +346,10 @@ function GAME.getComboName(list, mode)
 
         return fstr
     else
-        -- Simple
+        -- Empty
         if len == 0 then return "" end
+
+        -- Simple
         if len == 1 then return MD.noun[list[1]] end
 
         local usingExtend = mode == 'button' and not GAME.playing or mode == 'rpc'
@@ -370,15 +377,17 @@ function GAME.getComboName(list, mode)
             return len == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
         end
 
-        -- Normal Combo
-        local str = table.concat(TABLE.sort(list), ' ')
-        if ComboData[str] and (ComboData[str].basic or usingExtend and ComboData[str].menu) then
-            return ComboData[str].name
-        end
+        -- Named Combo
+        local combo = (
+            GAME.playing and M.DH == 2 and ComboData.gameEX or
+            usingExtend and ComboData.menu or
+            ComboData.game
+        )[table.concat(TABLE.sort(list), ' ')]
+        if combo then return combo.name end
 
+        -- General
         table.sort(list, modSortFunc)
-
-        str = ""
+        local str = ""
         for i = 1, len - 1 do str = str .. MD.adj[list[i]] .. " " end
         return str .. MD.noun[list[len]]
     end
