@@ -469,13 +469,13 @@ local gc_setColorMask = GC.setColorMask
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
-    w = 128, h = 128,
-    { 'move',   64,   64 },
-    { 'fCirc',  0,    0, 45, 4 },
+    w = 512, h = 512,
+    { 'move',   256,  256 },
+    { 'fCirc',  0,    0,  180, 4 },
     { 'rotate', .5236 },
-    { 'fCirc',  0,    0, 45, 4 },
+    { 'fCirc',  0,    0,  180, 4 },
     { 'rotate', .5236 },
-    { 'fCirc',  0,    0, 45, 4 },
+    { 'fCirc',  0,    0,  180, 4 },
 }
 
 local TEXTURE = TEXTURE
@@ -867,13 +867,13 @@ function scene.overDraw()
                     .16
                 )
                 gc_setColor(0, 0, 0)
-                gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
+                gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, .25 * k * bk)
             end
 
             -- Spike ball
             gc_setColor(r, g, b, a)
             gc_blurCircle(-.26, 326, 270, 100 * k)
-            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, k * bk)
+            gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, .25 * k * bk)
 
             -- Spark
             gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
