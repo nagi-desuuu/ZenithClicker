@@ -154,7 +154,10 @@ function scene.update(dt)
         end
     end
     if GAME.mod.EX == 2 then scroll = math.min(scroll + .26, maxScroll) end
+    local y0 = scroll1
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
+    GAME.bgH = math.max(GAME.bgH + (y0 - scroll1) / 355, 0)
+    GAME.height = GAME.bgH
 end
 
 local gc = love.graphics

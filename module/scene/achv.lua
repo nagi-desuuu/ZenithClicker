@@ -31,7 +31,7 @@ local M = GAME.mod
 
 ---@type (AchvItem | EmptyAchv)[]
 local achvList = {}
-local scroll, scroll1 = 0, -620
+local scroll, scroll1 = 0, 0
 local maxScroll = 0
 local tempText = GC.newText(FONT.get(30))
 local timer = 0
@@ -350,7 +350,10 @@ function scene.update(dt)
         end
     end
     if M.EX == 2 then scroll = min(scroll + .26, maxScroll) end
+    local y0 = scroll1
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
+    GAME.bgH = max(GAME.bgH + (y0 - scroll1) / 355, 0)
+    GAME.height = GAME.bgH
 end
 
 local gc = love.graphics
