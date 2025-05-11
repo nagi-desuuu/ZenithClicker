@@ -355,10 +355,8 @@ function GAME.getComboName(list, mode)
         -- Simple
         if len == 1 then return MD.noun[list[1]] end
 
-        local usingExtend = mode == 'button' and not GAME.playing or mode == 'rpc'
-
         -- Super Set
-        if usingExtend then
+        if not (mode == 'button' and GAME.playing) then
             if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
                 local mp = GAME.getComboMP(list)
                 if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
@@ -382,8 +380,8 @@ function GAME.getComboName(list, mode)
 
         -- Named Combo
         local combo = (
-            GAME.playing and M.DH == 2 and ComboData.gameEX or
-            usingExtend and ComboData.menu or
+            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
+            M.DH == 2 and ComboData.gameEX or
             ComboData.game
         )[table.concat(TABLE.sort(list), ' ')]
         if combo then return combo.name end
