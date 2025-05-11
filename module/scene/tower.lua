@@ -464,7 +464,7 @@ local gc_replaceTransform = gc.replaceTransform
 local gc_translate, gc_scale, gc_rotate, gc_shear = gc.translate, gc.scale, gc.rotate, gc.shear
 local gc_setColor, gc_setLineWidth, gc_setBlendMode = gc.setColor, gc.setLineWidth, gc.setBlendMode
 local gc_draw = gc.draw
-local gc_rectangle, gc_circle, gc_arc = gc.rectangle, gc.circle, gc.arc
+local gc_line, gc_rectangle, gc_circle, gc_arc = gc.line, gc.rectangle, gc.circle, gc.arc
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
 local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
 local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
@@ -1219,6 +1219,31 @@ function scene.overDraw()
         -- Text
         gc_setColor(1, .872, .872, alpha)
         gc_mDraw(TEXTS.forfeit, SCR.w / 2, SCR.h - h * .5, 0, SCR.k, SCR.k)
+    end
+
+    -- TimeMul
+    if TimeMul > 1 then
+        gc_replaceTransform(SCR.xOy_m)
+        gc_rotate(-1.5708)
+        gc_setColor(1, 1, 1, .26)
+        gc_setLineWidth(42)
+        gc_circle('line', 0, 0, 620)
+        gc_setColor(1, 1, 1, .42)
+        local a
+        a = os.date('%H') / 6 * 3.1416
+        gc_setLineWidth(26)
+        gc_line(0, 0, 120 * cos(a), 120 * sin(a))
+        a = os.date('%M') / 30 * 3.1416
+        gc_setLineWidth(16)
+        gc_line(0, 0, 260 * cos(a), 260 * sin(a))
+        a = os.date('%S') / 30 * 3.1416
+        gc_setLineWidth(10)
+        gc_line(0, 0, 420 * cos(a), 420 * sin(a))
+        a = love.timer.getTime() / 30 * 3.1416 * 26
+        gc_setLineWidth(10)
+        gc_line(0, 0, 520 * cos(a), 520 * sin(a))
+        a = love.timer.getTime() / 30 * 3.1416 * 60
+        gc_line(0, 0, 600 * cos(a), 600 * sin(a))
     end
 end
 
