@@ -405,7 +405,7 @@ local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_draw, gc_circle = gc.draw, gc.circle
 local gc_setColor, gc_setAlpha, gc_setLineWidth = gc.setColor, GC.setAlpha, gc.setLineWidth
-local gc_mDraw = GC.mDraw
+local gc_mDraw, gc_mRect = GC.mDraw, GC.mRect
 local gc_blurCircle = GC.blurCircle
 
 function Card:draw()
@@ -443,24 +443,7 @@ function Card:draw()
         gc_scale(1 - abs(D))
     end
 
-    -- Card
-    if self.burn then
-        gc_setColor(
-            self.burn and (
-                GAME.time % .16 < .08 and COLOR.LF
-                or COLOR.lY
-            ) or COLOR.LL
-        )
-    else
-        local b = STAT.cardBrightness / 100
-        gc_setColor(b, b, b)
-    end
-    gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
-    if img2 then
-        gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
-    end
-
-    -- Outline
+    -- Outline (prepare)
     local r1, g1, b1, a1
     local r2, g2, b2, a2
     if playing then
@@ -529,101 +512,131 @@ function Card:draw()
             if a2 and a2 <= 0 then self.required = false end
         end
     end
-    if a1 then
-        gc_setColor(r1, g1, b1, a1)
-        gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
-    end
-    if a2 then
-        gc_setColor(r2, g2, b2, a2)
-        gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
-    end
 
-    -- Icon cover
-    if img == texture.front then
+    if GlassCard then
+        -- Debug
+        local w, h = 260, 350
         gc_setColor(ModData.textColor[self.id])
-        local active = playing and self.inLastCommit or not playing and self.active
-        if M.EX == 0 then
-            if active then
-                gc_setLineWidth(6)
-                gc_circle('line', 156.5, -246, 68, 4)
+        gc_setAlpha(.872)
+        gc_mRect('fill', 0, 0, w * 2, h * 2, 26)
+        gc_setColor(1, 1, 1)
+        FONT.set(50)
+        gc.print(self.id, -w + 26, -h, 0, 2.6)
+
+        -- Outline (draw)
+        if a1 then
+            gc_setLineWidth(52)
+            gc_setColor(r1, g1, b1, a1)
+            gc_mRect('line', 0, 0, w * 2 + 52, h * 2 + 52, 52)
+        end
+        if a2 then
+            gc_setLineWidth(26)
+            gc_setColor(r2, g2, b2, a2)
+            gc_mRect('line', 0, 0, w * 2 + 26, h * 2 + 26, 39)
+        end
+    else
+        -- Card
+        if self.burn then
+            gc_setColor(
+                self.burn and (
+                    GAME.time % .16 < .08 and COLOR.LF
+                    or COLOR.lY
+                ) or COLOR.LL
+            )
+        else
+            local b = STAT.cardBrightness / 100
+            gc_setColor(b, b, b)
+        end
+        gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
+        if img2 then
+            gc_draw(img2, -img2:getWidth() / 2, -img2:getHeight() / 2)
+        end
+
+        -- Outline (draw)
+        if a1 then
+            gc_setColor(r1, g1, b1, a1)
+            gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+        end
+        if a2 then
+            gc_setColor(r2, g2, b2, a2)
+            gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
+        end
+
+        -- Icon cover
+        if img == texture.front then
+            gc_setColor(ModData.textColor[self.id])
+            local active = playing and self.inLastCommit or not playing and self.active
+            if M.EX == 0 then
+                if active then
+                    gc_setLineWidth(6)
+                    gc_circle('line', 156.5, -246, 68, 4)
+                    gc_setAlpha(.62)
+                    gc_circle('fill', 156.5, -246, 72, 4)
+                else
+                    gc_setLineWidth(4)
+                    gc_circle('line', 156.5, -246, 72, 4)
+                end
+            elseif active then
                 gc_setAlpha(.62)
                 gc_circle('fill', 156.5, -246, 72, 4)
-            else
-                gc_setLineWidth(4)
-                gc_circle('line', 156.5, -246, 72, 4)
             end
-        elseif active then
-            gc_setAlpha(.62)
-            gc_circle('fill', 156.5, -246, 72, 4)
         end
-    end
 
-    -- Menu UI
-    if not playing then
-        if not self.upright and GAME.revDeckSkin and img == texture.front then
-            gc_setColor(1, 1, 1, ThrobAlpha.card)
-            gc_draw(texture.throb, -texture.throb:getWidth() / 2, -texture.throb:getHeight() / 2)
-        end
-        if completion[self.id] > 0 then
-            img = self.active and TEXTURE.star1 or TEXTURE.star0
-            local t = self.upright and self.float or 1
-            local blur = (FloatOnCard == self.initOrder or not self.upright) and 0 or -.2
-            local x = lerp(155, 0, t)
-            local y = lerp(-370, -330, t)
-            local cr = lerp(.16, .42, t)
-            local revMastery = completion[self.id] == 2
-            local ang = -t * 6.2832
-            gc_scale(abs(1 / self.kx * self.ky), 1)
-            -- Base star
-            if self.upright then
-                if revMastery then
+        -- Menu UI
+        if not playing then
+            if not self.upright and GAME.revDeckSkin and img == texture.front then
+                gc_setColor(1, 1, 1, ThrobAlpha.card)
+                gc_draw(texture.throb, -texture.throb:getWidth() / 2, -texture.throb:getHeight() / 2)
+            end
+            if completion[self.id] > 0 then
+                img = self.active and TEXTURE.star1 or TEXTURE.star0
+                local t = self.upright and self.float or 1
+                local blur = (FloatOnCard == self.initOrder or not self.upright) and 0 or -.2
+                local x = lerp(155, 0, t)
+                local y = lerp(-370, -330, t)
+                local cr = lerp(.16, .42, t)
+                local revMastery = completion[self.id] == 2
+                local ang = -t * 6.2832
+                gc_scale(abs(1 / self.kx * self.ky), 1)
+                -- Base star
+                if self.upright then
+                    if revMastery then
+                        gc_setColor(.5, .5, .5)
+                        gc_blurCircle(blur, -x, -y, cr * 260)
+                        gc_setColor(1, 1, 1)
+                        gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
+                    end
                     gc_setColor(.5, .5, .5)
-                    gc_blurCircle(blur, -x, -y, cr * 260)
+                    gc_blurCircle(blur, x, y, cr * 260)
                     gc_setColor(1, 1, 1)
-                    gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
-                end
-                gc_setColor(.5, .5, .5)
-                gc_blurCircle(blur, x, y, cr * 260)
-                gc_setColor(1, 1, 1)
-                gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
-            else
-                if revMastery then
-                    gc_setColor(.2, .2, .2)
-                    gc_blurCircle(blur, -x, -y, cr * 260)
-                    gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
-                    gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
-                end
-                gc_setColor(.2, .2, .2)
-                gc_blurCircle(blur, x, y, cr * 260)
-                gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
-                gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
-            end
-            -- Float star
-            if not self.active then
-                if revMastery then
-                    gc_setColor(.5, .5, .5, t)
-                    gc_blurCircle(blur, -x, -y, cr * 260)
-                    gc_setColor(1, 1, 1, t)
-                    gc_mDraw(TEXTURE.star1, -x, -y, ang, lerp(.16, .42, t))
-                    gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
+                    gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
                 else
-                    gc_setColor(1, 1, 1, t)
-                    gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
+                    if revMastery then
+                        gc_setColor(.2, .2, .2)
+                        gc_blurCircle(blur, -x, -y, cr * 260)
+                        gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
+                        gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
+                    end
+                    gc_setColor(.2, .2, .2)
+                    gc_blurCircle(blur, x, y, cr * 260)
+                    gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
+                    gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
+                end
+                -- Float star
+                if not self.active then
+                    if revMastery then
+                        gc_setColor(.5, .5, .5, t)
+                        gc_blurCircle(blur, -x, -y, cr * 260)
+                        gc_setColor(1, 1, 1, t)
+                        gc_mDraw(TEXTURE.star1, -x, -y, ang, lerp(.16, .42, t))
+                        gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
+                    else
+                        gc_setColor(1, 1, 1, t)
+                        gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
+                    end
                 end
             end
         end
-    end
-
-    -- Debug
-    if CardHitBox then
-        gc_setColor(ModData.color[self.id])
-        local w, h = 260, 350
-        gc.rectangle('fill', w, -h, -62, 62)
-        gc_setColor(1, 1, 1)
-        gc_setLineWidth(2)
-        GC.mRect('line', 0, 0, w * 2, h * 2)
-        FONT.set(50)
-        gc.print(self.id, -w, -h - 70)
     end
 
     gc_pop()
