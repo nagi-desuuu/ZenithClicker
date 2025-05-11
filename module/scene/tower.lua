@@ -733,7 +733,7 @@ function scene.draw()
     -- Result
     if GAME.uiHide < 1 then
         gc_replaceTransform(SCR.xOy_u)
-        gc_translate(0, -3.2 * GAME.uiHide * 70)
+        gc_translate(0, -224 * GAME.uiHide)
         gc_setColor(1, 1, 1)
         gc_draw(GAME.resIB, 400, 150, 0, .9)
         gc_setColor(COLOR.D)
@@ -741,10 +741,13 @@ function scene.draw()
         gc_mDraw(TEXTS.endFloor, 0, 204)
         gc_mDraw(TEXTS.zpChange, 220, 95, 0, .626)
         gc_draw(TEXTS.endResult, -541, 80, 0, .626)
+        gc_draw(TEXTS.floorTime, -541, 236 - GAME.uiHide * 150, 0, .42)
         gc_setColor(COLOR.L)
         gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 201)
         gc_draw(TEXTS.endResult, -540, 78, 0, .626)
+        gc_setColor(COLOR.DL)
+        gc_draw(TEXTS.floorTime, -540, 234 - GAME.uiHide * 150, 0, .42)
         gc_setColor(COLOR.dL)
         gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
     end
@@ -1121,6 +1124,15 @@ function scene.overDraw()
         end
     end
 
+    -- Section time
+    if GAME.uiHide > 0 then
+        gc_replaceTransform(SCR.xOy_dr)
+        local ox, oy = TEXTS.floorTime:getDimensions()
+        gc_setColor(0, 0, 0, .626)
+        gc_draw(TEXTS.floorTime, -10, -5 + 260 * (1 - GAME.uiHide), 0, .7, .7, ox, oy)
+        gc_setColor(.626, .626, .626, .626)
+        gc_draw(TEXTS.floorTime, -10, -5 + 260 * (1 - GAME.uiHide), 0, .7, .7, ox, oy)
+    end
 
     -- UI
     if GAME.uiHide < 1 then

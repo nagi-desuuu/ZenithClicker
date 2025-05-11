@@ -40,6 +40,7 @@ local ins, rem = table.insert, table.remove
 ---@field gigaTime false | number
 ---@field questTime number
 ---@field floorTime number
+---@field secTime number[]
 ---
 ---@field rank number
 ---@field xp number
@@ -846,6 +847,17 @@ function GAME.upFloor()
         SubmitAchv('ultra_dash', GAME.floorTime)
     end
 
+    -- Update section time
+    if GAME.floor > 0 then
+        ins(GAME.secTime, GAME.floorTime)
+        local secTimeStr = ""
+        for i = 1, #GAME.secTime do
+            if i > 1 then secTimeStr = secTimeStr .. "\n" end
+            secTimeStr = secTimeStr .. ("F%d - %.3fs"):format(i, GAME.secTime[i])
+        end
+        TEXTS.floorTime:set(secTimeStr)
+    end
+
     GAME.floor = GAME.floor + 1
     GAME.floorTime = 0
     if GAME.floor > 1 then
@@ -870,6 +882,7 @@ function GAME.upFloor()
     end
     if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
 
+    -- Text & SFX
     local duration = GAME.floor >= 10 and 8.72 or 4.2
     TEXT:add {
         text = "Floor",
@@ -886,13 +899,13 @@ function GAME.upFloor()
         x = 200, y = 350, k = 1.2, fontSize = 30,
         color = 'LY', duration = duration,
     }
-
     if GAME.gigaspeed then
         SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
     elseif GAME.floor > 1 then
         SFX.play('zenith_levelup_g', 1, 0, M.GV)
     end
 
+    -- End game
     if GAME.floor >= 10 then
         local roundTime = roundUnit(GAME.time, .001)
         if GAME.gigaspeed then
@@ -1723,6 +1736,7 @@ function GAME.start()
     GAME.gigaTime = false
     GAME.questTime = 0
     GAME.floorTime = 0
+    GAME.secTime = {}
 
     -- Rank
     GAME.rank = 1
@@ -2132,6 +2146,8 @@ function GAME.finish(reason)
         TEXTS.endFloor:set("")
         TEXTS.endResult:set("")
         TEXTS.zpChange:set("")
+        TEXTS.zpChange:set("")
+        TEXTS.floorTime:set("")
         GAME.resIB:clear()
     end
     ReleaseAchvBuffer()
