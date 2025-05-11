@@ -531,16 +531,6 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.MS == 0 end,
     },
-    { -- DHrEXrVL
-        ex = true,
-        id = 'DHrEXrVL',
-        name = "Sweat and Ruin",
-        desc = [[HFD WUT rEX rVL DH mods]],
-        quote = [[Putting your blood, sweat, and tears to the climb, or fall.]],
-        credit = "@Tizago",
-        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
-        hide = function() return GAME.completion.EX == 0 end,
-    },
     { -- MSrDPrGV
         ex = true,
         id = 'MSrDPrGV',
@@ -548,7 +538,7 @@ Achievements = {
         desc = [[HFD WUT MS rGV rDP mods]],
         quote = [["Can we please talk about this first?!"]],
         credit = "@GameTilDead",
-        rank = floorRank(1, 3, 5, 6, 7, 8, 10),
+        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
         hide = function() return GAME.completion.GV == 0 or GAME.completion.DP == 0 end,
     },
     { -- NHVLrDPrGV
@@ -558,7 +548,7 @@ Achievements = {
         desc = [[HFD WUT NH rGV VL rDP mods]],
         quote = [[A worthless, desperate attempt at saving a shattered, withered love...]],
         credit = "@flomikel",
-        rank = floorRank(1, 3, 5, 6, 7, 8, 10),
+        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
         hide = function() return GAME.completion.GV == 0 or GAME.completion.DP == 0 end,
     },
     { -- VLrDPrIN
@@ -580,6 +570,16 @@ Achievements = {
         credit = "@Tizago",
         rank = floorRank(1, 3, 4, 5, 6, 7, 9),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.DP == 0 end,
+    },
+    { -- DHrEXrVL
+        ex = true,
+        id = 'DHrEXrVL',
+        name = "Sweat and Ruin",
+        desc = [[HFD WUT rEX rVL DH mods]],
+        quote = [[Putting your blood, sweat, and tears to the climb, or fall.]],
+        credit = "@Tizago",
+        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
+        hide = function() return GAME.completion.EX == 0 end,
     },
     { -- rDPrEX
         ex = true,
