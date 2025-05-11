@@ -1754,7 +1754,7 @@ function GAME.start()
     GAME.heightBuffer = 0
     GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
     GAME.fatigue = 1
-    GAME.animDuration = 1
+    GAME.animDuration = Slowmo and 26 or 1
     GAME.lastCommit = {}
 
     -- Params

@@ -18,7 +18,8 @@ RevUnlocked = false
 local usingTouch = MOBILE
 local revHold = {}
 
-local TimeMul = 1
+local NightCore
+local InvisDashboard
 
 ---@type Zenitha.Scene
 local scene = {}
@@ -358,7 +359,7 @@ end
 local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
 local expApproach = MATH.expApproach
 function scene.update(dt)
-    dt = dt * TimeMul
+    if NightCore then dt = dt * 2.6 end
     if GAME.zenithTraveler and M.EX == 2 then
         local f = GAME.getBgFloor()
         GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
@@ -387,7 +388,7 @@ function scene.update(dt)
     end
 
     for i = 1, #Cards do
-        Cards[i]:update(dt)
+        Cards[i]:update(Slowmo and dt / 6.26 or dt)
     end
     if GAME.playing and (KBIsDown('escape') or MSIsDown(3)) then
         GAME.forfeitTimer = GAME.forfeitTimer +
@@ -1019,7 +1020,7 @@ function scene.overDraw()
     -- end
 
     -- Bottom In-game UI
-    if GAME.uiHide > 0 then
+    if GAME.uiHide > 0 and not InvisDashboard then
         local h = 100 - GAME.uiHide * 100
         gc_move('m', 0, h)
 
@@ -1222,28 +1223,42 @@ function scene.overDraw()
     end
 
     -- TimeMul
-    if TimeMul > 1 then
+    if NightCore or Slowmo then
         gc_replaceTransform(SCR.xOy_m)
         gc_rotate(-1.5708)
-        gc_setColor(1, 1, 1, .26)
         gc_setLineWidth(42)
-        gc_circle('line', 0, 0, 620)
-        gc_setColor(1, 1, 1, .42)
         local a
-        a = os.date('%H') / 6 * 3.1416
-        gc_setLineWidth(26)
-        gc_line(0, 0, 120 * cos(a), 120 * sin(a))
-        a = os.date('%M') / 30 * 3.1416
-        gc_setLineWidth(16)
-        gc_line(0, 0, 260 * cos(a), 260 * sin(a))
-        a = os.date('%S') / 30 * 3.1416
-        gc_setLineWidth(10)
-        gc_line(0, 0, 420 * cos(a), 420 * sin(a))
-        a = love.timer.getTime() / 30 * 3.1416 * 26
-        gc_setLineWidth(10)
-        gc_line(0, 0, 520 * cos(a), 520 * sin(a))
-        a = love.timer.getTime() / 30 * 3.1416 * 60
-        gc_line(0, 0, 600 * cos(a), 600 * sin(a))
+        if NightCore then
+            gc_setColor(1, 1, 1, GAME.playing and .1 or .26)
+            gc_circle('line', 0, 0, 620)
+            gc_setColor(1, 1, 1, GAME.playing and .26 or .42)
+            a = os.date('%H') / 6 * 3.1416
+            gc_setLineWidth(26)
+            gc_line(0, 0, 120 * cos(a), 120 * sin(a))
+            a = os.date('%M') / 30 * 3.1416
+            gc_setLineWidth(16)
+            gc_line(0, 0, 260 * cos(a), 260 * sin(a))
+            a = os.date('%S') / 30 * 3.1416
+            gc_setLineWidth(10)
+            gc_line(0, 0, 420 * cos(a), 420 * sin(a))
+            a = love.timer.getTime() / 30 * 3.1416 * 26
+            gc_line(0, 0, 520 * cos(a), 520 * sin(a))
+            a = love.timer.getTime() / 30 * 3.1416 * 60
+            gc_line(0, 0, 600 * cos(a), 600 * sin(a))
+        else
+            gc_setColor(1, 1, 1, GAME.playing and .0626 or .1)
+            gc_circle('line', 0, 0, 620)
+            gc_setColor(1, 1, 1, GAME.playing and .1 or .26)
+            a = os.date('%H') / 6 * 3.1416
+            gc_setLineWidth(26)
+            gc_line(0, 0, 120 * cos(a), 120 * sin(a))
+            a = os.date('%M') / 30 * 3.1416
+            gc_setLineWidth(16)
+            gc_line(0, 0, 260 * cos(a), 260 * sin(a))
+            a = os.date('%S') / 30 * 3.1416
+            gc_setLineWidth(10)
+            gc_line(0, 0, 420 * cos(a), 420 * sin(a))
+        end
     end
 end
 
@@ -1383,20 +1398,23 @@ scene.widgetList = {
         onPress = function()
             PieceSFXID = (PieceSFXID or 0) % 7 + 1
             local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
-            TimeMul = PieceSFXID == 1 and 2.6 or 1
-            GlassCard = PieceSFXID == 2
-            InvisCard = PieceSFXID == 3
+            NightCore = PieceSFXID == 1
+            Slowmo = PieceSFXID == 2
+            GlassCard = PieceSFXID == 3
+            InvisCard = PieceSFXID == 4
+            InvisDashboard = PieceSFXID == 5
+            GC.setWireframe(PieceSFXID == 6)
             ZENITHA.setShowFPS(PieceSFXID == 7)
 
             MSG({
                 cat = 'dark',
                 str = ({
-                    "Z - Double Time",
-                    "S - Glass Card",
-                    "J - Invisible Card",
-                    "L - ?",
-                    "T - ?",
-                    "O - ?",
+                    "Z - Nightcore",
+                    "S - Sloooooow-mo",
+                    "J - Glass Card",
+                    "L - Invisible Card",
+                    "T - Invisible Dashboard",
+                    "O - Blind",
                     "I - Show FPS",
                 })[PieceSFXID],
                 time = 1.2
