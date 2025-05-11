@@ -2,7 +2,7 @@
 local scene = {}
 
 local scroll, scroll1 = 0, 0
-local maxScroll = 462
+local maxScroll = 360
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
@@ -113,7 +113,7 @@ addText({
     "5HAN   ARGHENA   AXYE   BARON   BUDDY   CABBAGE   CAT_NOISES   COOLKAT   CREEPERCRAFTYT   DJ ASRIEL   ",
     "DOKTOROCELOT   FLLEAF   FLOMIKEL   FLOWERLING   GAMETILDEAD   KHGB   MRZ   OBSIDIAN   PATRICKMLG   ",
     "THE_111THBLITZER   TIZAGO   WAH   WATERSTONE   XP2",
-}, 0, 1100, .4)
+}, 0, 1100, .26)
 
 local timer
 function scene.load()
