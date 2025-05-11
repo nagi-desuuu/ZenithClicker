@@ -181,6 +181,7 @@ ComboData = {
         { set = "EX NH rMS GV",  name = "Bnuuy" },
         { set = "rEX rVL DH",    name = "Sweat and Ruin" },
         { set = "MS rGV rDP",    name = "Rushed Relationship" },
+        { set = "NH rGV VL rDP", name = "Despairful Longing" },
         { set = "rEX rDP",       name = "Tyrannical Dyarchy" },
         { set = "rEX MS rDH IN", name = "Sisyphean Monarchy" },
         { set = "VL rIN rDP",    name = "Painful Relapse" },

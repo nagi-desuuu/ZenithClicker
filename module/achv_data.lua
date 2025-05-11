@@ -413,7 +413,7 @@ Achievements = {
         desc = [[HFD with the reversed "Duo" mod]],
         quote = [[Even as we bleed, we keep holding on...]],
         hide = function() return GAME.completion.DP == 0 end,
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     { -- DHEXrGV
         ex = true,
@@ -548,7 +548,17 @@ Achievements = {
         desc = [[HFD WUT MS rGV rDP mods]],
         quote = [["Can we please talk about this first?!"]],
         credit = "@GameTilDead",
-        rank = floorRank(1, 3, 4, 5, 6, 7, 9),
+        rank = floorRank(1, 3, 5, 6, 7, 8, 10),
+        hide = function() return GAME.completion.GV == 0 or GAME.completion.DP == 0 end,
+    },
+    { -- NHVLrDPrGV
+        ex = true,
+        id = 'NHVLrDPrGV',
+        name = "Despairful Longing",
+        desc = [[HFD WUT NH rGV VL rDP mods]],
+        quote = [[A worthless, desperate attempt at saving a shattered, withered love...]],
+        credit = "@flomikel",
+        rank = floorRank(1, 3, 5, 6, 7, 8, 10),
         hide = function() return GAME.completion.GV == 0 or GAME.completion.DP == 0 end,
     },
     { -- rDPrEX
@@ -557,7 +567,7 @@ Achievements = {
         name = "Tyrannical Dyarchy",
         desc = [[HFD WUT rEX rDP mods]],
         quote = [[Live in fear and despair.]],
-        rank = floorRank(1, 2, 3, 4, 6, 7, 8),
+        rank = floorRank(1, 2, 4, 6, 7, 8, 9),
         hide = function() return GAME.completion.EX == 0 or GAME.completion.DP == 0 end,
     },
     { -- INMSrDHrEX
@@ -587,7 +597,7 @@ Achievements = {
         desc = [[HFD WUT MS rDH IN rDP mods]],
         quote = [[Held together by a single string of lies and sins]],
         credit = "@Tizago",
-        rank = floorRank(1, 2, 3, 4, 5, 6, 7),
+        rank = floorRank(1, 2, 4, 5, 6, 7, 8),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.DP == 0 end,
     },
     { -- rDHrIN
@@ -831,7 +841,7 @@ Achievements = {
         id = 'sunk_cost',
         name = "Sunk Cost",
         desc = [[HFD without losing rank]],
-        quote = [["Cross the line, and the descent begins."]],
+        quote = [[Cross the line, and the descent begins.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     { -- knife_edge
@@ -901,7 +911,7 @@ Achievements = {
         id = 'the_unreliable_one',
         name = "The Unreliable One",
         desc = [[Highest amount of KILLs performed in a single reversed duo run]],
-        quote = [["I won't stop killling."]],
+        quote = [["I'll never let you off."]],
         scoreSimp = function(kill) return kill .. " Kills" end,
         rank = numberRank(0, 2, 3, 4, 5, 7, 10),
         hide = function() return GAME.completion.DP == 0 end,

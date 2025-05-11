@@ -231,6 +231,7 @@ TEXTURE = {
             EXGVNHrMS = aq2(4, 5),  -- Bnuuy
             DHrEXrVL = aq2(4, 7),   -- Sweat and Ruin
             MSrDPrGV = aq2(3, 5),   -- Rushed Relationship
+            -- NHVLrDPrGV = aq2(), -- Need New: Despairful Longing
             rDPrEX = aq2(4, 2),     -- Tyrannical Dyarchy
             INMSrDHrEX = aq2(7, 5), -- Sisyphean Monarchy
             VLrDPrIN = aq2(1, 5),   -- Painful Relapse
