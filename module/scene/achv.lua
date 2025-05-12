@@ -108,29 +108,32 @@ local function refreshAchvList(canShuffle)
         if M.DH == 1 then
             for i = 1, #achvList do
                 if achvList[i].name and #achvList[i].name > 6.26 then
-                    local cList = achvList[i].name:atomize()
+                    local newStr
+                    repeat
+                        local cList = achvList[i].name:atomize()
 
-                    local mode = math.random(3)
-                    if mode == 1 or MATH.roll(.26) then
-                        -- Swap 2
-                        local r1, r2 = math.random(2, #cList - 1), math.random(2, #cList - 1)
-                        cList[r1], cList[r2] = cList[r2], cList[r1]
-                    end
-                    if mode == 2 or MATH.roll(.26) then
-                        -- Delete 20%
-                        for _ = 1, floor(#cList * 0.20) do
-                            table.remove(cList, math.random(2, #cList - 1))
+                        local mode = math.random(3)
+                        if mode == 1 or MATH.roll(.26) then
+                            -- Swap 2
+                            local r1, r2 = math.random(2, #cList - 1), math.random(2, #cList - 1)
+                            cList[r1], cList[r2] = cList[r2], cList[r1]
                         end
-                    end
-                    if mode == 3 or MATH.roll(.26) then
-                        -- Repeat 2
-                        for _ = 1, #cList <= 8 and 2 or 1 do
-                            local r = math.random(2, #cList - 1)
-                            table.insert(cList, r, cList[r])
+                        if mode == 2 or MATH.roll(.26) then
+                            -- Delete 20%
+                            for _ = 1, floor(#cList * 0.20) do
+                                table.remove(cList, math.random(2, #cList - 1))
+                            end
                         end
-                    end
-
-                    achvList[i].name = table.concat(cList)
+                        if mode == 3 or MATH.roll(.26) then
+                            -- Repeat 2
+                            for _ = 1, #cList <= 8 and 2 or 1 do
+                                local r = math.random(2, #cList - 1)
+                                table.insert(cList, r, cList[r])
+                            end
+                        end
+                        newStr = table.concat(cList)
+                    until achvList[i].name ~= newStr
+                    achvList[i].name = newStr
                 end
             end
         elseif M.DH == 2 then
