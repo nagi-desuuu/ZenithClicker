@@ -179,6 +179,7 @@ ComboData = {
         { set = "rNH MS GV DP",  name = "Grand-Master! Rounds" },
         { set = "rNH rIN",       name = "Instant Memory" },
         { set = "EX NH rMS GV",  name = "Bnuuy" },
+        { set = "EX rMS rDH AS", name = "Endless Gluttony" },
         { set = "MS rGV rDP",    name = "Rushed Relationship" },
         { set = "NH rGV VL rDP", name = "Despairful Longing" },
         { set = "VL rIN rDP",    name = "Painful Relapse" },

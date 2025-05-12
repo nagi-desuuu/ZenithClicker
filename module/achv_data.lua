@@ -531,6 +531,16 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return GAME.completion.MS == 0 end,
     },
+    { -- ASEXrDHrMS
+        ex = true,
+        id = 'ASEXrDHrMS',
+        name = "Endless Gluttony",
+        desc = [[HFD WUT EX rMS rDH AS mods]],
+        quote = [[Meats and vegetables, skillfully trussed and dressed. Carved into the finest feast.]],
+        credit = "@flomikel",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
+        hide = function() return GAME.completion.MS == 0 or GAME.completion.DH == 0 end,
+    },
     { -- MSrDPrGV
         ex = true,
         id = 'MSrDPrGV',

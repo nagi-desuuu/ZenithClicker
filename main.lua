@@ -229,6 +229,7 @@ TEXTURE = {
             DPGVMSrNH = aq2(2, 2),  -- Grand-Master! Rounds
             rINrNH = aq2(6, 5),     -- Instant Memory
             EXGVNHrMS = aq2(4, 5),  -- Bnuuy
+            -- ASEXrDHrMS = aq(), -- Endless Gluttony
             MSrDPrGV = aq2(3, 5),   -- Rushed Relationship
             NHVLrDPrGV = aq2(3, 5), -- Despairful Longing
             VLrDPrIN = aq2(1, 5),   -- Painful Relapse
