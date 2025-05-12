@@ -41,21 +41,28 @@ local function switchVisitor(bool)
 end
 
 local function MouseOnCard(x, y)
-    if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
-        return FloatOnCard
-    end
-    local cid, dist = 0, 1e99
-    for j = 1, #Cards do
-        if Cards[j]:mouseOn(x, y) then
-            local dist2 = distance(x, y, Cards[j].x, Cards[j].y)
-            if dist2 < dist then
-                dist = dist2
-                cid = j
+    if FloatOnCard then
+        if Cards[FloatOnCard]:mouseOn(x, y) then
+            return FloatOnCard
+        else
+            local cid, dist = 0, 1e99
+            for i = 1, #Cards do
+                if Cards[i]:mouseOn(x, y) then
+                    local dist2 = distance(x, y, Cards[i].x, Cards[i].y)
+                    if dist2 < dist then
+                        dist = dist2
+                        cid = i
+                    end
+                end
+            end
+            if cid > 0 then return cid end
+        end
+    else
+        for i = 1, #Cards do
+            if Cards[i]:mouseOn(x, y) then
+                return i
             end
         end
-    end
-    if cid > 0 then
-        return cid
     end
 end
 
