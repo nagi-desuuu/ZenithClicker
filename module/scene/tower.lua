@@ -76,6 +76,8 @@ end
 
 local function mouseMove(x, y)
     SetMouseVisible(true)
+    print(MATH.distance(x, y, MX, MY))
+    if MATH.distance(x, y, MX, MY) > 62 then FloatOnCard = nil end
     MX, MY = x, y
     local new = MouseOnCard(x, y)
     if FloatOnCard ~= new then
