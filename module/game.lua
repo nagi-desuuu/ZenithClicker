@@ -1835,7 +1835,7 @@ function GAME.start()
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
 
-    TWEEN.new(GAME.anim_setMenuHide):setDuration(.26):setUnique('uiHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide):setDuration(Slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
 
     GAME.achv_perfectionistH = false
@@ -2173,7 +2173,7 @@ function GAME.finish(reason)
         end)
     end
 
-    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(.26):setUnique('uiHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(Slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.refreshRPC()
     GAME.updateBgm('finish')
     if reason ~= 'forfeit' then

@@ -392,7 +392,7 @@ function scene.update(dt)
     end
     if GAME.playing and (KBIsDown('escape') or MSIsDown(3)) then
         GAME.forfeitTimer = GAME.forfeitTimer +
-            dt * clampInterpolate(12, 2.6, 26, 1, min(GAME.totalQuest, GAME.time))
+            (Slowmo and dt / 6.26 or dt) * clampInterpolate(12, 2.6, 26, 1, min(GAME.totalQuest, GAME.time))
         if TASK.lock('forfeit_sfx', .0872) then
             SFX.play('detonate1', clampInterpolate(0, .4, 1, .6, GAME.forfeitTimer))
         end
@@ -405,7 +405,7 @@ function scene.update(dt)
         end
     else
         if GAME.forfeitTimer > 0 then
-            GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 1 or 2.6) * dt
+            GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 1 or 2.6) * (Slowmo and dt / 6.26 or dt)
         end
     end
 
