@@ -521,7 +521,7 @@ function Card:draw()
         gc_setAlpha((STAT.cardBrightness / 100) ^ 2 * .872)
         gc_mRect('fill', 0, 0, w * 2, h * 2, 26)
 
-        gc_setColor(1, 1, 1)
+        gc_setColor(self.burn and (GAME.time % .16 < .08 and COLOR.lF or COLOR.Y) or COLOR.LL)
         FONT.set(50)
         if faceUp then
             GC.scale(2.6)
@@ -552,7 +552,11 @@ function Card:draw()
         -- Card
         if not InvisCard then
             if self.burn then
-                gc_setColor(GAME.time % .16 < .08 and (faceUp and COLOR.LF or COLOR.lF) or (faceUp and COLOR.lY or COLOR.Y))
+                gc_setColor(
+                    GAME.time % .16 < .08 and
+                    (faceUp and COLOR.LF or COLOR.lF) or
+                    (faceUp and COLOR.lY or COLOR.Y)
+                )
             else
                 local b = STAT.cardBrightness / 100
                 gc_setColor(b, b, b)
