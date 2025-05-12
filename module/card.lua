@@ -552,12 +552,11 @@ function Card:draw()
         -- Card
         if not InvisCard then
             if self.burn then
-                gc_setColor(
-                    self.burn and (
-                        GAME.time % .16 < .08 and COLOR.LF
-                        or COLOR.lY
-                    ) or COLOR.LL
-                )
+                if faceUp then
+                    gc_setColor(GAME.time % .16 < .08 and COLOR.LF or COLOR.lY)
+                else
+                    gc_setColor(GAME.time % .16 < .08 and COLOR.lF or COLOR.Y)
+                end
             else
                 local b = STAT.cardBrightness / 100
                 gc_setColor(b, b, b)
