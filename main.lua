@@ -5,7 +5,7 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText((require 'version'.appVer) ..("      "):rep(26)..".")
+ZENITHA.setVersionText((require 'version'.appVer) .. ("      "):rep(26) .. ".")
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -301,8 +301,10 @@ TEXTURE = {
             superluminal = aq2(6, 1),
             the_harbinger = aq(5, 8),
             dark_force = aq(3, 1),
-            speedrun_speedrunning = aq(5, 2),
+            cut_off = aq(6, 2),
             worn_out = aq(6, 2),
+            speedrun_speedrunning = aq(6, 2),
+            abyss_weaver = aq(6, 2),
             mastery = aq2(2, 6),
             terminal_velocity = aq2(2, 6),
             final_defiance = aq(3, 2),

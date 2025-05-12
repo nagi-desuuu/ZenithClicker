@@ -813,6 +813,7 @@ function GAME.setGigaspeedAnim(on, finish)
         TASK.new(GAME.task_gigaspeed)
 
         if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
+        if GAME.comboMP >= 15 then IssueAchv('abyss_weaver') end
     else
         TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
             :setUnique('giga'):run()
@@ -2349,6 +2350,7 @@ function GAME.update(dt)
                         GAME.setGigaspeedAnim(false)
                         SFX.play('zenith_speedrun_end')
                         SFX.play('zenith_speedrun_end')
+                        if MATH.between(GAME.height, 1600, 1650) then IssueAchv('cut_off') end
                     end
                     TEXTS.rank:set("R-" .. GAME.rank)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
