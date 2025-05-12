@@ -1398,8 +1398,13 @@ scene.widgetList = {
         floatFontSize = 30,
         floatText = "", -- Dynamic text
         onPress = function()
-            PieceSFXID = (PieceSFXID or 0) % 7 + 1
-            local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
+            PieceSFXID = (PieceSFXID or 0) % 8 + 1
+            if PieceSFXID <= 7 then
+                local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
+                SFX.play(piece, 1, 0, 6 + M.GV)
+            else
+                SFX.play('allclear')
+            end
             NightCore = PieceSFXID == 1
             Slowmo = PieceSFXID == 2
             GlassCard = PieceSFXID == 3
@@ -1418,11 +1423,10 @@ scene.widgetList = {
                     "T - Invisible Dashboard",
                     "O - Blind",
                     "I - Show FPS",
+                    "ALLCLEAR",
                 })[PieceSFXID],
                 time = 1.2
             })
-
-            SFX.play(piece, 1, 0, 6 + M.GV)
         end,
     },
     WIDGET.new {

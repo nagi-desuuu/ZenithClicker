@@ -90,7 +90,7 @@ return {
     clearquad = { 26, 2.0 },
     clearspin = { 650, 2.6 },
     clearbtb = { 535, 1.8 },
-    -- allclear=                    {39,  2.8},
+    allclear = { 39, 2.8 },
     -- bombdetonate=                {564, 7.05},
 
     combo_1 = { 576, 1 },
