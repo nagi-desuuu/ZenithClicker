@@ -2051,7 +2051,7 @@ function GAME.finish(reason)
             local rankTimeText = {}
             for i = bestPos + 8, bestPos, -1 do
                 ins(rankTimeText, { 1, 1, 1, max(maxCSP[i][2] / mainRank[2], .42) })
-                ins(rankTimeText, ("Rank%d - %.1fs\n"):format(maxCSP[i][1], maxCSP[i][2]))
+                ins(rankTimeText, ("Rank%d - %.1f″\n"):format(maxCSP[i][1], maxCSP[i][2]))
             end
             TEXTS.rankTime:set(rankTimeText)
         end
