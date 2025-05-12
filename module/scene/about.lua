@@ -101,6 +101,8 @@ addText({
     COLOR.L, "Lorc ",
     COLOR.O, "& ",
     COLOR.L, "Delapouite ",
+    COLOR.O, "& ",
+    COLOR.L, "Quoting ",
     COLOR.O, "FROM ",
     COLOR.L, "game-icons.net"
 }, 0, 990, .32)

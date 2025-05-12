@@ -7,10 +7,10 @@
 > All Arts & Sounds from [TETR.IO](https://tetr.io) by osk, an online stacker game with Awesome Graphics and Musics!
 
 **WARNING**: This game requires you know tetr.io QP2's systems and mods, or you won't get much fun.  
-If you like QP2 but don't know much about it, check another repo of mine: [QP2 Documentation](https://github.com/MrZ626/io_qp2_rule) (Chinese, but there are some translated forks). It's a full explanation (almost) of QP2, including many technical details behind the scene, helping you play QP2 with better strategies!
+If you like QP2 but don't know much about it, check another repo of mine: [QP2 Documentation](https://github.com/MrZ626/io_qp2_rule) (Chinese, but there are some translated forks). It's a full explanation (almost) of QP2, including many technical details behind the scene, helping you play QP2 with better strats!
 
 **Zenith Clicker** is a game inspired by mod selection screen of tetr.io QP2.  
-But its interactive feel is really not good for quickly picking the mods needed,  
+Its interactive feel is really not good for quickly picking the mods needed,  
 and there's still no convenient way to know which mods are included in a specific combo.
 
 Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
@@ -24,7 +24,7 @@ Credits:
 *Garbo*: Game & world designer of tetr.io  
 *Frutigеr*: Font designer (D-Din-Pro)  
 *Mooniak*: Font designer (AbhayaLibre)  
-*Lorc & Delapouite*: Some achievement icons (on https://game-icons.net, CC BY 3.0)
+*Lorc & Delapouite & Quoting*: Some achievement icons (on https://game-icons.net, CC BY 3.0)
 
 ## How to Play
 
