@@ -54,6 +54,7 @@ local function getAchvCompletion()
 end
 local function norm(x, k) return 1 + (x - 1) / (k * x + 1) end
 local function calculateRating()
+    local cap = 25000
     local cr = 0
 
     -- Best Height (5K)
@@ -77,7 +78,19 @@ local function calculateRating()
     -- Achievement (5K)
     cr = cr + 5000 * norm(MATH.icLerp(0, crProgress.achvAll, crProgress.achvGet), 2.6)
 
-    return MATH.round(cr)
+    -- ACHV Wreath (competitive achievement count)
+    for i = 1, #Achievements do
+        local A = Achievements[i]
+        if A.type == 'competitive' then
+            cap = cap + 1
+            local r = A.rank(ACHV[A.id] or A.noScore or 0)
+            if r == 5.9999 then
+                cr = cr + 1
+            end
+        end
+    end
+
+    return MATH.round(cr), cap
 end
 
 local sawMap = {
@@ -213,17 +226,19 @@ function RefreshProfile()
     local bw, bh = 370, 120
 
     -- Rating
+    local rating, cap = calculateRating()
     GC.ucs_move('m', 25, 370)
     GC.setColor(boxColor)
     GC.rectangle('fill', 0, 0, bw, bh)
     FONT.set(30)
+    GC.setColor(rating <= 25000 and lblColor or textColor)
+    GC.line(7, bh - 30, bw - 7, bh - 30)
     GC.setColor(lblColor)
     GC.print("CLICKER  LEAGUE", 7, 2, 0, .8)
-    GC.line(7, bh - 30, bw - 7, bh - 30)
     -- Number
-    local rating = calculateRating()
     t30:set(
-        rating == 25000 and "THE VERY BEST!" or
+        rating >= cap and "THE CHOSEN ONE." or
+        rating >= 25000 and "THE VERY BEST!" or
         rating >= 24500 and "ALMOST THERE!" or
         rating >= 23800 and "YOU ARE GETTING THERE" or
         rating >= 22050 and "YOU'RE NOT FAR OFF." or
@@ -246,8 +261,14 @@ function RefreshProfile()
     GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
     if rank > 0 then
         -- Progress Bar
-        GC.setColor(textColor)
-        GC.line(7, bh - 30, MATH.lerp(7, bw - 7, rating % 1400 / (rank < 18 and 1400 or 1200)), bh - 30)
+        GC.setColor(rating <= 25000 and textColor or scoreColor)
+        GC.line(7, bh - 30,
+            MATH.lerp(7, bw - 7,
+                rank <= 17 and rating % 1400 / 1400 or
+                rating <= 25000 and MATH.iLerp(23800, 25000, rating) or
+                MATH.iLerp(25000, cap, rating)),
+            bh - 30
+        )
     end
     GC.ucs_back()
 
