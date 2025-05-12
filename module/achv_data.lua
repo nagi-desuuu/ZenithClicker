@@ -645,7 +645,7 @@ Achievements = {
         name = "Blight",
         desc = [[HFD with 8+ mod points]],
         quote = [[The world starts withering...]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     { -- desolation
@@ -654,7 +654,7 @@ Achievements = {
         name = "Desolation",
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     { -- havoc
