@@ -853,7 +853,7 @@ function GAME.upFloor()
         local secTimeStr = ""
         for i = 1, #GAME.secTime do
             if i > 1 then secTimeStr = secTimeStr .. "\n" end
-            secTimeStr = secTimeStr .. ("F%d - %.3fs"):format(i, GAME.secTime[i])
+            secTimeStr = secTimeStr .. ("F%d - %.3f″"):format(i, GAME.secTime[i])
         end
         TEXTS.floorTime:set(secTimeStr)
     end
@@ -1140,7 +1140,7 @@ function GAME.refreshPBText()
     else
         local time = BEST.speedrun[setStr]
         if time < 1e99 then
-            TEXTS.pb:set(("BEST: %.1fm    GIGA: %.3fs"):format(height, time))
+            TEXTS.pb:set(("BEST: %.1fm    GIGA: %.3f″"):format(height, time))
         else
             local f = 0
             for i = 1, #Floors do
@@ -2011,28 +2011,51 @@ function GAME.finish(reason)
             TEXTS.endFloor:set("F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
 
-        local maxCSP = {}
-        for i = 1, #GAME.rankTimer do ins(maxCSP, { i, GAME.rankTimer[i] }) end
-        table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
-        local spd1, spd2 = maxCSP[1], maxCSP[2]
         TEXTS.endResult:set({
             COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
-            COLOR.LD, GAME.gigaTime and "  (F10 " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
+            COLOR.LD, GAME.gigaTime and "  (F10 at " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
             COLOR.L, "Flip  " .. GAME.totalFlip,
             COLOR.LD, "  (" .. roundUnit(GAME.totalFlip / GAME.time, .01) .. "/s)\n",
             COLOR.L, "Quest  " .. GAME.totalQuest,
             COLOR.LD, "  (" .. roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
             roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
-            COLOR.L, "Speed  " .. roundUnit(GAME.height / GAME.time, .1) .. "m/s",
-            COLOR.LD, ("  (%.1fs@%s"):format(spd1[2], spd1[1] == 26 and "26+" or spd1[1]),
-            spd2[2] > 0 and (", %.1fs@%s)\n"):format(spd2[2], spd2[1] == 26 and "26+" or spd2[1]) or ")\n",
+            COLOR.L, "Speed  " .. roundUnit(GAME.height / GAME.time, .1) .. "m/s  ",
+            COLOR.LD, "(max " .. GAME.maxRank .. ")\n",
             COLOR.L, "Attack  " .. GAME.totalAttack,
             COLOR.LD, "  (" .. roundUnit(GAME.totalAttack / GAME.time * 60, .1) .. "apm  ",
             roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. "eff)\n",
             COLOR.L, "Bonus  " .. roundUnit(GAME.heightBonus, .1) .. "m",
             COLOR.LD, "  (" .. roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%  ",
-            roundUnit(GAME.heightBonus / GAME.totalQuest, .1) .. "mpq)",
+            roundUnit(GAME.heightBonus / GAME.totalQuest, .1) .. "m/quest)",
         })
+
+        local maxCSP = {}
+        for i = 1, #GAME.rankTimer do ins(maxCSP, { i, GAME.rankTimer[i] }) end
+        do
+            table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
+            local mainRank = maxCSP[1]
+
+            table.sort(maxCSP, function(a, b) return a[1] < b[1] end)
+            local bestPos, bestSum = 0, 0
+            for i = min(mainRank[1], 26 - 8), max(mainRank[1] - 8, 1), -1 do
+                local sum = 0
+                for j = i, i + 8 do
+                    sum = sum + maxCSP[j][2]
+                end
+                if sum > bestSum then
+                    bestSum = sum
+                    bestPos = i
+                end
+            end
+
+            local rankTimeText = {}
+            for i = bestPos + 8, bestPos, -1 do
+                ins(rankTimeText, { 1, 1, 1, max(maxCSP[i][2] / mainRank[2], .42) })
+                ins(rankTimeText, ("Rank%d - %.1fs\n"):format(maxCSP[i][1], maxCSP[i][2]))
+            end
+            TEXTS.rankTime:set(rankTimeText)
+        end
+
         GAME.refreshResultModIcon()
 
         -- Achievements
@@ -2149,6 +2172,7 @@ function GAME.finish(reason)
         TEXTS.zpChange:set("")
         TEXTS.zpChange:set("")
         TEXTS.floorTime:set("")
+        TEXTS.rankTime:set("")
         GAME.resIB:clear()
     end
     ReleaseAchvBuffer()

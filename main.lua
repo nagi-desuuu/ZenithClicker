@@ -395,6 +395,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     }),
     gigatime   = GC.newText(FONT.get(50)),
     floorTime  = GC.newText(FONT.get(30)),
+    rankTime  = GC.newText(FONT.get(30)),
     slogan     = GC.newText(FONT.get(30), "CROWD THE TOWER!"),
     slogan_EX  = GC.newText(FONT.get(30), "THRONG THE TOWER!"),
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
