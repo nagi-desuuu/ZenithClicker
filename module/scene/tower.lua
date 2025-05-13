@@ -126,7 +126,6 @@ local function keyPress(key)
             W._hoverTime = W._hoverTimeMax
             if TASK.lock('sure_quit', 2.6) then
                 SFX.play('menuclick')
-                MSG.clear()
                 MSG('dark', "PRESS AGAIN TO QUIT", 2.6)
             else
                 SFX.play('menuback')
@@ -206,8 +205,6 @@ local function keyPress(key)
 end
 
 function scene.load()
-    MSG.clear()
-
     if SYSTEM == 'Web' and TASK.lock('web_warn') then
         MSG('warn',
             "[WARNING]\nThe web version is for trial purposes only.\nPlease note that your progress may be lost without warning, and this cannot be fixed.\nDownload the desktop version to keep playing in the future, with far better performance.\nThank you for your support!",
@@ -233,6 +230,7 @@ function scene.load()
 end
 
 function scene.unload()
+    MSG.clear()
     TEXT:clear()
 end
 
@@ -1296,7 +1294,6 @@ scene.widgetList = {
             if GAME.playing then
                 if TASK.lock('sure_forfeit', 2.6) then
                     SFX.play('menuclick')
-                    MSG.clear()
                     MSG('dark', "PRESS AGAIN TO FORFEIT", 2.6)
                 else
                     SFX.play('menuback')

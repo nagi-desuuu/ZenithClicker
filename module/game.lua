@@ -944,10 +944,10 @@ function GAME.upFloor()
                 for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
                 if _t >= 9 then IssueAchv('terminal_velocity') end
             end
-            if not ACHV.the_completionist then
+            if not ACHV.omnipotence then
                 _t = 0
                 for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
-                if _t >= 9 then IssueAchv('the_completionist') end
+                if _t >= 9 then IssueAchv('omnipotence') end
             end
             if GAME.time <= 76.2 then IssueAchv('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
@@ -1943,7 +1943,6 @@ function GAME.finish(reason)
                 end
             end
             if unlockRev then
-                MSG.clear()
                 MSG('dark',
                     "You’ve unlocked a new REVERSED MOD!\nActivate it by right-clicking on a card that has a star on it.",
                     6.26)
@@ -2098,12 +2097,12 @@ function GAME.finish(reason)
             for id in next, MD.name do if BEST.highScore[id] >= 1650 then _t = _t + 1 end end
             if _t >= 9 then IssueAchv('mastery') end
         end
-        if not ACHV.supremacy then
+        if not ACHV.subjugation then
             _t = 0
             for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
-            if _t >= 9 then IssueAchv('supremacy') end
+            if _t >= 9 then IssueAchv('subjugation') end
         end
-        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.supremacy) end
+        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.subjugation) end
 
         if not ACHV.the_harbinger then
             local allRevF5 = true
@@ -2137,13 +2136,12 @@ function GAME.finish(reason)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
         for i = 1, #maxCSP do
             if maxCSP[i][2] >= 60 then
-                SubmitAchv('stable_rise', maxCSP[i][1])
+                SubmitAchv('cruise_control', maxCSP[i][1])
                 break
             end
         end
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.roundHeight)
         SubmitAchv('sunk_cost', GAME.achv_demoteH or GAME.roundHeight)
-        if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_demoteH or GAME.roundHeight) end
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
         SubmitAchv('powerless', GAME.achv_powerlessH or GAME.roundHeight)
@@ -2159,6 +2157,8 @@ function GAME.finish(reason)
             if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_talentlessH or GAME.roundHeight)
+        elseif GAME.comboStr == 'EXVL' then
+            SubmitAchv('wax_wings', GAME.achv_demoteH or GAME.roundHeight)
         elseif GAME.comboStr == 'NHrGV' then
             SubmitAchv('clutch_main', GAME.achv_clutchQuest)
         elseif GAME.comboStr == 'ASDHMS' then

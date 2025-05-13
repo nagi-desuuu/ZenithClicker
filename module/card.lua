@@ -178,7 +178,6 @@ function Card:setActive(auto, key)
             self.active = false
             self:shake()
             SFX.play('no')
-            MSG.clear()
             MSG('dark', "Reach F10 with this mod first!")
             return
         end
@@ -356,7 +355,7 @@ function Card:revJump()
                             C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
                         end
                     end
-                    IssueAchv('somersault')
+                    IssueAchv('smooth_dismount')
                 end
             end
         end)

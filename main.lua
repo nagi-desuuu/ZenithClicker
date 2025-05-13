@@ -230,9 +230,7 @@ TEXTURE = {
             rINrNH = aq2(6, 5),     -- Instant Memory
             EXGVNHrMS = aq2(4, 5),  -- Bnuuy
             ASEXrDHrMS = aq2(5, 7), -- Endless Gluttony
-            MSrDPrGV = aq2(3, 5),   -- Rushed Relationship
             NHVLrDPrGV = aq2(3, 5), -- Despairful Longing
-            VLrDPrIN = aq2(1, 5),   -- Painful Relapse
             INMSrDHrDP = aq2(1, 5), -- Uneasy Alliance
             DHrEXrVL = aq2(4, 7),   -- Sweat and Ruin
             rDPrEX = aq2(4, 2),     -- Tyrannical Dyarchy
@@ -267,7 +265,7 @@ TEXTURE = {
             the_pacifist = aq(4, 1),
             divine_rejection = aq(7, 6),
             sunk_cost = aq(5, 5),
-            knife_edge = aq(5, 5),
+            wax_wings = aq(5, 5),
             carried = aq(3, 8),
             patience_is_a_virtue = aq2(2, 5),
             spotless = aq2(5, 3),
@@ -291,25 +289,20 @@ TEXTURE = {
             perfect_speedrun = aq(5, 6),
             the_perfectionist = aq(5, 6),
             teraspeed = aq(5, 6),
-            stable_rise = aq(5, 6),
+            cruise_control = aq(5, 6),
             the_spike_of_nomod_time = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
-            identity = aq(6, 6),
-            respectful = aq(2, 1),
-            zenith_relocation = aq(4, 7),
-            intended_glitch = aq2(3, 3),
             skys_the_limit = aq2(2, 3),
             superluminal = aq2(6, 1),
-            the_harbinger = aq(5, 8),
-            dark_force = aq(3, 1),
             cut_off = aq(6, 2),
             worn_out = aq(6, 2),
-            speedrun_speedrunning = aq(6, 2),
-            abyss_weaver = aq(6, 2),
             mastery = aq2(2, 6),
             terminal_velocity = aq2(2, 6),
             final_defiance = aq(3, 2),
+            the_harbinger = aq(5, 8),
+            speedrun_speedrunning = aq(5, 2),
+            abyss_weaver = aq(5, 2),
             royal_resistance = aq2(2, 1),
             lovers_stand = aq2(2, 1),
             and_then_nothing = aq(4, 8),
@@ -317,11 +310,17 @@ TEXTURE = {
             benevolent_ambition = aq2(7, 3),
             fruitless_effort = aq(6, 7),
             false_god = aq(2, 8),
-            supremacy = aq2(2, 7),
-            the_completionist = aq2(2, 7),
+            subjugation = aq2(2, 7),
+            omnipotence = aq2(2, 7),
             clicking_champion = aq2(8, 6),
+
+            identity = aq(6, 6),
+            respectful = aq(2, 1),
+            zenith_relocation = aq(4, 7),
+            intended_glitch = aq2(3, 3),
+            dark_force = aq(3, 1),
             zenith_traveler = aq(1, 8),
-            somersault = aq(4, 1),
+            smooth_dismount = aq(4, 1),
         },
         frame = {
             [0] = assets 'achievements/frames/none.png',
@@ -571,7 +570,7 @@ function ReleaseAchvBuffer()
         msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 2.6
         MSG { msg[1], msg[2], time = msgTime, last = true, alpha = .75 }
         if TASK.lock('achv_sfx_' .. msg[3], .08) then
-            SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.VL)
+            SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.GV)
         end
     end
     TABLE.clear(bufferedMsg)
@@ -722,7 +721,6 @@ function ReloadTexts()
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     if SCN.cur == 'stat' then RefreshProfile() end
     AboutText:setFont(FONT.get(70))
-    MSG.clear()
 end
 
 VALENTINE = false
@@ -838,25 +836,21 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
     elseif key == 'f8' then
         if STAT.bgBrightness < 80 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 80)
-            MSG.clear()
             MSG('dark', "BG " .. STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f7' then
         if STAT.bgBrightness > 30 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness - 10, 30, 80)
-            MSG.clear()
             MSG('dark', "BG " .. STAT.bgBrightness .. "%", 1)
         end
     elseif key == 'f5' then
         if STAT.cardBrightness > 80 then
             STAT.cardBrightness = MATH.clamp(STAT.cardBrightness - 5, 80, 100)
-            MSG.clear()
             MSG('dark', "Card " .. STAT.cardBrightness .. "%", 1)
         end
     elseif key == 'f6' then
         if STAT.cardBrightness < 100 then
             STAT.cardBrightness = MATH.clamp(STAT.cardBrightness + 5, 80, 100)
-            MSG.clear()
             MSG('dark', "Card " .. STAT.cardBrightness .. "%", 1)
         end
     elseif key == 'f3' then
@@ -867,7 +861,6 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             STAT.sfx = TempSFX or 60
             TempSFX = false
         end
-        MSG.clear()
         MSG('dark', STAT.sfx > 0 and "SFX ON" or "SFX OFF", 1)
         ApplySettings()
         SFX.play('menuclick')
@@ -879,7 +872,6 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
             STAT.bgm = TempBGM or 100
             TempBGM = false
         end
-        MSG.clear()
         MSG('dark', STAT.bgm > 0 and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
     end
@@ -1121,35 +1113,36 @@ function Initialize(save)
     if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
     if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
     if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
-    local oldVer = BEST.version
-    if BEST.version == nil then
+    if BEST.version then STAT.version, BEST.version = BEST.version, nil end
+    local oldVer = STAT.version
+    if STAT.version == nil then
         for k in next, BEST.highScore do
             if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
                 BEST.highScore[k] = nil
             end
         end
-        BEST.version = 162
+        STAT.version = 162
     end
-    if BEST.version == 162 then
+    if STAT.version == 162 then
         TABLE.clear(BEST.speedrun)
-        BEST.version = 163
+        STAT.version = 163
     end
-    if BEST.version == 163 then
+    if STAT.version == 163 then
         STAT.maxFloor = BEST.maxFloor or 1
         BEST.maxFloor = nil
-        BEST.version = 166
+        STAT.version = 166
     end
-    if BEST.version == 166 then
+    if STAT.version == 166 then
         STAT.sfx = STAT.sfx and 60 or 0
         STAT.bgm = STAT.bgm and 100 or 0
-        BEST.version = 167
+        STAT.version = 167
     end
-    if BEST.version == 167 then
+    if STAT.version == 167 then
         STAT.dzp = STAT.dailyHS or 0
         STAT.dailyHS = nil
-        BEST.version = 168
+        STAT.version = 168
     end
-    if BEST.version == 168 or BEST.version == 169 then
+    if STAT.version == 168 or STAT.version == 169 then
         if ACHV.patience_is_a_virtue and ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
         ACHV.mastery = nil
         ACHV.terminal_velocity = nil
@@ -1157,19 +1150,26 @@ function Initialize(save)
         ACHV.supremacy = nil
         ACHV.the_completionist = nil
         ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
-        BEST.version = 170
+        STAT.version = 170
     end
-    if BEST.version == 170 then
+    if STAT.version == 170 then
         ACHV.block_rationing = nil
-        BEST.version = 171
+        STAT.version = 171
     end
-    if BEST.version == 171 then
+    if STAT.version == 171 then
         ACHV.worn_out = nil
-        BEST.version = 172
+        STAT.version = 172
     end
-    if BEST.version == 172 then
+    if STAT.version == 172 then
         ACHV.speedrun_speedrunning = ACHV.speedrun_speedruning
-        BEST.version = 173
+        STAT.version = 173
+    end
+    if STAT.version == 173 then
+        ACHV.cruise_control, ACHV.stable_rise = ACHV.stable_rise, nil
+        ACHV.subjugation, ACHV.supremacy = ACHV.supremacy, nil
+        ACHV.smooth_dismount, ACHV.somersault = ACHV.somersault, nil
+        ACHV.omnipotence, ACHV.the_completionist = ACHV.omnipotence, nil
+        STAT.version = 174
     end
 
     -- Some Initialization
@@ -1226,10 +1226,15 @@ function Initialize(save)
             BEST.speedrun[cmb] = nil
         end
     end
+    local achvLost = ""
     for k in next, ACHV do
         if not Achievements[k] then
             ACHV[k] = nil
+            achvLost = achvLost .. "[" .. k .. "]\n"
         end
+    end
+    if #achvLost > 0 then
+        MSG('dark', "Achievements lost due to update:" .. achvLost:sub(1, #achvLost - 1), 6.26)
     end
 
     GAME.refreshLockState()
@@ -1238,7 +1243,7 @@ function Initialize(save)
     ApplySettings()
     GAME.refreshCursor()
 
-    if save or BEST.version ~= oldVer then
+    if save or STAT.version ~= oldVer then
         SaveStat()
         SaveBest()
         SaveAchv()

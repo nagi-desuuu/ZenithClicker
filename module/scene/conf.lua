@@ -13,6 +13,7 @@ local colorRev = false
 local bindBuffer
 
 function scene.load()
+    MSG.clear()
     bindBuffer = nil
     SetMouseVisible(true)
     if GAME.anyRev ~= colorRev then
@@ -201,7 +202,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
-            MSG.clear()
+            -- MSG.clear()
             local newName = CLIPBOARD.get()
             if #newName == 0 then
                 MSG('dark', "No data in clipboard")
@@ -247,7 +248,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
-            MSG.clear()
+            -- MSG.clear()
             local newText = CLIPBOARD.get()
             if #newText == 0 then
                 MSG('dark', "No data in clipboard")
@@ -292,7 +293,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
-            MSG.clear()
+            -- MSG.clear()
             if TASK.lock('export', 2.6) then
                 SFX.play('notify')
                 MSG('dark', "Export your progress to clipboard?\nPress again to confirm", 2.6)
@@ -312,7 +313,7 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         onClick = function()
-            MSG.clear()
+            -- MSG.clear()
             local data = CLIPBOARD.get()
             if #data == 0 then
                 MSG('dark', "No data in clipboard")
@@ -467,7 +468,7 @@ scene.widgetList = {
                 bindBuffer = {}
                 SFX.play('b2bcharge_danger', .8)
             else
-                MSG.clear()
+                -- MSG.clear()
                 if TASK.lock('rebind_control', 12) then
                     SFX.play('notify')
                     MSG('dark', {

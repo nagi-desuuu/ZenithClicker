@@ -143,6 +143,7 @@ addText({
 
 local timer
 function scene.load()
+    MSG.clear()
     timer = 0
     SetMouseVisible(true)
     scroll, scroll1 = 0, -620

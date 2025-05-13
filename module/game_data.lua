@@ -180,9 +180,7 @@ ComboData = {
         { set = "rNH rIN",       name = "Instant Memory" },
         { set = "EX NH rMS GV",  name = "Bnuuy" },
         { set = "EX rMS rDH AS", name = "Endless Gluttony" },
-        { set = "MS rGV rDP",    name = "Rushed Relationship" },
         { set = "NH rGV VL rDP", name = "Despairful Longing" },
-        { set = "VL rIN rDP",    name = "Painful Relapse" },
         { set = "MS rDH IN rDP", name = "Uneasy Alliance" },
         { set = "rEX rVL DH",    name = "Sweat and Ruin" },
         { set = "rEX rDP",       name = "Tyrannical Dyarchy" },
@@ -196,6 +194,7 @@ ComboData = {
         { set = "EX rGV VL",     name = "Workaholic" },
         { set = "MS VL AS",      name = "Human Experiment" },
         { set = "EX GV DH",      name = "Core Meltdown" },
+        { set = "EX VL",         name = "Wax Wings" },
     },
 
     game = {
