@@ -118,10 +118,12 @@ local function dblMidDraw(obj, x, y)
 end
 local t30, t50
 function RefreshProfile()
-    if not t30 then
-        t30 = GC.newText(FONT.get(30))
-        t50 = GC.newText(FONT.get(50))
+    if t30 then
+        t30:release()
+        t50:release()
     end
+    t30 = GC.newText(FONT.get(30))
+    t50 = GC.newText(FONT.get(50))
 
     ---@diagnostic disable
     local pnlColor = TABLE.copy(baseColor)
