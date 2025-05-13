@@ -725,6 +725,8 @@ function ReloadTexts()
     MSG.clear()
 end
 
+VALENTINE = false
+VALENTINE_TEXT = "FLOOD THE TOWER SIDE BY SIDE WITH WHAT COULD BE"
 function RefreshDaily()
     local dateToday = os.date("!*t", os.time())
     local dateLastDay = os.date("!*t", math.max(STAT.lastDay, 946656000)) -- at least 2000/1/1
@@ -772,7 +774,13 @@ function RefreshDaily()
         -- print(table.concat(DAILY, ' '))
     end
 
-    if os.date('!%d') == '14' then ModData.desc.DP = "FLOOD THE TOWER SIDE BY SIDE WITH WHAT COULD BE" end
+    local v = os.date('!%d') == '14'
+    if VALENTINE ~= v then
+        VALENTINE = v
+        ModData.desc.DP, VALENTINE_TEXT = VALENTINE_TEXT, ModData.desc.DP
+        ValentineTextColor, BaseTextColor = BaseTextColor, ValentineTextColor
+        ValentineShadeColor, BaseShadeColor = BaseShadeColor, ValentineShadeColor
+    end
 end
 
 love.mouse.setVisible(false)
@@ -1239,6 +1247,8 @@ end
 
 Initialize()
 RefreshDaily()
+TABLE.update(TextColor, BaseTextColor)
+TABLE.update(ShadeColor, BaseShadeColor)
 GAME.refreshCurrentCombo()
 
 if SYSTEM == 'Web' then
@@ -1253,13 +1263,10 @@ else
 end
 
 -- Debug
+for i = 1, 4 do SCN.scenes._console.widgetList[i].textColor = COLOR.D end
 TASK.new(function()
     for _, s in next, ([[ ]]):trim():split('%s+', true) do
         TASK.yieldT(1)
         SFX.play(s)
     end
 end)
-
-for i=1,4 do
-    SCN.scenes._console.widgetList[i].textColor=COLOR.D
-end

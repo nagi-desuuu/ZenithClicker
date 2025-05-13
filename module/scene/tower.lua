@@ -427,6 +427,10 @@ function scene.update(dt)
     end
 end
 
+ValentineTextColor = { 1, .6, .8 }
+ValentineShadeColor = { .45, .3, .45 }
+BaseTextColor = { .7, .5, .3 }
+BaseShadeColor = { .3, .15, 0 }
 TextColor = { .7, .5, .3 }
 ShadeColor = { .3, .15, 0 }
 ComboColor = {}

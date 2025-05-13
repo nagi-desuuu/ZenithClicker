@@ -440,6 +440,7 @@ function GAME.updateBgm(event)
         BGM.set('all', 'volume', 0, 0)
         BGM.set('piano', 'volume', 1)
         BGM.set('piano2', 'pitch', 2, 0)
+        BGM.set('piano2', 'volume', VALENTINE and .626 or 0, 4.2)
         BGM.set(TABLE.getRandom(BgmSets.assist), 'volume', 1, 10)
     end
 end
@@ -1200,12 +1201,12 @@ function GAME.refreshRev()
             GAME.bgX = lerp(x, 0, t)
             t = lerp(s, e, t)
             GAME.revTimer = t
-            TextColor[1] = lerp(.7, .62, t)
-            TextColor[2] = lerp(.5, .1, t)
-            TextColor[3] = lerp(.3, .1, t)
-            ShadeColor[1] = lerp(.3, .1, t)
-            ShadeColor[2] = lerp(.15, 0, t)
-            ShadeColor[3] = lerp(.0, 0, t)
+            TextColor[1] = lerp(BaseTextColor[1], .62, t)
+            TextColor[2] = lerp(BaseTextColor[2], .1, t)
+            TextColor[3] = lerp(BaseTextColor[3], .1, t)
+            ShadeColor[1] = lerp(BaseShadeColor[1], .1, t)
+            ShadeColor[2] = lerp(BaseShadeColor[2], 0, t)
+            ShadeColor[3] = lerp(BaseShadeColor[3], 0, t)
         end):setUnique('revSwitched'):setDuration(.26):run()
 
         GAME.updateBgm('revSwitched')
@@ -1745,7 +1746,7 @@ function GAME.start()
     MSG.clear()
 
     SFX.play('menuconfirm', .8)
-    SFX.play(CD.DP.active and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
+    SFX.play((M.DP > 0 or VALENTINE and not GAME.anyRev) and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
 
     GAME.playing = true
 

@@ -220,6 +220,7 @@ function Card:setActive(auto, key)
         end
         SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler and M.NH < 2)
         if revOn or wasRev then GAME.refreshRev() end
+        if VALENTINE then BGM.set('piano2', 'volume', (M.DP > 0 or VALENTINE and not GAME.anyRev) and .626 or 0, .26) end
         GAME.hardMode = M.EX > 0 or GAME.anyRev
         GAME.refreshPBText()
         GAME.refreshRPC()
