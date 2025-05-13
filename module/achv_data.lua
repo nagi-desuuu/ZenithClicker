@@ -811,6 +811,7 @@ Achievements = {
         desc = [[HAR with DP on 14th day of a month (No CR)]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 4200),
         type = 'event',
     },
     { -- moon_struck
@@ -896,6 +897,15 @@ Achievements = {
         credit = "@The_111thBlitzer",
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
+    { -- spotless
+        ex = true,
+        id = 'spotless',
+        name = "Spotless",
+        desc = [[HFD using rGV without taking any damage]],
+        quote = [["Not even a single scratch on me!"]],
+        rank = floorRank(1, 3, 5, 7, 8, 9, 10),
+        hide = function() return GAME.completion.GV == 0 end,
+    },
     { -- fel_magic
         ex = true,
         id = 'fel_magic',
@@ -912,7 +922,7 @@ Achievements = {
         id = 'arrogance',
         name = "Arrogance",
         desc = [[HAR with rAS and no perfect pass]],
-        quote = [[Maintaining arrogance constantly is also not easy.]],
+        quote = [[Maintaining arrogance constantly is not easy.]],
         scoreSimp = heightNumber,
         rank = floorRank(11, 11, 26, 42, 50, 100, 150),
         hide = function() return GAME.completion.AS == 0 end,
@@ -932,6 +942,15 @@ Achievements = {
         desc = [[HFD without commiting any mod twice in a row, with at least (r)DP]],
         quote = [["Never let me see you again."]],
         rank = floorRank(1, 3, 5, 6, 7, 8, 9),
+    },
+    { -- overprotectiveness
+        ex = true,
+        id = 'overprotectiveness',
+        name = "Overprotectiveness",
+        desc = [[HFD with rDP with both players' HP above 10 (of 15)]],
+        quote = [["Are you hurt? Did I hurt you?"]],
+        rank = floorRank(1, 3, 5, 6, 7, 8, 9),
+        hide = function() return GAME.completion.DP == 0 end,
     },
     { -- the_unreliable_one
         ex = true,
@@ -1023,7 +1042,7 @@ Achievements = {
         id = 'human_experiment',
         name = "Human Experiment",
         desc = [[Shortest time spent in F7 with MS VL AS]],
-        quote = [[You can assure me that this is safe, right?"]],
+        quote = [["You can assure me that this is safe, right?"]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         rank = numberRankRev(42, 26, 16, 12, 9.4, 6.2, 4.2),
@@ -1267,6 +1286,7 @@ Achievements = {
         type = 'issued',
     },
     { -- its_kinda_rare
+        ex = true,
         id = 'its_kinda_rare',
         name = "It's Kinda Rare!",
         desc = [[Master the daily combo including 2 reversed mods.]],
@@ -1278,9 +1298,10 @@ Achievements = {
         type = 'issued',
     },
     { -- benevolent_ambition
+        ex = true,
         id = 'benevolent_ambition',
         name = "Benevolent Ambition",
-        desc = [[revive after "NO REVIVE" fatigue, with rDP]],
+        desc = [[Revive after "NO REVIVE" fatigue, with rDP]],
         quote = [["I'll come... to save you..."]],
         credit = "@obsidian",
         hide = function() return GAME.completion.DP == 0 end,
@@ -1345,7 +1366,6 @@ local compFunc = {
     ['>'] = function(a, b) return a - b > 1e-10 end,
     ['<'] = function(a, b) return b - a > 1e-10 end,
 }
-local defaultFloorRank = floorRank(1, 3, 5, 7, 9, 10, 6200)
 
 do
     TABLE.foreach(Achievements, function(v) return v.notUsed end, true)
@@ -1390,8 +1410,9 @@ for i = 1, #Achievements do
             error("Invalid field 'comp' - " .. id)
         end
 
-        if achv.rank == nil then achv.rank = defaultFloorRank end
-        assert(type(achv.rank) == 'function', "Invalid field 'rank' - " .. id)
+        if achv.type == nil then achv.type = 'competitive' end
+        assert(type(achv.type) == 'string', "Invalid field 'type' - " .. id)
+        assert(achv.type == 'issued' or type(achv.rank) == 'function', "Invalid field 'rank' - " .. id)
 
         if achv.scoreSimp == nil then
             achv.scoreSimp = heightFloor
@@ -1399,9 +1420,6 @@ for i = 1, #Achievements do
         end
         assert(type(achv.scoreSimp) == 'function', "Invalid field 'scoreSimp' - " .. id)
         assert(achv.scoreFull == nil or type(achv.scoreFull) == 'function', "Invalid field 'scoreFull' - " .. id)
-
-        if achv.type == nil then achv.type = 'competitive' end
-        assert(type(achv.type) == 'string', "Invalid field 'type' - " .. id)
     end
     achv.hide = achv.hide or FALSE
 end
