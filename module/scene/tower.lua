@@ -850,13 +850,23 @@ function scene.overDraw()
         if not onAlly then gc_setAlpha(.42) end
         gc_rectangle('fill', 800, 440 - 5, 1540 / 2 * GAME.lifeShow2 / GAME.fullHealth, onAlly and 12 or 8 * M.DP)
     end
-    if GAME.comboStr == 'rDP' and not GAME.achv_protectH then
-        gc_setColor(COLOR.lG)
-        gc_mRect('fill', 800 + 1540 / 2 * 10 / GAME.fullHealth, 442, 4, 20)
-        gc_mRect('fill', 800 - 1540 / 2 * 10 / GAME.fullHealth, 442, 4, 20)
-    end
 
     if GAME.playing then
+        if M.DP > 0 then
+            if GAME.comboStr == 'rDP' and not GAME.achv_protectH then
+                gc_setColor(COLOR.lG)
+                gc_mRect('fill', 800 + 1540 / 2 * 10 / GAME.fullHealth, 442, 4, 20)
+                gc_mRect('fill', 800 - 1540 / 2 * 10 / GAME.fullHealth, 442, 4, 20)
+            end
+            if not GAME.achv_honeymoonH then
+                gc_setColor(COLOR.M)
+                gc_mRect('fill', 800, 435, 10, 10)
+            end
+            if not GAME.achv_breakupH then
+                gc_setColor(COLOR.dR)
+                gc_mRect('fill', 800, 445, 10, 10)
+            end
+        end
         if GAME.totalQuest <= 40 then
             -- Quest counter
             setFont(30)

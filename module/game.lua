@@ -159,7 +159,7 @@ local GAME = {
     achv_spotlessH = nil,
     achv_talentlessH = nil,
     achv_honeymoonH = nil,
-    achv_break_upH = nil,
+    achv_breakupH = nil,
     achv_protectH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
@@ -733,9 +733,18 @@ function GAME.takeDamage(dmg, reason, toAlly)
     )
 
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
-    if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
-    if not GAME.achv_spotlessH then GAME.achv_spotlessH = GAME.roundHeight end
-    if GAME.comboStr == 'rDP' and GAME[k] < 10 and not GAME.achv_protectH then GAME.achv_protectH = GAME.roundHeight end
+    if not GAME.achv_perfectionistH then
+        GAME.achv_perfectionistH = GAME.roundHeight
+        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+    end
+    if not GAME.achv_spotlessH then
+        GAME.achv_spotlessH = GAME.roundHeight
+        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+    end
+    if GAME.comboStr == 'rDP' and GAME[k] < 10 and not GAME.achv_protectH then
+        GAME.achv_protectH = GAME.roundHeight
+        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+    end
 
     if GAME[k] <= 0 then
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
@@ -1298,14 +1307,19 @@ function GAME.commit()
 
     if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
 
-    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_break_upH) and GAME.totalQuest >= 1 then
+    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_breakupH) and GAME.totalQuest >= 1 then
         local noRep = #TABLE.subtract(TABLE.copy(hand), GAME.lastCommit) == #hand
         if noRep then
-            if not GAME.achv_honeymoonH then GAME.achv_honeymoonH = GAME.roundHeight end
+            if not GAME.achv_honeymoonH then
+                GAME.achv_honeymoonH = GAME.roundHeight
+                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, M.GV) end
+            end
         else
-            if not GAME.achv_break_upH then GAME.achv_break_upH = GAME.roundHeight end
+            if not GAME.achv_breakupH then
+                GAME.achv_breakupH = GAME.roundHeight
+                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, M.GV) end
+            end
         end
-        if GAME.achv_honeymoonH and GAME.achv_break_upH then SFX.play('btb_break', 1, 0, M.GV) end
     end
 
     for _, id in next, GAME.lastCommit do CD[id].inLastCommit = false end
@@ -1446,7 +1460,10 @@ function GAME.commit()
             end
             GAME.chain = 0
 
-            if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
+            if not GAME.achv_perfectionistH then
+                GAME.achv_perfectionistH = GAME.roundHeight
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+            end
         else
             -- Perfect
             if GAME.currentTask then
@@ -1487,8 +1504,14 @@ function GAME.commit()
             end
 
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
-            if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then GAME.achv_arroganceH = GAME.roundHeight end
-            if not GAME.achv_powerlessH and GAME.chain >= 4 then GAME.achv_powerlessH = GAME.roundHeight end
+            if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then
+                GAME.achv_arroganceH = GAME.roundHeight
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+            end
+            if not GAME.achv_powerlessH and GAME.chain >= 4 then
+                GAME.achv_powerlessH = GAME.roundHeight
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+            end
         end
         if dblCorrect then
             attack = attack * 3
@@ -1589,6 +1612,7 @@ function GAME.commit()
                 attack = attack / 2
             elseif not GAME.achv_carriedH then
                 GAME.achv_carriedH = GAME.roundHeight
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
             end
         end
 
@@ -1852,7 +1876,7 @@ function GAME.start()
     GAME.achv_spotlessH = false
     GAME.achv_talentlessH = false
     GAME.achv_honeymoonH = false
-    GAME.achv_break_upH = false
+    GAME.achv_breakupH = false
     GAME.achv_protectH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
@@ -2152,7 +2176,7 @@ function GAME.finish(reason)
                 SubmitAchv('overprotectiveness', GAME.achv_protectH or GAME.roundHeight)
             end
             SubmitAchv('honeymoon', GAME.achv_honeymoonH or GAME.roundHeight)
-            SubmitAchv('break_up', GAME.achv_break_upH or GAME.roundHeight)
+            SubmitAchv('break_up', GAME.achv_breakupH or GAME.roundHeight)
         end
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.roundHeight)
