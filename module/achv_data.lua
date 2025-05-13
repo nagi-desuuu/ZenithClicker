@@ -1337,6 +1337,15 @@ Achievements = {
         type = 'issued',
         hide = TRUE,
     },
+    { -- clicking_champion
+        ex = true,
+        id = 'clicking_champion',
+        name = "Clicking Champion",
+        desc = [[Achieve 25000 CR]],
+        quote = [[You made it to the summit! Very few have ever stood where you do today.]],
+        credit = "@Tizago",
+        type = 'issued',
+    },
     { -- zenith_traveler
         ex = true,
         id = 'zenith_traveler',

@@ -90,6 +90,8 @@ local function calculateRating()
         end
     end
 
+    if cr >= 25000 then IssueAchv('clicking_champion') end
+
     return MATH.round(cr), cap
 end
 
