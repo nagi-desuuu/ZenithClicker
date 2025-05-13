@@ -272,6 +272,7 @@ end
 function scene.mouseDown(x, y, k)
     cancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
+    mouseMove(x, y)
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return true end
 
@@ -321,10 +322,7 @@ function scene.touchDown(x, y, id)
     local x1, y1 = SCR.xOy_dl:inverseTransformPoint(SCR.xOy:transformPoint(x, y))
     if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
         revHold[id] = true
-        if TABLE.getSize(revHold) >= 3 then
-            scene.mouseDown(x, y, 3)
-            return
-        end
+        return
     end
     scene.mouseDown(x, y, next(revHold) and 2 or 1)
 end
