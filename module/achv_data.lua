@@ -636,7 +636,7 @@ Achievements = {
         name = "Swamp Water Lite+",
         desc = [[HFD WUT 1rev+6 mods ("Duo" not allowed)]],
         quote = [[Comes in...... 252 different flavors?]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     { -- swamp_water_plus
@@ -674,7 +674,7 @@ Achievements = {
         name = "Desolation",
         desc = [[HFD with 9+ mod points]],
         quote = [[Vitality has faded from the world's palette...]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2200),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 7 end,
     },
     { -- havoc
@@ -710,8 +710,7 @@ Achievements = {
         name = "Purgatory",
         desc = [[HAR with 13+ mod points]],
         quote = [[Nobody knows their destination...]],
-        scoreSimp = heightNumber,
-        rank = floorRank(100, 200, 300, 400, 500, 600, 800),
+        rank = numberRank(0, 50, 300, 400, 500, 600, 800),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 5 end,
     },
     { -- perdition
@@ -720,8 +719,7 @@ Achievements = {
         name = "Perdition",
         desc = [[HAR with 14+ mod points]],
         quote = [[There's no way back...]],
-        scoreSimp = heightNumber,
-        rank = floorRank(100, 200, 250, 300, 350, 400, 600),
+        rank = numberRank(0, 50, 250, 300, 350, 400, 600),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 4 end,
     },
     { -- cataclysm
@@ -730,8 +728,7 @@ Achievements = {
         name = "Cataclysm",
         desc = [[HAR with 15+ mod points]],
         quote = [[The real disaster is yet to come...]],
-        scoreSimp = heightNumber,
-        rank = floorRank(50, 100, 200, 250, 300, 350, 500),
+        rank = numberRank(0, 50, 200, 250, 300, 350, 500),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 3 end,
     },
     { -- annihilation
@@ -740,8 +737,7 @@ Achievements = {
         name = "Annihilation",
         desc = [[HAR with 16+ mod points]],
         quote = [[The whole universe is trembling...]],
-        scoreSimp = heightNumber,
-        rank = floorRank(50, 100, 150, 200, 250, 300, 400),
+        rank = numberRank(0, 50, 150, 200, 250, 300, 400),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 2 end,
     },
     { -- armageddon
@@ -750,8 +746,7 @@ Achievements = {
         name = "Armageddon",
         desc = [[HAR with 17+ mod points]],
         quote = [[The Big Crunch is about to happen...]],
-        scoreSimp = heightNumber,
-        rank = floorRank(1, 20, 50, 75, 100, 150, 200),
+        rank = numberRank(0, 20, 50, 75, 100, 150, 200),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 1 end,
     },
     { -- abyss
@@ -760,8 +755,7 @@ Achievements = {
         name = "Abyss",
         desc = [[HAR with 18 mod points]],
         quote = [[.]],
-        scoreSimp = heightNumber,
-        rank = floorRank(11, 20, 30, 40, 50, 75, 100),
+        rank = numberRank(0, 20, 30, 40, 50, 75, 100),
         hide = function() return TABLE.countAll(GAME.completion, 0) > 0 end,
     },
 
@@ -924,7 +918,7 @@ Achievements = {
         desc = [[HAR with rAS and no perfect pass]],
         quote = [[Maintaining arrogance constantly is not easy.]],
         scoreSimp = heightNumber,
-        rank = floorRank(11, 11, 26, 42, 50, 100, 150),
+        rank = numberRank(10, 16, 26, 42, 50, 100, 150),
         hide = function() return GAME.completion.AS == 0 end,
     },
     { -- honeymoon
