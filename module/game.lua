@@ -156,6 +156,7 @@ local GAME = {
     achv_arroganceH = nil,
     achv_powerlessH = nil,
     achv_patienceH = nil,
+    achv_spotlessH = nil,
     achv_talentlessH = nil,
     achv_honeymoonH = nil,
     achv_break_upH = nil,
@@ -733,6 +734,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
 
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
     if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
+    if not GAME.achv_spotlessH then GAME.achv_spotlessH = GAME.roundHeight end
     if GAME.comboStr == 'rDP' and GAME[k] < 10 and not GAME.achv_protectH then GAME.achv_protectH = GAME.roundHeight end
 
     if GAME[k] <= 0 then
@@ -1847,6 +1849,7 @@ function GAME.start()
     GAME.achv_arroganceH = false
     GAME.achv_powerlessH = false
     GAME.achv_patienceH = false
+    GAME.achv_spotlessH = false
     GAME.achv_talentlessH = false
     GAME.achv_honeymoonH = false
     GAME.achv_break_upH = false
@@ -2135,7 +2138,7 @@ function GAME.finish(reason)
         elseif GAME.comboStr == 'ASDHMS' then
             SubmitAchv('the_escape_artist', GAME.achv_escapeQuest)
         elseif GAME.comboStr == 'rGV' then
-            SubmitAchv('spotless', GAME.achv_perfectionistH or GAME.roundHeight)
+            SubmitAchv('spotless', GAME.achv_spotlessH or GAME.roundHeight)
         elseif GAME.comboStr == 'rAS' then
             SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
