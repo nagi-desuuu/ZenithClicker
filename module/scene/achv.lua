@@ -107,7 +107,7 @@ local function refreshAchvList(canShuffle)
 
         if M.DH == 1 then
             for i = 1, #achvList do
-                if achvList[i].name and #achvList[i].name > 6.26 then
+                if achvList[i].name and #achvList[i].name > 4.2 then
                     local newStr
                     repeat
                         local cList = achvList[i].name:atomize()

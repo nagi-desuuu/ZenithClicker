@@ -319,7 +319,7 @@ TEXTURE = {
             false_god = aq(2, 8),
             supremacy = aq2(2, 7),
             the_completionist = aq2(2, 7),
-            clicking_champion = aq2(2, 7),
+            clicking_champion = aq2(8, 3),
             zenith_traveler = aq(1, 8),
             somersault = aq(4, 1),
         },
