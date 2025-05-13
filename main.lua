@@ -772,7 +772,7 @@ function RefreshDaily()
         -- print(table.concat(DAILY, ' '))
     end
 
-    if os.date('%d') == '14' then ModData.desc.DP = "FLOOD THE TOWER SIDE BY SIDE WITH WHAT COULD BE" end
+    if os.date('!%d') == '14' then ModData.desc.DP = "FLOOD THE TOWER SIDE BY SIDE WITH WHAT COULD BE" end
 end
 
 love.mouse.setVisible(false)
