@@ -159,6 +159,7 @@ local GAME = {
     achv_talentlessH = nil,
     achv_honeymoonH = nil,
     achv_break_upH = nil,
+    achv_protectH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
     achv_totalDmg = nil,
@@ -732,6 +733,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
 
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
     if not GAME.achv_perfectionistH then GAME.achv_perfectionistH = GAME.roundHeight end
+    if GAME.comboStr == 'rDP' and GAME[k] < 10 and not GAME.achv_protectH then GAME.achv_protectH = GAME.roundHeight end
 
     if GAME[k] <= 0 then
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
@@ -1848,6 +1850,7 @@ function GAME.start()
     GAME.achv_talentlessH = false
     GAME.achv_honeymoonH = false
     GAME.achv_break_upH = false
+    GAME.achv_protectH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
     GAME.achv_totalDmg = 0
@@ -2131,6 +2134,8 @@ function GAME.finish(reason)
             SubmitAchv('clutch_main', GAME.achv_clutchQuest)
         elseif GAME.comboStr == 'ASDHMS' then
             SubmitAchv('the_escape_artist', GAME.achv_escapeQuest)
+        elseif GAME.comboStr == 'rGV' then
+            SubmitAchv('spotless', GAME.achv_perfectionistH or GAME.roundHeight)
         elseif GAME.comboStr == 'rAS' then
             SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
@@ -2139,7 +2144,10 @@ function GAME.finish(reason)
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
-            if M.DP == 2 then SubmitAchv('the_unreliable_one', GAME.killCount) end
+            if M.DP == 2 then
+                SubmitAchv('the_unreliable_one', GAME.killCount)
+                SubmitAchv('overprotectiveness', GAME.achv_protectH or GAME.roundHeight)
+            end
             SubmitAchv('honeymoon', GAME.achv_honeymoonH or GAME.roundHeight)
             SubmitAchv('break_up', GAME.achv_break_upH or GAME.roundHeight)
         end

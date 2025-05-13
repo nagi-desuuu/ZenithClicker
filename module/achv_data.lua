@@ -941,7 +941,7 @@ Achievements = {
         ex = true,
         id = 'overprotectiveness',
         name = "Overprotectiveness",
-        desc = [[HFD with rDP with both players' HP above 10 (of 15)]],
+        desc = [[HFD with rDP with both players' HP above 10 (max 15)]],
         quote = [["Are you hurt? Did I hurt you?"]],
         rank = floorRank(1, 3, 5, 6, 7, 8, 9),
         hide = function() return GAME.completion.DP == 0 end,
