@@ -318,6 +318,11 @@ scene.widgetList = {
                 MSG('dark', "No data in clipboard")
                 return
             end
+            if data == 'cmd' then
+                SFX.play('cutin_superlobby', 1, 0, -2 + GAME.mod.GV)
+                SCN.go('_console')
+                return
+            end
             data = data:trim()
             if TASK.lock('import', 4.2) then
                 SFX.play('notify')

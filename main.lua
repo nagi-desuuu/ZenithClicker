@@ -1241,14 +1241,6 @@ Initialize()
 RefreshDaily()
 GAME.refreshCurrentCombo()
 
--- Test
-TASK.new(function()
-    for _, s in next, ([[ ]]):trim():split('%s+', true) do
-        TASK.yieldT(1)
-        SFX.play(s)
-    end
-end)
-
 if SYSTEM == 'Web' then
     _G[('DiscordRPC')] = { update = NULL, setEnable = NULL }
 else
@@ -1258,4 +1250,16 @@ else
         details = "QUICK PICK",
         state = "Enjoying Music",
     }
+end
+
+-- Debug
+TASK.new(function()
+    for _, s in next, ([[ ]]):trim():split('%s+', true) do
+        TASK.yieldT(1)
+        SFX.play(s)
+    end
+end)
+
+for i=1,4 do
+    SCN.scenes._console.widgetList[i].textColor=COLOR.D
 end
