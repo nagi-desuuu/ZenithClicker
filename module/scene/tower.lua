@@ -41,22 +41,21 @@ local function switchVisitor(bool)
 end
 
 local function MouseOnCard(x, y)
-    if FloatOnCard then
-        if Cards[FloatOnCard]:mouseOn(x, y) then
-            return FloatOnCard
-        else
-            local cid, dist = 0, 1e99
-            for i = 1, #Cards do
-                if Cards[i]:mouseOn(x, y) then
-                    local dist2 = distance(x, y, Cards[i].x, Cards[i].y)
-                    if dist2 < dist then
-                        dist = dist2
-                        cid = i
-                    end
+    if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
+        return FloatOnCard
+    end
+    if FloatOnCard and not usingTouch then
+        local cid, dist = 0, 1e99
+        for i = 1, #Cards do
+            if Cards[i]:mouseOn(x, y) then
+                local dist2 = distance(x, y, Cards[i].x, Cards[i].y)
+                if dist2 < dist then
+                    dist = dist2
+                    cid = i
                 end
             end
-            if cid > 0 then return cid end
         end
+        if cid > 0 then return cid end
     else
         for i = 1, #Cards do
             if Cards[i]:mouseOn(x, y) then
@@ -76,7 +75,6 @@ end
 
 local function mouseMove(x, y)
     SetMouseVisible(true)
-    if MATH.distance(x, y, MX, MY) > 62 then FloatOnCard = nil end
     MX, MY = x, y
     local new = MouseOnCard(x, y)
     if FloatOnCard ~= new then
