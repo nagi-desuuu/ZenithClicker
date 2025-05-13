@@ -112,9 +112,33 @@ table.insert(lines, 1040)
 addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 1060, .3)
 
 addText({
-    "5HAN   ARGHENA   AXYE   BARON   BUDDY   CABBAGE   CAT_NOISES   COOLKAT   CREEPERCRAFTYT   DJ ASRIEL   ",
-    "DOKTOROCELOT   FCSplayz   FLLEAF   FLOMIKEL   FLOWERLING   GAMETILDEAD   KHGB   MRZ   OBSIDIAN   ",
-    "PATRICKMLG   THE_111THBLITZER   TIZAGO   WAH   WATERSTONE   XP2",
+    table.concat({
+        "5HAN",
+        "ADRIAN FRUTIGER",
+        "BARON",
+        "CREEPERCRAFTYT",
+        "DELAPOUITE",
+        "DJ ASRIEL",
+        "DOKTOROCELOT",
+        "FCSPLAYZ",
+        "FLOMIKEL",
+        "FLOWERLING",
+        "GAMETILDEAD",
+        "GARBO",
+        "LARGEONIONS",
+        "LAUREN SHENG",
+        "LORC",
+        "MOONIAK",
+        "MRZ",
+        "OBSIDIAN",
+        "OSK",
+        "QUOTING",
+        "RICMAN",
+        "S. ZHANG",
+        "THE_111THBLITZER",
+        "TIZAGO",
+        "WAH",
+    }, "   ")
 }, 0, 1100, .26)
 
 local timer
