@@ -151,7 +151,7 @@ local GAME = {
     zenithTraveler = false,
 
     achv_perfectionistH = nil,
-    achv_balanceH = nil,
+    achv_demoteH = nil,
     achv_carriedH = nil,
     achv_arroganceH = nil,
     achv_powerlessH = nil,
@@ -1868,7 +1868,7 @@ function GAME.start()
     GAME.updateBgm('start')
 
     GAME.achv_perfectionistH = false
-    GAME.achv_balanceH = false
+    GAME.achv_demoteH = false
     GAME.achv_carriedH = false
     GAME.achv_arroganceH = false
     GAME.achv_powerlessH = false
@@ -1878,6 +1878,7 @@ function GAME.start()
     GAME.achv_honeymoonH = false
     GAME.achv_breakupH = false
     GAME.achv_protectH = false
+    GAME.achv_psychokinesisH = false
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = false
     GAME.achv_totalDmg = 0
@@ -2140,8 +2141,8 @@ function GAME.finish(reason)
             end
         end
         SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.roundHeight)
-        SubmitAchv('sunk_cost', GAME.achv_balanceH or GAME.roundHeight)
-        if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_balanceH or GAME.roundHeight) end
+        SubmitAchv('sunk_cost', GAME.achv_demoteH or GAME.roundHeight)
+        if M.EX > 0 then SubmitAchv('knife_edge', GAME.achv_demoteH or GAME.roundHeight) end
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
         SubmitAchv('powerless', GAME.achv_powerlessH or GAME.roundHeight)
@@ -2149,7 +2150,7 @@ function GAME.finish(reason)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
-        if GAME.totalFlip == 0 then SubmitAchv('psychokinesis', GAME.roundHeight) end
+        SubmitAchv('psychokinesis', GAME.achv_psychokinesisH or GAME.roundHeight)
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.roundHeight) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'EXMS' and GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
@@ -2389,7 +2390,10 @@ function GAME.update(dt)
                     end
                     TEXTS.rank:set("R-" .. GAME.rank)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
-                    if not GAME.achv_balanceH then GAME.achv_balanceH = GAME.roundHeight end
+                    if not GAME.achv_demoteH then
+                        GAME.achv_demoteH = GAME.roundHeight
+                        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+                    end
                 end
             end
         end

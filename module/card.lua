@@ -119,6 +119,10 @@ function Card:setActive(auto, key)
         if not auto then
             self.touchCount = self.touchCount + 1
             GAME.totalFlip = GAME.totalFlip + 1
+            if not GAME.achv_psychokinesisH then
+                GAME.achv_psychokinesisH = GAME.roundHeight
+                if GAME.totalQuest >= 3 then SFX.play('btb_break', 1, 0, M.GV) end
+            end
             if self.touchCount == 1 then
                 if (self.required or self.required2) and not GAME.hardMode then
                     GAME.addXP(1)
