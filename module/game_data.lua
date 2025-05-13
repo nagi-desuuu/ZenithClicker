@@ -186,7 +186,11 @@ ComboData = {
         { set = "rEX rDP",       name = "Tyrannical Dyarchy" },
         { set = "rEX MS rDH IN", name = "Sisyphean Monarchy" },
         { set = "rDH rIN",       name = "Brain Capacity" },
+
         { set = "NH rGV",        name = "Clutch Main" },
+        { set = "EX VL",         name = "Wax Wings" },
+        { set = "DH rIN AS",     name = "The Oblivious Artist" },
+
         { set = "EX VL rIN rDP", name = "Love Hotel" },
         { set = "EX MS AS",      name = "Financially Responsible" },
         { set = "EX rVL rDP",    name = "Unfair Battle" },
@@ -194,7 +198,6 @@ ComboData = {
         { set = "EX rGV VL",     name = "Workaholic" },
         { set = "MS VL AS",      name = "Human Experiment" },
         { set = "EX GV DH",      name = "Core Meltdown" },
-        { set = "EX VL",         name = "Wax Wings" },
     },
 
     game = {

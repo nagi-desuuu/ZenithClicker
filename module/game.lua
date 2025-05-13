@@ -169,6 +169,8 @@ local GAME = {
     achv_escapeQuest = nil,
     achv_felMagicBurnt = nil,
     achv_felMagicQuest = nil,
+    achv_spinUsed = nil,
+    achv_obliviousQuest = nil,
 }
 
 GAME.playing = false
@@ -592,6 +594,7 @@ function GAME.questReady()
     GAME.faultWrong = false
     GAME.dmgWrongExtra = 0
     GAME.gravTimer = false
+    GAME.achv_spinUsed = 0
     for _, C in ipairs(CD) do C.touchCount, C.required, C.required2 = 0, false, false end
     for _, v in next, GAME.quests[1].combo do CD[v].required = true end
     if M.DP > 0 then for _, v in next, GAME.quests[2].combo do CD[v].required2 = true end end
@@ -1283,6 +1286,7 @@ end
 
 function GAME.task_cancelAll(instant)
     local spinMode = not instant and M.AS > 0
+    if spinMode then GAME.achv_spinUsed = GAME.achv_spinUsed + 1 end
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
     for i = 1, #CD do
@@ -1411,7 +1415,7 @@ function GAME.commit()
         local surge = 0
         local xp = 0
         if dp and M.EX < 2 then attack = attack + 2 end
-        local check_achv_and_then_nothing
+        local check_achv_romantic_homicide
         if GAME.fault then
             -- Non-perfect
             if GAME.currentTask then
@@ -1426,7 +1430,7 @@ function GAME.commit()
             if GAME.chain < 4 then
                 SFX.play('clearline', .62)
             else
-                check_achv_and_then_nothing = M.DP == 2 and GAME.chain >= 50 and GAME[GAME.getLifeKey(true)] == 0
+                check_achv_romantic_homicide = M.DP == 2 and GAME.chain >= 62 and GAME[GAME.getLifeKey(true)] == 0
                 if GAME.currentTask then
                     if GAME.chain >= 4 and GAME.chain <= 10 and GAME.chain % 2 == 0 then
                         GAME.incrementPrompt('b2b_break_' .. GAME.chain)
@@ -1580,6 +1584,10 @@ function GAME.commit()
             GAME.achv_felMagicBurnt = false
             GAME.achv_felMagicQuest = GAME.achv_felMagicQuest + 1
         end
+        if GAME.achv_spinUsed % 2 == 1 then
+            GAME.achv_felMagicBurnt = false
+            GAME.achv_obliviousQuest = GAME.achv_obliviousQuest + 1
+        end
 
         -- Spike
         if GAME.spikeTimer <= 0 then
@@ -1604,8 +1612,8 @@ function GAME.commit()
             if M.DP == 2 then
                 if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
                     return
-                elseif check_achv_and_then_nothing then
-                    IssueAchv('and_then_nothing')
+                elseif check_achv_romantic_homicide then
+                    IssueAchv('romantic_homicide')
                 end
             end
             if GAME[GAME.getLifeKey(true)] == 0 then
@@ -1888,6 +1896,8 @@ function GAME.start()
     GAME.achv_escapeQuest = 0
     GAME.achv_felMagicBurnt = false
     GAME.achv_felMagicQuest = 0
+    GAME.achv_spinUsed = 0
+    GAME.achv_obliviousQuest = 0
     if M.DP == 1 then IssueAchv('intended_glitch') end
 end
 
@@ -2163,6 +2173,8 @@ function GAME.finish(reason)
             SubmitAchv('clutch_main', GAME.achv_clutchQuest)
         elseif GAME.comboStr == 'ASDHMS' then
             SubmitAchv('the_escape_artist', GAME.achv_escapeQuest)
+        elseif GAME.comboStr == 'ASDHrIN' then
+            SubmitAchv('the_oblivious_artist', GAME.achv_obliviousQuest)
         elseif GAME.comboStr == 'rGV' then
             SubmitAchv('spotless', GAME.achv_spotlessH or GAME.roundHeight)
         elseif GAME.comboStr == 'rAS' then
@@ -2393,7 +2405,7 @@ function GAME.update(dt)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                     if not GAME.achv_demoteH then
                         GAME.achv_demoteH = GAME.roundHeight
-                        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+                        if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break', 1, 0, M.GV) end
                     end
                 end
             end

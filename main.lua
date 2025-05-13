@@ -261,11 +261,12 @@ TEXTURE = {
             lovers_promise = aq(8, 7),
             -- moon_struck = aq(),
             clutch_main = aq2(8, 3),
+            the_oblivious_artist = aq2(6, 4),
             powerless = aq(7, 5),
             the_pacifist = aq(4, 1),
             divine_rejection = aq(7, 6),
-            sunk_cost = aq(5, 5),
-            wax_wings = aq(5, 5),
+            sunk_cost = aq2(6, 8),
+            wax_wings = aq2(7, 8),
             carried = aq(3, 8),
             patience_is_a_virtue = aq2(2, 5),
             spotless = aq2(5, 3),
@@ -305,7 +306,7 @@ TEXTURE = {
             abyss_weaver = aq(5, 2),
             royal_resistance = aq2(2, 1),
             lovers_stand = aq2(2, 1),
-            and_then_nothing = aq(4, 8),
+            romantic_homicide = aq(4, 8),
             its_kinda_rare = aq2(6, 3),
             benevolent_ambition = aq2(7, 3),
             fruitless_effort = aq(6, 7),
@@ -1230,11 +1231,11 @@ function Initialize(save)
     for k in next, ACHV do
         if not Achievements[k] then
             ACHV[k] = nil
-            achvLost = achvLost .. "[" .. k .. "]\n"
+            achvLost = achvLost .. "[" .. (k) .. "]\n"
         end
     end
     if #achvLost > 0 then
-        MSG('dark', "Achievements lost due to update:" .. achvLost:sub(1, #achvLost - 1), 6.26)
+        MSG('dark', "Achievements lost due to update:\n" .. achvLost:sub(1, #achvLost - 1), 6.26)
     end
 
     GAME.refreshLockState()
