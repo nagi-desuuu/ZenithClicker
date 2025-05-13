@@ -510,7 +510,7 @@ function Card:draw()
         end
         if self.required then
             r2, g2, b2 = 1, 0, .26
-            a2 = getTime() % .1 < .0626 and 1 - (getTime() - GAME.finishTime) * .26
+            a2 = getTime() % .1 < .0626 and 1 - (getTime() - GAME.finishTime) / 4.2
             if a2 and a2 <= 0 then self.required = false end
         end
     end
