@@ -50,8 +50,8 @@ end
 
 function Card:mouseOn(x, y)
     return
-        abs(x - self.tx) <= self.size * 260 and
-        abs(y - self.ty) <= self.size * 350
+        abs(x - self.tx) <= self.size * 240 and
+        abs(y - self.ty) <= self.size * 330
 end
 
 local completion = GAME.completion
@@ -437,7 +437,7 @@ function Card:draw()
         -- EX scale
         if M.EX > 0 and love.mouse.isDown(1, 2) then gc_scale(.9) end
         -- Fake 3D
-        local dx, dy = (MX - self.x) / (260 * self.size), (MY - self.y) / (350 * self.size)
+        local dx, dy = (MX - self.x) / (240 * self.size), (MY - self.y) / (330 * self.size)
         local d = (abs(dx) - abs(dy)) * .026
         gc_scale(min(1, 1 - d), min(1, 1 + d))
         local D = -sign(dx * dy) * abs(dx * dy) ^ .626 * .026
@@ -516,7 +516,7 @@ function Card:draw()
     end
 
     if GlassCard then
-        local w, h = 260, 350
+        local w, h = 240, 330
         gc_setColor((faceUp and ModData.textColor or ModData.color)[self.id])
         gc_setAlpha((STAT.cardBrightness / 100) ^ 2 * .872)
         gc_mRect('fill', 0, 0, w * 2, h * 2, 26)
