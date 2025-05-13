@@ -1286,8 +1286,6 @@ Achievements = {
         desc = [[Master the daily combo including 2 reversed mods.]],
         quote = [[Those who are capable and also fortunate deserve a lifetime reward.]],
         credit = "@GameTilDead",
-        scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
-        rank = numberRank(0, 0, 0, 1, 2, 4, 6),
         hide = TRUE,
         type = 'issued',
     },
