@@ -2181,7 +2181,7 @@ function GAME.finish(reason)
             SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
         elseif GAME.comboStr == 'rDP' then
-            SubmitAchv('overprotectiveness', GAME.achv_protectH or GAME.roundHeight)
+            SubmitAchv('overprotection', GAME.achv_protectH or GAME.roundHeight)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)

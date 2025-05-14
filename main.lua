@@ -276,7 +276,7 @@ TEXTURE = {
             arrogance = aq(3, 5),
             honeymoon = aq2(3, 4),
             break_up = aq2(1, 4),
-            overprotectiveness = aq2(1, 9),
+            overprotection = aq2(1, 9),
             the_unreliable_one = aq2(7, 1),
             detail_oriented = aq(8, 6),
             psychokinesis = aq(8, 6),
@@ -1173,6 +1173,10 @@ function Initialize(save)
         ACHV.smooth_dismount, ACHV.somersault = ACHV.somersault, nil
         ACHV.omnipotence, ACHV.the_completionist = ACHV.omnipotence, nil
         STAT.version = 174
+    end
+    if STAT.version == 174 then
+        ACHV.overprotection, ACHV.overprotectiveness = ACHV.overprotection, nil
+        STAT.version = 175
     end
 
     -- Some Initialization

@@ -950,10 +950,10 @@ Achievements = {
         quote = [["Never let me see you again."]],
         rank = floorRank(1, 3, 5, 6, 7, 8, 9),
     },
-    { -- overprotectiveness
+    { -- overprotection
         ex = true,
-        id = 'overprotectiveness',
-        name = "Overprotectiveness",
+        id = 'overprotection',
+        name = "Overprotection",
         desc = [[HFD while keep both players' HP above 10 (max 15), with rDP]],
         quote = [["Are you hurt? Did I hurt you?"]],
         credit = "@obsidian",
