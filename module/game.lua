@@ -745,7 +745,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
         GAME.achv_spotlessH = GAME.roundHeight
         if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
     end
-    if GAME.comboStr == 'rDP' and GAME[k] < 10 and not GAME.achv_protectH then
+    if not GAME.achv_protectH and GAME.comboStr == 'rDP' and min(GAME.life, GAME.life2) < 10 then
         GAME.achv_protectH = GAME.roundHeight
         if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
     end
@@ -2180,17 +2180,18 @@ function GAME.finish(reason)
         elseif GAME.comboStr == 'rAS' then
             SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
+        elseif GAME.comboStr == 'rDP' then
+            SubmitAchv('overprotectiveness', GAME.achv_protectH or GAME.roundHeight)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
-            if M.DP == 2 then
-                SubmitAchv('the_unreliable_one', GAME.killCount)
-                SubmitAchv('overprotectiveness', GAME.achv_protectH or GAME.roundHeight)
-            end
             SubmitAchv('honeymoon', GAME.achv_honeymoonH or GAME.roundHeight)
             SubmitAchv('break_up', GAME.achv_breakupH or GAME.roundHeight)
+            if M.DP == 2 then
+                SubmitAchv('the_unreliable_one', GAME.killCount)
+            end
         end
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.roundHeight)
