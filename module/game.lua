@@ -169,7 +169,7 @@ local GAME = {
     achv_escapeQuest = nil,
     achv_felMagicBurnt = nil,
     achv_felMagicQuest = nil,
-    achv_spinUsed = nil,
+    achv_resetCount = nil,
     achv_obliviousQuest = nil,
 }
 
@@ -594,7 +594,7 @@ function GAME.questReady()
     GAME.faultWrong = false
     GAME.dmgWrongExtra = 0
     GAME.gravTimer = false
-    GAME.achv_spinUsed = 0
+    GAME.achv_resetCount = 0
     for _, C in ipairs(CD) do C.touchCount, C.required, C.required2 = 0, false, false end
     for _, v in next, GAME.quests[1].combo do CD[v].required = true end
     if M.DP > 0 then for _, v in next, GAME.quests[2].combo do CD[v].required2 = true end end
@@ -1281,12 +1281,12 @@ function GAME.cancelAll(instant)
     if M.NH == 2 then return end
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
-    if GAME.gravTimer then GAME.gravTimer = GAME.gravDelay end
+    if GAME.gravTimer and GAME.achv_resetCount < 15 then GAME.gravTimer = GAME.gravDelay end
 end
 
 function GAME.task_cancelAll(instant)
+    GAME.achv_resetCount = GAME.achv_resetCount + 1
     local spinMode = not instant and M.AS > 0
-    if spinMode then GAME.achv_spinUsed = GAME.achv_spinUsed + 1 end
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
     for i = 1, #CD do
@@ -1584,8 +1584,7 @@ function GAME.commit()
             GAME.achv_felMagicBurnt = false
             GAME.achv_felMagicQuest = GAME.achv_felMagicQuest + 1
         end
-        if GAME.achv_spinUsed % 2 == 1 then
-            GAME.achv_felMagicBurnt = false
+        if GAME.achv_resetCount % 2 == 1 then
             GAME.achv_obliviousQuest = GAME.achv_obliviousQuest + 1
         end
 
@@ -1896,7 +1895,7 @@ function GAME.start()
     GAME.achv_escapeQuest = 0
     GAME.achv_felMagicBurnt = false
     GAME.achv_felMagicQuest = 0
-    GAME.achv_spinUsed = 0
+    GAME.achv_resetCount = 0
     GAME.achv_obliviousQuest = 0
     if M.DP == 1 then IssueAchv('intended_glitch') end
 end
