@@ -244,12 +244,12 @@ local function refreshAchivement()
     end
     if not ACHV.mastery then
         _t = 0
-        for id in next, MD.name do if BEST.highScore[id] >= 1650 then _t = _t + 1 end end
+        for id in next, MD.name do if BEST.highScore[id] >= Floors[9].top then _t = _t + 1 end end
         if _t >= 9 then issue('mastery') end
     end
     if not ACHV.subjugation then
         _t = 0
-        for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
+        for id in next, MD.name do if BEST.highScore['r' .. id] >= Floors[9].top then _t = _t + 1 end end
         if _t >= 9 then issue('subjugation') end
     end
     _t = 0

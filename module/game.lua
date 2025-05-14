@@ -2052,22 +2052,20 @@ function GAME.finish(reason)
             TEXTS.endFloor:set("F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
         end
 
+        local g = GAME
         TEXTS.endResult:set({
-            COLOR.L, "Time  " .. STRING.time_simp(GAME.time),
-            COLOR.LD, GAME.gigaTime and "  (F10 at " .. STRING.time_simp(GAME.gigaTime) .. ")\n" or "\n",
-            COLOR.L, "Flip  " .. GAME.totalFlip,
-            COLOR.LD, "  (" .. roundUnit(GAME.totalFlip / GAME.time, .01) .. "/s)\n",
-            COLOR.L, "Quest  " .. GAME.totalQuest,
-            COLOR.LD, "  (" .. roundUnit(GAME.totalQuest / GAME.time, .01) .. "/s  ",
-            roundUnit(GAME.totalPerfect / GAME.totalQuest * 100, .1) .. "% Perf)\n",
-            COLOR.L, "Speed  " .. roundUnit(GAME.height / GAME.time, .1) .. "m/s  ",
-            COLOR.LD, "(max " .. GAME.maxRank .. ")\n",
-            COLOR.L, "Attack  " .. GAME.totalAttack,
-            COLOR.LD, "  (" .. roundUnit(GAME.totalAttack / GAME.time * 60, .1) .. "apm  ",
-            roundUnit(GAME.totalAttack / GAME.totalQuest, .01) .. "eff)\n",
-            COLOR.L, "Bonus  " .. roundUnit(GAME.heightBonus, .1) .. "m",
-            COLOR.LD, "  (" .. roundUnit(GAME.heightBonus / GAME.height * 100, .1) .. "%  ",
-            roundUnit(GAME.heightBonus / GAME.totalQuest, .1) .. "m/quest)",
+            COLOR.L, ("Time  %s"):format(STRING.time_simp(g.time)),
+            COLOR.LD, g.gigaTime and ("  (F10 at %s)\n"):format(STRING.time_simp(g.gigaTime)) or "\n",
+            COLOR.L, ("Flip  %d"):format(g.totalFlip),
+            COLOR.LD, ("  (%.2f/s)\n"):format(g.totalFlip / g.time),
+            COLOR.L, ("Quest  %d"):format(g.totalQuest),
+            COLOR.LD, ("  (%.2f/s  %.1f%% Perf)\n"):format(g.totalQuest / g.time, g.totalPerfect / g.totalQuest * 100),
+            COLOR.L, ("Speed  %.1fm/s"):format(roundUnit(g.height / g.time, .1)),
+            COLOR.LD, ("  (max rank %d)\n"):format(g.maxRank),
+            COLOR.L, ("Attack  %d"):format(g.totalAttack),
+            COLOR.LD, ("  (%.1fapm  %.2feff)\n"):format(g.totalAttack / g.time * 60, g.totalAttack / g.totalQuest),
+            COLOR.L, ("Bonus  %.1fm"):format(g.heightBonus),
+            COLOR.LD, ("  (%.1f%%  %.1fm/quest)"):format(g.heightBonus / g.height * 100, g.heightBonus / g.totalQuest),
         })
 
         local maxCSP = {}
@@ -2103,12 +2101,12 @@ function GAME.finish(reason)
         local _t
         if not ACHV.mastery then
             _t = 0
-            for id in next, MD.name do if BEST.highScore[id] >= 1650 then _t = _t + 1 end end
+            for id in next, MD.name do if BEST.highScore[id] >= Floors[9].top then _t = _t + 1 end end
             if _t >= 9 then IssueAchv('mastery') end
         end
         if not ACHV.subjugation then
             _t = 0
-            for id in next, MD.name do if BEST.highScore['r' .. id] >= 1650 then _t = _t + 1 end end
+            for id in next, MD.name do if BEST.highScore['r' .. id] >= Floors[9].top then _t = _t + 1 end end
             if _t >= 9 then IssueAchv('subjugation') end
         end
         if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.subjugation) end
@@ -2159,7 +2157,9 @@ function GAME.finish(reason)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         SubmitAchv('psychokinesis', GAME.achv_psychokinesisH or GAME.roundHeight)
-        if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.roundHeight) end
+        if MATH.between(GAME.height, Floors[9].top - 24, Floors[9].top) then
+            SubmitAchv('divine_rejection', GAME.roundHeight)
+        end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'DP' then
             if VALENTINE then SubmitAchv('lovers_promise', GAME.roundHeight) end
@@ -2400,7 +2400,7 @@ function GAME.update(dt)
                         GAME.setGigaspeedAnim(false)
                         SFX.play('zenith_speedrun_end')
                         SFX.play('zenith_speedrun_end')
-                        if MATH.between(GAME.height, 1600, 1650) then IssueAchv('cut_off') end
+                        if MATH.between(GAME.height, Floors[9].top - 50, Floors[9].top) then IssueAchv('cut_off') end
                     end
                     TEXTS.rank:set("R-" .. GAME.rank)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)

@@ -185,7 +185,7 @@ TEXTURE = {
             zenith_speedrunner = aq(2, 6),
             divine_speedrunner = aq2(5, 1),
             the_spike_of_all_time = aq(4, 2),
-            the_spike_of_all_time_minus = aq(5, 6),
+            the_spike_of_all_time_minus = aq(4, 2),
             vip_list = aq(6, 6),
 
             EX = aq(3, 3),
