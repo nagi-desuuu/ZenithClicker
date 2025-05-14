@@ -525,9 +525,9 @@ Achievements = {
     { -- rINrNH
         ex = true,
         id = 'rINrNH',
-        name = "Instant Memory",
+        name = "Fleeting Memory",
         desc = [[HFD WUT rNH rIN mods]],
-        quote = [[In the twinkling of a eye.]],
+        quote = [[In the blink of an eye, gone. Forgotten.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return GAME.completion.NH == 0 or GAME.completion.IN == 0 end,
     },

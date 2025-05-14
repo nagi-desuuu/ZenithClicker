@@ -177,7 +177,7 @@ ComboData = {
         { set = "rNH rMS DH",    name = "Deadbeat" },
         { set = "rNH rGV rVL",   name = "Sweatshop" },
         { set = "rNH MS GV DP",  name = "Grand-Master! Rounds" },
-        { set = "rNH rIN",       name = "Instant Memory" },
+        { set = "rNH rIN",       name = "Fleeting Memory" },
         { set = "EX NH rMS GV",  name = "Bnuuy" },
         { set = "EX rMS rDH AS", name = "Endless Gluttony" },
         { set = "NH rGV VL rDP", name = "Despairful Longing" },
