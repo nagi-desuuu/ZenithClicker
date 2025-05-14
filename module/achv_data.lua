@@ -837,7 +837,8 @@ Achievements = {
         quote = [[They're a little confused but got the spirit!]],
         credit = "@Tizago",
         scoreSimp = function(quest) return floor(quest) .. " Quests" end,
-        rank = numberRank(0, 10, 26, 40, 60, 80, 100),
+        rank = numberRank(0, 12, 26, 40, 50, 60, 80),
+        hide = function() return GAME.completion.IN == 0 end,
     },
     { -- powerless
         ex = true,
@@ -882,7 +883,7 @@ Achievements = {
         desc = [[HFD without losing rank, with EX VL]],
         quote = [["Bold in vanity, began to soar, rising upon his wings to touch the skies."]],
         credit = "@Flowerling",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
+        rank = floorRank(1, 3, 5, 7, 8, 9, 10),
     },
     { -- carried
         ex = true,
