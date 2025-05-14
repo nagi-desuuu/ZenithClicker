@@ -2125,10 +2125,10 @@ function GAME.finish(reason)
         end
 
         _t = 0
-        for id in next, MD.name do _t = _t + BEST.speedrun[id] end
+        for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
         SubmitAchv('zenith_speedrunner', _t, true)
         _t = 0
-        for id in next, MD.name do _t = _t + BEST.speedrun['r' .. id] end
+        for id in next, MD.name do _t = _t + min(BEST.speedrun['r' .. id], 2600) end
         SubmitAchv('divine_speedrunner', _t, true)
         _t = 0
         for id in next, MD.name do _t = _t + BEST.highScore[id] end
