@@ -185,6 +185,7 @@ TEXTURE = {
             zenith_speedrunner = aq(2, 6),
             divine_speedrunner = aq2(5, 1),
             the_spike_of_all_time = aq(4, 2),
+            the_spike_of_all_time_minus = aq(5, 6),
             vip_list = aq(6, 6),
 
             EX = aq(3, 3),
@@ -293,7 +294,6 @@ TEXTURE = {
             the_perfectionist = aq(5, 6),
             teraspeed = aq(5, 6),
             cruise_control = aq(5, 6),
-            the_spike_of_nomod_time = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
             skys_the_limit = aq2(2, 3),

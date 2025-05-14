@@ -1596,7 +1596,7 @@ function GAME.commit()
         end
         GAME.spikeTimer = MATH.clamp(
             GAME.spikeTimer + (attack + surge) / (12.6 + GAME.spikeCounter / 26),
-            GAME.spikeCounter < 8 and 1 or .62,
+            GAME.spikeCounter < 8 and 1.26 or .8,
             6.2
         )
         GAME.spikeCounter = GAME.spikeCounter + attack + surge
@@ -2196,7 +2196,7 @@ function GAME.finish(reason)
         if GAME.comboStr == '' then
             SubmitAchv('zenith_explorer', GAME.roundHeight)
             SubmitAchv('supercharged', GAME.achv_maxChain)
-            SubmitAchv('the_spike_of_nomod_time', GAME.maxSpike)
+            SubmitAchv('the_spike_of_all_time_minus', GAME.maxSpikeWeak)
         elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
             for mp = GAME.comboMP, 8, -1 do
                 local name = RevSwampName[min(mp, #RevSwampName)]:sub(2, -2):lower()
