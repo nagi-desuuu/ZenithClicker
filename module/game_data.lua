@@ -183,6 +183,8 @@ ComboData = {
         { set = "NH rGV VL rDP", name = "Despairful Longing" },
         { set = "MS rDH IN rDP", name = "Uneasy Alliance" },
         { set = "rEX rVL DH",    name = "Sweat and Ruin" },
+        { set = "rMS GV AS rDP", name = "Cupid's Gamble" },
+        { set = "rEX VL rIN",    name = "Authoritarian Delusion" },
         { set = "rEX rDP",       name = "Tyrannical Dyarchy" },
         { set = "rEX MS rDH IN", name = "Sisyphean Monarchy" },
         { set = "rDH rIN",       name = "Brain Capacity" },

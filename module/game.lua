@@ -1285,7 +1285,7 @@ function GAME.cancelAll(instant)
 end
 
 function GAME.task_cancelAll(instant)
-    GAME.achv_resetCount = GAME.achv_resetCount + 1
+    if GAME.playing then GAME.achv_resetCount = GAME.achv_resetCount + 1 end
     local spinMode = not instant and M.AS > 0
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
