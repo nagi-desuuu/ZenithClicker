@@ -2161,11 +2161,12 @@ function GAME.finish(reason)
         SubmitAchv('psychokinesis', GAME.achv_psychokinesisH or GAME.roundHeight)
         if GAME.height >= 1626 and GAME.height < 1650 then SubmitAchv('divine_rejection', GAME.roundHeight) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
-        if GAME.comboStr == 'EXMS' and GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
         if GAME.comboStr == 'DP' then
-            if os.date("%d") == "14" then SubmitAchv('lovers_promise', GAME.roundHeight) end
+            if VALENTINE then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_talentlessH or GAME.roundHeight)
+        elseif GAME.comboStr == 'EXMS' then
+            if GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
         elseif GAME.comboStr == 'EXVL' then
             SubmitAchv('wax_wings', GAME.achv_demoteH or GAME.roundHeight)
         elseif GAME.comboStr == 'NHrGV' then
