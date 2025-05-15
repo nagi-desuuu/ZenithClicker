@@ -2,7 +2,7 @@
 local scene = {}
 
 local scroll, scroll1 = 0, 0
-local maxScroll = 360
+local maxScroll = 440
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
@@ -10,7 +10,8 @@ local clr = {
 
     z = { COLOR.HEX "80CCFF" },
     asrial = { COLOR.HEX "DDFF80" },
-    ccyt = { COLOR.HEX "66DD55" },
+    ccyt = { COLOR.HEX "77DD66" },
+    flower = { COLOR.HEX "F880F0" },
     osk = { COLOR.HEX "DD99FF" },
     ocelot = { COLOR.HEX "FF99CC" },
     garbo = { COLOR.HEX "3A66DD" },
@@ -48,13 +49,17 @@ addText({ clr.z, "MRZ" }, 0, 450, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 490, .26)
 addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .2)
 
-addText({ clr.asrial, "DJ  ASRIEL" }, -160, 550, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -160, 590, .26)
-addText({ COLOR.LD, "Background Reconstruction & Achievement Icons" }, -160, 610, .2)
+addText({ clr.asrial, "DJ  ASRIEL" }, -320, 550, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -320, 590, .26)
+addText({ COLOR.LD, "Background Reconstruction & Achievement Icons" }, -320, 610, .2)
 
-addText({ clr.ccyt, "CREEPERCRAFTYT" }, 160, 550, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 160, 590, .26)
-addText({ COLOR.LD, "Detailed Mod Icons" }, 160, 610, .2)
+addText({ clr.ccyt, "CREEPERCRAFTYT" }, 0, 550, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 0, 590, .26)
+addText({ COLOR.LD, "Detailed Mod Icons" }, 0, 610, .2)
+
+addText({ clr.flower, "FLOWERLING" }, 320, 550, .5)
+addText({ COLOR.LD, "TEXT REVISION" }, 320, 590, .26)
+-- addText({ COLOR.LD, "" }, 320, 610, .2)
 
 addText({ clr.osk, "OSK" }, -320, 650, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -320, 690, .26)
@@ -91,20 +96,20 @@ addText({
 
 addText({
     COLOR.O, "FONTS BY ",
-    COLOR.L, "Adrian Frutiger (D-Din-Pro) ",
+    COLOR.L, "ADRIAN FRUTIGER (D-DIN-PRO) ",
     COLOR.O, "& ",
-    COLOR.L, "Mooniak (AbhayaLibre)"
+    COLOR.L, "MOONIAK (ABHAYALIBRE)"
 }, 0, 955, .32)
 
 addText({
     COLOR.O, "SOME ACHV ICONS BY ",
-    COLOR.L, "Lorc ",
+    COLOR.L, "LORC ",
     COLOR.O, "& ",
-    COLOR.L, "Delapouite ",
+    COLOR.L, "DELAPOUITE ",
     COLOR.O, "& ",
-    COLOR.L, "Quoting ",
+    COLOR.L, "QUOTING ",
     COLOR.O, "FROM ",
-    COLOR.L, "game-icons.net"
+    COLOR.L, "GAME-ICONS.NET"
 }, 0, 990, .32)
 
 table.insert(lines, 1040)
