@@ -116,6 +116,7 @@ local GAME = {
     resIB = GC.newSpriteBatch(TEXTURE.modIcon),
     comboMP = 0,
     comboZP = 1,
+    ultraRun = false,
 
     completion = { -- 0=not mastered, 1=mastered, 2=rev mastered
         EX = 0,
@@ -1123,7 +1124,7 @@ end
 function GAME.refreshLayout()
     local baseDist = (M.EX > 0 and (URM and M.EX == 2 and 80 or 100) or 110) + M.VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
-    local baseY = 726 + 15 * M.GV
+    local baseY = 726 + (URM and M.GV == 2 and 50 or 15 * M.GV)
     local float = M.NH < 2
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
@@ -1299,7 +1300,7 @@ end
 
 function GAME.cancelAll(instant)
     if M.NH == 2 then return end
-    if URM and M.VL == 2 and not UltraVlCheck('reset') then return end
+    if URM and M.VL == 2 and not UltraVlCheck('reset', instant) then return end
 
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
@@ -1653,7 +1654,7 @@ function GAME.commit(auto)
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
         if not GAME.DPlock then
-            GAME.addHeight(attack)
+            GAME.addHeight(GAME.ultraRun and attack * .6 or attack)
         end
         GAME.addXP(attack + xp)
 
@@ -1774,6 +1775,7 @@ function GAME.start()
         SFX.play('garbagerise')
         return
     end
+    GAME.ultraRun = GAME.anyRev and URM
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
 
     TASK.unlock('sure_quit')

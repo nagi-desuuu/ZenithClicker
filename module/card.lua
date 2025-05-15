@@ -140,10 +140,8 @@ function Card:setActive(auto, key)
             if M.GV > 0 and not GAME.gravTimer then
                 GAME.gravTimer = GAME.gravDelay
             end
-            local ignite
             if M.AS > 0 then
                 if self.burn then
-                    ignite = true
                     self.burn = false
                     TASK.removeTask_code(GAME.task_cancelAll)
                     local p = TABLE.find(CD, self) or 0
@@ -164,13 +162,6 @@ function Card:setActive(auto, key)
                 else
                     self.burn = M.AS == 1 and 3 + GAME.floor / 2 or 1e99
                 end
-            end
-            if not ignite and M.NH == 1 and not self.active then
-                if M.AS > 0 then
-                    auto = true
-                    self.active = not self.active
-                end
-                GAME.cancelAll()
             end
         end
     else
@@ -210,7 +201,7 @@ function Card:setActive(auto, key)
             W.text = M.DH > 0 and 'COMMENCE' or 'START'
             W:reset()
         elseif self.id == 'IN' then
-            BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or .65)
+            BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
             for _, C in ipairs(CD) do C:flip() end
             noSpin = M.IN == 1
         elseif self.id == 'AS' then
@@ -224,7 +215,7 @@ function Card:setActive(auto, key)
         SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler and M.NH < 2)
         if revOn or wasRev then GAME.refreshRev() end
         if VALENTINE then BGM.set('piano2', 'volume', (M.DP > 0 or VALENTINE and not GAME.anyRev) and .626 or 0, .26) end
-        GAME.hardMode = M.EX > 0 or GAME.anyRev
+        GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
         GAME.refreshPBText()
         GAME.refreshRPC()
     end

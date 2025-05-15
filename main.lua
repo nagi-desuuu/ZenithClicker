@@ -551,10 +551,11 @@ function SubmitAchv(id, score, silent)
 
     if not silent and R1 >= 1 then
         local rank = math.floor(R1)
-        local scoreText = A.scoreSimp(score) .. (A.scoreFull and "  (" .. A.scoreFull(score) .. ")" or "")
+        local scoreText = A.scoreSimp(score) .. (A.scoreFull and "  " .. A.scoreFull(score) or "")
+        local oldScoreText = A.scoreSimp(oldScore) .. (A.scoreFull and "  " .. A.scoreFull(oldScore) or "")
         table.insert(bufferedMsg, { AchvData[rank].id, {
             AchvData[rank].fg, A.name .. "   >>   " .. scoreText,
-            COLOR.LD, (ACHV[id] and "    Previous: " .. (A.scoreFull or A.scoreSimp)(oldScore) or "") .. "\n",
+            COLOR.LD, (ACHV[id] and "    Previous: " .. oldScoreText or "") .. "\n",
             COLOR.dL, A.desc .. "\n", COLOR.LD, A.quote,
         }, rank <= 2 and 1 or rank <= 4 and 2 or 3 })
         if not GAME.playing then
@@ -1003,22 +1004,24 @@ function WIDGET._prototype.slider:draw()
 end
 
 local uVLpool = {}
-function UltraVlCheck(name, auto)
-    uVLpool[name] = (uVLpool[name] or 0) + (auto and 3.55 or 1)
-    if uVLpool[name] < 3.1 then
+function UltraVlCheck(id, auto)
+    uVLpool[id] = (uVLpool[id] or 0) + (auto and 3.55 or 1)
+    if uVLpool[id] < 3.1 then
         SFX.play('clearline', .3)
-        if uVLpool[name] < 1.3 then
+        if uVLpool[id] < 1.3 then
             SFX.play('combo_1', .626, 0, GAME.mod.GV)
-        elseif uVLpool[name] < 2.2 then
+        elseif uVLpool[id] < 2.2 then
             SFX.play('combo_3', .626, 0, -2 + GAME.mod.GV)
         else
             SFX.play('combo_2', .626, 0, 1 + GAME.mod.GV)
         end
         return false
     end
-    SFX.play('clearquad', .3)
-    SFX.play('combo_4', .626, 0, GAME.mod.GV)
-    uVLpool[name] = 0
+    if not auto then
+        SFX.play('clearquad', .3)
+        SFX.play('combo_4', .626, 0, GAME.mod.GV)
+    end
+    uVLpool[id] = 0
     return true
 end
 
@@ -1083,6 +1086,8 @@ function Daemon_Fast()
             t1 = t1 + step1
             if M.MS == 0 then
                 for i = 1, 9 do Cards[i].visY = 0 end
+            elseif URM and M.MS == 2 then
+                for i = 1, 9 do Cards[i].visY = math.random(-42, 42) end
             else
                 for i = 1, 9 do Cards[i].visY = M.MS * math.random(-4, 4) end
             end
@@ -1108,6 +1113,10 @@ function Daemon_Fast()
             pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
         end
 
+        for k, v in next, uVLpool do
+            uVLpool[k] = max(v - dt, 0)
+        end
+
         if GAME.revDeckSkin and SYSTEM ~= 'Web' then
             if M.NH > 0 then dt = dt * (1 - M.NH * .42) end
             if M.AS > 0 then dt = dt * (1 + M.AS) end
@@ -1115,10 +1124,6 @@ function Daemon_Fast()
             local v = dt * GAME.bgXdir * (26 + 2.6 * GAME.rank)
             if M.GV > 0 then v = v * (.62 + M.GV * 2.6 * math.sin(t * 2.6 * (M.GV - .5))) end
             GAME.bgX = GAME.bgX + v
-        end
-
-        for k, v in next, uVLpool do
-            uVLpool[k] = max(v - dt, 0)
         end
     end
 end
