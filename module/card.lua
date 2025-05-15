@@ -318,9 +318,9 @@ function Card:revJump()
                     for _, C in ipairs(CD) do
                         if C ~= self then
                             local r = rnd()
-                            if self.id == 'EX' then r = r * 2.6 end
+                            if self.id == 'EX' then r = r * (URM and 12.6 or 2.6) end
                             if self.id == 'MS' then r = max(sign((r - .5)) * abs(r - .5) ^ .3333 / 1.5874 + .5, 0) end
-                            if self.id == 'GV' then r = r * .26 end
+                            if self.id == 'GV' then r = (URM and .0626 or .26) end
                             C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
                         end
                     end
@@ -344,9 +344,9 @@ function Card:revJump()
                     for _, C in ipairs(CD) do
                         if C ~= self then
                             local r = 1 - abs(C.initOrder - self.initOrder) / 8
-                            if self.id == 'EX' then r = r * 2.6 end
+                            if self.id == 'EX' then r = r * (URM and 12.6 or 2.6) end
                             if self.id == 'MS' then r = r * MATH.rand(.26, 1.26) end
-                            if self.id == 'GV' then r = r * .26 end
+                            if self.id == 'GV' then r = r * (URM and .0626 or .26) end
                             C:bounce(lerp(120, 420, r), lerp(.42, .62, r))
                         end
                     end
