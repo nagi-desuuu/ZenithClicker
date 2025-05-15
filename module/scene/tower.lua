@@ -144,12 +144,10 @@ local function keyPress(key)
         GAME.cancelAll()
         if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
     elseif bindID == 21 or bindID == 22 then
-        if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, bindID == 21 and 1 or 2)
         if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
     elseif bindID == 19 then
-        if M.NH == 2 and M.AS == 0 then return SFX.play('no') end
         GAME.nixPrompt('keep_no_keyboard')
         local W = scene.widgetList.start
         W._pressTime = W._pressTimeMax * 2
