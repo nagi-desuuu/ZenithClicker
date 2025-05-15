@@ -1292,6 +1292,11 @@ function scene.overDraw()
         gc_setColor(.8, 0, 0, GAME.playing and .2 or .35)
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
+
+    -- Version number
+    gc_replaceTransform(SCR.xOy_d)
+    gc_setColor(.626, .626, .626, .626)
+    gc_mDraw(TEXTS.version, -260 * GAME.uiHide, -10, 0, .62)
 end
 
 scene.widgetList = {

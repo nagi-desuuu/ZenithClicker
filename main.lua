@@ -5,7 +5,7 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText((require 'version'.appVer) .. ("      "):rep(26) .. ".")
+ZENITHA.setVersionText("")
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -376,6 +376,7 @@ BG.add('black', { draw = function() GC.clear(0, 0, 0) end })
 BG.set('black')
 
 TEXTS = { -- Font size can only be 30 and 50 here !!!
+    version    = GC.newText(FONT.get(30), SYSTEM .. " " .. (require 'version'.appVer)),
     mod        = GC.newText(FONT.get(30)),
     mpPreview  = GC.newText(FONT.get(30)),
     zpPreview  = GC.newText(FONT.get(30)),
