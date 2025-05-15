@@ -238,7 +238,7 @@ return {
     -- level500=                    {587, 5},
     -- levelup=                     {522, 1.4},
     -- maintenance=                 {178, 1.1},
-    -- map_change=                  {538, 2.12},
+    map_change = { 538, 2.12 },
     -- matchintro=                  {489, 16.5},
     -- mission_free=                {88,  3.4},
     -- mission_league=              {672, 11.2},

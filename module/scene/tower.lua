@@ -1447,7 +1447,6 @@ scene.widgetList = {
             InvisDashboard = PieceSFXID == 5
             URM = PieceSFXID == 6
             GC.setWireframe(PieceSFXID == 7)
-            ZENITHA.setShowFPS(PieceSFXID == 8)
 
             GAME.refreshLayout()
             BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
@@ -1462,7 +1461,7 @@ scene.widgetList = {
                     "T - Invisible Dashboard",
                     "O - Ultra Reversed Mods",
                     "I - Blind",
-                    "ALLCLEAR - Show FPS",
+                    "ALLCLEAR",
                 })[PieceSFXID],
                 time = 1.2
             })

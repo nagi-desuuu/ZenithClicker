@@ -319,9 +319,13 @@ scene.widgetList = {
                 MSG('dark', "No data in clipboard")
                 return
             end
-            if data == 'cmd' then
+            if data:trim() == 'cmd' then
                 SFX.play('cutin_superlobby', 1, 0, -2 + GAME.mod.GV)
                 SCN.go('_console')
+                return
+            elseif data:trim() == 'fps' then
+                SFX.play('map_change', .626, 0, -3.5 + GAME.mod.GV)
+                ZENITHA.setShowFPS(true)
                 return
             end
             data = data:trim()
