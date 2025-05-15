@@ -1634,7 +1634,7 @@ function GAME.commit(auto)
 
         if M.DP > 0 then
             if M.DP == 2 then
-                if GAME.takeDamage(attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
+                if GAME.takeDamage(URM and attack / 2 or attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
                     return
                 elseif check_achv_romantic_homicide then
                     IssueAchv('romantic_homicide')
@@ -1701,7 +1701,7 @@ function GAME.commit(auto)
             end
         end
 
-        if M.DP > 0 and (correct == 2 or dblCorrect) and not URM then
+        if M.DP > 0 and (correct == 2 or dblCorrect) then
             if GAME.swapControl() then
                 SFX.play('party_ready', 1, 0, M.GV)
             end

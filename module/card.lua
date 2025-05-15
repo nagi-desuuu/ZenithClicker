@@ -131,7 +131,7 @@ function Card:setActive(auto, key)
                 GAME.fault = true
             end
         end
-        if M.DP > 0 and not auto and self.id == 'DP' and self.active then
+        if M.DP > 0 and not auto and self.id == 'DP' and self.active and not (URM and M.DP == 2) then
             if GAME.swapControl() then
                 SFX.play('party_ready', .8, 0, M.GV)
             end
