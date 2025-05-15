@@ -171,6 +171,9 @@ local GAME = {
     achv_felMagicQuest = nil,
     achv_resetCount = nil,
     achv_obliviousQuest = nil,
+
+    chargeStart = 0,
+    chargeReset = 0,
 }
 
 GAME.playing = false
@@ -287,6 +290,17 @@ function GAME.getComboName(list, mode)
         local combo = (M.DH == 2 and ComboData.gameEX or ComboData.game)[table.concat(TABLE.sort(list), ' ')]
         if combo then
             fstr = combo.name:atomize()
+            if URM and M.DH == 2 then
+                rem(fstr, #fstr)
+                local e = rem(fstr)
+                rem(fstr, 1)
+                local s = rem(fstr, 1)
+                TABLE.shuffle(fstr)
+                ins(fstr, 1, s)
+                ins(fstr, 1, "\"")
+                ins(fstr, e)
+                ins(fstr, "\"")
+            end
             for i = #fstr, 1, -1 do
                 ins(fstr, i, { MATH.rand(.872, 1), MATH.rand(.872, 1), MATH.rand(.872, 1) })
             end
@@ -348,6 +362,14 @@ function GAME.getComboName(list, mode)
                     r == 1 and 3 or
                     r == 2 and 0 or rnd(0, 1)
                 fstr[i] = { 1, 1, 1, .6 + .13 * r }
+            end
+        end
+
+        if URM and M.DH == 2 then
+            for i = 1, #fstr do
+                if type(fstr[i]) == 'string' then
+                    fstr[i] = table.concat(TABLE.shuffle(fstr[i]:atomize()))
+                end
             end
         end
 
@@ -837,11 +859,11 @@ function GAME.setGigaspeedAnim(on, finish)
     end
 end
 
-function GAME.readyShuffle(messiness)
+function GAME.readyShuffle(messiness, noSnd)
     if not messiness then return end
     GAME.shuffleMessiness = messiness
     if GAME.totalQuest > 0 then
-        SFX.play('rsg_go', 1, 0, 2 + M.GV)
+        if not noSnd then SFX.play('rsg_go', 1, 0, 2 + M.GV) end
         for _, C in ipairs(CD) do C:shake() end
     end
 end
@@ -1102,13 +1124,14 @@ function GAME.refreshCurrentCombo()
 end
 
 function GAME.refreshLayout()
-    local baseDist = (M.EX > 0 and 100 or 110) + M.VL * 20
+    local baseDist = (M.EX > 0 and (URM and M.EX == 2 and 80 or 100) or 110) + M.VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
-    local dodge = M.VL == 0 and 260 or 220
     local baseY = 726 + 15 * M.GV
     local float = M.NH < 2
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
+        local dodge = M.VL == 0 and 250 or 230
+        if URM and M.EX == 2 then dodge = dodge - 40 end
         for i = 1, #CD do
             local C = CD[i]
             if i < FloatOnCard then
@@ -1279,9 +1302,27 @@ end
 
 function GAME.cancelAll(instant)
     if M.NH == 2 then return end
+    if URM and M.VL == 2 then
+        GAME.chargeReset = GAME.chargeReset + 1
+        if GAME.chargeReset < 3.1 then
+            SFX.play('clearline', .3)
+            if GAME.chargeReset < 1.3 then
+                SFX.play('combo_1', .626, 0, M.GV)
+            elseif GAME.chargeReset < 2.2 then
+                SFX.play('combo_3', .626, 0, -2 + M.GV)
+            else
+                SFX.play('combo_2', .626, 0, 1 + M.GV)
+            end
+            return
+        end
+        SFX.play('clearquad', .3)
+        SFX.play('combo_4', .626, 0, M.GV)
+        GAME.chargeReset = 0
+    end
+
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
-    if GAME.gravTimer and GAME.achv_resetCount < 15 then GAME.gravTimer = GAME.gravDelay end
+    if GAME.gravTimer and (not (URM and M.GV == 2) and GAME.achv_resetCount < 15) then GAME.gravTimer = GAME.gravDelay end
 end
 
 function GAME.task_cancelAll(instant)
@@ -1305,8 +1346,26 @@ function GAME.task_cancelAll(instant)
     end
 end
 
-function GAME.commit()
+function GAME.commit(auto)
     if #GAME.quests == 0 then return end
+
+    if URM and M.VL == 2 then
+        GAME.chargeStart = GAME.chargeStart + (auto and 3.55 or 1)
+        if GAME.chargeStart < 3.1 then
+            SFX.play('clearline', .3)
+            if GAME.chargeStart < 1.3 then
+                SFX.play('combo_1', .626, 0, M.GV)
+            elseif GAME.chargeStart < 2.2 then
+                SFX.play('combo_3', .626, 0, -2 + M.GV)
+            else
+                SFX.play('combo_2', .626, 0, 1 + M.GV)
+            end
+            return
+        end
+        SFX.play('clearquad', .3)
+        SFX.play('combo_4', .626, 0, M.GV)
+        GAME.chargeStart = 0
+    end
 
     local hand = TABLE.sort(GAME.getHand(false))
 
@@ -1635,16 +1694,20 @@ function GAME.commit()
 
         -- rMS little shuffle
         if M.MS == 2 then
-            local r1 = rnd(2, #CD - 1)
-            local r2 = r1 + MATH.coin(-1, 1)
-            local r3
-            if GAME.floor <= 8 then
-                CD[r1], CD[r2] = CD[r2], CD[r1]
+            if URM then
+                GAME.readyShuffle(GAME.floor * 2.6, true)
             else
-                repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
-                CD[r1], CD[r2], CD[r3] = CD[r2], CD[r3], CD[r1]
+                local r1 = rnd(2, #CD - 1)
+                local r2 = r1 + MATH.coin(-1, 1)
+                local r3
+                if GAME.floor <= 8 then
+                    CD[r1], CD[r2] = CD[r2], CD[r1]
+                else
+                    repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
+                    CD[r1], CD[r2], CD[r3] = CD[r2], CD[r3], CD[r1]
+                end
+                GAME.refreshLayout()
             end
-            GAME.refreshLayout()
         end
 
         GAME.cancelAll(true)
@@ -1672,7 +1735,7 @@ function GAME.commit()
             end
         end
 
-        if M.DP > 0 and (correct == 2 or dblCorrect) then
+        if M.DP > 0 and (correct == 2 or dblCorrect) and not URM then
             if GAME.swapControl() then
                 SFX.play('party_ready', 1, 0, M.GV)
             end
@@ -1746,6 +1809,24 @@ function GAME.start()
         SFX.play('garbagerise')
         return
     end
+    if URM and M.VL == 2 then
+        GAME.chargeStart = GAME.chargeStart + (auto and 3.55 or 1)
+        if GAME.chargeStart < 3.1 then
+            SFX.play('clearline', .3)
+            if GAME.chargeStart < 1.3 then
+                SFX.play('combo_1', .626, 0, M.GV)
+            elseif GAME.chargeStart < 2.2 then
+                SFX.play('combo_3', .626, 0, -2 + M.GV)
+            else
+                SFX.play('combo_2', .626, 0, 1 + M.GV)
+            end
+            return
+        end
+        SFX.play('clearquad', .3)
+        SFX.play('combo_4', .626, 0, M.GV)
+        GAME.chargeStart = 0
+    end
+
     TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
     SCN.scenes.tower.widgetList.help2:setVisible(false)
@@ -1898,9 +1979,12 @@ function GAME.start()
     GAME.achv_resetCount = 0
     GAME.achv_obliviousQuest = 0
     if M.DP == 1 then IssueAchv('intended_glitch') end
+
+    GAME.chargeStart = 0
+    GAME.chargeReset = 0
 end
 
----@param reason 'forfeit' | 'wrong' | 'time'
+---@param reason 'forfeit' | 'wrong' | 'time' | 'instakill'
 function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help:setVisible(not GAME.zenithTraveler)
     SCN.scenes.tower.widgetList.help2:setVisible(not GAME.zenithTraveler)
@@ -1911,6 +1995,7 @@ function GAME.finish(reason)
         reason == 'forfeit' and 'detonated' or
         reason == 'wrong' and 'topout' or
         reason == 'time' and 'losestock' or
+        reason == 'instakill' and 'bombdetonate' or
         'shatter', .8
     )
 
@@ -2271,6 +2356,10 @@ local questStyleDP = {
 
 function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
+    if URM and M.VL == 2 then
+        GAME.chargeStart = max(GAME.chargeStart - dt, 0)
+        GAME.chargeReset = max(GAME.chargeReset - dt, 0)
+    end
     if GAME.playing then
         -- if love.keyboard.isDown('[') then
         --     GAME.addHeight(dt * 260)
@@ -2315,7 +2404,7 @@ function GAME.update(dt)
 
         GAME.questTime = GAME.questTime + dt
         GAME.floorTime = GAME.floorTime + dt
-        if M.GV > 0 and not GAME.gravTimer and GAME.questTime >= 2.6 and GAME.questTime - dt < 2.6 then
+        if M.GV > 0 and not GAME.gravTimer and (URM and M.GV == 2 or GAME.questTime >= 2.6) and GAME.questTime - dt < 2.6 then
             GAME.gravTimer = GAME.gravDelay
         end
         if M.EX == 2 and GAME.floorTime > 30 then
@@ -2369,13 +2458,11 @@ function GAME.update(dt)
             local oldHeight = GAME.height
 
             GAME.height = GAME.height + releaseHeight
-            if M.EX < 2 then
-                GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
+            if M.EX == 2 then
+                GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
+                if not URM then GAME.height = max(GAME.height, Floors[GAME.floor - 1].top) end
             else
-                GAME.height = max(
-                    GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20,
-                    Floors[GAME.floor - 1].top
-                )
+                GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
             end
             GAME.roundHeight = ceil(GAME.height * 100) / 100
 
@@ -2422,7 +2509,7 @@ function GAME.update(dt)
             GAME.gravTimer = GAME.gravTimer - dt
             if GAME.gravTimer <= 0 then
                 GAME.faultWrong = false
-                GAME.commit()
+                GAME.commit(true)
             end
         end
 

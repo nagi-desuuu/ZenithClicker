@@ -272,7 +272,7 @@ function scene.mouseDown(x, y, k)
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return true end
 
-    if getBtnPressed() > 1 + math.floor(M.VL / 2) then return true end
+    if getBtnPressed() > 1 + (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return true end
     if M.EX == 0 then
         SFX.play('move')
         mousePress(x, y, k)
@@ -289,7 +289,7 @@ function scene.mouseClick(x, y, k)
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return end
 
-    if getBtnPressed() > math.floor(M.VL / 2) then return end
+    if getBtnPressed() > (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return end
     if cancelNextClick then
         cancelNextClick = false
         return
@@ -939,24 +939,26 @@ function scene.overDraw()
         end
 
         -- Quests
-        for i = 1, #GAME.quests do
-            local Q = GAME.quests[i]
-            local text = Q.name
-            local kx = min(Q.k, 1550 / text:getWidth())
-            local ky = max(kx, Q.k)
-            local a = 1
-            if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
-                a = clamp(
-                    a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26),
-                    GAME.faultWrong and .355 or 0, 1
-                )
-            end
-            if a > 0 then
-                a = a * Q.a
-                gc_setColor(.2 * a, .2 * a, .2 * a, a)
-                gc_mDraw(text, 800, Q.y + 5, 0, kx, ky)
-                gc_setColor(1, 1, 1, a)
-                gc_mDraw(text, 800, Q.y, 0, kx, ky)
+        if not (URM and M.NH == 2) then
+            for i = 1, #GAME.quests do
+                local Q = GAME.quests[i]
+                local text = Q.name
+                local kx = min(Q.k, 1550 / text:getWidth())
+                local ky = max(kx, Q.k)
+                local a = 1
+                if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
+                    a = clamp(
+                        a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26),
+                        GAME.faultWrong and not URM and .355 or 0, 1
+                    )
+                end
+                if a > 0 then
+                    a = a * Q.a
+                    gc_setColor(.2 * a, .2 * a, .2 * a, a)
+                    gc_mDraw(text, 800, Q.y + 5, 0, kx, ky)
+                    gc_setColor(1, 1, 1, a)
+                    gc_mDraw(text, 800, Q.y, 0, kx, ky)
+                end
             end
         end
 
@@ -1281,6 +1283,11 @@ function scene.overDraw()
             gc_line(0, 0, 420 * cos(a), 420 * sin(a))
         end
     end
+    if URM and (not GAME.playing or GAME.anyRev) then
+        gc_replaceTransform(SCR.origin)
+        gc_setColor(.8, 0, 0, GAME.playing and .2 or .35)
+        gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+    end
 end
 
 scene.widgetList = {
@@ -1428,8 +1435,9 @@ scene.widgetList = {
             GlassCard = PieceSFXID == 3
             InvisCard = PieceSFXID == 4
             InvisDashboard = PieceSFXID == 5
-            GC.setWireframe(PieceSFXID == 6)
-            ZENITHA.setShowFPS(PieceSFXID == 7)
+            URM = PieceSFXID == 6
+            GC.setWireframe(PieceSFXID == 7)
+            ZENITHA.setShowFPS(PieceSFXID == 8)
 
             MSG({
                 cat = 'dark',
@@ -1439,9 +1447,9 @@ scene.widgetList = {
                     "J - Glass Card",
                     "L - Invisible Card",
                     "T - Invisible Dashboard",
-                    "O - Blind",
-                    "I - Show FPS",
-                    "ALLCLEAR",
+                    "O - Ultra Reversed Mods",
+                    "I - Blind",
+                    "ALLCLEAR - Show FPS",
                 })[PieceSFXID],
                 time = 1.2
             })
