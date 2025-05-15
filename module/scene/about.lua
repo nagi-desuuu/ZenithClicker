@@ -15,6 +15,9 @@ local clr = {
     osk = { COLOR.HEX "DD99FF" },
     ocelot = { COLOR.HEX "FF99CC" },
     garbo = { COLOR.HEX "3A66DD" },
+
+    flmk = { COLOR.HEX "B7A0FF" },
+    sheep = { COLOR.HEX "FF82F0" },
 }
 
 AboutText = GC.newText(FONT.get(70))
@@ -95,11 +98,20 @@ addText({
 }, 0, 920, .32)
 
 addText({
+    COLOR.O, "MANY TEXTS BY ",
+    clr.flmk, "FLOMIKEL ",
+    COLOR.O, "& ",
+    clr.sheep, "SPRITZY SHEEP ",
+    COLOR.O, "& ",
+    COLOR.L, "OBSIDIAN "
+}, 0, 955, .32)
+
+addText({
     COLOR.O, "FONTS BY ",
     COLOR.L, "ADRIAN FRUTIGER (D-DIN-PRO) ",
     COLOR.O, "& ",
     COLOR.L, "MOONIAK (ABHAYALIBRE)"
-}, 0, 955, .32)
+}, 0, 990, .32)
 
 addText({
     COLOR.O, "SOME ACHV ICONS BY ",
@@ -110,11 +122,11 @@ addText({
     COLOR.L, "QUOTING ",
     COLOR.O, "FROM ",
     COLOR.L, "GAME-ICONS.NET"
-}, 0, 990, .32)
+}, 0, 1025, .32)
 
-table.insert(lines, 1040)
+table.insert(lines, 1075)
 
-addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 1060, .3)
+addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 1095, .3)
 
 addText({
     table.concat({
@@ -140,11 +152,12 @@ addText({
         "QUOTING",
         "RICMAN",
         "S. ZHANG",
+        "SPRITZY SHEEP",
         "THE_111THBLITZER",
         "TIZAGO",
         "WAH",
     }, "   ")
-}, 0, 1100, .26)
+}, 0, 1135, .26)
 
 local timer
 function scene.load()
