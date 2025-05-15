@@ -1203,17 +1203,24 @@ function scene.overDraw()
         gc_setAlpha(.7)
         gc_rectangle('fill', -888 / 2, -145, 888, 120, 10)
         if GAME.anyRev and M[infoID] == 2 then
+            local text = URM and MD.ultraName[infoID] or MD.revName[infoID]
             setFont(70)
             gc_push('transform')
             gc_translate(0, -118)
             gc_scale(1 + sin(t / 2.6) * .026)
             gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
-            gc_strokePrint('full', 6, COLOR.DW, nil, MD.revName[infoID], 130, -35 + 4, 2600, 'center', 0, .9, 1)
-            gc_strokePrint('full', 4, COLOR.dW, nil, MD.revName[infoID], 130, -35 + 2, 2600, 'center', 0, .9, 1)
-            gc_strokePrint('full', 2, COLOR.W, COLOR.L, MD.revName[infoID], 130, -35, 2600, 'center', 0, .9, 1)
+            gc_strokePrint('full', 6, COLOR.DW, nil, text, 130, -35 + 4, 2600, 'center', 0, .9, 1)
+            gc_strokePrint('full', 4, COLOR.dW, nil, text, 130, -35 + 2, 2600, 'center', 0, .9, 1)
+            gc_strokePrint(
+                'full', 2, COLOR.W, URM and COLOR.D or COLOR.L,
+                text, 130, -35, 2600, 'center', 0, .9, 1
+            )
             gc_pop()
             setFont(30)
-            gc_strokePrint('full', 2, COLOR.dW, COLOR.W, MD.revDesc[infoID], 260, -68, 2600, 'center', 0, .8, 1)
+            gc_strokePrint(
+                'full', 2, COLOR.dW, URM and COLOR.D or COLOR.W,
+                (URM and MD.ultraDesc or MD.revDesc)[infoID], 260, -68, 2600, 'center', 0, .8, 1
+            )
         else
             setFont(70)
             gc_strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 130, -150, 2600, 'center', 0, .9, 1)
