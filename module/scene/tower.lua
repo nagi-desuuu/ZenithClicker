@@ -1448,6 +1448,7 @@ scene.widgetList = {
             URM = PieceSFXID == 6
             GC.setWireframe(PieceSFXID == 7)
 
+            GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
             GAME.refreshLayout()
             BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
 
