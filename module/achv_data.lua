@@ -345,14 +345,14 @@ Achievements = {
     { -- swamp_water_lite
         id = 'swamp_water_lite',
         name = "Swamp Water Lite",
-        desc = [[HFD WUT 7/8 of the difficulty mods ("Duo" not allowed)]],
+        desc = [[HFD WU 7/8 of the difficulty mods ("Duo" not allowed)]],
         quote = [[Comes in 8 different flavors!]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
     { -- swamp_water
         id = 'swamp_water',
         name = "Swamp Water",
-        desc = [[HFD WUT all mods other than "Duo" at the same time]],
+        desc = [[HFD WU all mods other than "Duo" at the same time]],
         quote = [[The worst of all worlds.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
@@ -360,7 +360,7 @@ Achievements = {
         ex = true,
         id = 'swamp_water_pro',
         name = "Swamp Water Pro",
-        desc = [[HFD WUT all mods at the same time]],
+        desc = [[HFD WU all mods at the same time]],
         quote = [[How did you find someone as insane as you to do it together?]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
     },
@@ -658,7 +658,7 @@ Achievements = {
         ex = true,
         id = 'swamp_water_lite_plus',
         name = "Swamp Water Lite+",
-        desc = [[HFD WUT 1rev+6 mods ("Duo" not allowed)]],
+        desc = [[HFD WU 1rev+6 mods ("Duo" not allowed)]],
         quote = [[Comes in...... 56 different flavors?]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
@@ -667,7 +667,7 @@ Achievements = {
         ex = true,
         id = 'swamp_water_plus',
         name = "Swamp Water+",
-        desc = [[HFD WUT 1rev+7 mods ("Duo" not allowed)]],
+        desc = [[HFD WU 1rev+7 mods ("Duo" not allowed)]],
         quote = [[Taste similar but can still be distinguished.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
@@ -676,7 +676,7 @@ Achievements = {
         ex = true,
         id = 'swamp_water_pro_plus',
         name = "Swamp Water Pro+",
-        desc = [[HFD WUT 1rev+8 mods]],
+        desc = [[HFD WU 1rev+8 mods]],
         quote = [[The cup is about to overflow!]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
@@ -1436,6 +1436,7 @@ for i = 1, #Achievements do
 
         assert(achv.desc, "Missing field 'desc' - " .. id)
         achv.desc = achv.desc
+            :gsub("WU", "while using")
             :gsub("WUT", "while using the")
             :gsub("HFD", "Highest floor discovered")
             :gsub("HAR", "Highest altitude reached")
