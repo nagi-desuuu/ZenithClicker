@@ -901,7 +901,7 @@ function GAME.upFloor()
     if GAME.floor > 1 then
         if M.MS == 1 then
             GAME.readyShuffle(Floors[GAME.floor].MSshuffle)
-        elseif M.MS == 2 then
+        elseif M.MS == 2 and not URM then
             GAME.readyShuffle(GAME.floor * 2.6)
         end
     end
