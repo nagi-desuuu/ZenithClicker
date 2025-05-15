@@ -171,9 +171,6 @@ local GAME = {
     achv_felMagicQuest = nil,
     achv_resetCount = nil,
     achv_obliviousQuest = nil,
-
-    chargeStart = 0,
-    chargeReset = 0,
 }
 
 GAME.playing = false
@@ -1302,23 +1299,7 @@ end
 
 function GAME.cancelAll(instant)
     if M.NH == 2 then return end
-    if URM and M.VL == 2 then
-        GAME.chargeReset = GAME.chargeReset + 1
-        if GAME.chargeReset < 3.1 then
-            SFX.play('clearline', .3)
-            if GAME.chargeReset < 1.3 then
-                SFX.play('combo_1', .626, 0, M.GV)
-            elseif GAME.chargeReset < 2.2 then
-                SFX.play('combo_3', .626, 0, -2 + M.GV)
-            else
-                SFX.play('combo_2', .626, 0, 1 + M.GV)
-            end
-            return
-        end
-        SFX.play('clearquad', .3)
-        SFX.play('combo_4', .626, 0, M.GV)
-        GAME.chargeReset = 0
-    end
+    if URM and M.VL == 2 and not UltraVlCheck('reset') then return end
 
     TASK.removeTask_code(GAME.task_cancelAll)
     TASK.new(GAME.task_cancelAll, instant)
@@ -1349,23 +1330,7 @@ end
 function GAME.commit(auto)
     if #GAME.quests == 0 then return end
 
-    if URM and M.VL == 2 then
-        GAME.chargeStart = GAME.chargeStart + (auto and 3.55 or 1)
-        if GAME.chargeStart < 3.1 then
-            SFX.play('clearline', .3)
-            if GAME.chargeStart < 1.3 then
-                SFX.play('combo_1', .626, 0, M.GV)
-            elseif GAME.chargeStart < 2.2 then
-                SFX.play('combo_3', .626, 0, -2 + M.GV)
-            else
-                SFX.play('combo_2', .626, 0, 1 + M.GV)
-            end
-            return
-        end
-        SFX.play('clearquad', .3)
-        SFX.play('combo_4', .626, 0, M.GV)
-        GAME.chargeStart = 0
-    end
+    if URM and M.VL == 2 and not UltraVlCheck('start', auto) then return end
 
     local hand = TABLE.sort(GAME.getHand(false))
 
@@ -1809,23 +1774,7 @@ function GAME.start()
         SFX.play('garbagerise')
         return
     end
-    if URM and M.VL == 2 then
-        GAME.chargeStart = GAME.chargeStart + (auto and 3.55 or 1)
-        if GAME.chargeStart < 3.1 then
-            SFX.play('clearline', .3)
-            if GAME.chargeStart < 1.3 then
-                SFX.play('combo_1', .626, 0, M.GV)
-            elseif GAME.chargeStart < 2.2 then
-                SFX.play('combo_3', .626, 0, -2 + M.GV)
-            else
-                SFX.play('combo_2', .626, 0, 1 + M.GV)
-            end
-            return
-        end
-        SFX.play('clearquad', .3)
-        SFX.play('combo_4', .626, 0, M.GV)
-        GAME.chargeStart = 0
-    end
+    if URM and M.VL == 2 and not UltraVlCheck('start') then return end
 
     TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
@@ -1979,9 +1928,6 @@ function GAME.start()
     GAME.achv_resetCount = 0
     GAME.achv_obliviousQuest = 0
     if M.DP == 1 then IssueAchv('intended_glitch') end
-
-    GAME.chargeStart = 0
-    GAME.chargeReset = 0
 end
 
 ---@param reason 'forfeit' | 'wrong' | 'time' | 'instakill'
@@ -2356,10 +2302,6 @@ local questStyleDP = {
 
 function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
-    if URM and M.VL == 2 then
-        GAME.chargeStart = max(GAME.chargeStart - dt, 0)
-        GAME.chargeReset = max(GAME.chargeReset - dt, 0)
-    end
     if GAME.playing then
         -- if love.keyboard.isDown('[') then
         --     GAME.addHeight(dt * 260)

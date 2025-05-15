@@ -165,6 +165,7 @@ local function keyPress(key)
         if GAME.playing then
             SFX.play('no')
         else
+            if URM and M.VL == 2 and not UltraVlCheck('stat') then return end
             SFX.play('menuhit1')
             SCN.go('stat', 'none')
         end
@@ -175,6 +176,7 @@ local function keyPress(key)
         if GAME.playing then
             SFX.play('no')
         else
+            if URM and M.VL == 2 and not UltraVlCheck('achv') then return end
             SFX.play('menuhit1')
             SCN.go('achv', 'none')
         end
@@ -185,6 +187,7 @@ local function keyPress(key)
         if GAME.playing then
             SFX.play('no')
         else
+            if URM and M.VL == 2 and not UltraVlCheck('conf') then return end
             SFX.play('menuhit1')
             SCN.go('conf', 'none')
         end
@@ -195,6 +198,7 @@ local function keyPress(key)
         if GAME.playing then
             SFX.play('no')
         else
+            if URM and M.VL == 2 and not UltraVlCheck('reset') then return end
             SFX.play('menuhit1')
             SCN.go('about', 'none')
         end
