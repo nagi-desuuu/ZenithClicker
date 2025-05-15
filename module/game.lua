@@ -2074,15 +2074,25 @@ function GAME.finish(reason)
         end
 
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
+        local endFloorStr
+        if GAME.height >= 0 then
+            endFloorStr = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
+        else
+            for i = #NegFloors, 1, -1 do
+                if GAME.height < NegFloors[i].top then
+                    endFloorStr = ("B$1: $2"):repD(i, NegFloors[i].name)
+                    break
+                end
+            end
+        end
         if GAME.gigaspeedEntered then
-            local s = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
-            if GAME.gigaTime then s = s .. "   in " .. STRING.time_simp(GAME.gigaTime) end
-            local l = s:atomize()
+            if GAME.gigaTime then endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime) end
+            local l = endFloorStr:atomize()
             local len = #l
             for i = len, 1, -1 do ins(l, i, { COLOR.HSV(lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
             TEXTS.endFloor:set(l)
         else
-            TEXTS.endFloor:set("F" .. GAME.floor .. ": " .. Floors[GAME.floor].name)
+            TEXTS.endFloor:set(endFloorStr)
         end
 
         local g = GAME

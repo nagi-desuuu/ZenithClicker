@@ -476,7 +476,7 @@ RevSwampName = {
 }
 
 Floors = {
-    [0] = { top = 0, name = "The Basement" },
+    [0] = { top = 00000, name = "The Basement" },
     { top = 50,   event = {},                                                  name = "Hall of Beginnings" },
     { top = 150,  event = { 'dmgDelay', -2, 'dmgWrong', 1 },                   name = "The Hotel",           MSshuffle = 1 },
     { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                 name = "The Casino" },
@@ -489,6 +489,19 @@ Floors = {
     { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 1 },  name = "Platform of the Gods" },
     -- Initial: Delay=15. Cycle=5, Wrong=1
     -- Total: Delay-10, Cycle-3, Wrong+4
+}
+
+NegFloors = {
+    { top = 0,         name = "The Basement",        desc = [[A basic storage room for the floors above... and below.]] }, -- Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?
+    { top = -50 / 3,   name = "Zenith Restaurant",   desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]] },
+    { top = -150 / 3,  name = "Underground Parking", desc = [[A boundless parking lot for all of these visitors.]] },
+    { top = -300 / 3,  name = "The Bunker",          desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]] },
+    { top = -450 / 3,  name = "The Infirmary",       desc = [[The medical sector of the tower, filled with incomprehensible technology... the machines look similar to the ones in the Laboratory and the Core...]] },
+    { top = -650 / 3,  name = "Decayed Catacombs",   desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]] },
+    { top = -850 / 3,  name = "Sacreligious Ruins",  desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]] },                        -- Whispers of a missing artifact echo throughout the area...
+    { top = -1100 / 3, name = "Singularity Reactor", desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]] },
+    { top = -1350 / 3, name = "Distorted Gateways",  desc = [[A hall of millions of gateways to different realities, towers and wastelands... The mere thought of something like is sickening...]] }, -- The entrance to a false promise of paradise. -- You reached the bottom... or it seemed to be at first glance... one last gateway was left...
+    { top = -1650 / 3, name = "Endless Void",        desc = [[A realm of absolutely nothing, none have ever returned.]] },                                                                            -- You look back above... yet you've already gone too far in this insane abyss for you to see anything.
 }
 
 Fatigue = {
