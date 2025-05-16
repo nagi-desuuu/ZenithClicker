@@ -11,8 +11,8 @@ local MD = ModData
 ShortCut = {}
 for i = 1, 9 do ShortCut[i] = GC.newText(FONT.get(50)) end
 
-local cancelNextClick
-local cancelNextKeyClick
+CancelNextClick = false
+CancelNextKeyClick = false
 
 RevUnlocked = false
 local usingTouch = MOBILE
@@ -26,7 +26,7 @@ local scene = {}
 
 local function switchVisitor(bool)
     if not GAME.playing and GAME.zenithTraveler ~= bool and STAT.bg then
-        cancelNextClick, cancelNextKeyClick = true, true
+        CancelNextClick, CancelNextKeyClick = true, true
         SFX.play(bool and 'pause_exit' or 'pause_start')
         GAME.zenithTraveler = bool
         love.mouse.setRelativeMode(bool)
@@ -214,8 +214,8 @@ function scene.load()
     end
     RevUnlocked = TABLE.countAll(GAME.completion, 0) < 9
 
-    cancelNextClick = true
-    cancelNextKeyClick = true
+    CancelNextClick = true
+    CancelNextKeyClick = true
 
     for i = 1, 9 do ShortCut[i]:set(STAT.keybind[i]:upper()) end
 
@@ -268,7 +268,7 @@ local function getBtnPressed()
 end
 
 function scene.mouseDown(x, y, k)
-    cancelNextClick = false
+    CancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
     mouseMove(x, y)
     GAME.nixPrompt('keep_no_mouse')
@@ -278,9 +278,6 @@ function scene.mouseDown(x, y, k)
     if M.EX == 0 then
         SFX.play('move')
         mousePress(x, y, k)
-        if M.EX > 0 then
-            cancelNextClick = true
-        end
     else
         SFX.play('rotate')
     end
@@ -292,8 +289,8 @@ function scene.mouseClick(x, y, k)
     if k == 3 then return end
 
     if getBtnPressed() > (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return end
-    if cancelNextClick then
-        cancelNextClick = false
+    if CancelNextClick then
+        CancelNextClick = false
         return
     end
     if M.EX > 0 then
@@ -332,7 +329,7 @@ end
 function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1) end
 
 function scene.keyDown(key)
-    cancelNextKeyClick = false
+    CancelNextKeyClick = false
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
             switchVisitor(false)
@@ -340,9 +337,6 @@ function scene.keyDown(key)
     else
         if M.EX == 0 then
             keyPress(key)
-            if M.EX > 0 then
-                cancelNextKeyClick = true
-            end
         end
         ZENITHA.setCursorVis(true)
     end
@@ -351,8 +345,8 @@ end
 
 function scene.keyUp(key)
     if GAME.zenithTraveler then return end
-    if cancelNextKeyClick then
-        cancelNextKeyClick = false
+    if CancelNextKeyClick then
+        CancelNextKeyClick = false
         return
     end
     if M.EX > 0 then
@@ -404,7 +398,7 @@ function scene.update(dt)
             SFX.play('detonate2')
             GAME.finish('forfeit')
             if M.EX > 0 then
-                cancelNextKeyClick = true
+                CancelNextKeyClick = true
             end
         end
     else
@@ -1402,7 +1396,15 @@ scene.widgetList = {
         sound_hover = 'menutap',
         fontSize = 30, text = "RESET", textColor = 'dR',
         onPress = function(k) if M.EX == 0 and k ~= 3 then button_reset() end end,
-        onClick = function(k) if M.EX > 0 and k ~= 3 then button_reset() end end,
+        onClick = function(k)
+            if M.EX > 0 and k ~= 3 then
+                if CancelNextClick then
+                    CancelNextClick = false
+                    return
+                end
+                button_reset()
+            end
+        end,
     },
     WIDGET.new {
         name = 'daily', type = 'hint',
