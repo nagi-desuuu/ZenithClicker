@@ -89,12 +89,16 @@ local ins, rem = table.insert, table.remove
 ---@field gravDelay false | number
 ---@field gravTimer false | number
 ---
+---@field negFloor number
+---
 ---@field onAlly boolean
 ---@field life2 number
 ---@field rankLimit number
 ---@field reviveCount number
 ---@field reviveDifficulty number
 ---@field killCount number
+---@field quests Question[]
+---@field reviveTasks ReviveTask[]
 ---@field currentTask ReviveTask |false
 ---@field DPlock boolean
 ---@field lastFlip number | false
@@ -144,9 +148,9 @@ local GAME = {
     hardMode = false,
     numberRev = false,
 
-    quests = {}, ---@type Question[]
-    reviveTasks = {}, ---@type ReviveTask[]
-    currentTask = false, ---@type false | ReviveTask
+    quests = {},
+    reviveTasks = {},
+    currentTask = false,
     lastFlip = false,
 
     zenithTraveler = false,
@@ -803,7 +807,6 @@ function GAME.addXP(xp)
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
-        GAME.xpLockTimer = GAME.xpLockLevel
         GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
 
         -- Rank skip
@@ -814,8 +817,9 @@ function GAME.addXP(xp)
                 GAME.rank = GAME.rank + 1
                 GAME.xp = GAME.xp - 4 * GAME.rank
             end
-            GAME.xpLockLevel = 5
+            GAME.xpLockLevel = GAME.xp >= 2 * GAME.rank and 5 or 4
         end
+        GAME.xpLockTimer = GAME.xpLockLevel
     end
     if GAME.rank > GAME.rankLimit then
         GAME.rank = GAME.rankLimit
@@ -985,6 +989,102 @@ function GAME.upFloor()
     GAME.refreshRPC()
 end
 
+function GAME.nextFatigue()
+    local stage = GAME.fatigueSet[GAME.fatigue]
+    local e = stage.event
+    for i = 1, #e, 2 do
+        GAME[e[i]] = GAME[e[i]] + e[i + 1]
+    end
+    if GAME.floor >= 10 then GAME.updateBgm('ingame') end
+    GAME.fatigue = GAME.fatigue + 1
+    if stage.text then
+        local duration = 5
+        if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
+            duration = duration * 2
+        end
+        if GAME.fatigue == #GAME.fatigueSet then
+            if GAME.fatigueSet == Fatigue.normal then
+                IssueAchv('final_defiance')
+            elseif GAME.fatigueSet == Fatigue.rEX then
+                IssueAchv('royal_resistance')
+            elseif GAME.fatigueSet == Fatigue.rDP then
+                IssueAchv('lovers_stand')
+            end
+        end
+        TEXT:add {
+            text = stage.text,
+            x = 800, y = 265, fontSize = 30, k = 1.5,
+            style = 'score', duration = duration,
+            inPoint = .1, outPoint = .26,
+            color = stage.color or 'lM',
+        }
+        TEXT:add {
+            text = stage.desc,
+            x = 800, y = 300, fontSize = 30,
+            style = 'score', duration = duration,
+            inPoint = .26, outPoint = .1,
+            color = stage.color or 'lM',
+        }
+        TASK.new(GAME.task_fatigueWarn)
+    end
+end
+
+function GAME.downFloor()
+    GAME.negFloor = GAME.negFloor + 1
+
+    GAME.floorTime = 0
+    if GAME.negFloor > 1 then
+        if M.MS == 1 then
+            GAME.readyShuffle(Floors[GAME.negFloor].MSshuffle)
+        elseif M.MS == 2 and not URM then
+            GAME.readyShuffle(GAME.negFloor * 2.6)
+        end
+    end
+
+    GAME.questFavor =
+        M.VL == 2 and 50 or (
+            (M.EX > 0 and 0 or 33)
+            - (M.MS > 0 and 25 or 0)
+            - GAME.floor * 3
+        )
+    if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
+
+    -- Text & SFX
+    local duration = GAME.negFloor >= 10 and 8.72 or 4.2
+    TEXT:add {
+        text = "Floor",
+        x = 160, y = 290, k = 1.6, fontSize = 30,
+        color = 'LY', duration = duration,
+    }
+    TEXT:add {
+        text = tostring(-GAME.negFloor),
+        x = 240, y = 280, k = 2.6, fontSize = 30,
+        color = 'LY', duration = duration, align = 'left',
+    }
+    TEXT:add {
+        text = NegFloors[GAME.negFloor].name,
+        x = 200, y = 350, k = 1.2, fontSize = 30,
+        color = 'LY', duration = duration,
+    }
+    SFX.play('zenith_levelup_g', 1, 0, -5 + M.GV)
+
+    GAME.refreshRPC()
+end
+
+function GAME.nextNegEvent()
+    local e = NegEvents[GAME.negEvent]
+    if e.cond() then
+        if type(e.event) == 'function' then
+            e.event()
+        elseif type(e.event) == 'table' then
+            for i = 1, #e.event, 2 do
+                GAME[e.event[i]] = GAME[e.event[i]] + e.event[i + 1]
+            end
+        end
+    end
+    GAME.negEvent = GAME.negEvent + 1
+end
+
 local revLetter = setmetatable({
     P = "Ь", R = "ᖉ", T = "ꓕ", Q = "О́", U = "Ո", A = "Ɐ", L = "Γ",
 }, { __index = function(_, k) return k end })
@@ -1000,7 +1100,11 @@ function GAME.refreshRPC()
         else
             stateStr = GAME.gigaspeed and "Speedrun: " or "In game: "
         end
-        stateStr = stateStr .. "F" .. GAME.floor
+        if GAME.negFloor > 1 then
+            stateStr = stateStr .. "B" .. GAME.negFloor
+        else
+            stateStr = stateStr .. "F" .. GAME.floor
+        end
         local hand = GAME.getHand(true)
         if #hand > 0 then
             local comboName = GAME.getComboName(hand, 'rpc')
@@ -1805,8 +1909,11 @@ function GAME.start()
         SFX.play('garbagerise')
         return
     end
-    GAME.ultraRun = GAME.anyRev and URM
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
+
+    GAME.ultraRun = GAME.anyRev and URM
+    GAME.negFloor = 1
+    GAME.negEvent = 1
 
     TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
@@ -2116,12 +2223,7 @@ function GAME.finish(reason)
         if GAME.height >= 0 then
             endFloorStr = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
         else
-            for i = #NegFloors, 1, -1 do
-                if GAME.height < NegFloors[i].top then
-                    endFloorStr = ("B$1: $2"):repD(i, NegFloors[i].name)
-                    break
-                end
-            end
+            endFloorStr = ("B$1: $2"):repD(GAME.negFloor, NegFloors[GAME.negFloor].name)
         end
         if GAME.gigaspeedEntered then
             if GAME.gigaTime then endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime) end
@@ -2402,44 +2504,8 @@ function GAME.update(dt)
         if M.EX == 2 and GAME.floorTime > 30 then
             GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
         end
-        local stage = GAME.fatigueSet[GAME.fatigue]
-        if GAME.time >= stage.time then
-            local e = stage.event
-            for i = 1, #e, 2 do
-                GAME[e[i]] = GAME[e[i]] + e[i + 1]
-            end
-            if GAME.floor >= 10 then GAME.updateBgm('ingame') end
-            GAME.fatigue = GAME.fatigue + 1
-            if stage.text then
-                local duration = 5
-                if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
-                    duration = duration * 2
-                end
-                if GAME.fatigue == #GAME.fatigueSet then
-                    if GAME.fatigueSet == Fatigue.normal then
-                        IssueAchv('final_defiance')
-                    elseif GAME.fatigueSet == Fatigue.rEX then
-                        IssueAchv('royal_resistance')
-                    elseif GAME.fatigueSet == Fatigue.rDP then
-                        IssueAchv('lovers_stand')
-                    end
-                end
-                TEXT:add {
-                    text = stage.text,
-                    x = 800, y = 265, fontSize = 30, k = 1.5,
-                    style = 'score', duration = duration,
-                    inPoint = .1, outPoint = .26,
-                    color = stage.color or 'lM',
-                }
-                TEXT:add {
-                    text = stage.desc,
-                    x = 800, y = 300, fontSize = 30,
-                    style = 'score', duration = duration,
-                    inPoint = .26, outPoint = .1,
-                    color = stage.color or 'lM',
-                }
-                TASK.new(GAME.task_fatigueWarn)
-            end
+        if GAME.time >= GAME.fatigueSet[GAME.fatigue].time then
+            GAME.nextFatigue()
         end
 
         if not GAME.DPlock then
@@ -2451,8 +2517,15 @@ function GAME.update(dt)
 
             GAME.height = GAME.height + releaseHeight
             if M.EX == 2 then
-                GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
-                if not URM then GAME.height = max(GAME.height, Floors[GAME.floor - 1].top) end
+                if not URM then
+                    GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
+                    GAME.height = max(GAME.height, Floors[GAME.floor - 1].top)
+                else
+                    local f = max(GAME.floor, GAME.negFloor)
+                    GAME.height = GAME.height - dt * (f * (f + 1) + 10) / 20
+                    if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
+                    if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end
+                end
             else
                 GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
             end
@@ -2465,6 +2538,7 @@ function GAME.update(dt)
             end
         end
 
+        -- XP Leak & Demote
         if GAME.xpLockTimer > 0 then
             GAME.xpLockTimer = GAME.xpLockTimer - dt
         else
@@ -2491,12 +2565,14 @@ function GAME.update(dt)
             end
         end
 
+        -- Damage
         GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimeMul
         if GAME.dmgTimer <= 0 then
             GAME.dmgTimer = GAME.dmgCycle
             GAME.takeDamage(GAME.dmgTime, 'time')
         end
 
+        -- Gravity
         if GAME.gravTimer then
             GAME.gravTimer = GAME.gravTimer - dt
             if GAME.gravTimer <= 0 then

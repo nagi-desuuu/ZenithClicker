@@ -503,17 +503,85 @@ Floors = {
 }
 
 NegFloors = {
-    { top = 0,         name = "The Basement",        desc = [[A basic storage room for the floors above... and below.]] }, -- Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?
-    { top = -50 / 3,   name = "Zenith Restaurant",   desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]] },
-    { top = -150 / 3,  name = "Underground Parking", desc = [[A boundless parking lot for all of these visitors.]] },
-    { top = -300 / 3,  name = "The Bunker",          desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]] },
-    { top = -450 / 3,  name = "The Infirmary",       desc = [[The medical sector of the tower, filled with incomprehensible technology... the machines look similar to the ones in the Laboratory and the Core...]] },
-    { top = -650 / 3,  name = "Decayed Catacombs",   desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]] },
-    { top = -850 / 3,  name = "Sacreligious Ruins",  desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]] },                        -- Whispers of a missing artifact echo throughout the area...
-    { top = -1100 / 3, name = "Singularity Reactor", desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]] },
-    { top = -1350 / 3, name = "Distorted Gateways",  desc = [[A hall of millions of gateways to different realities, towers and wastelands... The mere thought of something like is sickening...]] }, -- The entrance to a false promise of paradise. -- You reached the bottom... or it seemed to be at first glance... one last gateway was left...
-    { top = -1650 / 3, name = "Endless Void",        desc = [[A realm of absolutely nothing, none have ever returned.]] },                                                                            -- You look back above... yet you've already gone too far in this insane abyss for you to see anything.
+    { bottom = -50,   name = "The Basement", },
+    { bottom = -150,  name = "Zenith Restaurant", },
+    { bottom = -300,  name = "Underground Parking", },
+    { bottom = -450,  name = "The Bunker", },
+    { bottom = -650,  name = "The Infirmary", },
+    { bottom = -850,  name = "Decayed Catacombs", },
+    { bottom = -1100, name = "Sacreligious Ruins", },
+    { bottom = -1350, name = "Singularity Reactor", },
+    { bottom = -1650, name = "Distorted Gateways", },
+    { bottom = -1e99, name = "Endless Void", },
 }
+local NegTexts = {
+    b1_desc = [[A basic storage room for the floors above... and below.]],
+    b2_desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]],
+    b3_desc = [[A boundless parking lot for all of these visitors.]],
+    b4_desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
+    b5_desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
+    b6_desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]],
+    b7_desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]],
+    b7_desc2 = [[Whispers of a missing artifact echo throughout the area...]],
+    b8_desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]],
+    b9_desc = [[A hall of millions of gateways to different realities, towers and wastelands... the mere thought of something like this is sickening...]],
+    b9_desc2 = [[The entrance to a false promise of paradise.]],
+    b9_desc3 = [[You reached the bottom... or it seemed to be at first glance... one last gateway was left...]],
+    b10_desc = [[A realm of absolutely nothing, none have ever returned.]],
+    b10_desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
+
+    b1_begin = [[You find yourself in an unfamiliar place.]],
+    b1_egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
+    b2_begin = [[The smell of food calms your senses.]],
+    b3_begin = [[The vast lot's tranquility reassures you.]],
+    b4_begin = [[You feel safe away from the above.]],
+    b5_begin = [[Endless beeping fills the rooms which you roam.]],
+    b6_begin = [[You begin to no longer feel so safe.]],
+    b6_mid = [[You begin to hear something calling your name...]],
+    b7_begin = [[You pray that nothing dire becomes of you.]],
+    b8_begin = [[The reactor's magnitude overwhelms you.]],
+    b8_mid = [[The mysterious voice is growing ever nearer...]],
+    b9_begin = [[You feel nostalgia at the sight of a familiar tower.]],
+    b9_mid = [[The endless void beckons you...]],
+    b10_begin = [[...and you pass the point of no return.]],
+}
+NegEvents = {
+    { h = -10,   text = 'b1' },
+    { h = -26,   text = 'b1_egg', cond = function() return GAME.mod.AS > 0 end },
+    -- B2
+    { h = -50, },
+    { h = -60,   text = 'b2' },
+    -- B3
+    { h = -150, },
+    { h = -160,  text = 'b3' },
+    -- B4
+    { h = -300, },
+    { h = -310,  text = 'b4' },
+    -- B5
+    { h = -450, },
+    { h = -460,  text = 'b5' },
+    -- B6
+    { h = -650, },
+    { h = -660,  text = 'b6' },
+    -- B7
+    { h = -850, },
+    { h = -860,  text = 'b7' },
+    -- B8
+    { h = -1100, },
+    { h = -1110, text = 'b8' },
+    -- B9
+    { h = -1350, },
+    { h = -1360, text = 'b9' },
+    -- B10
+    { h = -1650, },
+    { h = -1660, text = 'b10' },
+
+    { h = 1e99 },
+}
+for _, e in next, NegEvents do
+    e.cond = e.cond or TRUE
+    e.text = e.text and NegTexts[e.text]
+end
 
 Fatigue = {
     normal = {
