@@ -483,7 +483,7 @@ scene.widgetList = {
                             "Reset: " .. STAT.keybind[20] .. "\n" ..
                             "Click L/R: " .. STAT.keybind[21] .. ", " .. STAT.keybind[22] .. "\n",
                             COLOR.F, "PRESS AGAIN TO REBIND\n",
-                            COLOR.LD, "(F1-F12 ` Tab Ctrl Alt are not allowed)"
+                            COLOR.LD, "(F1 F2 ` Tab Ctrl Alt are not allowed)"
                         },
                         12
                     )

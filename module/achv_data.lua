@@ -77,7 +77,7 @@ Achievements = {
         quote = [[Supercharged Q40%]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.2f quest/s", 40 / time) end,
+        scoreFull = function(time) return string.format("%.2f quests/s", 40 / time) end,
         rank = numberRankRev(94.2, 72, 55, 42, 33, 26, 20),
     },
     { -- typer_speedrun
@@ -88,7 +88,7 @@ Achievements = {
         quote = [[Supercharged AnyQ40%]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.2f quest/s", 40 / time) end,
+        scoreFull = function(time) return string.format("%.2f quests/s", 40 / time) end,
         rank = numberRankRev(72, 55, 42, 33, 26, 22, 19),
     },
     { -- supercharged
@@ -1114,7 +1114,7 @@ Achievements = {
         quote = [[Supercharged B75%]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", 75 / time) end,
+        scoreFull = function(time) return string.format("%.2f quests/s", 40 / time) end,
         rank = numberRankRev(150, 115, 90, 70, 60, 50, 42),
     },
     { -- the_perfectionist

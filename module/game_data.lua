@@ -476,7 +476,7 @@ RevSwampName = {
 }
 
 Floors = {
-    [0] = { top = 00000, name = "The Basement" },
+    [0] = { top = 0, name = "The Basement" },
     { top = 50,   event = {},                                                  name = "Hall of Beginnings" },
     { top = 150,  event = { 'dmgDelay', -2, 'dmgWrong', 1 },                   name = "The Hotel",           MSshuffle = 1 },
     { top = 300,  event = { 'dmgDelay', -2, 'dmgCycle', -.5 },                 name = "The Casino" },
