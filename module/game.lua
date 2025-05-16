@@ -1985,9 +1985,17 @@ function GAME.finish(reason)
                 end
             end
             if unlockRev then
-                MSG('dark',
-                    "You’ve unlocked a new REVERSED MOD!\nActivate it by right-clicking on a card that has a star on it.",
-                    6.26)
+                MSG('dark', MOBILE and
+                    STRING.trimIndent [[
+                        You've unlocked a new REVERSED MOD!
+                        Activate it by press & hold the blue area at the left side,
+                        then click on a card that has a star on it.
+                    ]] or
+                    STRING.trimIndent [[
+                        You've unlocked a new REVERSED MOD!
+                        Activate it by right-clicking on a card that has a star on it.
+                    ]]
+                    , 6.26)
                 SFX.play('notify')
             end
         end
