@@ -1439,6 +1439,7 @@ scene.widgetList = {
         floatFontSize = 30,
         floatText = "", -- Dynamic text
         onPress = function()
+            if STAT.maxFloor < 10 then return SFX.play('no') end
             PieceSFXID = (PieceSFXID or 0) % 8 + 1
             if PieceSFXID <= 7 then
                 local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
