@@ -1002,7 +1002,13 @@ function GAME.refreshRPC()
         end
         stateStr = stateStr .. "F" .. GAME.floor
         local hand = GAME.getHand(true)
-        if #hand > 0 then stateStr = stateStr .. " - " .. GAME.getComboName(hand, 'rpc') end
+        if #hand > 0 then
+            stateStr = stateStr .. " - "
+            if URM and GAME.anyRev then
+                stateStr = stateStr .. "ULTRA "
+            end
+            stateStr = stateStr .. GAME.getComboName(hand, 'rpc')
+        end
     else
         stateStr = "Enjoying music"
         if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
@@ -1099,7 +1105,15 @@ end
 
 function GAME.refreshCurrentCombo()
     local hand = GAME.getHand(not GAME.playing)
-    TEXTS.mod:set(GAME.getComboName(hand, 'button'))
+    local comboName = GAME.getComboName(hand, 'button')
+    if not GAME.playing and URM and GAME.anyRev then
+        ---@cast comboName string
+        comboName =
+            comboName:sub(1, 1) == "\"" and
+            "\"ULTRA " .. comboName:sub(2) or
+            "ULTRA " .. comboName
+    end
+    TEXTS.mod:set(comboName)
     if not GAME.playing then
         GAME.comboMP = GAME.getComboMP(hand)
         GAME.comboZP = GAME.getComboZP(hand)

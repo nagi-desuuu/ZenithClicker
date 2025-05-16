@@ -1457,6 +1457,7 @@ scene.widgetList = {
 
             GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
             GAME.refreshLayout()
+            GAME.refreshCurrentCombo()
             BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
 
             MSG({
