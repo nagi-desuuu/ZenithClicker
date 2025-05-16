@@ -233,8 +233,10 @@ function Card:setActive(auto, key)
     -- Sound and animation
     if self.active then
         local postfix = revOn and '_reverse' or ''
-        SFX.play('card_select' .. postfix, 1, 0,
-            key and clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
+        SFX.play(
+            GlassCard and 'harddrop' or 'card_select' .. postfix, 1, 0,
+            key and clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6)
+        )
         local toneName = 'card_tone_' .. ModData.name[self.id]
         local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1
         if revOn then
