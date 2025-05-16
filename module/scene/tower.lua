@@ -942,26 +942,24 @@ function scene.overDraw()
         end
 
         -- Quests
-        if not (URM and M.NH == 2) then
-            for i = 1, #GAME.quests do
-                local Q = GAME.quests[i]
-                local text = Q.name
-                local kx = min(Q.k, 1550 / text:getWidth())
-                local ky = max(kx, Q.k)
-                local a = 1
-                if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
-                    a = clamp(
-                        a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26),
-                        GAME.faultWrong and not URM and .355 or 0, 1
-                    )
-                end
-                if a > 0 then
-                    a = a * Q.a
-                    gc_setColor(.2 * a, .2 * a, .2 * a, a)
-                    gc_mDraw(text, 800, Q.y + 5, 0, kx, ky)
-                    gc_setColor(1, 1, 1, a)
-                    gc_mDraw(text, 800, Q.y, 0, kx, ky)
-                end
+        for i = 1, #GAME.quests do
+            local Q = GAME.quests[i]
+            local text = Q.name
+            local kx = min(Q.k, 1550 / text:getWidth())
+            local ky = max(kx, Q.k)
+            local a = 1
+            if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
+                a = clamp(
+                    a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26),
+                    GAME.faultWrong and not URM and .355 or 0, 1
+                )
+            end
+            if a > 0 then
+                a = a * Q.a
+                gc_setColor(.2 * a, .2 * a, .2 * a, a)
+                gc_mDraw(text, 800, Q.y + 5, 0, kx, ky)
+                gc_setColor(1, 1, 1, a)
+                gc_mDraw(text, 800, Q.y, 0, kx, ky)
             end
         end
 
