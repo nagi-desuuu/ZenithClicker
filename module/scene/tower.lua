@@ -1296,10 +1296,16 @@ function scene.overDraw()
             gc_line(0, 0, 420 * cos(a), 420 * sin(a))
         end
     end
+
+    -- Ultra cover
     if URM and (not GAME.playing or GAME.anyRev) then
         gc_replaceTransform(SCR.origin)
-        gc_setColor(.8, 0, 0, GAME.playing and .2 or .35)
+        gc_setColor(.42, 0, 0, GAME.playing and .16 or .35)
         gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+        gc_setColor(0, 0, 0, M.EX == 2 and .62 or .42)
+        gc_translate(SCR.w / 2, SCR.h / 2)
+        gc_scale(SCR.w / 2, SCR.h / 2)
+        GC.blurCircle(.626, 0, 0, 1)
     end
 
     -- Version number
