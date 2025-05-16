@@ -1308,7 +1308,7 @@ Achievements = {
         id = 'false_god',
         name = "False God",
         desc = [[Mastery on all mods]],
-        quote = [[Do it again but without clever tricks this time.]],
+        quote = [[Deification paved by cheap tactics is not worth being proud of.]],
         type = 'issued',
         hide = TRUE,
     },
