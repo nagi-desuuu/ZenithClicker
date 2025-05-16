@@ -1451,7 +1451,7 @@ scene.widgetList = {
             GlassCard = PieceSFXID == 3
             InvisCard = PieceSFXID == 4
             InvisDashboard = PieceSFXID == 5
-            URM = PieceSFXID == 6
+            URM = PieceSFXID == 6 and RevUnlocked
             GC.setWireframe(PieceSFXID == 7)
 
             GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
@@ -1461,7 +1461,7 @@ scene.widgetList = {
 
             MSG({
                 cat = 'dark',
-                str = ({
+                str = PieceSFXID == 6 and not URM and "O - ?" or ({
                     "Z - Nightcore",
                     "S - Sloooooow-mo",
                     "J - Glass Card",
