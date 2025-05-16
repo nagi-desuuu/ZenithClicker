@@ -313,12 +313,14 @@ function Card:bounce(height, duration)
 end
 
 function Card:revJump()
+    local h = 355
+    if URM and self.id == 'EX' then h = h * 1.626 end
     TWEEN.tag_kill('shake' .. self.id)
     TWEEN.new(function(t)
         t = t * (t - 1) * 4
-        self.y = self.ty + t * 355
+        self.y = self.ty + t * h
         self.size = .62 - .355 * t
-    end):setUnique('revJump_' .. self.id):setEase(bounceEase):setDuration(.62):run()
+    end):setUnique('revJump_' .. self.id):setEase(bounceEase):setDuration(.62 * (h / 355) ^ .5):run()
         :setOnFinish(function()
             local currentState = M[self.id]
             if currentState == 2 then
