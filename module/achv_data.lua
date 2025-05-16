@@ -1436,8 +1436,8 @@ for i = 1, #Achievements do
 
         assert(achv.desc, "Missing field 'desc' - " .. id)
         achv.desc = achv.desc
-            :gsub("WU", "while using")
             :gsub("WUT", "while using the")
+            :gsub("WU", "while using")
             :gsub("HFD", "Highest floor discovered")
             :gsub("HAR", "Highest altitude reached")
 
