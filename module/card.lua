@@ -231,11 +231,23 @@ function Card:setActive(auto, key)
         local postfix = revOn and '_reverse' or ''
         SFX.play('card_select' .. postfix, 1, 0,
             key and clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6))
-        SFX.play(
-            'card_tone_' .. ModData.name[self.id] .. postfix,
-            GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1,
-            0, M.GV
-        )
+        local toneName = 'card_tone_' .. ModData.name[self.id]
+        local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1
+        if revOn then
+            SFX.play(toneName .. postfix, toneVol, 0, M.GV)
+            if URM then
+                TASK.new(function()
+                    local p1, p2 = -1, 1
+                    if MATH.roll() then p1, p2 = p2, p1 end
+                    TASK.yieldT(.2)
+                    SFX.play(toneName, toneVol * .626, p1, 7 + M.GV)
+                    TASK.yieldT(.2)
+                    SFX.play(toneName, toneVol * .626, p2, 7 + M.GV)
+                end)
+            end
+        else
+            SFX.play(toneName, toneVol, 0, M.GV)
+        end
         if revOn then
             self:revJump()
         elseif M.NH < 2 and not noSpin then
@@ -336,6 +348,9 @@ function Card:revJump()
                 })
                 GAME.revDeckSkin = true
                 GAME.bgXdir = MATH.coin(-1, 1)
+                if URM then
+                    SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', .42, 0, M.GV)
+                end
             else
                 SFX.play('spin')
                 if currentState == 0 then
