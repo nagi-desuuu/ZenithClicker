@@ -1038,26 +1038,39 @@ function GAME.refreshModIcon()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     if #hand == 1 then
+        local quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig_ex[hand[1]]
+        local k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.872 or #hand[1] == 3 and .7023 or .62
+        local _, _, w, h = quad:getViewport()
         GAME.modIB:add(
-            TEXTURE.modQuad_ig_ex[hand[1]], 0, 0,
-            0, #hand[1] == 3 and .7023 or .62, nil, 219 * .5, 219 * .5
+            quad, 0, 0,
+            0, k, nil, w * .5, h * .5
         )
     elseif #hand == 2 then
+        local quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig_ex[hand[2]]
+        local k = quad == TEXTURE.modQuad_ultra[hand[2]] and 0.7023 or #hand[1] == 3 and .626 or .5
+        local _, _, w, h = quad:getViewport()
         GAME.modIB:add(
-            TEXTURE.modQuad_ig_ex[hand[2]], 35, 0,
-            0, #hand[2] == 3 and .626 or .5, nil, 219 * .5, 219 * .5
+            quad, 35, 0,
+            0, k, nil, w * .5, h * .5
         )
+        quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig_ex[hand[1]]
+        k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.7023 or #hand[1] == 3 and .626 or .5
+        _, _, w, h = quad:getViewport()
         GAME.modIB:add(
-            TEXTURE.modQuad_ig_ex[hand[1]], -35, 0,
-            0, #hand[1] == 3 and .626 or .5, nil, 219 * .5, 219 * .5
+            quad, -35, 0,
+            0, k, nil, w * .5, h * .5
         )
     else
         local r = 35
         for x = 3, 2, -1 do
             for i = #hand, 1, -1 do
                 if #hand[i] == x then
+                    local quad = TEXTURE.modQuad_ig[hand[i]]
+                    if x == 3 and URM then
+                        quad = TEXTURE.modQuad_ultra[hand[i]]
+                    end
                     GAME.modIB:add(
-                        TEXTURE.modQuad_ig[hand[i]],
+                        quad,
                         modIconPos[i][1] * r, modIconPos[i][2] * r,
                         0, x == 3 and .4 or .28, nil, 219 * .5, 219 * .5
                     )

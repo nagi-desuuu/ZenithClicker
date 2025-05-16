@@ -690,18 +690,17 @@ function scene.draw()
     if GAME.uiHide > 0 then
         gc_setColor(1, 1, 1, GAME.uiHide * (M.IN == 0 and 1 or 1 - M.IN * (.26 + .1 * sin(t * 2.6))))
         local y = 330 + (GAME.height - GAME.bgH) * (M.VL + 1)
-        local k = GAME.ultraRun and 1.626 or 1
         if GAME.anyRev then
             local r = (M.AS + 1) * .026
             gc_setColorMask(false, false, true, true)
-            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.5), y + .5 * 2.6 * sin(t * 2.5), r * sin(t * 0.5), k)
+            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.5), y + .5 * 2.6 * sin(t * 2.5), r * sin(t * 0.5), 1)
             gc_setColorMask(false, true, false, true)
-            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.6), y + .5 * 2.6 * sin(t * 2.6), r * sin(t * 0.6), k)
+            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.6), y + .5 * 2.6 * sin(t * 2.6), r * sin(t * 0.6), 1)
             gc_setColorMask(true, false, false, true)
-            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.7), y + .5 * 2.6 * sin(t * 2.7), r * sin(t * 0.7), k)
+            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.7), y + .5 * 2.6 * sin(t * 2.7), r * sin(t * 0.7), 1)
             gc_setColorMask()
         else
-            gc_draw(GAME.modIB, 1490, y, M.AS * .026 * sin(t), k)
+            gc_draw(GAME.modIB, 1490, y, M.AS * .026 * sin(t), 1)
         end
     end
 
@@ -742,7 +741,7 @@ function scene.draw()
         gc_replaceTransform(SCR.xOy_u)
         gc_translate(0, -224 * GAME.uiHide)
         gc_setColor(1, 1, 1)
-        gc_draw(GAME.resIB, 400, 150, 0, GAME.ultraRun and 1.42 or .9)
+        gc_draw(GAME.resIB, 400, 150, 0, GAME.ultraRun and 1.26 or .9)
         gc_setColor(COLOR.D)
         gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 204)

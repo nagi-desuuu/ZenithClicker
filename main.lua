@@ -18,7 +18,14 @@ local function q(oy, n, size)
     return GC.newQuad(
         n * size, oy,
         size, size,
-        1971, 1608
+        1971, 2255
+    )
+end
+local function q2(ox, oy, w, h)
+    return GC.newQuad(
+        ox, oy,
+        w, h,
+        1971, 2255
     )
 end
 local function aq(x, y) return { 1, GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 2048, 2304) } end
@@ -112,6 +119,17 @@ TEXTURE = {
         rDP = q(1425, 6, 183),
         rDH = q(1425, 7, 183),
         rAS = q(1425, 8, 183),
+    },
+    modQuad_ultra = {
+        rNH = q2(000, 1608, 315, 315),
+        rMS = q2(315, 1608, 315, 315),
+        rGV = q2(630, 1608, 315, 315),
+        rVL = q2(945, 1608, 315, 315),
+        rDH = q2(000, 1923, 315, 315),
+        rIN = q2(315, 1923, 315, 315),
+        rAS = q2(630, 1923, 315, 315),
+        rEX = q2(945, 1923, 315, 332),
+        rDP = q2(1260, 1608, 419, 378),
     },
     EX = { lock = assets 'card/lockover-9.png', front = assets 'card/expert.png', back = assets 'card/expert-back.png', throb = assets 'card/expert-throb.png', },
     NH = { lock = assets 'card/lockfull-2.png', front = assets 'card/nohold.png', back = assets 'card/nohold-back.png', throb = assets 'card/nohold-throb.png', },
