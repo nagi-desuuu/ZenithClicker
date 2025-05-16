@@ -1634,7 +1634,7 @@ function GAME.commit(auto)
 
         if M.DP > 0 then
             if M.DP == 2 then
-                if GAME.takeDamage(URM and attack / 2 or attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
+                if GAME.takeDamage(URM and attack / 3 or attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
                     return
                 elseif check_achv_romantic_homicide then
                     IssueAchv('romantic_homicide')
