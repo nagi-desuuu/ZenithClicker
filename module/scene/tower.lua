@@ -1305,6 +1305,19 @@ function scene.overDraw()
     gc_mDraw(TEXTS.version, -260 * GAME.uiHide, -10, 0, .62)
 end
 
+local function button_start()
+    if GAME.playing then
+        GAME.commit()
+        if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
+    else
+        GAME.start()
+    end
+end
+local function button_reset()
+    if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
+    GAME.cancelAll()
+end
+
 scene.widgetList = {
     WIDGET.new {
         name = 'back', type = 'button',
@@ -1333,10 +1346,8 @@ scene.widgetList = {
         color = { COLOR.HEX '1F4E2C' },
         sound_hover = 'menutap',
         fontSize = 30, text = "    STAT", textColor = { COLOR.HEX '73E284' },
-        onClick = function()
-            love.keypressed('`')
-            love.keyreleased('`')
-        end,
+        onPress = function() love.keypressed('`') end,
+        onClick = function() love.keyreleased('`') end,
     },
     WIDGET.new {
         name = 'achv', type = 'button',
@@ -1344,10 +1355,8 @@ scene.widgetList = {
         color = { COLOR.HEX '1F4E2C' },
         sound_hover = 'menutap',
         fontSize = 30, text = "    ACHV", textColor = { COLOR.HEX '73E284' },
-        onClick = function()
-            love.keypressed('tab')
-            love.keyreleased('tab')
-        end,
+        onPress = function() love.keypressed('tab') end,
+        onClick = function() love.keyreleased('tab') end,
     },
     WIDGET.new {
         name = 'conf', type = 'button',
@@ -1355,10 +1364,8 @@ scene.widgetList = {
         color = { COLOR.HEX '253355' },
         sound_hover = 'menutap',
         fontSize = 30, text = "CONF   ", textColor = { COLOR.HEX '869EFF' },
-        onClick = function()
-            love.keypressed('f1')
-            love.keyreleased('f1')
-        end,
+        onPress = function() love.keypressed('f1') end,
+        onClick = function() love.keyreleased('f1') end,
     },
     WIDGET.new {
         name = 'about', type = 'button',
@@ -1366,10 +1373,8 @@ scene.widgetList = {
         color = { COLOR.HEX '383838' },
         sound_hover = 'menutap',
         fontSize = 30, text = "ABOUT ", textColor = { COLOR.HEX '909090' },
-        onClick = function()
-            love.keypressed('f2')
-            love.keyreleased('f2')
-        end,
+        onPress = function() love.keypressed('f2') end,
+        onClick = function() love.keyreleased('f2') end,
     },
     WIDGET.new {
         name = 'start', type = 'button',
@@ -1378,16 +1383,8 @@ scene.widgetList = {
         textColor = TextColor,
         sound_hover = 'menuhover',
         fontSize = 70, text = "START",
-        onClick = function(k)
-            if k ~= 3 then
-                if GAME.playing then
-                    GAME.commit()
-                    if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
-                else
-                    GAME.start()
-                end
-            end
-        end,
+        onPress = function(k) if M.EX == 0 and k ~= 3 then button_start() end end,
+        onClick = function(k) if M.EX > 0 and k ~= 3 then button_start() end end,
     },
     WIDGET.new {
         name = 'reset', type = 'button',
@@ -1396,12 +1393,8 @@ scene.widgetList = {
         sound_hover = 'menutap',
         sound_release = 'menuclick',
         fontSize = 30, text = "RESET", textColor = 'dR',
-        onClick = function(k)
-            if k ~= 3 then
-                if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
-                GAME.cancelAll()
-            end
-        end,
+        onPress = function(k) if M.EX == 0 and k ~= 3 then button_reset() end end,
+        onClick = function(k) if M.EX > 0 and k ~= 3 then button_reset() end end,
     },
     WIDGET.new {
         name = 'daily', type = 'hint',
