@@ -432,7 +432,7 @@ scene.widgetList = {
         textColor = clr.T, text = "FANCY BACKGROUND  (F9)",
         x = baseX + 55, y = baseY + 670,
         disp = function() return STAT.bg end,
-        code = function() STAT.bg = not STAT.bg end,
+        code = WIDGET.c_pressKey 'f9',
     },
     WIDGET.new {
         type = 'checkBox',
@@ -441,10 +441,7 @@ scene.widgetList = {
         textColor = clr.T, text = "STAR FORCE  (F10)",
         x = baseX + 55, y = baseY + 730,
         disp = function() return not STAT.syscursor end,
-        code = function()
-            STAT.syscursor = not STAT.syscursor
-            ApplySettings()
-        end,
+        code = WIDGET.c_pressKey 'f10',
     },
     WIDGET.new {
         type = 'checkBox',
@@ -453,10 +450,7 @@ scene.widgetList = {
         textColor = clr.T, text = "FULLSCREEN  (F11)",
         x = baseX + 55, y = baseY + 790,
         disp = function() return STAT.fullscreen end,
-        code = function()
-            STAT.fullscreen = not STAT.fullscreen
-            love.window.setFullscreen(STAT.fullscreen)
-        end,
+        code = WIDGET.c_pressKey 'f11',
     },
 
     -- KEYBIND
@@ -483,7 +477,7 @@ scene.widgetList = {
                             "Reset: " .. STAT.keybind[20] .. "\n" ..
                             "Click L/R: " .. STAT.keybind[21] .. ", " .. STAT.keybind[22] .. "\n",
                             COLOR.F, "PRESS AGAIN TO REBIND\n",
-                            COLOR.LD, "(F1 F2 ` Tab Ctrl Alt are not allowed)"
+                            COLOR.LD, "(F1-F12 ` Tab Ctrl Alt are not allowed)"
                         },
                         12
                     )
