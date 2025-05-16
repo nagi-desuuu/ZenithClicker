@@ -1319,6 +1319,7 @@ end
 local function button_reset()
     if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
     GAME.cancelAll()
+    SFX.play('menuclick')
 end
 
 scene.widgetList = {
@@ -1394,7 +1395,6 @@ scene.widgetList = {
         pos = { .5, .5 }, x = 500, y = -120, w = 160, h = 100,
         color = 'DR',
         sound_hover = 'menutap',
-        sound_release = 'menuclick',
         fontSize = 30, text = "RESET", textColor = 'dR',
         onPress = function(k) if M.EX == 0 and k ~= 3 then button_reset() end end,
         onClick = function(k) if M.EX > 0 and k ~= 3 then button_reset() end end,
