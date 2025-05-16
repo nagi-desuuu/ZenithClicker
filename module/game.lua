@@ -1003,11 +1003,16 @@ function GAME.refreshRPC()
         stateStr = stateStr .. "F" .. GAME.floor
         local hand = GAME.getHand(true)
         if #hand > 0 then
+            local comboName = GAME.getComboName(hand, 'rpc')
             stateStr = stateStr .. " - "
             if URM and GAME.anyRev then
-                stateStr = stateStr .. "ULTRA "
+                ---@cast comboName string
+                comboName =
+                    comboName:sub(1, 1) == "\"" and
+                    "\"ULTRA " .. comboName:sub(2) or
+                    "ULTRA " .. comboName
             end
-            stateStr = stateStr .. GAME.getComboName(hand, 'rpc')
+            stateStr = stateStr .. comboName
         end
     else
         stateStr = "Enjoying music"
@@ -1065,14 +1070,12 @@ function GAME.refreshModIcon()
         for x = 3, 2, -1 do
             for i = #hand, 1, -1 do
                 if #hand[i] == x then
-                    local quad = TEXTURE.modQuad_ig[hand[i]]
-                    if x == 3 and URM then
-                        quad = TEXTURE.modQuad_ultra[hand[i]]
-                    end
+                    local quad = x == 3 and URM and TEXTURE.modQuad_ultra[hand[i]] or TEXTURE.modQuad_ig[hand[i]]
+                    local _, _, w, h = quad:getViewport()
                     GAME.modIB:add(
                         quad,
                         modIconPos[i][1] * r, modIconPos[i][2] * r,
-                        0, x == 3 and .4 or .28, nil, 219 * .5, 219 * .5
+                        0, x == 3 and (URM and .26 or .4) or .28, nil, w * .5, h * .5
                     )
                 end
             end
