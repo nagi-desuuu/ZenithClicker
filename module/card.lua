@@ -237,12 +237,10 @@ function Card:setActive(auto, key)
             SFX.play(toneName .. postfix, toneVol, 0, M.GV)
             if URM then
                 TASK.new(function()
-                    local p1, p2 = -1, 1
-                    if MATH.roll() then p1, p2 = p2, p1 end
                     TASK.yieldT(.2)
-                    SFX.play(toneName, toneVol * .626, p1, 7 + M.GV)
+                    SFX.play(toneName, toneVol * .8, 0, 7 + M.GV)
                     TASK.yieldT(.2)
-                    SFX.play(toneName, toneVol * .626, p2, 7 + M.GV)
+                    SFX.play(toneName, toneVol * .6, 0, 7 + M.GV)
                 end)
             end
         else
@@ -324,7 +322,6 @@ function Card:revJump()
         :setOnFinish(function()
             local currentState = M[self.id]
             if currentState == 2 then
-                SFX.play('card_reverse_impact', 1, 0, M.GV)
                 TWEEN.new(tween_deckPress):setUnique('DeckPress'):setEase('OutQuad'):setDuration(.42):run()
                 if self.id ~= 'NH' then
                     for _, C in ipairs(CD) do
@@ -348,8 +345,14 @@ function Card:revJump()
                 })
                 GAME.revDeckSkin = true
                 GAME.bgXdir = MATH.coin(-1, 1)
-                if URM then
-                    SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', .42, 0, M.GV)
+                if not URM then
+                    SFX.play('card_reverse_impact', 1, 0, M.GV)
+                else
+                    local tone = ModData.ultraImpactTone[self.id]
+                    if tone[1] then SFX.play('card_reverse_impact', .626, 0, tone[1] + M.GV) end
+                    if tone[2] then SFX.play('card_reverse_impact', .8, 0, tone[2] + M.GV) end
+                    if tone[3] then SFX.play('card_reverse_impact', 1, 0, tone[3] + M.GV) end
+                    SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', .42, 0, -5 + M.GV)
                 end
             else
                 SFX.play('spin')

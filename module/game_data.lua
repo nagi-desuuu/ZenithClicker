@@ -98,6 +98,17 @@ ModData = {
         AS = "ILL-NATURED, TENEBRIOUS, LIFE-DRAINING MAGIC CLASPS THY SOUL...",
         DP = "WHAT ONCE WAS INTERTWINED NOW NEVER TO COEXIST.",
     },
+    ultraImpactTone = {
+        EX = { 0, 0, 0 }, -- 6 6
+        NH = { 0, 5 },    -- 5 2
+        MS = { 3, 5, 7 }, -- 1 2 3
+        GV = { -4, 8 },   -- 4 4
+        VL = { -5, 0 },   -- 3 6
+        DH = { 1, 6, 9 }, -- #6 #2 #4
+        IN = {},
+        AS = { 0, 3 },    -- 6 1
+        DP = { -2, 5 },   -- 5 2
+    },
     weight = {
         EX = 13, --  8 + 5
         NH = 12, --  8 + 4
