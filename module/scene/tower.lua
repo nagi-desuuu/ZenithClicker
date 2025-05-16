@@ -1114,8 +1114,13 @@ function scene.overDraw()
     -- Rev trigger for touchscreen
     if usingTouch and not GAME.playing and RevUnlocked then
         gc_replaceTransform(SCR.xOy_dl)
-        gc_setColor(COLOR.S or COLOR.LD)
-        gc_setAlpha(next(revHold) and .42 or .26)
+        if URM then
+            gc_setColor(COLOR.C)
+            gc_setAlpha(next(revHold) and .872 or .62)
+        else
+            gc_setColor(COLOR.S)
+            gc_setAlpha(next(revHold) and .42 or .26)
+        end
         gc_draw(TEXTURE.transition, -200 * GAME.uiHide, -40, 0, 200 / 128, -560)
     end
 
