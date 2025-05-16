@@ -2208,7 +2208,7 @@ function GAME.finish(reason)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         SubmitAchv('psychokinesis', GAME.achv_psychokinesisH or GAME.roundHeight)
-        if MATH.between(GAME.height, Floors[9].top - 24, Floors[9].top) then
+        if Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
             SubmitAchv('divine_rejection', GAME.roundHeight)
         end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
