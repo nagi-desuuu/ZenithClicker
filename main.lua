@@ -834,6 +834,7 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         love.window.setFullscreen(STAT.fullscreen)
     elseif key == 'f10' then
         STAT.syscursor = not STAT.syscursor
+        SetMouseVisible(true)
         ApplySettings()
     elseif key == 'f9' then
         if not GAME.zenithTraveler then
