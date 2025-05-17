@@ -1486,7 +1486,7 @@ scene.widgetList = {
         onPress = function()
             switchVisitor(true)
         end,
-        visibleFunc = function() return TABLE.countAll(GAME.completion, 0) < 9 end,
+        visibleFunc = function() return not GAME.playing and TABLE.countAll(GAME.completion, 0) < 9 end,
     },
 }
 

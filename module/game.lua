@@ -2048,20 +2048,20 @@ function GAME.start()
     TWEEN.new(GAME.anim_setMenuHide):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
 
-    GAME.achv_perfectionistH = false
-    GAME.achv_demoteH = false
-    GAME.achv_carriedH = false
-    GAME.achv_arroganceH = false
-    GAME.achv_powerlessH = false
-    GAME.achv_patienceH = false
-    GAME.achv_spotlessH = false
-    GAME.achv_talentlessH = false
-    GAME.achv_honeymoonH = false
-    GAME.achv_breakupH = false
-    GAME.achv_protectH = false
-    GAME.achv_psychokinesisH = false
+    GAME.achv_perfectionistH = nil
+    GAME.achv_demoteH = nil
+    GAME.achv_carriedH = nil
+    GAME.achv_arroganceH = nil
+    GAME.achv_powerlessH = nil
+    GAME.achv_patienceH = nil
+    GAME.achv_spotlessH = nil
+    GAME.achv_talentlessH = nil
+    GAME.achv_honeymoonH = nil
+    GAME.achv_breakupH = nil
+    GAME.achv_protectH = nil
+    GAME.achv_psychokinesisH = nil
     GAME.achv_maxChain = 0
-    GAME.achv_maxReviveH = false
+    GAME.achv_maxReviveH = nil
     GAME.achv_totalDmg = 0
     GAME.achv_clutchQuest = 0
     GAME.achv_escapeBurnt = false
