@@ -93,6 +93,7 @@ local ins, rem = table.insert, table.remove
 ---@field negFloor number
 ---@field negEvent number
 ---@field timerMul number
+---@field attackMul number
 ---
 ---@field onAlly boolean
 ---@field life2 number
@@ -157,6 +158,11 @@ local GAME = {
     lastFlip = false,
 
     zenithTraveler = false,
+    nightcore = false,
+    slowmo = false,
+    glassCard = false,
+    invisCard = false,
+    invisDashboard = false,
 
     achv_perfectionistH = nil,
     achv_demoteH = nil,
@@ -1783,7 +1789,7 @@ function GAME.commit(auto)
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
         if not GAME.DPlock then
-            GAME.addHeight(GAME.ultraRun and attack * .6 or attack)
+            GAME.addHeight(attack * GAME.attackMul)
         end
         GAME.addXP(attack + xp)
 
@@ -1908,6 +1914,7 @@ function GAME.start()
 
     GAME.omega = false
     GAME.ultraRun = GAME.anyRev and URM
+    GAME.attackMul = GAME.ultraRun and .6 or 1
     GAME.negFloor = 1
     GAME.negEvent = 1
     GAME.timerMul = 1
@@ -1957,7 +1964,7 @@ function GAME.start()
     GAME.heightBuffer = 0
     GAME.fatigueSet = Fatigue[M.EX == 2 and 'rEX' or M.DP == 2 and 'rDP' or 'normal']
     GAME.fatigue = 1
-    GAME.animDuration = Slowmo and 26 or 1
+    GAME.animDuration = GAME.slowmo and 26 or 1
     GAME.lastCommit = {}
 
     -- Params
@@ -2038,7 +2045,7 @@ function GAME.start()
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
 
-    TWEEN.new(GAME.anim_setMenuHide):setDuration(Slowmo and 2.6 or .26):setUnique('uiHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
 
     GAME.achv_perfectionistH = false
@@ -2428,7 +2435,7 @@ function GAME.finish(reason)
         end)
     end
 
-    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(Slowmo and 2.6 or .26):setUnique('uiHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.refreshRPC()
     GAME.updateBgm('finish')
     if reason ~= 'forfeit' then
@@ -2526,7 +2533,7 @@ function GAME.update(dt)
                     end
                     local f = max(GAME.floor, GAME.negFloor)
                     local fallSpeed = (f * (f + 1) + 10) / 20
-                    if GAME.height < 0 and GAME.gigaspeed then fallSpeed = fallSpeed * 6.2 end
+                    if GAME.height < 0 and GAME.gigaspeed then fallSpeed = fallSpeed * 2.6 end
                     GAME.height = GAME.height - dt * fallSpeed
                     if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
                     if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end

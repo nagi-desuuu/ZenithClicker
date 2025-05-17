@@ -18,9 +18,6 @@ RevUnlocked = false
 local usingTouch = MOBILE
 local revHold = {}
 
-local NightCore
-local InvisDashboard
-
 ---@type Zenitha.Scene
 local scene = {}
 
@@ -357,7 +354,7 @@ end
 local KBIsDown, MSIsDown = love.keyboard.isDown, love.mouse.isDown
 local expApproach = MATH.expApproach
 function scene.update(dt)
-    if NightCore then dt = dt * 2.6 end
+    if GAME.nightcore then dt = dt * 2.6 end
     if GAME.zenithTraveler and M.EX == 2 then
         local f = GAME.getBgFloor()
         GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
@@ -386,11 +383,11 @@ function scene.update(dt)
     end
 
     for i = 1, #Cards do
-        Cards[i]:update(Slowmo and dt / 6.26 or dt)
+        Cards[i]:update(GAME.slowmo and dt / 6.26 or dt)
     end
     if GAME.playing and (KBIsDown('escape') or MSIsDown(3)) then
         GAME.forfeitTimer = GAME.forfeitTimer +
-            (Slowmo and dt / 6.26 or dt) * clampInterpolate(12, 2.6, 26, 1, min(GAME.totalQuest, GAME.time))
+            (GAME.slowmo and dt / 6.26 or dt) * clampInterpolate(12, 2.6, 26, 1, min(GAME.totalQuest, GAME.time))
         if TASK.lock('forfeit_sfx', .0872) then
             SFX.play('detonate1', clampInterpolate(0, .4, 1, .6, GAME.forfeitTimer))
         end
@@ -403,7 +400,7 @@ function scene.update(dt)
         end
     else
         if GAME.forfeitTimer > 0 then
-            GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 1 or 2.6) * (Slowmo and dt / 6.26 or dt)
+            GAME.forfeitTimer = GAME.forfeitTimer - (GAME.playing and 1 or 2.6) * (GAME.slowmo and dt / 6.26 or dt)
         end
     end
 
@@ -1037,7 +1034,7 @@ function scene.overDraw()
     -- end
 
     -- Bottom In-game UI
-    if GAME.uiHide > 0 and not InvisDashboard then
+    if GAME.uiHide > 0 and not GAME.invisDashboard then
         local h = 100 - GAME.uiHide * 100
         gc_move('m', 0, h)
 
@@ -1253,12 +1250,12 @@ function scene.overDraw()
     end
 
     -- TimeMul
-    if NightCore or Slowmo then
+    if GAME.nightcore or GAME.slowmo then
         gc_replaceTransform(SCR.xOy_m)
         gc_rotate(-1.5708)
         gc_setLineWidth(42)
         local a
-        if NightCore then
+        if GAME.nightcore then
             gc_setColor(1, 1, 1, GAME.playing and .1 or .26)
             gc_circle('line', 0, 0, 620)
             gc_setColor(1, 1, 1, GAME.playing and .26 or .42)
@@ -1448,11 +1445,11 @@ scene.widgetList = {
             else
                 SFX.play('allclear')
             end
-            NightCore = PieceSFXID == 1
-            Slowmo = PieceSFXID == 2
-            GlassCard = PieceSFXID == 3
-            InvisCard = PieceSFXID == 4
-            InvisDashboard = PieceSFXID == 5
+            GAME.nightcore = PieceSFXID == 1
+            GAME.slowmo = PieceSFXID == 2
+            GAME.glassCard = PieceSFXID == 3
+            GAME.invisCard = PieceSFXID == 4
+            GAME.invisDashboard = PieceSFXID == 5
             URM = PieceSFXID == 6 and RevUnlocked
             GC.setWireframe(PieceSFXID == 7)
 
@@ -1470,7 +1467,7 @@ scene.widgetList = {
                     "L - Invisible Card",
                     "T - Invisible Dashboard",
                     "O - Ultra Reversed Mods",
-                    "I - Blind",
+                    "I - Wireframe Vision",
                     "ALLCLEAR",
                 })[PieceSFXID],
                 time = 1.2

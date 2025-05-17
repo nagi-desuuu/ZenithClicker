@@ -5,6 +5,7 @@ local sign, lerp = MATH.sign, MATH.lerp
 local expApproach, clampInterpolate = MATH.expApproach, MATH.clampInterpolate
 local getTime = love.timer.getTime
 
+local GAME = GAME
 local M = GAME.mod
 local CD = Cards
 
@@ -83,7 +84,7 @@ function Card:setActive(auto, key)
             if self.charge < 1.3 then
                 SFX.play('combo_1', .626, 0, Tone(0))
             elseif self.charge < 2.2 then
-                SFX.play('combo_3', .626, 0,Tone(-2))
+                SFX.play('combo_3', .626, 0, Tone(-2))
             else
                 SFX.play('combo_2', .626, 0, Tone(1))
             end
@@ -234,7 +235,7 @@ function Card:setActive(auto, key)
     if self.active then
         local postfix = revOn and '_reverse' or ''
         SFX.play(
-            GlassCard and 'harddrop' or 'card_select' .. postfix, 1, 0,
+            GAME.glassCard and 'harddrop' or 'card_select' .. postfix, 1, 0,
             key and clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6)
         )
         local toneName = 'card_tone_' .. ModData.name[self.id]
@@ -540,7 +541,7 @@ function Card:draw()
         end
     end
 
-    if GlassCard then
+    if GAME.glassCard then
         local w, h = 240, 330
         gc_setColor((faceUp and ModData.textColor or ModData.color)[self.id])
         gc_setAlpha((STAT.cardBrightness / 100) ^ 2 * .872)
@@ -584,7 +585,7 @@ function Card:draw()
         end
     else
         -- Card
-        if not InvisCard then
+        if not GAME.invisCard then
             if self.burn then
                 if URM and M.AS == 2 then
                     gc_setColor(1, .42, .26)
@@ -676,7 +677,7 @@ function Card:draw()
 
     -- Icon cover
     if faceUp then
-        gc_setColor((GlassCard and ModData.color or ModData.textColor)[self.id])
+        gc_setColor((GAME.glassCard and ModData.color or ModData.textColor)[self.id])
         local active = playing and self.inLastCommit or not playing and self.active
         if M.EX == 0 then
             if active then
