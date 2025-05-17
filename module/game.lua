@@ -89,6 +89,7 @@ local ins, rem = table.insert, table.remove
 ---@field gravDelay false | number
 ---@field gravTimer false | number
 ---
+---@field omega boolean
 ---@field negFloor number
 ---
 ---@field onAlly boolean
@@ -394,7 +395,7 @@ function GAME.getComboName(list, mode)
                         len == 7 and [["AMBROSIA SODA"]] or
                         len == 8 and [["AMBROSIA WINE"]] or
                         len == 9 and [["AMBROSIA MOONSHINE"]] or
-                        [["AMBROSIA X"]]
+                        [["AMBROSIA ICHOR"]]
                     ) or (
                         len == 7 and [["SWAMP WATER LITE"]] or
                         len == 8 and [["SWAMP WATER"]] or
@@ -870,6 +871,24 @@ function GAME.readyShuffle(messiness, noSnd)
     end
 end
 
+function GAME.showFloorText(f, name, duration)
+    TEXT:add {
+        text = "Floor",
+        x = 160, y = 290, k = 1.6, fontSize = 30,
+        color = 'LY', duration = duration,
+    }
+    TEXT:add {
+        text = tostring(f),
+        x = 240, y = 280, k = 2.6, fontSize = 30,
+        color = 'LY', duration = duration, align = 'left',
+    }
+    TEXT:add {
+        text = name,
+        x = 200, y = 350, k = 1.2, fontSize = 30,
+        color = 'LY', duration = duration,
+    }
+end
+
 function GAME.upFloor()
     if GAME.floor == 2 then
         if GAME.comboStr == 'EXVLrDPrIN' then SubmitAchv('love_hotel', GAME.floorTime) end
@@ -925,22 +944,7 @@ function GAME.upFloor()
     if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
 
     -- Text & SFX
-    local duration = GAME.floor >= 10 and 8.72 or 4.2
-    TEXT:add {
-        text = "Floor",
-        x = 160, y = 290, k = 1.6, fontSize = 30,
-        color = 'LY', duration = duration,
-    }
-    TEXT:add {
-        text = tostring(GAME.floor),
-        x = 240, y = 280, k = 2.6, fontSize = 30,
-        color = 'LY', duration = duration, align = 'left',
-    }
-    TEXT:add {
-        text = Floors[GAME.floor].name,
-        x = 200, y = 350, k = 1.2, fontSize = 30,
-        color = 'LY', duration = duration,
-    }
+    GAME.showFloorText(GAME.floor, Floors[GAME.floor].name, GAME.floor >= 10 and 8.72 or 4.2)
     if GAME.gigaspeed then
         SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
     elseif GAME.floor > 1 then
@@ -1050,22 +1054,7 @@ function GAME.downFloor()
     if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
 
     -- Text & SFX
-    local duration = GAME.negFloor >= 10 and 8.72 or 4.2
-    TEXT:add {
-        text = "Floor",
-        x = 160, y = 290, k = 1.6, fontSize = 30,
-        color = 'LY', duration = duration,
-    }
-    TEXT:add {
-        text = tostring(-GAME.negFloor),
-        x = 240, y = 280, k = 2.6, fontSize = 30,
-        color = 'LY', duration = duration, align = 'left',
-    }
-    TEXT:add {
-        text = NegFloors[GAME.negFloor].name,
-        x = 200, y = 350, k = 1.2, fontSize = 30,
-        color = 'LY', duration = duration,
-    }
+    GAME.showFloorText(-GAME.negFloor, NegFloors[GAME.negFloor].name, GAME.negFloor >= 10 and 8.72 or 4.2)
     SFX.play('zenith_levelup_g', 1, 0, -5 + M.GV)
 
     GAME.refreshRPC()
@@ -1914,6 +1903,7 @@ function GAME.start()
     GAME.ultraRun = GAME.anyRev and URM
     GAME.negFloor = 1
     GAME.negEvent = 1
+    GAME.omega = false
 
     TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
@@ -2461,6 +2451,7 @@ function GAME.update(dt)
         --     GAME.addXP(dt * 42)
         -- end
 
+        -- Quest animattion
         local style = M.DP == 0 and questStyle or questStyleDP
         for i = 1, #GAME.quests do
             local Q = GAME.quests[i]
@@ -2470,11 +2461,23 @@ function GAME.update(dt)
             Q.a = expApproach(Q.a, style[i].a, k * 26)
         end
 
+        -- Timers
         GAME.time = GAME.time + dt
-
         local r = min(GAME.rank, 26)
         GAME.rankTimer[r] = GAME.rankTimer[r] + dt
+        GAME.questTime = GAME.questTime + dt
+        GAME.floorTime = GAME.floorTime + dt
+        if M.GV > 0 and not GAME.gravTimer and (URM and M.GV == 2 or GAME.questTime >= 2.6) and GAME.questTime - dt < 2.6 then
+            GAME.gravTimer = GAME.gravDelay
+        end
+        if M.EX == 2 and GAME.floorTime > 30 then
+            GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
+        end
+        if GAME.time >= GAME.fatigueSet[GAME.fatigue].time then
+            GAME.nextFatigue()
+        end
 
+        -- Gigaspeed timer text
         if GAME.gigaspeed then
             TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
                 floor(GAME.time / 60),
@@ -2483,6 +2486,7 @@ function GAME.update(dt)
             )
         end
 
+        -- Time-based revive prompt
         local t = GAME.currentTask
         if t and t.prompt:sub(1, 5) == 'keep_' then
             if t.prompt:sub(6, 12) == 'health_' then
@@ -2496,18 +2500,7 @@ function GAME.update(dt)
             end
         end
 
-        GAME.questTime = GAME.questTime + dt
-        GAME.floorTime = GAME.floorTime + dt
-        if M.GV > 0 and not GAME.gravTimer and (URM and M.GV == 2 or GAME.questTime >= 2.6) and GAME.questTime - dt < 2.6 then
-            GAME.gravTimer = GAME.gravDelay
-        end
-        if M.EX == 2 and GAME.floorTime > 30 then
-            GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
-        end
-        if GAME.time >= GAME.fatigueSet[GAME.fatigue].time then
-            GAME.nextFatigue()
-        end
-
+        -- Height
         if not GAME.DPlock then
             local releaseHeight = GAME.heightBuffer
             GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
@@ -2581,7 +2574,19 @@ function GAME.update(dt)
             end
         end
 
-        if GAME.floor >= 10 and TASK.lock('kmTimer', 1) then TEXTS.lineKM:set(tostring(MATH.roundUnit(GAME.bgH, 1000))) end
+        if GAME.floor >= 10 then
+            -- Omega floor
+            -- if not GAME.omega and GAME.height >= 6200 then
+            --     GAME.omega = true
+            --     GAME.showFloorText("Ω", "The Frontier", 6.2)
+            --     SFX.play('zenith_levelup_g', 1, 0, M.GV)
+            -- end
+
+            -- KM line text
+            if TASK.lock('kmTimer', 1) then
+                TEXTS.lineKM:set(tostring(MATH.roundUnit(GAME.bgH, 1000)))
+            end
+        end
     end
 end
 
