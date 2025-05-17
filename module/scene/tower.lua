@@ -1294,11 +1294,9 @@ function scene.overDraw()
     if URM and (not GAME.playing or GAME.anyRev) then
         gc_replaceTransform(SCR.origin)
         gc_setColor(.42, 0, 0, GAME.playing and .16 or .35)
-        gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
+        gc_draw(TEXTURE.pixel, 0, 0, 0, SCR.w, SCR.h)
         gc_setColor(0, 0, 0, M.EX == 2 and .62 or .42)
-        gc_translate(SCR.w / 2, SCR.h / 2)
-        gc_scale(SCR.w / 2, SCR.h / 2)
-        GC.blurCircle(.626, 0, 0, 1)
+        gc_draw(TEXTURE.darkCorner, 0, 0, 0, SCR.w / 128, SCR.h / 128)
     end
 
     -- Version number
