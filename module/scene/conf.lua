@@ -320,11 +320,11 @@ scene.widgetList = {
                 return
             end
             if data:trim() == 'cmd' then
-                SFX.play('cutin_superlobby', 1, 0, -2 + GAME.mod.GV)
+                SFX.play('cutin_superlobby', 1, 0, Tone(-2))
                 SCN.go('_console')
                 return
             elseif data:trim() == 'fps' then
-                SFX.play('map_change', .626, 0, -3.5 + GAME.mod.GV)
+                SFX.play('map_change', .626, 0, Tone(-3.5))
                 ZENITHA.setShowFPS(true)
                 return
             end

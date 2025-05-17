@@ -600,7 +600,7 @@ function ReleaseAchvBuffer()
         msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 2.6
         MSG { msg[1], msg[2], time = msgTime, last = true, alpha = .75 }
         if TASK.lock('achv_sfx_' .. msg[3], .08) then
-            SFX.play('achievement_' .. msg[3], .7, 0, GAME.mod.GV)
+            SFX.play('achievement_' .. msg[3], .7, 0, Tone(0))
         end
     end
     TABLE.clear(bufferedMsg)
@@ -682,6 +682,7 @@ require 'module.achv_data'
 Shader_Coloring = GC.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
 
 GAME = require 'module/game'
+local M = GAME.mod
 
 for i = 1, #ModData.deck do table.insert(Cards, require 'module/card'.new(ModData.deck[i])) end
 GAME.refreshLayout()
@@ -726,6 +727,10 @@ local function starCursor(x, y)
         GC.setColor(1, 1, 1, MATH.iLerp(.384626, 1, CursorProgress))
         GC.draw(TEXTURE.star1, -150, 0)
     end
+end
+
+function Tone(pitch)
+    return pitch + M.GV
 end
 
 function ApplySettings()
@@ -1034,17 +1039,17 @@ function UltraVlCheck(id, auto)
     if uVLpool[id] < 3.1 then
         SFX.play('clearline', .3)
         if uVLpool[id] < 1.3 then
-            SFX.play('combo_1', .626, 0, GAME.mod.GV)
+            SFX.play('combo_1', .626, 0, Tone(0))
         elseif uVLpool[id] < 2.2 then
-            SFX.play('combo_3', .626, 0, -2 + GAME.mod.GV)
+            SFX.play('combo_3', .626, 0, Tone(-2))
         else
-            SFX.play('combo_2', .626, 0, 1 + GAME.mod.GV)
+            SFX.play('combo_2', .626, 0, Tone(1))
         end
         return false
     end
     if not auto then
         SFX.play('clearquad', .3)
-        SFX.play('combo_4', .626, 0, GAME.mod.GV)
+        SFX.play('combo_4', .626, 0, Tone(0))
     end
     uVLpool[id] = 0
     return true
@@ -1088,7 +1093,6 @@ function Daemon_Fast()
     local yield = coroutine.yield
     local msIsDown = love.mouse.isDown
     local expApproach = MATH.expApproach
-    local M = GAME.mod
 
     local bar = 2 * 60 / 184 * 4
     local t1, step1 = -.1, 2 * 60 / 184

@@ -69,10 +69,10 @@ function Card:setActive(auto, key)
             SFX.play('clearline', .42)
             if self.charge < 1.2 then
                 self:shake()
-                SFX.play('combo_' .. rnd(2, 3), .626, 0, -2 + M.GV)
+                SFX.play('combo_' .. rnd(2, 3), .626, 0, Tone(-2))
                 return
             end
-            SFX.play('combo_4', .626, 0, M.GV)
+            SFX.play('combo_4', .626, 0, Tone(0))
             self.charge = 0
         end
     elseif M.VL == 2 then
@@ -81,17 +81,17 @@ function Card:setActive(auto, key)
             SFX.play('clearline', .3)
             self:shake()
             if self.charge < 1.3 then
-                SFX.play('combo_1', .626, 0, M.GV)
+                SFX.play('combo_1', .626, 0, Tone(0))
             elseif self.charge < 2.2 then
-                SFX.play('combo_3', .626, 0, -2 + M.GV)
+                SFX.play('combo_3', .626, 0,Tone(-2))
             else
-                SFX.play('combo_2', .626, 0, 1 + M.GV)
+                SFX.play('combo_2', .626, 0, Tone(1))
             end
             return
         end
         if not auto then
             SFX.play('clearquad', .3)
-            SFX.play('combo_4', .626, 0, M.GV)
+            SFX.play('combo_4', .626, 0, Tone(0))
         end
         self.charge = 0
     end
@@ -121,7 +121,7 @@ function Card:setActive(auto, key)
             GAME.totalFlip = GAME.totalFlip + 1
             if not GAME.achv_psychokinesisH then
                 GAME.achv_psychokinesisH = GAME.roundHeight
-                if GAME.totalQuest >= 3 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 3 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
             if self.touchCount == 1 then
                 if (self.required or self.required2) and not GAME.hardMode then
@@ -133,7 +133,7 @@ function Card:setActive(auto, key)
         end
         if M.DP > 0 and not auto and self.id == 'DP' and self.active and not (URM and M.DP == 2) then
             if GAME.swapControl() then
-                SFX.play('party_ready', .8, 0, M.GV)
+                SFX.play('party_ready', .8, 0, Tone(0))
             end
         end
         if not auto then
@@ -240,17 +240,17 @@ function Card:setActive(auto, key)
         local toneName = 'card_tone_' .. ModData.name[self.id]
         local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1
         if revOn then
-            SFX.play(toneName .. postfix, toneVol, 0, M.GV)
+            SFX.play(toneName .. postfix, toneVol, 0, Tone(0))
             if URM then
                 TASK.new(function()
                     TASK.yieldT(.2)
-                    SFX.play(toneName, toneVol * .8, 0, 7 + M.GV)
+                    SFX.play(toneName, toneVol * .8, 0, Tone(7))
                     TASK.yieldT(.2)
-                    SFX.play(toneName, toneVol * .6, 0, 7 + M.GV)
+                    SFX.play(toneName, toneVol * .6, 0, Tone(7))
                 end)
             end
         else
-            SFX.play(toneName, toneVol, 0, M.GV)
+            SFX.play(toneName, toneVol, 0, Tone(0))
         end
         if revOn then
             self:revJump()
@@ -354,13 +354,13 @@ function Card:revJump()
                 GAME.revDeckSkin = true
                 GAME.bgXdir = MATH.coin(-1, 1)
                 if not URM then
-                    SFX.play('card_reverse_impact', 1, 0, M.GV)
+                    SFX.play('card_reverse_impact', 1, 0, Tone(0))
                 else
                     local tone = ModData.ultraImpactTone[self.id]
-                    if tone[1] then SFX.play('card_reverse_impact', .626, 0, tone[1] + M.GV) end
-                    if tone[2] then SFX.play('card_reverse_impact', .8, 0, tone[2] + M.GV) end
-                    if tone[3] then SFX.play('card_reverse_impact', 1, 0, tone[3] + M.GV) end
-                    SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', .42, 0, -5 + M.GV)
+                    if tone[1] then SFX.play('card_reverse_impact', .626, 0, Tone(tone[1])) end
+                    if tone[2] then SFX.play('card_reverse_impact', .8, 0, Tone(tone[2])) end
+                    if tone[3] then SFX.play('card_reverse_impact', 1, 0, Tone(tone[3])) end
+                    SFX.play('card_tone_' .. ModData.name[self.id] .. '_reverse', .42, 0, Tone(-5))
                 end
             else
                 SFX.play('spin')

@@ -1091,8 +1091,9 @@ function scene.overDraw()
         wid, hgt = TEXTS.rank:getDimensions()
         gc_strokeDraw('full', 1, TEXTS.rank, 1027, 990, 0, .626, .626, wid / 2, hgt / 2)
 
-        gc_setColor(COLOR.L)
+        gc_setColor(GAME.timerMul, .99, .99)
         gc_mDraw(TEXTS.time, 375, 978)
+        gc_setColor(COLOR.L)
         gc_mDraw(TEXTS.rank, 1027, 990, 0, .626)
         if GAME.DPlock then
             gc_setColor(GAME.time % .9 > .45 and COLOR.R or COLOR.D)
@@ -1443,7 +1444,7 @@ scene.widgetList = {
             PieceSFXID = (PieceSFXID or 0) % 8 + 1
             if PieceSFXID <= 7 then
                 local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
-                SFX.play(piece, 1, 0, 6 + M.GV)
+                SFX.play(piece, 1, 0, Tone(6))
             else
                 SFX.play('allclear')
             end

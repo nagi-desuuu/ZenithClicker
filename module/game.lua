@@ -53,7 +53,7 @@ local ins, rem = table.insert, table.remove
 ---@field height number
 ---@field roundHeight number for statistics and achievement
 ---@field heightBuffer number
----@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string}[]
+---@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string, duration?:number}[]
 ---@field fatigue number
 ---@field animDuration number
 ---
@@ -91,6 +91,8 @@ local ins, rem = table.insert, table.remove
 ---
 ---@field omega boolean
 ---@field negFloor number
+---@field negEvent number
+---@field timerMul number
 ---
 ---@field onAlly boolean
 ---@field life2 number
@@ -504,7 +506,7 @@ end
 
 function GAME.task_fatigueWarn()
     for _ = 1, 3 do
-        for _ = 1, M.DP == 2 and 1 or 3 do SFX.play('warning', 1, 0, M.GV) end
+        for _ = 1, M.DP == 2 and 1 or 3 do SFX.play('warning', 1, 0, Tone(0)) end
         TASK.yieldT(1)
     end
 end
@@ -764,15 +766,15 @@ function GAME.takeDamage(dmg, reason, toAlly)
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
     if not GAME.achv_perfectionistH then
         GAME.achv_perfectionistH = GAME.roundHeight
-        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
     end
     if not GAME.achv_spotlessH then
         GAME.achv_spotlessH = GAME.roundHeight
-        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
     end
     if not GAME.achv_protectH and GAME.comboStr == 'rDP' and min(GAME.life, GAME.life2) < 10 then
         GAME.achv_protectH = GAME.roundHeight
-        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
     end
 
     if GAME[k] <= 0 then
@@ -832,7 +834,7 @@ function GAME.addXP(xp)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
-        if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[GAME.floor] then
+        if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, GAME.negFloor)] then
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
@@ -866,7 +868,7 @@ function GAME.readyShuffle(messiness, noSnd)
     if not messiness then return end
     GAME.shuffleMessiness = messiness
     if GAME.totalQuest > 0 then
-        if not noSnd then SFX.play('rsg_go', 1, 0, 2 + M.GV) end
+        if not noSnd then SFX.play('rsg_go', 1, 0, Tone(2)) end
         for _, C in ipairs(CD) do C:shake() end
     end
 end
@@ -946,9 +948,9 @@ function GAME.upFloor()
     -- Text & SFX
     GAME.showFloorText(GAME.floor, Floors[GAME.floor].name, GAME.floor >= 10 and 8.72 or 4.2)
     if GAME.gigaspeed then
-        SFX.play('zenith_split_cleared', 1, 0, -1 + M.GV)
+        SFX.play('zenith_split_cleared', 1, 0, Tone(-1))
     elseif GAME.floor > 1 then
-        SFX.play('zenith_levelup_g', 1, 0, M.GV)
+        SFX.play('zenith_levelup_g', 1, 0, Tone(0))
     end
 
     -- End game
@@ -999,14 +1001,30 @@ function GAME.nextFatigue()
     for i = 1, #e, 2 do
         GAME[e[i]] = GAME[e[i]] + e[i + 1]
     end
-    if GAME.floor >= 10 then GAME.updateBgm('ingame') end
-    GAME.fatigue = GAME.fatigue + 1
     if stage.text then
-        local duration = 5
-        if M.DP == 2 or GAME.fatigue == #GAME.fatigueSet then
-            duration = duration * 2
+        TEXT:add {
+            text = stage.text,
+            x = 800, y = 265, fontSize = 30, k = 1.5,
+            style = 'score', duration = stage.duration or 5,
+            inPoint = .1, outPoint = .26,
+            color = stage.color or 'lM',
+        }
+        TEXT:add {
+            text = stage.desc,
+            x = 800, y = 300, fontSize = 30,
+            style = 'score', duration = stage.duration or 5,
+            inPoint = .26, outPoint = .1,
+            color = stage.color or 'lM',
+        }
+        TASK.new(GAME.task_fatigueWarn)
+        local allTextSeen = true
+        for i = GAME.fatigue, #GAME.fatigueSet do
+            if GAME.fatigueSet[i].text then
+                allTextSeen = false
+                break
+            end
         end
-        if GAME.fatigue == #GAME.fatigueSet then
+        if allTextSeen then
             if GAME.fatigueSet == Fatigue.normal then
                 IssueAchv('final_defiance')
             elseif GAME.fatigueSet == Fatigue.rEX then
@@ -1015,22 +1033,10 @@ function GAME.nextFatigue()
                 IssueAchv('lovers_stand')
             end
         end
-        TEXT:add {
-            text = stage.text,
-            x = 800, y = 265, fontSize = 30, k = 1.5,
-            style = 'score', duration = duration,
-            inPoint = .1, outPoint = .26,
-            color = stage.color or 'lM',
-        }
-        TEXT:add {
-            text = stage.desc,
-            x = 800, y = 300, fontSize = 30,
-            style = 'score', duration = duration,
-            inPoint = .26, outPoint = .1,
-            color = stage.color or 'lM',
-        }
-        TASK.new(GAME.task_fatigueWarn)
     end
+
+    if GAME.floor >= 10 then GAME.updateBgm('ingame') end
+    GAME.fatigue = GAME.fatigue + 1
 end
 
 function GAME.downFloor()
@@ -1055,7 +1061,7 @@ function GAME.downFloor()
 
     -- Text & SFX
     GAME.showFloorText(-GAME.negFloor, NegFloors[GAME.negFloor].name, GAME.negFloor >= 10 and 8.72 or 4.2)
-    SFX.play('zenith_levelup_g', 1, 0, -5 + M.GV)
+    SFX.play('zenith_levelup_g', 1, 0, Tone(-5))
 
     GAME.refreshRPC()
 end
@@ -1465,12 +1471,12 @@ function GAME.commit(auto)
         if noRep then
             if not GAME.achv_honeymoonH then
                 GAME.achv_honeymoonH = GAME.roundHeight
-                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
         else
             if not GAME.achv_breakupH then
                 GAME.achv_breakupH = GAME.roundHeight
-                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
         end
     end
@@ -1615,7 +1621,7 @@ function GAME.commit(auto)
 
             if not GAME.achv_perfectionistH then
                 GAME.achv_perfectionistH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
         else
             -- Perfect
@@ -1659,11 +1665,11 @@ function GAME.commit(auto)
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
             if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then
                 GAME.achv_arroganceH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
             if not GAME.achv_powerlessH and GAME.chain >= 4 then
                 GAME.achv_powerlessH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
         end
         if dblCorrect then
@@ -1722,7 +1728,7 @@ function GAME.commit(auto)
             end
         end
 
-        SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, 12 + M.GV)
+        SFX.play(dp and 'zenith_start_duo' or 'zenith_start', .626, 0, Tone(12))
 
         if GAME.achv_escapeBurnt then
             GAME.achv_escapeBurnt = false
@@ -1768,7 +1774,7 @@ function GAME.commit(auto)
                 attack = attack / 2
             elseif not GAME.achv_carriedH then
                 GAME.achv_carriedH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, M.GV) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
             end
         end
 
@@ -1811,7 +1817,7 @@ function GAME.commit(auto)
             if #combo >= 4 then
                 local pwr = #combo * 2 - 7
                 if TABLE.find(combo, 'DH') then pwr = pwr + 1 end
-                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 4), 1, 0, M.GV)
+                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 4), 1, 0, Tone(0))
             end
             GAME.questReady()
             GAME.totalQuest = GAME.totalQuest + 1
@@ -1826,7 +1832,7 @@ function GAME.commit(auto)
 
         if M.DP > 0 and (correct == 2 or dblCorrect) then
             if GAME.swapControl() then
-                SFX.play('party_ready', 1, 0, M.GV)
+                SFX.play('party_ready', 1, 0, Tone(0))
             end
         end
 
@@ -1900,10 +1906,11 @@ function GAME.start()
     end
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
 
+    GAME.omega = false
     GAME.ultraRun = GAME.anyRev and URM
     GAME.negFloor = 1
     GAME.negEvent = 1
-    GAME.omega = false
+    GAME.timerMul = 1
 
     TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
@@ -1912,7 +1919,7 @@ function GAME.start()
     MSG.clear()
 
     SFX.play('menuconfirm', .8)
-    SFX.play((M.DP > 0 or VALENTINE and not GAME.anyRev) and 'zenith_start_duo' or 'zenith_start', 1, 0, M.GV)
+    SFX.play((M.DP > 0 or VALENTINE and not GAME.anyRev) and 'zenith_start_duo' or 'zenith_start', 1, 0, Tone(0))
 
     GAME.playing = true
 
@@ -1962,7 +1969,7 @@ function GAME.start()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
     GAME.dmgTime = 2
-    GAME.dmgTimeMul = 1
+    GAME.dmgTimerMul = 1
     GAME.dmgDelay = 15
     GAME.dmgCycle = 5
 
@@ -2194,7 +2201,7 @@ function GAME.finish(reason)
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lC', duration = 6.2,
                 }
-                SFX.play('worldrecord', 1, 0, (#hand == 1 and -1 or 0) + M.GV)
+                SFX.play('worldrecord', 1, 0, Tone(#hand == 1 and -1 or 0))
             elseif GAME.floor >= 2 then
                 TEXT:add {
                     text = "PERSONAL BEST",
@@ -2202,7 +2209,7 @@ function GAME.finish(reason)
                     style = 'beat', inPoint = .26, outPoint = .62,
                     color = 'lY', duration = 6.2,
                 }
-                SFX.play('personalbest', 1, 0, -.1 + M.GV)
+                SFX.play('personalbest', 1, 0, Tone(-.1))
             end
             SFX.play('applause', GAME.floor / 10)
             SaveBest()
@@ -2462,7 +2469,7 @@ function GAME.update(dt)
         end
 
         -- Timers
-        GAME.time = GAME.time + dt
+        GAME.time = GAME.time + dt * GAME.timerMul
         local r = min(GAME.rank, 26)
         GAME.rankTimer[r] = GAME.rankTimer[r] + dt
         GAME.questTime = GAME.questTime + dt
@@ -2514,8 +2521,13 @@ function GAME.update(dt)
                     GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
                     GAME.height = max(GAME.height, Floors[GAME.floor - 1].top)
                 else
+                    if GAME.negFloor >= 2 then
+                        GAME.height = min(GAME.height, NegFloors[GAME.negFloor - 1].bottom)
+                    end
                     local f = max(GAME.floor, GAME.negFloor)
-                    GAME.height = GAME.height - dt * (f * (f + 1) + 10) / 20
+                    local fallSpeed = (f * (f + 1) + 10) / 20
+                    if GAME.height < 0 and GAME.gigaspeed then fallSpeed = fallSpeed * 6.2 end
+                    GAME.height = GAME.height - dt * fallSpeed
                     if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
                     if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end
                 end
@@ -2552,14 +2564,14 @@ function GAME.update(dt)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                     if not GAME.achv_demoteH then
                         GAME.achv_demoteH = GAME.roundHeight
-                        if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break', 1, 0, M.GV) end
+                        if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break', 1, 0, Tone(0)) end
                     end
                 end
             end
         end
 
         -- Damage
-        GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimeMul
+        GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimerMul
         if GAME.dmgTimer <= 0 then
             GAME.dmgTimer = GAME.dmgCycle
             GAME.takeDamage(GAME.dmgTime, 'time')
@@ -2579,7 +2591,7 @@ function GAME.update(dt)
             -- if not GAME.omega and GAME.height >= 6200 then
             --     GAME.omega = true
             --     GAME.showFloorText("Ω", "The Frontier", 6.2)
-            --     SFX.play('zenith_levelup_g', 1, 0, M.GV)
+            --     SFX.play('zenith_levelup_g', 1, 0, Tone(0))
             -- end
 
             -- KM line text
