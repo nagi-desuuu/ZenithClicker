@@ -391,10 +391,10 @@ function GAME.getComboName(list, mode)
             elseif len == 9 or len >= 7 and not TABLE.find(list, 'DP') then
                 return
                     GAME.anyRev and (
-                        len == 7 and [["SWAMP WATER LITE+"]] or
-                        len == 8 and [["SWAMP WATER+"]] or
-                        len == 9 and [["SWAMP WATER PRO+"]] or
-                        [["SWAMP WATER X+"]]
+                        len == 7 and [["AMBROSIA SODA"]] or
+                        len == 8 and [["AMBROSIA WINE"]] or
+                        len == 9 and [["AMBROSIA MOONSHINE"]] or
+                        [["AMBROSIA X"]]
                     ) or (
                         len == 7 and [["SWAMP WATER LITE"]] or
                         len == 8 and [["SWAMP WATER"]] or
