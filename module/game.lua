@@ -47,7 +47,6 @@ local ins, rem = table.insert, table.remove
 ---@field rankupLast boolean
 ---@field xpLockLevel number
 ---@field xpLockTimer number
----@field maxRank number
 ---
 ---@field floor number
 ---@field height number
@@ -826,7 +825,8 @@ function GAME.addXP(xp)
                 GAME.rank = GAME.rank + 1
                 GAME.xp = GAME.xp - 4 * GAME.rank
             end
-            GAME.xpLockLevel = GAME.xp >= 2 * GAME.rank and 5 or 4
+            GAME.xpLockLevel = GAME.xpLockLevelMax
+            if GAME.xp < 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevel - 1 end
         end
         GAME.xpLockTimer = GAME.xpLockLevel
     end
@@ -845,11 +845,10 @@ function GAME.addXP(xp)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
-        GAME.maxRank = max(GAME.maxRank, GAME.rank)
     else
         GAME.xpLockTimer = oldLockTimer
     end
-    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = 5 end
+    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
 end
 
 function GAME.setGigaspeedAnim(on, finish)
@@ -2248,7 +2247,7 @@ function GAME.finish(reason)
             COLOR.L, ("Quest  %d"):format(g.totalQuest),
             COLOR.LD, ("  (%.2f/s  %.1f%% Perf)\n"):format(g.totalQuest / g.time, g.totalPerfect / g.totalQuest * 100),
             COLOR.L, ("Speed  %.1fm/s"):format(roundUnit(g.height / g.time, .1)),
-            COLOR.LD, ("  (max rank %d)\n"):format(g.maxRank),
+            COLOR.LD, ("  (max rank %d)\n"):format(g.peakRank),
             COLOR.L, ("Attack  %d"):format(g.totalAttack),
             COLOR.LD, ("  (%.1fapm  %.2feff)\n"):format(g.totalAttack / g.time * 60, g.totalAttack / g.totalQuest),
             COLOR.L, ("Bonus  %.1fm"):format(g.heightBonus),
@@ -2533,7 +2532,6 @@ function GAME.update(dt)
                     end
                     local f = max(GAME.floor, GAME.negFloor)
                     local fallSpeed = (f * (f + 1) + 10) / 20
-                    if GAME.height < 0 and GAME.gigaspeed then fallSpeed = fallSpeed * 2.6 end
                     GAME.height = GAME.height - dt * fallSpeed
                     if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
                     if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end

@@ -106,7 +106,7 @@ ModData = {
         DP = "WHAT ONCE WAS INTERTWINED NOW NEVER TO COEXIST.",
     },
     ultraImpactTone = {
-        EX = { 0, 0, 0 }, -- 6 6
+        EX = { 0, nil, 0 }, -- 6 6
         NH = { 0, 5 },    -- 5 2
         MS = { 3, 5, 7 }, -- 1 2 3
         GV = { -4, 8 },   -- 4 4
