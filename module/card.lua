@@ -59,7 +59,7 @@ local completion = GAME.completion
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 function Card:setActive(auto, key)
-    if TASK.getLock('cannotFlip') or GAME.playing and (M.NH == 1 or URM and M.NH == 2 and self.touchCount > 0) and not auto and self.active then
+    if TASK.getLock('cannotFlip') or GAME.playing and M.NH == 1 and not auto and self.active then
         self:flick()
         SFX.play('no')
         return
@@ -126,7 +126,7 @@ function Card:setActive(auto, key)
             end
             if self.touchCount == 1 then
                 if (self.required or self.required2) and not GAME.hardMode then
-                    GAME.addXP(1)
+                    GAME.addXP(M.VL == 1 and 2 or 1)
                 end
             elseif not GAME.fault and not self.burn then
                 GAME.fault = true
