@@ -93,6 +93,8 @@ local ins, rem = table.insert, table.remove
 ---@field negEvent number
 ---@field timerMul number
 ---@field attackMul number
+---@field xpLockLevelMax number
+---@field invincible boolean
 ---
 ---@field onAlly boolean
 ---@field life2 number
@@ -494,6 +496,10 @@ function GAME.anim_setMenuHide(t)
     MSG.setSafeY(75 * (1 - GAME.uiHide))
 end
 
+function GAME.anim_setMenuHide_finish()
+    TEXTS.floorTime:set("")
+end
+
 function GAME.anim_setMenuHide_rev(t)
     GAME.anim_setMenuHide(1 - t)
 end
@@ -794,8 +800,12 @@ function GAME.takeDamage(dmg, reason, toAlly)
             GAME.startRevive()
             GAME.dmgWrongExtra = 0 -- Being tolerant!
         else
-            GAME.finish(reason)
-            return true
+            if GAME.invincible then
+                GAME[k] = 0.26
+            else
+                GAME.finish(reason)
+                return true
+            end
         end
     else
         GAME.refreshLifeState()
@@ -947,7 +957,11 @@ function GAME.upFloor()
     local F = Floors[GAME.floor]
     local e = F.event
     for i = 1, #e, 2 do
-        GAME[e[i]] = GAME[e[i]] + e[i + 1]
+        if type(e[i + 1]) == 'number' then
+            GAME[e[i]] = GAME[e[i]] + e[i + 1]
+        else
+            GAME[e[i]] = e[i + 1]
+        end
     end
     if GAME.dmgTimer > GAME.dmgDelay then GAME.dmgTimer = GAME.dmgDelay end
 
@@ -1061,12 +1075,12 @@ function GAME.downFloor()
         M.VL == 2 and 50 or (
             (M.EX > 0 and 0 or 33)
             - (M.MS > 0 and 25 or 0)
-            - GAME.floor * 3
+            - GAME.negFloor * 3
         )
-    if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.floor] end
+    if M.GV > 0 then GAME.gravDelay = GravityTimer[M.GV][GAME.negFloor] end
 
     -- Text & SFX
-    GAME.showFloorText(-GAME.negFloor, NegFloors[GAME.negFloor].name, GAME.negFloor >= 10 and 8.72 or 4.2)
+    GAME.showFloorText(-GAME.negFloor, NegFloors[GAME.negFloor].name, 6.2)
     SFX.play('zenith_levelup_g', 1, 0, Tone(-5))
 
     GAME.refreshRPC()
@@ -1079,9 +1093,25 @@ function GAME.nextNegEvent()
             e.event()
         elseif type(e.event) == 'table' then
             for i = 1, #e.event, 2 do
-                GAME[e.event[i]] = GAME[e.event[i]] + e.event[i + 1]
+                if type(e.event[i + 1]) == 'number' then
+                    GAME[e.event[i]] = GAME[e.event[i]] + e.event[i + 1]
+                else
+                    GAME[e.event[i]] = e.event[i + 1]
+                end
             end
         end
+        local sfx
+        if e.text then
+            TEXT:add {
+                text = e.text,
+                x = 800, y = 285, fontSize = 30, k = 1.5 * (e.size or 1),
+                style = 'score', duration = e.duration or 5,
+                inPoint = .1, outPoint = .26,
+                color = e.color or 'lR',
+            }
+            sfx = 'counter'
+        end
+        SFX.play(e.sfx or sfx)
     end
     GAME.negEvent = GAME.negEvent + 1
 end
@@ -1150,25 +1180,25 @@ function GAME.refreshModIcon()
     if #hand == 1 then
         local quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig_ex[hand[1]]
         local k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.872 or #hand[1] == 3 and .7023 or .62
-        local _, _, w, h = quad:getViewport()
+        local _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 0, 0,
-            0, k, nil, w * .5, h * .5
+            0, k, nil, w * .5, w * .5
         )
     elseif #hand == 2 then
         local quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig_ex[hand[2]]
         local k = quad == TEXTURE.modQuad_ultra[hand[2]] and 0.7023 or #hand[1] == 3 and .626 or .5
-        local _, _, w, h = quad:getViewport()
+        local _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 35, 0,
-            0, k, nil, w * .5, h * .5
+            0, k, nil, w * .5, w * .5
         )
         quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig_ex[hand[1]]
         k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.7023 or #hand[1] == 3 and .626 or .5
-        _, _, w, h = quad:getViewport()
+        _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, -35, 0,
-            0, k, nil, w * .5, h * .5
+            0, k, nil, w * .5, w * .5
         )
     else
         local r = 35
@@ -1176,11 +1206,11 @@ function GAME.refreshModIcon()
             for i = #hand, 1, -1 do
                 if #hand[i] == x then
                     local quad = x == 3 and URM and TEXTURE.modQuad_ultra[hand[i]] or TEXTURE.modQuad_ig[hand[i]]
-                    local _, _, w, h = quad:getViewport()
+                    local _, _, w = quad:getViewport()
                     GAME.modIB:add(
                         quad,
                         modIconPos[i][1] * r, modIconPos[i][2] * r,
-                        0, x == 3 and (URM and .26 or .4) or .28, nil, w * .5, h * .5
+                        0, x == 3 and (URM and .26 or .4) or .28, nil, w * .5, w * .5
                     )
                 end
             end
@@ -1913,11 +1943,13 @@ function GAME.start()
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
 
     GAME.omega = false
-    GAME.ultraRun = GAME.anyRev and URM
-    GAME.attackMul = GAME.ultraRun and .6 or 1
     GAME.negFloor = 1
     GAME.negEvent = 1
     GAME.timerMul = 1
+    GAME.ultraRun = GAME.anyRev and URM
+    GAME.attackMul = GAME.ultraRun and .6 or 1
+    GAME.xpLockLevelMax = 5
+    GAME.invincible = false
 
     TASK.unlock('sure_quit')
     SCN.scenes.tower.widgetList.help:setVisible(false)
@@ -1933,7 +1965,7 @@ function GAME.start()
     -- Statistics
     GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
     GAME.prevPB = BEST.highScore[GAME.comboStr]
-    if GAME.prevPB == 0 then GAME.prevPB = -260 end
+    if GAME.prevPB == 0 then GAME.prevPB = -2600 end
     GAME.totalFlip = 0
     GAME.totalQuest = 0
     GAME.totalPerfect = 0
@@ -1956,7 +1988,6 @@ function GAME.start()
     GAME.rankupLast = false
     GAME.xpLockLevel = 5
     GAME.xpLockTimer = 0
-    GAME.maxRank = 0
 
     -- Floor
     GAME.floor = 0
@@ -2045,7 +2076,7 @@ function GAME.start()
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
 
-    TWEEN.new(GAME.anim_setMenuHide):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
+    TWEEN.new(GAME.anim_setMenuHide):setOnFinish(GAME.anim_setMenuHide_finish):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.updateBgm('start')
 
     GAME.achv_perfectionistH = nil
@@ -2073,7 +2104,7 @@ function GAME.start()
     if M.DP == 1 then IssueAchv('intended_glitch') end
 end
 
----@param reason 'forfeit' | 'wrong' | 'time' | 'instakill'
+---@param reason 'forfeit' | 'wrong' | 'time'
 function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help:setVisible(not GAME.zenithTraveler)
     SCN.scenes.tower.widgetList.help2:setVisible(not GAME.zenithTraveler)
@@ -2084,7 +2115,6 @@ function GAME.finish(reason)
         reason == 'forfeit' and 'detonated' or
         reason == 'wrong' and 'topout' or
         reason == 'time' and 'losestock' or
-        reason == 'instakill' and 'bombdetonate' or
         'shatter', .8
     )
 
@@ -2155,7 +2185,7 @@ function GAME.finish(reason)
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
         STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.height), .01)
         STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .01)
-        STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1)
+        STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1) + (GAME.negFloor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
         if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
 
@@ -2326,7 +2356,7 @@ function GAME.finish(reason)
 
         SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)
-        SubmitAchv('teraspeed', GAME.maxRank)
+        SubmitAchv('teraspeed', GAME.peakRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
         for i = 1, #maxCSP do
             if maxCSP[i][2] >= 60 then
@@ -2433,6 +2463,14 @@ function GAME.finish(reason)
             CD.DP:bounce(1200, .62)
             SFX.play('supporter')
         end)
+    end
+
+    if URM then
+        GAME.nightcore = false
+        GAME.slowmo = false
+        GAME.glassCard = false
+        GAME.invisCard = false
+        GAME.invisDashboard = false
     end
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
@@ -2576,13 +2614,6 @@ function GAME.update(dt)
             end
         end
 
-        -- Damage
-        GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimerMul
-        if GAME.dmgTimer <= 0 then
-            GAME.dmgTimer = GAME.dmgCycle
-            GAME.takeDamage(GAME.dmgTime, 'time')
-        end
-
         -- Gravity
         if GAME.gravTimer then
             GAME.gravTimer = GAME.gravTimer - dt
@@ -2590,6 +2621,13 @@ function GAME.update(dt)
                 GAME.faultWrong = false
                 GAME.commit(true)
             end
+        end
+
+        -- Damage
+        GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimerMul
+        if GAME.dmgTimer <= 0 then
+            GAME.dmgTimer = GAME.dmgCycle
+            if GAME.takeDamage(GAME.dmgTime, 'time') then return end
         end
 
         if GAME.floor >= 10 then

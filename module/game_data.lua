@@ -510,85 +510,258 @@ Floors = {
 }
 
 NegFloors = {
-    { bottom = -50,   name = "The Basement", },
-    { bottom = -150,  name = "Zenith Restaurant", },
-    { bottom = -300,  name = "Underground Parking", },
-    { bottom = -450,  name = "The Bunker", },
-    { bottom = -650,  name = "The Infirmary", },
-    { bottom = -850,  name = "Decayed Catacombs", },
-    { bottom = -1100, name = "Sacreligious Ruins", },
-    { bottom = -1350, name = "Singularity Reactor", },
-    { bottom = -1650, name = "Distorted Gateways", },
-    { bottom = -1e99, name = "Endless Void", },
+    { bottom = -50,   name = "The Basement" },
+    { bottom = -150,  name = "Zenith Restaurant" },
+    { bottom = -300,  name = "Underground Parking" },
+    { bottom = -450,  name = "The Bunker" },
+    { bottom = -650,  name = "The Infirmary" },
+    { bottom = -850,  name = "Decayed Catacombs" },
+    { bottom = -1100, name = "Sacreligious Ruins" },
+    { bottom = -1350, name = "Singularity Reactor" },
+    { bottom = -1650, name = "Distorted Gateways" },
+    { bottom = -1e99, name = "Endless Void" },
 }
 local NegTexts = {
-    b1_desc = [[A basic storage room for the floors above... and below.]],
-    b2_desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]],
-    b3_desc = [[A boundless parking lot for all of these visitors.]],
-    b4_desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
-    b5_desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
-    b6_desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]],
-    b7_desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]],
-    b7_desc2 = [[Whispers of a missing artifact echo throughout the area...]],
-    b8_desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]],
-    b9_desc = [[A hall of millions of gateways to different realities, towers and wastelands... the mere thought of something like this is sickening...]],
-    b9_desc2 = [[The entrance to a false promise of paradise.]],
-    b9_desc3 = [[You reached the bottom... or it seemed to be at first glance... one last gateway was left...]],
-    b10_desc = [[A realm of absolutely nothing, none have ever returned.]],
-    b10_desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
-
-    b1_begin = [[You find yourself in an unfamiliar place.]],
-    b1_egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
-    b2_begin = [[The smell of food calms your senses.]],
-    b3_begin = [[The vast lot's tranquility reassures you.]],
-    b4_begin = [[You feel safe away from the above.]],
-    b5_begin = [[Endless beeping fills the rooms which you roam.]],
-    b6_begin = [[You begin to no longer feel so safe.]],
-    b6_mid = [[You begin to hear something calling your name...]],
-    b7_begin = [[You pray that nothing dire becomes of you.]],
-    b8_begin = [[The reactor's magnitude overwhelms you.]],
-    b8_mid = [[The mysterious voice is growing ever nearer...]],
-    b9_begin = [[You feel nostalgia at the sight of a familiar tower.]],
-    b9_mid = [[The endless void beckons you...]],
-    b10_begin = [[...and you pass the point of no return.]],
+    b1 = { -- The Basement
+        desc = [[A basic storage room for the floors above... and below.]],
+        begin = [[You find yourself in an unfamiliar place.]],
+        noAS = [[To prevent mech heart users, AS mod is not allowed here.]],
+        -- egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
+    },
+    b2 = { -- Zenith Restaurant
+        desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]],
+        begin = [[The smell of food calms your senses...]],
+        effStart = [[Illusions dance before your eyes...]],
+        noVL = [[You feel your strength fading...]],
+    },
+    b3 = { -- Underground Parking
+        desc = [[A boundless parking lot for all of these visitors.]],
+        begin = [[The vast lot's tranquility reassures you.]],
+        effStart = [[But you feel like you're lost...]],
+        mid1 = [["Where am I?"]],
+        noGV = [[You unconsciously quickened your pace...]],
+        mid2 = [["Where am I going?"]],
+    },
+    b4 = { -- The Bunker
+        desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
+        begin = [[You feel safe away from the above.]],
+        effStart = [[ Your hands don't shake any more.]],
+        noMS = [[You organized your thoughts...]],
+    },
+    b5 = { -- The Infirmary
+        desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
+        begin = [[Endless beeping fills the rooms which you roam.]],
+        effStart = [[One horrifying scene after another floods your vision.]],
+        noDH = [[You shuddered while walking in this terrifying place.]],
+        DHon = [[A evil thought crossed your mind...]],
+    },
+    b6 = { -- Decayed Catacombs
+        desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]],
+        begin = [[You begin to no longer feel so safe.]],
+        effStart = [[Your attention strayed...]],
+        mid = [[You begin to hear something calling your name...]],
+    },
+    b7 = { -- Sacreligious Ruins
+        desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]],
+        desc2 = [[Whispers of a missing artifact echo throughout the area...]],
+        begin = [[You pray that nothing dire becomes of you.]],
+        effStart = [[Spacetime ahead is heavily warped...]],
+        mid = [[You feel you have go as fast as possible.]],
+    },
+    b8 = { -- Singularity Reactor
+        desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]],
+        begin = [[The reactor's magnitude overwhelms you.]],
+        mid1 = [[Heavy Headache.]],
+        mid2 = [[Vision Blurred.]],
+        mid3 = [[Mind Blown.]],
+        -- mid = [[The mysterious voice is growing ever nearer...]],
+    },
+    b9 = { -- Distorted Gateways
+        desc = [[A hall of millions of gateways to different realities, towers and wastelands... the mere thought of something like this is sickening...]],
+        desc2 = [[The entrance to a false promise of paradise.]],
+        desc3 = [[You reached the bottom... or it seemed to be at first glance... one last gateway was left...]],
+        -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
+        begin = [[The endless void beckons you...]],
+    },
+    b10 = { -- Endless Void
+        desc = [[A realm of absolutely nothing, none have ever returned.]],
+        desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
+        begin = [[...and you pass the point of no return.]],
+    },
 }
 NegEvents = {
-    { h = -10,   text = 'b1' },
-    { h = -26,   text = 'b1_egg', cond = function() return GAME.mod.AS > 0 end },
-    -- B2
-    { h = -50, },
-    { h = -60,   text = 'b2' },
-    -- B3
-    { h = -150, },
-    { h = -160,  text = 'b3' },
-    -- B4
-    { h = -300, },
-    { h = -310,  text = 'b4' },
-    -- B5
-    { h = -450, },
-    { h = -460,  text = 'b5' },
-    -- B6
-    { h = -650, },
-    { h = -660,  text = 'b6' },
-    -- B7
-    { h = -850, },
-    { h = -860,  text = 'b7' },
-    -- B8
-    { h = -1100, },
-    { h = -1110, text = 'b8' },
-    -- B9
-    { h = -1350, },
-    { h = -1360, text = 'b9' },
-    -- B10
-    { h = -1650, },
-    { h = -1660, text = 'b10' },
+    -- B1: The Basement
+    { -10 }, { text = 'b1.begin' },
+    {
+        h = -26,
+        text = 'b1.noAS',
+        cond = function() return GAME.mod.AS == 1 end,
+        event = function()
+            GAME.mod.AS = 0
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+        end,
+    },
 
-    { h = 1e99 },
+    -- B2: Zenith Restaurant
+    { -50 }, { event = { 'dmgDelay', -2 } },
+    { event = { 'attackMul', -.1, 'timerMul', -.25 } }, -- 0.9x climb
+    { -55 }, { text = 'b2.begin' },
+    { -60 },
+    { text = 'b2.effStart', event = { 'nightcore', true } },
+    {
+        h = -100,
+        text = 'b2.noVL',
+        cond = function() return GAME.mod.VL == 1 end,
+        event = function()
+            GAME.attackMul = GAME.attackMul - .2 -- 0.7x climb
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
+            GAME.mod.VL = 0
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+        end,
+    },
+    { -150 }, { event = { 'nightcore', false } },
+
+    -- B3: Underground Parking
+    { -150 }, { event = { 'dmgDelay', -2, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.1, 'timerMul', -.15 } }, -- 0.8x climb (0.6x with VL)
+    { -155 }, { text = 'b3.begin' },
+    { -160 }, { text = 'b3.effStart' },
+    { -165 }, { event = { 'invisDashboard', true } },
+    { -170 }, { event = { 'invisDashboard', false } },
+    { -175 }, { event = { 'invisDashboard', true } },
+    { -180 }, { text = 'b3.mid1' },
+    { -185 }, { event = { 'invisDashboard', false } },
+    { -195 }, { event = { 'invisDashboard', true } },
+    {
+        h = -200,
+        text = 'b3.noGV',
+        cond = function() return GAME.mod.GV == 1 end,
+        event = function()
+            GAME.dmgHeal = GAME.dmgHeal + 2
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
+            GAME.mod.GV = 0
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+            local v = GAME.mod.GV > 0 and 2 ^ (GAME.mod.GV / 12) or 1
+            BGM.set('all', 'pitch', v, .26)
+            BGM.set('piano2', 'pitch', 2 * v, .26)
+        end,
+    },
+    { -200 }, { event = { 'invisDashboard', false } },
+    { -210 }, { event = { 'invisDashboard', true } },
+    { -220 }, { text = 'b3.mid2' },
+    { -250 }, { event = { 'invisDashboard', false } },
+    { -260 }, { event = { 'invisDashboard', true } },
+    { -280 }, { event = { 'invisDashboard', false } },
+
+    -- B4: The Bunker
+    { -300 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.2, 'timerMul', -.1 } }, -- 0.6x climb (0.4x with VL)
+    { -310 },
+    { text = 'b4.begin' },
+    { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
+    { -320 }, { text = 'b4.effStart', event = { 'glassCard', true } },
+    {
+        h = -380,
+        text = 'b4.noMS',
+        cond = function() return GAME.mod.MS > 0 end,
+        event = function()
+            GAME.extraQuestBase = GAME.extraQuestBase - GAME.mod.MS * .2
+            GAME.extraQuestVar = GAME.extraQuestVar - GAME.mod.MS * .2
+            GAME.dmgTimerMul = GAME.dmgTimerMul + GAME.mod.MS * .01
+            GAME.mod.MS = 0
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+            GAME.sortCards()
+        end,
+    },
+    { -450 }, { event = { 'glassCard', false } },
+
+    -- B5: The Infirmary
+    { -450 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.2 } }, -- 0.4x climb (0.2x with VL)
+    { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
+    { -460 }, { text = 'b5.begin' },
+    { -470 }, { text = 'b5.effStart', event = { 'slowmo', true } },
+    { -550 },
+    { text = 'b5.DHon', cond = function() return GAME.mod.DH == 0 end },
+    { text = 'b5.noDH', cond = function() return GAME.mod.DH > 0 end },
+    {
+        event = function()
+            GAME.dmgDelay = GAME.dmgDelay + GAME.mod.DH * 4
+            GAME.dmgCycle = GAME.dmgCycle + GAME.mod.DH * 1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + GAME.mod.DH * .01
+            GAME.mod.DH = (GAME.mod.DH - 1) % 3
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+        end,
+    },
+    { -650 }, { event = { 'slowmo', false } },
+
+    -- B6: Decayed Catacombs
+    { -650 }, { event = { 'dmgDelay', -1, 'dmgTime', 1, 'maxQuestSize', 1 } },
+    { event = { 'attackMul', -.2 } }, -- 0x climb (-0.2x with VL)
+    { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
+    { -660 }, { text = 'b6.begin' },
+    { -670 }, { text = 'b6.effStart', event = { 'invisCard', true } },
+    { -850 }, { event = { 'invisCard', false } },
+
+    -- B7: Sacreligious Ruins
+    { -850 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.2 } }, -- -0.2x climb (-0.4x with VL)
+    { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
+    { -860 }, { text = 'b7.begin' },
+    { -900 }, { text = 'b7.effStart' },
+    { -950 }, { text = 'b7.mid' },
+
+    -- B8: Singularity Reactor
+    { -1100 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
+    { -1115 }, { text = 'b8.begin' },
+    { -1145 }, { text = 'b8.mid1', size = 1.26, sfx = 'b2bcharge_distance_3' },
+    { -1160 }, { text = 'b8.mid2', size = 1.26, sfx = 'b2bcharge_distance_3' },
+    { -1175 }, { text = 'b8.mid3', size = 1.26, sfx = 'b2bcharge_distance_3' },
+    { -1180 }, { sfx = 'b2bcharge_distance_2' },
+    { -1185 }, { sfx = 'b2bcharge_distance_2' },
+    { -1190 }, { sfx = 'b2bcharge_distance_1' },
+    { -1195 }, { sfx = 'b2bcharge_distance_1' },
+    { -1200 }, { event = { 'nightcore', true } },
+    { -1350 }, { event = { 'nightcore', false } },
+
+    -- B9: Distorted Gateways
+    { -1350 }, { event = { 'dmgDelay', -.5 } },
+    { -1360 }, { text = 'b9.begin' },
+
+    -- B10: Endless Void
+    { -1650 },
+    {
+        event = function()
+            GAME.invincible = true
+            SFX.play('warp')
+            TASK.new(function()
+                TASK.yieldT(8)
+                GAME.finish('forfeit')
+            end)
+        end
+    },
+    { -1e99 },
 }
+local lastH = -0
 for _, e in next, NegEvents do
     e.cond = e.cond or TRUE
-    e.text = e.text and NegTexts[e.text]
+    e.text = e.text and TABLE.pathIndex(NegTexts, e.text) or e.text
+    e.text2 = e.text2 and TABLE.pathIndex(NegTexts, e.text2) or e.text2
+    if e[1] then e.h, e[1] = e[1], nil end
+    if e.h then
+        assert(e.h <= lastH)
+        lastH = e.h
+    else
+        e.h = lastH
+    end
 end
+
 Fatigue = {
     normal = {
         { time = 90,  event = { 'extraQuestBase', .2, 'animDuration', .5 } },
@@ -625,7 +798,7 @@ Fatigue = {
         { time = 430, event = { 'dmgTimerMul', -.05 } },
         { time = 435, event = { 'dmgTimerMul', -.03 } },
         { time = 440, event = { 'dmgTimerMul', -.02 } },
-        { time = 1e99 }, -- Total: dmgTimerMul-90%, Cycle-1, Wrong+5
+        { time = 1e99 }, -- Total: dmgTimerMul-90%, Cycle-1.5, Wrong+5
     },
     rDP = {
         { time = 20,  event = { 'dmgHeal', -1 }, --[[ 2 ]]                       text = "YOUR PASSION FADES_",                        desc = "Heal-",          duration = 10 },
