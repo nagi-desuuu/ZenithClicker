@@ -1,3 +1,10 @@
+---------------------------------------------------------------------
+--                      SPOILER WARNING                            --
+-- This file contains secrets that may spoil your game experience. --
+--  Be sure your finished the game, including Ultra Reversed Mods  --
+--                   Read at your own risk.                        --
+---------------------------------------------------------------------
+
 GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
 
 GravityTimer = {
