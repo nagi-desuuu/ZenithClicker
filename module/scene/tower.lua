@@ -834,6 +834,14 @@ function scene.overDraw()
     if M.DP == 0 then
         gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
         gc_mRect('fill', 800, 440, 1540 * GAME.lifeShow / GAME.fullHealth, 10)
+        if GAME.playing then
+            gc_setColor(COLOR.LD)
+            gc_mRect('fill', 800, 440 - 2, 1540 * GAME.dmgTime / GAME.fullHealth, 3)
+            gc_setColor(.872, 0, 0)
+            gc_mRect('fill', 800, 440 + 2, 1540 * GAME.dmgWrong / GAME.fullHealth, 3)
+            gc_setColor(1, 0, 0, .626)
+            gc_mRect('fill', 800, 440 + 2, 1540 * (GAME.dmgWrong + GAME.dmgWrongExtra) / GAME.fullHealth, 2)
+        end
     else
         local onAlly = GAME.onAlly
         gc_setColor(GAME.playing and GAME.life > safeHP and COLOR.L or COLOR.R)
@@ -957,12 +965,13 @@ function scene.overDraw()
 
         -- Damage Timer
         local delay = GAME.dmgDelay
+        local w = -360 * min(GAME.dmgTimerMul ^ .5, 1)
         gc_setColor(GAME.dmgTimer > GAME.dmgCycle and COLOR.DL or COLOR.lR)
-        gc_rectangle('fill', 390, 430, -360 * (GAME.dmgTimer / delay), -20 - 2 * delay)
+        gc_rectangle('fill', 390, 430, w * (GAME.dmgTimer / delay), -20 - 2 * delay)
         gc_setLineWidth(3)
         gc_setColor(COLOR.LD)
-        gc_rectangle('line', 390, 430, -360 * (GAME.dmgCycle / delay), -20 - 2 * delay)
-        gc_rectangle('line', 390, 430, -360, -20 - 2 * delay)
+        gc_rectangle('line', 390, 430, w * (GAME.dmgCycle / delay), -20 - 2 * delay)
+        gc_rectangle('line', 390, 430, w, -20 - 2 * delay)
 
         -- Gravity Timer
         if M.GV > 0 then
