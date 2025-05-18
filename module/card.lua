@@ -151,13 +151,10 @@ function Card:setActive(auto, key)
                     CD[(p + table.remove(l, rnd(1, 3)) - 1) % #CD + 1]:setActive(true)
                     GAME.achv_escapeBurnt = true
                     if M.AS == 2 then
-                        if URM then
-                            GAME.finish('instakill')
-                        else
-                            CD[(p + table.remove(l, rnd(3, 4)) - 1) % #CD + 1]:setActive(true)
-                            CD[(p + table.remove(l, rnd(1, 2)) - 1) % #CD + 1]:setActive(true)
-                            if GAME.floor < 10 and GAME.gigaspeed then GAME.achv_felMagicBurnt = true end
-                        end
+                        CD[(p + table.remove(l, rnd(3, 4)) - 1) % #CD + 1]:setActive(true)
+                        CD[(p + table.remove(l, rnd(1, 2)) - 1) % #CD + 1]:setActive(true)
+                        if GAME.floor < 10 and GAME.gigaspeed then GAME.achv_felMagicBurnt = true end
+                        if URM then GAME.takeDamage(1e99, 'wrong') end
                     end
                     SFX.play('wound')
                 else

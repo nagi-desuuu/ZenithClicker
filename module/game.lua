@@ -765,7 +765,8 @@ function GAME.takeDamage(dmg, reason, toAlly)
         toAlly and 'inject' or
         dmg <= 1.626 and 'damage_small' or
         dmg <= 4.2 and 'damage_medium' or
-        'damage_large', .872
+        dmg <= 2600 and 'damage_large' or
+        'bombdetonate', .872
     )
 
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
