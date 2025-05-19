@@ -17,8 +17,10 @@ Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
 Credits:  
 *MrZ*: Programming, game design, general development  
-*DJ Asriel*: Background reconstruction  
 *CreepercraftYT*: Detailed mod icons  
+*DJ Asriel*: Background reconstruction  
+*Flowerling*: Text Revision  
+*flomikel & Spritzy Sheep*: Extra Texts Writing  
 *Dr Ocelot*: Audio & Music  
 *osk*: Founder & lead producer of tetr.io  
 *Garbo*: Game & world designer of tetr.io  
