@@ -199,17 +199,13 @@ function Card:setActive(auto, key)
             BGM.set('all', 'pitch', v, .26)
             BGM.set('piano2', 'pitch', 2 * v, .26)
         elseif self.id == 'DH' then
-            local W = SCN.scenes.tower.widgetList.start
-            W.text = M.DH > 0 and 'COMMENCE' or 'START'
-            W:reset()
+            RefreshButtonText()
         elseif self.id == 'IN' then
             BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
             for _, C in ipairs(CD) do C:flip() end
             noSpin = M.IN == 1
         elseif self.id == 'AS' then
-            local W = SCN.scenes.tower.widgetList.reset
-            W.text = M.AS > 0 and 'SPIN' or 'RESET'
-            W:reset()
+            RefreshButtonText()
         elseif self.id == 'DP' then
             BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
             BGM.set('piano2', 'volume', M.DP > 0 and .626 or 0, .26)

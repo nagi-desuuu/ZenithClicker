@@ -1055,6 +1055,16 @@ function UltraVlCheck(id, auto)
     return true
 end
 
+function RefreshButtonText()
+    local W
+    W = SCN.scenes.tower.widgetList.start
+    W.text = M.DH > 0 and 'COMMENCE' or 'START'
+    W:reset()
+    W = SCN.scenes.tower.widgetList.reset
+    W.text = M.AS > 0 and 'SPIN' or 'RESET'
+    W:reset()
+end
+
 -- Muisc syncing daemon
 -- DiscordRPC syncing daemon
 DiscordState = {}
@@ -1126,13 +1136,15 @@ function Daemon_Fast()
         if T < t2 then t2 = 0 end
         if T > t2 + step2 then
             t2 = t2 + step2
-            if M.EX > 0 and not SCN.swapping then
-                local r = math.random()
-                local f = GAME.floor
-                r = 1 + (r - 1) / (f * r + 1)
-                r = MATH.clamp(r, exLastVol - (26 - f) * .02, exLastVol + (26 - f) * .02)
-                BGM.set('expert', 'volume', r, r > exLastVol and .0626 or .26)
-                exLastVol = r
+            if M.EX > 0 then
+                if not SCN.swapping then
+                    local r = math.random()
+                    local f = GAME.floor
+                    r = 1 + (r - 1) / (f * r + 1)
+                    r = MATH.clamp(r, exLastVol - (26 - f) * .02, exLastVol + (26 - f) * .02)
+                    BGM.set('expert', 'volume', r, r > exLastVol and .0626 or .26)
+                    exLastVol = r
+                end
             end
         end
 
