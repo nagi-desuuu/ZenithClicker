@@ -1257,7 +1257,7 @@ end
 function GAME.refreshCurrentCombo()
     local hand = GAME.getHand(not GAME.playing)
     local comboName = GAME.getComboName(hand, 'button')
-    if not GAME.playing and URM and GAME.anyRev then
+    if not GAME.playing and URM and GAME.anyRev and #hand > 0 then
         ---@cast comboName string
         comboName =
             comboName:sub(1, 1) == "\"" and
