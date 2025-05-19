@@ -1853,7 +1853,7 @@ function GAME.commit(auto)
             if #combo >= 4 then
                 local pwr = #combo * 2 - 7
                 if TABLE.find(combo, 'DH') then pwr = pwr + 1 end
-                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 4), 1, 0, Tone(0))
+                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 5), 1, 0, Tone(0))
             end
             GAME.questReady()
             GAME.totalQuest = GAME.totalQuest + 1
