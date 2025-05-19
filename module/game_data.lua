@@ -598,6 +598,7 @@ NegEvents = {
         cond = function() return GAME.mod.AS == 1 end,
         event = function()
             GAME.mod.AS = 0
+            RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
@@ -694,6 +695,7 @@ NegEvents = {
             GAME.dmgCycle = GAME.dmgCycle + GAME.mod.DH * 1
             GAME.dmgTimerMul = GAME.dmgTimerMul + GAME.mod.DH * .01
             GAME.mod.DH = (GAME.mod.DH - 1) % 3
+            RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
