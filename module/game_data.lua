@@ -799,9 +799,9 @@ NegEvents = {
     { event = function() GAME.rankLimit = math.min(GAME.rankLimit, 10) end },
     {
         text = 'b9.mid',
-        color = 'R',
+        color = 'lR',
         size = 2,
-        duration = 10,
+        duration = 12,
         event = function()
             BGM.set('all', 'volume', 1, 2.6)
             GAME.time = math.max(GAME.time, 419)
@@ -839,11 +839,11 @@ NegEvents = {
         end,
     },
     { h = -1660 }, { text = 'b10.end1', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .85) end },
-    { h = -1680 }, { text = 'b10.end2', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .7) end },
-    { h = -1700 }, { text = 'b10.end3', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .5) end },
-    { h = -1720 }, { text = 'b10.end4', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .3) end },
-    { h = -1735 }, { text = 'b10.end5', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * 0) end },
-    { h = -1750 },
+    { h = -1690 }, { text = 'b10.end2', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .7) end },
+    { h = -1720 }, { text = 'b10.end3', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .5) end },
+    { h = -1750 }, { text = 'b10.end4', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .3) end },
+    { h = -1780 }, { text = 'b10.end5', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * 0) end },
+    { h = -1800 },
     {
         event = function()
             GAME.heightBonus = 0
