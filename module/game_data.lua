@@ -814,20 +814,23 @@ NegEvents = {
         event = function()
             GAME.negFloor = 0
             GAME.timerMul = 0
+            GAME.dmgWrong = 1
             GAME.invisCard = true
             GAME.dmgTimerMul = 1e99
             GAME.height = -1650
             GAME.heightBonus = 0
             GAME.attackMul = -1
-            if GAME.rank > 4 then
-                GAME.rank = 4
-                GAME.xp = 16
+            GAME.chain = 0
+            GAME.maxQuestCount = 1
+            if GAME.rank > 8 then
+                GAME.rank = 8
+                GAME.xp = 32
             end
             GAME.xpLockLevelMax = 2600
             GAME.xpLockTimer = 2600
             GAME.xpLockLevel = 2600
-            GAME.rankLimit = 4
-            TEXTS.rank:set("R-4")
+            GAME.rankLimit = 8
+            TEXTS.rank:set("R-" .. GAME.rank)
 
             GAME.mod.EX = 0
             GAME.refreshModIcon()
