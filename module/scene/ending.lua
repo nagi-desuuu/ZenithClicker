@@ -175,14 +175,14 @@ function scene.load()
         SFX.setVol(STAT.sfx / 100 * .6)
     end
     STAT.bgm = math.max(STAT.bgm, math.min(STAT.sfx, 20))
-    BGM.set('violin2', 'volume', GAME.mod.DP == 2 and 1 or 0, .26)
-    BGM.set('piano2', 'volume', GAME.mod.DP > 0 and .626 or 0, .26)
     BGM.setVol(STAT.bgm / 100)
 end
 
 function scene.unload()
     GAME.bgH = GAME.height
     TEXTS.endHeight:set("Thanks for playing!")
+    BGM.set('violin2', 'volume', GAME.mod.DP == 2 and 1 or 0, .26)
+    BGM.set('piano2', 'volume', GAME.mod.DP > 0 and .626 or 0, .26)
     TASK.new(function()
         for i = 1, 100 do
             TASK.yieldT(.01)
@@ -194,7 +194,7 @@ end
 function scene.keyDown() return true end
 
 function scene.update(dt)
-    if love.keyboard.isDown('space', 'escape') and t < 96.26 then
+    if love.keyboard.isDown('space', 'escape') and t < 98.72 then
         dt = dt * 12.6
     end
     if t < 120 then
@@ -226,7 +226,7 @@ end
 
 function scene.draw()
     DrawBG(87.2)
-    local a = 1 - math.min(math.abs(event[e - 1][1] - t), math.abs(event[e][1] - t)) * 1.26
+    local a = 1 - math.min(math.abs(event[e - 1][1] - t), math.abs(event[e][1] - t)) * 0.872
     if a > 0 then
         GC.setColor(.1, .1, .1, a)
         GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
