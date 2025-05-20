@@ -769,15 +769,17 @@ function RefreshDaily()
 
     if dayPast < 0 then
         MSG('warn', "Back to the future?", 26)
-    elseif MATH.between(dayPast, 1, 2600) then
-        -- print("Old ZP & Daily HS", STAT.zp, STAT.dailyHS)
-        STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
-        STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
-        STAT.dailyBest = 0
-        STAT.dailyMastered = false
-        -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
+    else
+        if MATH.between(dayPast, 1, 2600) then
+            -- print("Old ZP & Daily HS", STAT.zp, STAT.dailyHS)
+            STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
+            STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
+            STAT.dailyBest = 0
+            STAT.dailyMastered = false
+            -- print("New ZP & Daily HS", STAT.zp, STAT.dailyHS)
+            print("Daily Reset finished")
+        end
         STAT.lastDay = os.time()
-        print("Daily Reset finished")
     end
 
     for x = 0, 0 do
