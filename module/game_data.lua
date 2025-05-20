@@ -590,7 +590,7 @@ local NegTexts = {
         desc2 = [[The entrance to a false promise of paradise.]],
         desc3 = [[You reached the bottom... or it seemed to be at first glance... one last gateway was left...]],
         begin = [[The endless void beckons you...]],
-        mid = [["RUN."]],
+        mid = [[RUN.]],
         -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
     },
     b10 = { -- Endless Void
@@ -761,10 +761,12 @@ NegEvents = {
         color = 'lO',
         cond = function() return GAME.mod.NH > 0 end,
         event = function()
-            GAME.dmgHeal = GAME.dmgHeal + GAME.mod.GV * 2
+            GAME.dmgHeal = GAME.dmgHeal + GAME.mod.NH * 3
             GAME.attackMul = GAME.attackMul - .1
             GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.NH = 0
+            GAME.maxQuestCount = 3
+            while #GAME.quests < 3 do GAME.genQuest() end
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
@@ -802,7 +804,7 @@ NegEvents = {
     {
         text = 'b9.mid',
         color = 'lR',
-        size = 2.26,
+        size = 2.6,
         duration = 16,
         event = function()
             BGM.set('all', 'volume', 1, 2.6)
@@ -849,7 +851,7 @@ NegEvents = {
     {
         event = function()
             GAME.heightBonus = 0
-            GAME.height = -1750
+            GAME.height = -1800
             FloatOnCard = false
             STAT.clicker = true
             SFX.play('warp')
