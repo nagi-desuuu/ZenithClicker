@@ -690,12 +690,36 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
+SCN.addSwapStyle('warp', {
+    duration = 10,
+    switchTime = 7.2,
+    draw = function(t)
+        if t >= .3 then
+            GC.setColor(0, 0, 0, MATH.iLerp(1, .7, t))
+            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
+            GC.setColor(.85, .85, .85, MATH.iLerp(1, .7, t))
+            GC.mRect('fill', SCR.w / 2, SCR.h / 2, SCR.w, MATH.lerp(SCR.h * .005, SCR.h * 1.26, MATH.icLerp(.64, .75, t) ^ 2))
+        end
+        local a1 = 1 - math.abs(t - .3) * 20
+        if a1 > 0 then
+            GC.setColor(.85, .85, .85, a1)
+            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
+        end
+        local a2 = 1 - math.abs(t - .62) * 42
+        if a2 > 0 then
+            GC.setColor(.62, .62, .62, a2)
+            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
+        end
+    end,
+})
+
 SCN.add('joining', require 'module/scene/joining')
 SCN.add('tower', require 'module/scene/tower')
 SCN.add('stat', require 'module/scene/stat')
 SCN.add('achv', require 'module/scene/achv')
 SCN.add('conf', require 'module/scene/conf')
 SCN.add('about', require 'module/scene/about')
+SCN.add('ending', require 'module/scene/ending')
 ZENITHA.setFirstScene('joining')
 
 local gc = love.graphics
@@ -730,7 +754,7 @@ local function starCursor(x, y)
 end
 
 function Tone(pitch)
-    return pitch + M.GV
+    return pitch + M.GV + (GAME.omega and 1 or 0)
 end
 
 function ApplySettings()
@@ -756,6 +780,8 @@ function ReloadTexts()
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     if SCN.cur == 'stat' then RefreshProfile() end
     AboutText:setFont(FONT.get(70))
+    EndText:setFont(FONT.get(70))
+    EndText2:setFont(FONT.get(70))
 end
 
 VALENTINE = false

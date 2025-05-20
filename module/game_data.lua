@@ -580,13 +580,14 @@ local NegTexts = {
         desc = [[A hall of millions of gateways to different realities, towers and wastelands... the mere thought of something like this is sickening...]],
         desc2 = [[The entrance to a false promise of paradise.]],
         desc3 = [[You reached the bottom... or it seemed to be at first glance... one last gateway was left...]],
-        -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
         begin = [[The endless void beckons you...]],
+        -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
     },
     b10 = { -- Endless Void
         desc = [[A realm of absolutely nothing, none have ever returned.]],
         desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
         begin = [[...and you pass the point of no return.]],
+        mid = [[Everything begins to go quiet.]],
     },
 }
 NegEvents = {
@@ -722,9 +723,9 @@ NegEvents = {
     { -1100 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
     { -1115 }, { text = 'b8.begin' },
-    { -1145 }, { text = 'b8.mid1', size = 1.26, sfx = 'b2bcharge_distance_3' },
-    { -1160 }, { text = 'b8.mid2', size = 1.26, sfx = 'b2bcharge_distance_3' },
-    { -1175 }, { text = 'b8.mid3', size = 1.26, sfx = 'b2bcharge_distance_3' },
+    { -1145 }, { text = 'b8.mid1', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
+    { -1160 }, { text = 'b8.mid2', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
+    { -1175 }, { text = 'b8.mid3', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
     { -1180 }, { sfx = 'b2bcharge_distance_2' },
     { -1185 }, { sfx = 'b2bcharge_distance_2' },
     { -1190 }, { sfx = 'b2bcharge_distance_1' },
@@ -738,14 +739,13 @@ NegEvents = {
 
     -- B10: Endless Void
     { -1650 },
+    { -1660 }, { text = 'b10.begin' },
+    { -1700 }, { text = 'b10.mid' },
     {
         event = function()
             GAME.invincible = true
             SFX.play('warp')
-            TASK.new(function()
-                TASK.yieldT(8)
-                GAME.finish('forfeit')
-            end)
+            SCN.go('ending', "warp")
         end
     },
     { -1e99 },
