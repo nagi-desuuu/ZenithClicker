@@ -1948,7 +1948,7 @@ function GAME.start()
     GAME.timerMul = 1
     GAME.ultraRun = GAME.anyRev and URM
     GAME.attackMul = GAME.ultraRun and .6 or 1
-    GAME.xpLockLevelMax = 5
+    GAME.xpLockLevelMax = URM and M.NH == 2 and 1 or 5
     GAME.invincible = false
 
     TASK.unlock('sure_quit')
@@ -1986,7 +1986,7 @@ function GAME.start()
     TEXTS.rank:set("R-1")
     GAME.xp = 0
     GAME.rankupLast = false
-    GAME.xpLockLevel = 5
+    GAME.xpLockLevel = GAME.xpLockLevelMax
     GAME.xpLockTimer = 0
 
     -- Floor
