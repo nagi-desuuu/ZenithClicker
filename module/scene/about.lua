@@ -18,6 +18,8 @@ local clr = {
 
     flmk = { COLOR.HEX "B7A0FF" },
     sheep = { COLOR.HEX "FF82F0" },
+    fcs = { COLOR.HEX "E9C6FF" },
+    obs = { COLOR.HEX "BAFEFF" },
 }
 
 AboutText = GC.newText(FONT.get(70))
@@ -54,7 +56,7 @@ addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 510, .
 
 addText({ clr.asrial, "DJ  ASRIEL" }, -320, 550, .5)
 addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -320, 590, .26)
-addText({ COLOR.LD, "Background Reconstruction & Achievement Icons" }, -320, 610, .2)
+addText({ COLOR.LD, "Background Reconstruction" }, -320, 610, .2)
 
 addText({ clr.ccyt, "CREEPERCRAFTYT" }, 0, 550, .5)
 addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 0, 590, .26)
@@ -103,7 +105,9 @@ addText({
     COLOR.O, "& ",
     clr.sheep, "SPRITZY SHEEP ",
     COLOR.O, "& ",
-    COLOR.L, "OBSIDIAN "
+    clr.fcs, "FCSPLAYZ ",
+    COLOR.O, "& ",
+    clr.obs, "OBSIDIAN "
 }, 0, 955, .32)
 
 addText({
