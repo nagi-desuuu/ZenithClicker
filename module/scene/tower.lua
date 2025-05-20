@@ -14,6 +14,7 @@ for i = 1, 9 do ShortCut[i] = GC.newText(FONT.get(50)) end
 CancelNextClick = false
 CancelNextKeyClick = false
 
+ForceOldHitbox = false
 RevUnlocked = false
 local usingTouch = MOBILE
 local revHold = {}
@@ -41,7 +42,7 @@ local function MouseOnCard(x, y)
     if FloatOnCard and Cards[FloatOnCard]:mouseOn(x, y) then
         return FloatOnCard
     end
-    if FloatOnCard and not usingTouch then
+    if FloatOnCard and not usingTouch or ForceOldHitbox then
         local cid, dist = 0, 1e99
         for i = 1, #Cards do
             if Cards[i]:mouseOn(x, y) then

@@ -327,6 +327,11 @@ scene.widgetList = {
                 SFX.play('map_change', .626, 0, Tone(-3.5))
                 ZENITHA.setShowFPS(true)
                 return
+            elseif data:trim() == 'tapper' then
+                SFX.play('social_invite')
+                TEXTS.version:set(SYSTEM .. " T" .. (require 'version'.verStr))
+                ForceOldHitbox = true
+                return
             elseif data:trim() == 'true_ending' then
                 BGM.set('all', 'volume', 1)
                 SFX.play('warp')
