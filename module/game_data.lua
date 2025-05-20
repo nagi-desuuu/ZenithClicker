@@ -534,7 +534,7 @@ local NegTexts = {
         desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]],
         begin = [[The smell of food calms your senses...]],
         effStart = [[Illusions dance before your eyes...]],
-        noVL = [[You feel you becoming weaker...]],
+        noVL = [[You feel yourself becoming weaker...]],
         VLoff = [[You feel your strength fading...]],
         noIN = [[Illusion before your eyes hasn't entirely faded...]],
         INoff = [[Your mind is becoming clearer...]],
@@ -551,7 +551,7 @@ local NegTexts = {
     b4 = { -- The Bunker
         desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
         begin = [[You feel safe away from the above.]],
-        effStart = [[ Your hands don't shake any more.]],
+        effStart = [[The barren bunker begins to feel ghostly.]],
         noMS = [[You feel you are not favored by luck...]],
         MSoff = [[You organized your thoughts...]],
     },
@@ -609,14 +609,14 @@ NegEvents = {
     -- B1: The Basement
     { h = -10 }, { text = 'b1.begin' },
     { h = -26 },
-    { text = 'b1.noAS', color = 'B', cond = function() return GAME.mod.AS == 0 end },
+    { text = 'b1.noAS', color = 'lB', cond = function() return GAME.mod.AS == 0 end },
     {
         text = 'b1.ASoff',
         color = 'lO',
         cond = function() return GAME.mod.AS > 0 end,
         event = function()
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.AS
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.AS = 0
             RefreshButtonText()
             GAME.refreshModIcon()
@@ -631,28 +631,29 @@ NegEvents = {
     { h = -60 },
     { text = 'b2.effStart', event = { 'nightcore', true } },
     { h = -90 },
-    { text = 'b2.noVL',     color = 'B',                  cond = function() return GAME.mod.VL == 0 end },
+    { text = 'b2.noVL',     color = 'lB',                 cond = function() return GAME.mod.VL == 0 end },
     {
         text = 'b2.VLoff',
         color = 'lO',
         cond = function() return GAME.mod.VL > 0 end,
         event = function()
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.VL
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.VL = 0
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
     },
     { h = -120 },
-    { text = 'b2.noIN', color = 'B', cond = function() return GAME.mod.IN == 0 end },
+    { text = 'b2.noIN', color = 'lB', cond = function() return GAME.mod.IN == 0 end },
     {
         text = 'b2.INoff',
         color = 'lO',
         cond = function() return GAME.mod.IN > 0 end,
         event = function()
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.IN
+            GAME.dmgCycle = GAME.dmgCycle + GAME.mod.IN * 1
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.IN = 0
             BGM.set('all', 'highgain', 1)
             for _, C in ipairs(Cards) do C:flip() end
@@ -674,15 +675,15 @@ NegEvents = {
     { h = -185 }, { event = { 'invisDashboard', false } },
     { h = -195 }, { event = { 'invisDashboard', true } },
     { h = -200 },
-    { text = 'b3.noGV', color = 'B', cond = function() return GAME.mod.GV == 0 end },
+    { text = 'b3.noGV', color = 'lB', cond = function() return GAME.mod.GV == 0 end },
     {
         text = 'b3.GVoff',
         color = 'lO',
         cond = function() return GAME.mod.GV > 0 end,
         event = function()
-            GAME.dmgHeal = GAME.dmgHeal + 2
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.GV
+            GAME.dmgDelay = GAME.dmgDelay + GAME.mod.GV * 4
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.GV = 0
             GAME.refreshModIcon()
             GAME.refreshRPC()
@@ -706,16 +707,15 @@ NegEvents = {
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
     { h = -320 }, { text = 'b4.effStart', event = { 'glassCard', true } },
     { h = -380 },
-    { text = 'b4.noMS', color = 'B', cond = function() return GAME.mod.MS == 0 end },
+    { text = 'b4.noMS', color = 'lB', cond = function() return GAME.mod.MS == 0 end },
     {
         text = 'b4.MSoff',
         color = 'lO',
         cond = function() return GAME.mod.MS > 0 end,
         event = function()
             GAME.extraQuestBase = GAME.extraQuestBase - GAME.mod.MS * .2
-            GAME.extraQuestVar = GAME.extraQuestVar - GAME.mod.MS * .2
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.MS
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.MS = 0
             GAME.sortCards()
             GAME.refreshModIcon()
@@ -726,23 +726,20 @@ NegEvents = {
 
     -- B5: The Infirmary
     { h = -450 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
-    { event = { 'attackMul', -.2 } },
+    { event = { 'attackMul', -.1 } },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
     { h = -460 }, { text = 'b5.begin' },
     { h = -470 }, { text = 'b5.effStart', event = { 'slowmo', true } },
     { h = -550 },
-    { text = 'b5.noDH', color = 'B', cond = function() return GAME.mod.DH == 0 end },
+    { text = 'b5.noDH', color = 'lB', cond = function() return GAME.mod.DH == 0 end },
     {
         text = 'b5.DHoff',
         color = 'lO',
-        cond = function() return GAME.mod.DH > 0 end
-    },
-    {
+        cond = function() return GAME.mod.DH > 0 end,
         event = function()
-            GAME.dmgDelay = GAME.dmgDelay + GAME.mod.DH * 4
-            GAME.dmgCycle = GAME.dmgCycle + GAME.mod.DH * 1
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.DH
+            GAME.extraQuestVar = GAME.extraQuestVar - GAME.mod.DH * .2
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.DH = 0
             RefreshButtonText()
             GAME.refreshModIcon()
@@ -753,19 +750,20 @@ NegEvents = {
 
     -- B6: Decayed Catacombs
     { h = -650 }, { event = { 'dmgDelay', -1, 'dmgTime', 1, 'maxQuestSize', 1 } },
-    { event = { 'attackMul', -.2 } },
+    { event = { 'attackMul', -.1 } },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
     { h = -660 }, { text = 'b6.begin' },
     { h = -670 }, { text = 'b6.effStart', event = { 'invisCard', true } },
     { h = -720 },
-    { text = 'b6.noNH', color = 'B', cond = function() return GAME.mod.NH == 0 end },
+    { text = 'b6.noNH', color = 'lB', cond = function() return GAME.mod.NH == 0 end },
     {
         text = 'b6.NHoff',
         color = 'lO',
         cond = function() return GAME.mod.NH > 0 end,
         event = function()
-            GAME.attackMul = GAME.attackMul - .01
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.DH
+            GAME.dmgHeal = GAME.dmgHeal + GAME.mod.GV * 2
+            GAME.attackMul = GAME.attackMul - .1
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.NH = 0
             GAME.refreshModIcon()
             GAME.refreshRPC()
@@ -775,7 +773,7 @@ NegEvents = {
 
     -- B7: Sacreligious Ruins
     { h = -850 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
-    { event = { 'attackMul', -.2 } },
+    { event = { 'attackMul', -.1 } },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
     { h = -860 }, { text = 'b7.begin' },
     { h = -900 }, { text = 'b7.effStart' },
@@ -799,13 +797,14 @@ NegEvents = {
     { h = -1350 }, { event = { 'dmgDelay', -.5 } },
     { h = -1360 }, { text = 'b9.begin' },
     { event = function() GAME.rankLimit = math.min(GAME.rankLimit, 10) end },
-    { h = -1380 },
     {
         text = 'b9.mid',
         color = 'R',
         size = 2,
+        duration = 10,
         event = function()
-            GAME.time = math.max(GAME.time, 418)
+            BGM.set('all', 'volume', 1, 2.6)
+            GAME.time = math.max(GAME.time, 419)
         end
     },
 
