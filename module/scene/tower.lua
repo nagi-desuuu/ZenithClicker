@@ -1488,6 +1488,7 @@ scene.widgetList = {
                 time = 1.2
             })
         end,
+        visibleFunc = function() return not GAME.playing and TABLE.countAll(GAME.completion, 0) < 9 end,
     },
     WIDGET.new {
         name = 'help', type = 'hint',
@@ -1501,7 +1502,7 @@ scene.widgetList = {
         onPress = function()
             switchVisitor(true)
         end,
-        visibleFunc = function() return not GAME.playing and TABLE.countAll(GAME.completion, 0) < 9 end,
+        visibleFunc = function() return not GAME.playing end,
     },
 }
 
