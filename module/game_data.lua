@@ -109,12 +109,12 @@ ModData = {
         EX = { 0, nil, 0 }, -- 6 6
         NH = { 0, 5 },      -- 5 2
         MS = { 3, 5, 7 },   -- 1 2 3
-        GV = { -4, 8 },     -- 4 4
-        VL = { -5, 0 },     -- 3 6
+        GV = { h = -4, 8 }, -- 4 4
+        VL = { h = -5, 0 }, -- 3 6
         DH = { 1, 6, 9 },   -- #6 #2 #4
         IN = {},
         AS = { 0, 3 },      -- 6 1
-        DP = { -2, 5 },     -- 5 2
+        DP = { h = -2, 5 }, -- 5 2
     },
     weight = {
         EX = 13, --  8 + 5
@@ -510,6 +510,7 @@ Floors = {
 }
 
 NegFloors = {
+    [0] = { bottom = -1e99, name = "Endless Void" },
     { bottom = -50,   name = "The Basement" },
     { bottom = -150,  name = "Zenith Restaurant" },
     { bottom = -300,  name = "Underground Parking" },
@@ -525,41 +526,47 @@ local NegTexts = {
     b1 = { -- The Basement
         desc = [[A basic storage room for the floors above... and below.]],
         begin = [[You find yourself in an unfamiliar place.]],
-        noAS = [[To prevent mech heart users, AS mod is not allowed here.]],
+        noAS = [[You passed the security check without any prohibited items.]],
+        ASoff = [[To prevent mech heart users, AS mod is not allowed here.]],
         -- egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
     },
     b2 = { -- Zenith Restaurant
         desc = [[A lively restaurant with a lovely atmosphere! Though the prices here are slightly outrageous...]],
         begin = [[The smell of food calms your senses...]],
         effStart = [[Illusions dance before your eyes...]],
-        noVL = [[You feel your strength fading...]],
+        noVL = [[You feel you becoming weaker...]],
+        VLoff = [[You feel your strength fading...]],
     },
     b3 = { -- Underground Parking
         desc = [[A boundless parking lot for all of these visitors.]],
         begin = [[The vast lot's tranquility reassures you.]],
         effStart = [[But you feel like you're lost...]],
         mid1 = [["Where am I?"]],
-        noGV = [[You unconsciously quickened your pace...]],
+        noGV = [[You feel you are not going fast enough...]],
+        GVoff = [[You unconsciously quickened your pace...]],
         mid2 = [["Where am I going?"]],
     },
     b4 = { -- The Bunker
         desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
         begin = [[You feel safe away from the above.]],
         effStart = [[ Your hands don't shake any more.]],
-        noMS = [[You organized your thoughts...]],
+        noMS = [[You feel you are not favored by luck...]],
+        MSoff = [[You organized your thoughts...]],
     },
     b5 = { -- The Infirmary
         desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
         begin = [[Endless beeping fills the rooms which you roam.]],
         effStart = [[One horrifying scene after another floods your vision.]],
-        noDH = [[You shuddered while walking in this terrifying place.]],
-        DHon = [[A evil thought crossed your mind...]],
+        noDH = [[A evil thought crossed your mind...]],
+        DHoff = [[You shuddered while walking in this terrifying place.]],
     },
     b6 = { -- Decayed Catacombs
         desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]],
         begin = [[You begin to no longer feel so safe.]],
         effStart = [[Your attention strayed...]],
         mid = [[You begin to hear something calling your name...]],
+        noNH = [[You cannot ignore the voice...]],
+        NHoff = [[You overcome your fear.]],
     },
     b7 = { -- Sacreligious Ruins
         desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]],
@@ -581,23 +588,32 @@ local NegTexts = {
         desc2 = [[The entrance to a false promise of paradise.]],
         desc3 = [[You reached the bottom... or it seemed to be at first glance... one last gateway was left...]],
         begin = [[The endless void beckons you...]],
+        mid = [["RUN."]],
         -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
     },
     b10 = { -- Endless Void
         desc = [[A realm of absolutely nothing, none have ever returned.]],
         desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
-        begin = [[...and you pass the point of no return.]],
-        mid = [[Everything begins to go quiet.]],
+        -- begin = [[...and you pass the point of no return.]],
+        -- mid1 = [[Everything begins to go quiet.]],
+        end1 = [[...this is it?]],
+        end2 = [[This is what's at the down below of all of this?]],
+        end3 = [[It's so empty... and vast...]],
+        end4 = [[Yet it feels nostalgic somehow...]],
+        end5 = [[And peaceful.]],
     },
 }
 NegEvents = {
     -- B1: The Basement
-    { -10 }, { text = 'b1.begin' },
+    { h = -10 }, { text = 'b1.begin' },
+    { h = -26 },
+    { text = 'b1.noAS', cond = function() return GAME.mod.AS == 0 end },
     {
-        h = -26,
-        text = 'b1.noAS',
-        cond = function() return GAME.mod.AS == 1 end,
+        text = 'b1.ASoff',
+        color = 'lO',
+        cond = function() return GAME.mod.AS > 0 end,
         event = function()
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.AS
             GAME.mod.AS = 0
             RefreshButtonText()
             GAME.refreshModIcon()
@@ -606,43 +622,47 @@ NegEvents = {
     },
 
     -- B2: Zenith Restaurant
-    { -50 }, { event = { 'dmgDelay', -2 } },
-    { event = { 'attackMul', -.1, 'timerMul', -.25 } }, -- 0.9x climb
-    { -55 }, { text = 'b2.begin' },
-    { -60 },
+    { h = -50 }, { event = { 'dmgDelay', -2 } },
+    { event = { 'attackMul', -.1, 'timerMul', -.25 } }, -- 0.5x climb
+    { h = -55 }, { text = 'b2.begin' },
+    { h = -60 },
     { text = 'b2.effStart', event = { 'nightcore', true } },
+    { h = -100 },
+    { text = 'b2.noVL',     cond = function() return GAME.mod.VL == 0 end },
     {
-        h = -100,
-        text = 'b2.noVL',
-        cond = function() return GAME.mod.VL == 1 end,
+        text = 'b2.VLoff',
+        color = 'lO',
+        cond = function() return GAME.mod.VL > 0 end,
         event = function()
-            GAME.attackMul = GAME.attackMul - .2 -- 0.7x climb
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
+            GAME.attackMul = GAME.attackMul - .2
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .005 * GAME.mod.VL
             GAME.mod.VL = 0
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
     },
-    { -150 }, { event = { 'nightcore', false } },
+    { h = -150 }, { event = { 'nightcore', false } },
 
     -- B3: Underground Parking
-    { -150 }, { event = { 'dmgDelay', -2, 'dmgCycle', -.5 } },
-    { event = { 'attackMul', -.1, 'timerMul', -.15 } }, -- 0.8x climb (0.6x with VL)
-    { -155 }, { text = 'b3.begin' },
-    { -160 }, { text = 'b3.effStart' },
-    { -165 }, { event = { 'invisDashboard', true } },
-    { -170 }, { event = { 'invisDashboard', false } },
-    { -175 }, { event = { 'invisDashboard', true } },
-    { -180 }, { text = 'b3.mid1' },
-    { -185 }, { event = { 'invisDashboard', false } },
-    { -195 }, { event = { 'invisDashboard', true } },
+    { h = -150 }, { event = { 'dmgDelay', -2, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.1, 'timerMul', -.15 } }, -- 0.4x (0.2x) clim
+    { h = -155 }, { text = 'b3.begin' },
+    { h = -160 }, { text = 'b3.effStart' },
+    { h = -165 }, { event = { 'invisDashboard', true } },
+    { h = -170 }, { event = { 'invisDashboard', false } },
+    { h = -175 }, { event = { 'invisDashboard', true } },
+    { h = -180 }, { text = 'b3.mid1' },
+    { h = -185 }, { event = { 'invisDashboard', false } },
+    { h = -195 }, { event = { 'invisDashboard', true } },
+    { h = -200 },
+    { text = 'b3.noGV', cond = function() return GAME.mod.GV == 0 end },
     {
-        h = -200,
-        text = 'b3.noGV',
-        cond = function() return GAME.mod.GV == 1 end,
+        text = 'b3.GVoff',
+        color = 'lO',
+        cond = function() return GAME.mod.GV > 0 end,
         event = function()
             GAME.dmgHeal = GAME.dmgHeal + 2
-            GAME.dmgTimerMul = GAME.dmgTimerMul + .01
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01 * GAME.mod.GV
             GAME.mod.GV = 0
             GAME.refreshModIcon()
             GAME.refreshRPC()
@@ -651,111 +671,170 @@ NegEvents = {
             BGM.set('piano2', 'pitch', 2 * v, .26)
         end,
     },
-    { -200 }, { event = { 'invisDashboard', false } },
-    { -210 }, { event = { 'invisDashboard', true } },
-    { -220 }, { text = 'b3.mid2' },
-    { -250 }, { event = { 'invisDashboard', false } },
-    { -260 }, { event = { 'invisDashboard', true } },
-    { -280 }, { event = { 'invisDashboard', false } },
+    { h = -200 }, { event = { 'invisDashboard', false } },
+    { h = -210 }, { event = { 'invisDashboard', true } },
+    { h = -220 }, { text = 'b3.mid2' },
+    { h = -250 }, { event = { 'invisDashboard', false } },
+    { h = -260 }, { event = { 'invisDashboard', true } },
+    { h = -280 }, { event = { 'invisDashboard', false } },
 
     -- B4: The Bunker
-    { -300 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
-    { event = { 'attackMul', -.2, 'timerMul', -.1 } }, -- 0.6x climb (0.4x with VL)
-    { -310 },
+    { h = -300 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.2, 'timerMul', -.1 } }, -- 0.2x (0x) climb
+    { h = -310 },
     { text = 'b4.begin' },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
-    { -320 }, { text = 'b4.effStart', event = { 'glassCard', true } },
+    { h = -320 }, { text = 'b4.effStart', event = { 'glassCard', true } },
+    { h = -380 },
+    { text = 'b4.noMS', cond = function() return GAME.mod.MS == 0 end },
     {
-        h = -380,
-        text = 'b4.noMS',
+        text = 'b4.MSoff',
+        color = 'lO',
         cond = function() return GAME.mod.MS > 0 end,
         event = function()
             GAME.extraQuestBase = GAME.extraQuestBase - GAME.mod.MS * .2
             GAME.extraQuestVar = GAME.extraQuestVar - GAME.mod.MS * .2
             GAME.dmgTimerMul = GAME.dmgTimerMul + GAME.mod.MS * .01
             GAME.mod.MS = 0
+            GAME.sortCards()
             GAME.refreshModIcon()
             GAME.refreshRPC()
-            GAME.sortCards()
         end,
     },
-    { -450 }, { event = { 'glassCard', false } },
+    { h = -450 }, { event = { 'glassCard', false } },
 
     -- B5: The Infirmary
-    { -450 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
-    { event = { 'attackMul', -.2 } }, -- 0.4x climb (0.2x with VL)
+    { h = -450 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.2 } }, -- 0x (-0.2x) climb
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
-    { -460 }, { text = 'b5.begin' },
-    { -470 }, { text = 'b5.effStart', event = { 'slowmo', true } },
-    { -550 },
-    { text = 'b5.DHon', cond = function() return GAME.mod.DH == 0 end },
-    { text = 'b5.noDH', cond = function() return GAME.mod.DH > 0 end },
+    { h = -460 }, { text = 'b5.begin' },
+    { h = -470 }, { text = 'b5.effStart', event = { 'slowmo', true } },
+    { h = -550 },
+    { text = 'b5.noDH', cond = function() return GAME.mod.DH == 0 end },
+    {
+        text = 'b5.DHoff',
+        color = 'lO',
+        cond = function() return GAME.mod.DH > 0 end
+    },
     {
         event = function()
             GAME.dmgDelay = GAME.dmgDelay + GAME.mod.DH * 4
             GAME.dmgCycle = GAME.dmgCycle + GAME.mod.DH * 1
             GAME.dmgTimerMul = GAME.dmgTimerMul + GAME.mod.DH * .01
-            GAME.mod.DH = (GAME.mod.DH - 1) % 3
+            GAME.mod.DH = 0
             RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
     },
-    { -650 }, { event = { 'slowmo', false } },
+    { h = -650 }, { event = { 'slowmo', false } },
 
     -- B6: Decayed Catacombs
-    { -650 }, { event = { 'dmgDelay', -1, 'dmgTime', 1, 'maxQuestSize', 1 } },
-    { event = { 'attackMul', -.2 } }, -- 0x climb (-0.2x with VL)
+    { h = -650 }, { event = { 'dmgDelay', -1, 'dmgTime', 1, 'maxQuestSize', 1 } },
+    { event = { 'attackMul', -.2 } }, -- -0.4x (-0.6x) climb
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
-    { -660 }, { text = 'b6.begin' },
-    { -670 }, { text = 'b6.effStart', event = { 'invisCard', true } },
-    { -850 }, { event = { 'invisCard', false } },
+    { h = -660 }, { text = 'b6.begin' },
+    { h = -670 }, { text = 'b6.effStart', event = { 'invisCard', true } },
+    { h = -720 },
+    { text = 'b6.noNH', cond = function() return GAME.mod.NH == 0 end },
+    {
+        text = 'b6.NHoff',
+        color = 'lO',
+        cond = function() return GAME.mod.NH > 0 end,
+        event = function()
+            GAME.dmgTimerMul = GAME.dmgTimerMul + .01 * GAME.mod.NH
+            GAME.mod.NH = 0
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+        end,
+    },
+    { h = -850 }, { event = { 'invisCard', false } },
 
     -- B7: Sacreligious Ruins
-    { -850 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
-    { event = { 'attackMul', -.2 } }, -- -0.2x climb (-0.4x with VL)
+    { h = -850 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { event = { 'attackMul', -.2 } }, -- -0.6x (-0.8x) climb
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
-    { -860 }, { text = 'b7.begin' },
-    { -900 }, { text = 'b7.effStart' },
-    { -950 }, { text = 'b7.mid' },
+    { h = -860 }, { text = 'b7.begin' },
+    { h = -900 }, { text = 'b7.effStart' },
+    { h = -950 }, { text = 'b7.mid' },
 
     -- B8: Singularity Reactor
-    { -1100 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
+    { h = -1100 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
-    { -1115 }, { text = 'b8.begin' },
-    { -1145 }, { text = 'b8.mid1', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
-    { -1160 }, { text = 'b8.mid2', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
-    { -1175 }, { text = 'b8.mid3', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
-    { -1180 }, { sfx = 'b2bcharge_distance_2' },
-    { -1185 }, { sfx = 'b2bcharge_distance_2' },
-    { -1190 }, { sfx = 'b2bcharge_distance_1' },
-    { -1195 }, { sfx = 'b2bcharge_distance_1' },
-    { -1200 }, { event = { 'nightcore', true } },
-    { -1350 }, { event = { 'nightcore', false } },
+    { h = -1115 }, { text = 'b8.begin' },
+    { h = -1145 }, { text = 'b8.mid1', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
+    { h = -1160 }, { text = 'b8.mid2', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
+    { h = -1175 }, { text = 'b8.mid3', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
+    { h = -1180 }, { sfx = 'b2bcharge_distance_2' },
+    { h = -1185 }, { sfx = 'b2bcharge_distance_2' },
+    { h = -1190 }, { sfx = 'b2bcharge_distance_1' },
+    { h = -1195 }, { sfx = 'b2bcharge_distance_1' },
+    { h = -1200 }, { event = { 'nightcore', true } },
+    { h = -1350 }, { event = { 'nightcore', false } },
 
     -- B9: Distorted Gateways
-    { -1350 }, { event = { 'dmgDelay', -.5 } },
-    { -1360 }, { text = 'b9.begin' },
+    { h = -1350 }, { event = { 'dmgDelay', -.5 } },
+    { h = -1360 }, { text = 'b9.begin' },
+    { event = function() GAME.rankLimit = math.min(GAME.rankLimit, 10) end },
+    {
+        text = 'b9.mid',
+        color = 'R',
+        size = 2,
+        event = function()
+            GAME.time = math.max(GAME.time, 418)
+        end
+    },
 
     -- B10: Endless Void
-    { -1650 },
-    { -1660 }, { text = 'b10.begin' },
-    { -1700 }, { text = 'b10.mid' },
+    { h = -1650 },
     {
         event = function()
-            GAME.invincible = true
+            GAME.negFloor = 0
+            GAME.timerMul = 0
+            GAME.invisCard = true
+            GAME.dmgTimerMul = 1e99
+            GAME.height = -1650
+            GAME.heightBonus = 0
+            GAME.attackMul = -1
+            if GAME.rank > 4 then
+                GAME.rank = 4
+                GAME.xp = 16
+            end
+            GAME.xpLockLevelMax = 2600
+            GAME.xpLockTimer = 2600
+            GAME.xpLockLevel = 2600
+            GAME.rankLimit = 4
+            TEXTS.rank:set("R-4")
+
+            GAME.mod.EX = 0
+            GAME.refreshModIcon()
+            GAME.refreshRPC()
+            GAME.mod.EX = 2
+        end,
+    },
+    { h = -1660 }, { text = 'b10.end1', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .85) end },
+    { h = -1680 }, { text = 'b10.end2', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .7) end },
+    { h = -1700 }, { text = 'b10.end3', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .5) end },
+    { h = -1720 }, { text = 'b10.end4', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * .3) end },
+    { h = -1735 }, { text = 'b10.end5', color = 'lC', duration = 6.26, sfx = 'piece_change', event = function() BGM.setVol(STAT.bgm / 100 * 0) end },
+    { h = -1750 },
+    {
+        event = function()
+            GAME.heightBonus = 0
+            GAME.height = -1750
+            FloatOnCard = false
+            STAT.clicker = true
             SFX.play('warp')
             SCN.go('ending', "warp")
         end
     },
-    { -1e99 },
+    { h = -1e99 },
 }
 local lastH = -0
 for _, e in next, NegEvents do
     e.cond = e.cond or TRUE
     e.text = e.text and TABLE.pathIndex(NegTexts, e.text) or e.text
     e.text2 = e.text2 and TABLE.pathIndex(NegTexts, e.text2) or e.text2
-    if e[1] then e.h, e[1] = e[1], nil end
     if e.h then
         assert(e.h <= lastH)
         lastH = e.h

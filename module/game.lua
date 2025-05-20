@@ -2501,6 +2501,8 @@ function GAME.update(dt)
         --     GAME.addHeight(dt * 260)
         -- elseif love.keyboard.isDown(']') then
         --     GAME.addXP(dt * 42)
+        -- elseif love.keyboard.isDown('\\') then
+        --     GAME.addHeight(-dt * 260)
         -- end
 
         -- Quest animattion
@@ -2566,12 +2568,14 @@ function GAME.update(dt)
                     GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
                     GAME.height = max(GAME.height, Floors[GAME.floor - 1].top)
                 else
-                    if GAME.negFloor >= 2 then
-                        GAME.height = min(GAME.height, NegFloors[GAME.negFloor - 1].bottom)
+                    if GAME.negFloor > 0 then
+                        if GAME.negFloor >= 2 then
+                            GAME.height = min(GAME.height, NegFloors[GAME.negFloor - 1].bottom)
+                        end
+                        local f = max(GAME.floor, GAME.negFloor)
+                        local fallSpeed = (f * (f + 1) + 10) / 20
+                        GAME.height = GAME.height - dt * fallSpeed
                     end
-                    local f = max(GAME.floor, GAME.negFloor)
-                    local fallSpeed = (f * (f + 1) + 10) / 20
-                    GAME.height = GAME.height - dt * fallSpeed
                     if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
                     if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end
                 end
@@ -2615,7 +2619,7 @@ function GAME.update(dt)
         end
 
         -- Gravity
-        if GAME.gravTimer then
+        if M.GV > 0 and GAME.gravTimer then
             GAME.gravTimer = GAME.gravTimer - dt
             if GAME.gravTimer <= 0 then
                 GAME.faultWrong = false

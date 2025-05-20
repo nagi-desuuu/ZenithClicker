@@ -494,6 +494,7 @@ STAT = {
     dailyMastered = false,
     lastDay = 0,
     vipListCount = 0,
+    clicker = false,
 
     totalGame = 0,
     totalTime = 0,

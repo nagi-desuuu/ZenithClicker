@@ -19,7 +19,7 @@ local function addText(text, x, y, scale, align, wraplimit)
 end
 
 addText("ZENITH  CLICKER", 0, 260)
-addText("A TETR.IO Fanmade game by MrZ", 0, 360, .42)
+addText("A TETR.IO Fangame from TETR.IO Community", 0, 360, .42)
 
 local h = 520
 
@@ -61,6 +61,10 @@ addText("Flowerling", 26, h, .42, 'left')
 h = h + 100
 addText("Musics", -26, h, .42, 'right')
 addText("Dr Ocelot", 26, h, .42, 'left')
+
+h = h + 100
+addText("World Design", -26, h, .42, 'right')
+addText("Garbo", 26, h, .42, 'left')
 
 h = h + 100
 addText("Font (D-Din-Pro)", -26, h, .42, 'right')
@@ -123,7 +127,7 @@ h = h + 80
 addText("Assisting Graphics Design", x1, h, .42, 'right')
 addText("Glitchypsi", x2, h, .42, 'left')
 
-h = h + 350
+h = h + 250
 addText("YOU ARE", 0, h, .626)
 
 local t
@@ -177,7 +181,6 @@ end
 function scene.unload()
     GAME.bgH = GAME.height
     TEXTS.endHeight:set("Thanks for playing!")
-    TEXTS.endFloor:set((" "):rep(62) .. "——MrZ & TETR.IO community")
     TASK.new(function()
         for i = 1, 100 do
             TASK.yieldT(.01)
@@ -186,8 +189,10 @@ function scene.unload()
     end)
 end
 
+function scene.keyDown() return true end
+
 function scene.update(dt)
-    if love.keyboard.isDown('space', 'escape') and t < 110 then
+    if love.keyboard.isDown('space', 'escape') and t < 100 then
         dt = dt * 6.26
     end
     if t < 120 then
@@ -218,10 +223,10 @@ function scene.update(dt)
 end
 
 function scene.draw()
-    DrawBG(100)
+    DrawBG(87.2)
     local a = 1 - math.min(math.abs(event[e - 1][1] - t), math.abs(event[e][1] - t)) * 1.26
     if a > 0 then
-        GC.setColor(.26, .26, .26, a)
+        GC.setColor(.1, .1, .1, a)
         GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
     end
     GC.replaceTransform(SCR.xOy_m)

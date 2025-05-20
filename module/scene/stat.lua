@@ -211,8 +211,10 @@ function RefreshProfile()
     GC.ucs_back()
 
     -- Clicker
-    GC.setColor(1, 1, 1)
-    GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
+    if STAT.clicker then
+        GC.setColor(1, 1, 1)
+        GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
+    end
 
     -- Introduction
     GC.ucs_move('m', 25, 280)
