@@ -175,6 +175,8 @@ function scene.load()
         SFX.setVol(STAT.sfx / 100 * .6)
     end
     STAT.bgm = math.max(STAT.bgm, math.min(STAT.sfx, 20))
+    BGM.set('violin2', 'volume', GAME.mod.DP == 2 and 1 or 0, .26)
+    BGM.set('piano2', 'volume', GAME.mod.DP > 0 and .626 or 0, .26)
     BGM.setVol(STAT.bgm / 100)
 end
 
@@ -192,8 +194,8 @@ end
 function scene.keyDown() return true end
 
 function scene.update(dt)
-    if love.keyboard.isDown('space', 'escape') and t < 100 then
-        dt = dt * 6.26
+    if love.keyboard.isDown('space', 'escape') and t < 96.26 then
+        dt = dt * 12.6
     end
     if t < 120 then
         t = t + dt

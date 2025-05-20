@@ -783,13 +783,15 @@ NegEvents = {
     { h = -1100 }, { event = { 'dmgDelay', -1, 'dmgCycle', -.5 } },
     { event = function() GAME.dmgWrong = math.min(GAME.dmgWrong, 2) end },
     { h = -1115 }, { text = 'b8.begin' },
-    { h = -1145 }, { text = 'b8.mid1', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
-    { h = -1160 }, { text = 'b8.mid2', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
-    { h = -1175 }, { text = 'b8.mid3', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1 },
-    { h = -1180 }, { sfx = 'b2bcharge_distance_2' },
+    { h = -1145 }, { text = 'b8.mid1', color = 'R', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1.26 },
+    { h = -1160 }, { text = 'b8.mid2', color = 'R', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1.26 },
+    { h = -1175 }, { text = 'b8.mid3', color = 'R', size = 1.26, sfx = 'b2bcharge_distance_3', duration = 1.26 },
+    { h = -1182 }, { sfx = 'b2bcharge_distance_2' },
     { h = -1185 }, { sfx = 'b2bcharge_distance_2' },
-    { h = -1190 }, { sfx = 'b2bcharge_distance_1' },
-    { h = -1195 }, { sfx = 'b2bcharge_distance_1' },
+    { h = -1188 }, { sfx = 'b2bcharge_distance_2' },
+    { h = -1191 }, { sfx = 'b2bcharge_distance_1' },
+    { h = -1194 }, { sfx = 'b2bcharge_distance_1' },
+    { h = -1197 }, { sfx = 'b2bcharge_distance_1' },
     { h = -1200 }, { event = { 'nightcore', true } },
     { h = -1350 }, { event = { 'nightcore', false } },
 
@@ -800,8 +802,8 @@ NegEvents = {
     {
         text = 'b9.mid',
         color = 'lR',
-        size = 2,
-        duration = 12,
+        size = 2.26,
+        duration = 16,
         event = function()
             BGM.set('all', 'volume', 1, 2.6)
             GAME.time = math.max(GAME.time, 419)

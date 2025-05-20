@@ -327,6 +327,11 @@ scene.widgetList = {
                 SFX.play('map_change', .626, 0, Tone(-3.5))
                 ZENITHA.setShowFPS(true)
                 return
+            elseif data:trim() == 'true_ending' then
+                BGM.set('all', 'volume', 1)
+                SFX.play('warp')
+                SCN.go('ending', 'warp')
+                return
             end
             data = data:trim()
             if TASK.lock('import', 4.2) then
