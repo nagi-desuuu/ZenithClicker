@@ -326,6 +326,7 @@ end
 function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1) end
 
 function scene.keyDown(key)
+    -- if key == '1' then GAME.height = -1100 end
     CancelNextKeyClick = false
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
