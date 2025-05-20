@@ -1112,6 +1112,12 @@ function scene.overDraw()
         end
         gc_mDraw(TEXTS.height, 800, 978)
 
+        if GAME.attackMul < 1 then
+            setFont(30)
+            gc_setColor(1, 0, 0, t % .52 < .26 and .872 or .42)
+            gc.print("x" .. GAME.attackMul, 1024, 926, 0, .7)
+        end
+
         gc_back()
     end
 
@@ -1142,7 +1148,6 @@ function scene.overDraw()
 
     -- Allspin keyboard hint
     if M.AS > 0 and M.EX == 0 then
-        setFont(50)
         for i = 1, #Cards do
             local obj = ShortCut[i]
             local x, y = Cards[i].x + 90, Cards[i].y + 155
