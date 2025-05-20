@@ -1104,7 +1104,7 @@ function GAME.nextNegEvent()
         if e.text then
             TEXT:add {
                 text = e.text,
-                x = 800, y = 285, fontSize = 30, k = 1.5 * (e.size or 1),
+                x = 800, y = 350, fontSize = 30, k = 1.5 * (e.size or 1),
                 style = 'score', duration = e.duration or 5,
                 inPoint = .1, outPoint = .26,
                 color = e.color or 'lR',
@@ -2123,6 +2123,7 @@ function GAME.finish(reason)
         if (M[C.id] > 0) ~= C.active then
             C:setActive(true)
         end
+        if not C.active and not C.upright then C.upright = true end
         C.touchCount = 0
         -- C.required = false
         C.required2 = false
