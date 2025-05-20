@@ -56,7 +56,7 @@ local ins, rem = table.insert, table.remove
 ---@field fatigue number
 ---@field animDuration number
 ---
----@field queueLen number
+---@field maxQuestCount number
 ---@field maxQuestSize number
 ---@field extraQuestBase number
 ---@field extraQuestVar number
@@ -1847,7 +1847,9 @@ function GAME.commit(auto)
 
         for i = dblCorrect and 2 or 1, 1, -1 do
             local p = dblCorrect and i or correct
-            GAME.genQuest()
+            if #GAME.quests < GAME.maxQuestCount + 1 then
+                GAME.genQuest()
+            end
             rem(GAME.quests, p).name:release()
             local combo = GAME.quests[correct] and GAME.quests[correct].combo or NONE
             if #combo >= 4 then
@@ -1999,7 +2001,7 @@ function GAME.start()
     GAME.lastCommit = {}
 
     -- Params
-    GAME.queueLen = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
+    GAME.maxQuestCount = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
     GAME.maxQuestSize = M.DH == 2 and 3 or 4
     GAME.extraQuestBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0) - .15
     GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
@@ -2070,7 +2072,7 @@ function GAME.start()
     GAME.upFloor()
 
     TABLE.clear(GAME.quests)
-    for _ = 1, GAME.queueLen do GAME.genQuest() end
+    for _ = 1, GAME.maxQuestCount do GAME.genQuest() end
     GAME.questReady()
 
     TASK.removeTask_code(task_startSpin)
