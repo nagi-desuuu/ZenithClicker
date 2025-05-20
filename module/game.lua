@@ -789,7 +789,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
         if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
     end
 
-    if GAME[k] <= 0 then
+    if GAME[k] <= .01 then -- Prevent float number precision error
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
             if toAlly then
                 SFX.play('elim')
