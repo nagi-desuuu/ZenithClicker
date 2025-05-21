@@ -1,5 +1,5 @@
 local MyRPC={
-    appId='1341822039253712989', -- Register your own app at https://discord.com/developers/applications
+    appID=false, ---@type string|false Register your own app at https://discord.com/developers/applications
     enabled=false, ---@type boolean
     C=nil, ---@type ffi.namespace*
     RPC=nil, ---@type DiscordRPC.RPC
@@ -14,12 +14,19 @@ local MyRPC={
     },
 }
 
+---@param appID string
+function MyRPC.setAppID(appID)
+    assert(type(appID)=='string' and not string.find(appID,"[^0-9]"),"Invalid appID, must be a number string")
+    MyRPC.appID=appID
+end
+
+--- Need setup appID with MyRPC.setAppID() first
 ---@param bool boolean
 function MyRPC.setEnable(bool)
-    if MyRPC.enabled==bool or not MyRPC.RPC then return end
+    if MyRPC.enabled==bool or not MyRPC.RPC or not MyRPC.appID then return end
     MyRPC.enabled=bool
     if bool then
-        MyRPC.RPC.initialize(MyRPC.appId,true)
+        MyRPC.RPC.initialize(MyRPC.appID,true)
         MyRPC.update()
     else
         MyRPC.RPC.shutdown()
