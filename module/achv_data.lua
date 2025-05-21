@@ -1155,7 +1155,7 @@ Achievements = {
         rank = numberRank(0, 10, 26, 42, 62, 126, 200),
     },
 
-    { title = "Issued A (No CR)" },
+    { title = "Issued-Gameplay (No CR)" },
     { -- skys_the_limit
         ex = true,
         id = 'skys_the_limit',
@@ -1341,7 +1341,7 @@ Achievements = {
         type = 'issued',
     },
 
-    { title = "Issued B (No CR)" },
+    { title = "Issued-Misc (No CR)" },
     { -- identity
         ex = true,
         id = 'identity',
