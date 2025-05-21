@@ -635,7 +635,7 @@ function GAME.questReady()
     GAME.achv_resetCount = 0
     for _, C in ipairs(CD) do C.touchCount, C.required, C.required2 = 0, false, false end
     for _, v in next, GAME.quests[1].combo do CD[v].required = true end
-    if M.DP > 0 then for _, v in next, GAME.quests[2].combo do CD[v].required2 = true end end
+    if M.DP > 0 and GAME.quests[2] then for _, v in next, GAME.quests[2].combo do CD[v].required2 = true end end
 end
 
 function GAME.startRevive()
@@ -1522,7 +1522,7 @@ function GAME.commit(auto)
     for _, id in next, GAME.lastCommit do CD[id].inLastCommit = true end
 
     local q1 = TABLE.sort(GAME.quests[1].combo)
-    local q2 = M.DP > 0 and TABLE.sort(GAME.quests[2].combo)
+    local q2 = M.DP > 0 and GAME.quests[2] and TABLE.sort(GAME.quests[2].combo)
 
     if GAME.currentTask then
         GAME.incrementPrompt('commit')
