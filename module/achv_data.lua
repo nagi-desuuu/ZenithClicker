@@ -996,7 +996,7 @@ Achievements = {
     { -- detail_oriented
         id = 'detail_oriented',
         name = "Detail Oriented",
-        desc = [[Reach F10 with the fewest flips]],
+        desc = [[Fewest flips used to reach F10]],
         quote = [[Theoretically efficient can quickly become gloriously impractical.]],
         comp = '<',
         scoreSimp = function(flip) return floor(flip) .. " Flips" end,
@@ -1110,7 +1110,7 @@ Achievements = {
         ex = true,
         id = 'perfect_speedrun',
         name = "Perfect Speedrun",
-        desc = [[Reach 75 Back-to-Back as fast as possible]],
+        desc = [[Fastest time to reach 75 B2B]],
         quote = [[Supercharged B75%]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
