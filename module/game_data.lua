@@ -559,7 +559,7 @@ local NegTexts = {
         desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
         begin = [[Endless beeping fills the rooms which you roam.]],
         effStart = [[One horrifying scene after another floods your vision.]],
-        noDH = [[A evil thought crossed your mind...]],
+        noDH = [[An evil thought crosses your mind...]],
         DHoff = [[You shuddered while walking in this terrifying place.]],
     },
     b6 = { -- Decayed Catacombs
