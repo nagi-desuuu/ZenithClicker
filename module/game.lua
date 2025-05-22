@@ -851,7 +851,7 @@ function GAME.addXP(xp)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
-        if not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, GAME.negFloor == 0 and 10 or GAME.negFloor)] then
+        if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, GAME.negFloor == 0 and 10 or GAME.negFloor)] then
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
