@@ -386,6 +386,12 @@ GC.setCanvas(TEXTURE.darkCorner)
 GC.setColor(0, 0, 0)
 GC.blurCircle(.626, 64, 64, 64)
 GC.setCanvas()
+TEXTURE.lightDot = GC.newCanvas(32, 32)
+GC.setCanvas(TEXTURE.lightDot)
+GC.clear(1, 1, 1, 0)
+GC.setColor(1, 1, 1)
+GC.blurCircle(.26, 16, 16, 16)
+GC.setCanvas()
 TEXTURE = IMG.init(TEXTURE, true)
 
 FONT.load {
@@ -691,15 +697,37 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
+local warpPS = GC.newParticleSystem(TEXTURE.lightDot, 256)
+warpPS:setEmissionRate(62)
+warpPS:setParticleLifetime(2.6, 4.2)
+warpPS:setSpeed(0)
+warpPS:setSizes(.42, 1, .9, .8, .7, .62, .42)
+warpPS:setColors(
+    1, 1, 1, 0,
+    1, 1, 1, 1,
+    1, 1, 1, .626,
+    1, 1, 1, 0
+)
+local warpPSlastT
 SCN.addSwapStyle('warp', {
     duration = 10,
     switchTime = 7.2,
+    init = function()
+        warpPS:setEmissionArea('normal', SCR.w, SCR.h * .0026)
+        warpPS:reset()
+        warpPS:start()
+        warpPSlastT = 0
+    end,
     draw = function(t)
+        warpPS:update((t - warpPSlastT) * 10)
+        warpPSlastT = t
         if t >= .3 then
             GC.setColor(0, 0, 0, MATH.iLerp(1, .7, t))
             GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
             GC.setColor(.85, .85, .85, MATH.iLerp(1, .7, t))
             GC.mRect('fill', SCR.w / 2, SCR.h / 2, SCR.w, MATH.lerp(SCR.h * .005, SCR.h * 1.26, MATH.icLerp(.64, .75, t) ^ 2))
+            GC.setColor(1, 1, 1, MATH.iLerp(.872, .62, t))
+            GC.draw(warpPS, SCR.w / 2, SCR.h / 2)
         end
         local a1 = 1 - math.abs(t - .3) * 20
         if a1 > 0 then
