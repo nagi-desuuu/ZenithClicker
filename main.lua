@@ -697,28 +697,45 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
-local warpPS = GC.newParticleSystem(TEXTURE.lightDot, 256)
-warpPS:setEmissionRate(62)
-warpPS:setParticleLifetime(2.6, 4.2)
-warpPS:setSpeed(0)
-warpPS:setSizes(.42, 1, .9, .8, .7, .62, .42)
-warpPS:setColors(
-    1, 1, 1, 0,
-    1, 1, 1, 1,
-    1, 1, 1, .626,
-    1, 1, 1, 0
-)
+local warpPS = GC.newParticleSystem(TEXTURE.lightDot, 512)
+warpPS:setEmissionRate(126)
+warpPS:setLinearDamping(1)
+warpPS:setParticleLifetime(1.26, 2.6)
+warpPS:setDirection(1.5708)
 local warpPSlastT
 SCN.addSwapStyle('warp', {
     duration = 10,
     switchTime = 7.2,
     init = function()
         warpPS:setEmissionArea('normal', SCR.w, SCR.h * .0026)
+        local k = .62 * SCR.k
+        warpPS:setSizes(.42 * k, 1 * k, .9 * k, .8 * k, .7 * k, .62 * k, .42 * k)
+        warpPS:setParticleLifetime(1.26, 2.6)
+        warpPS:setColors(
+            1, 1, 1, 0,
+            1, 1, 1, 1,
+            1, 1, 1, .626,
+            1, 1, 1, 0
+        )
+        warpPS:setSpeed(0)
         warpPS:reset()
         warpPS:start()
         warpPSlastT = 0
     end,
     draw = function(t)
+        if warpPSlastT < .62 and t > .62 then
+            warpPS:setParticleLifetime(2.6, 4.2)
+            warpPS:setSizes(SCR.k * .62)
+            warpPS:setColors(
+                1, 1, 1, 1,
+                1, 1, 1, 0
+            )
+            warpPS:setSpeed(120, 420)
+            warpPS:emit(42)
+            warpPS:setSpeed(-120, -420)
+            warpPS:emit(42)
+            warpPS:stop()
+        end
         warpPS:update((t - warpPSlastT) * 10)
         warpPSlastT = t
         if t >= .3 then
