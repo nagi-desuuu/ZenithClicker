@@ -171,6 +171,7 @@ function scene.load()
     TASK.unlock('zc_sfx')
     if GAME.playing then
         SFX.setVol(0)
+        GAME.negFloor = 10
         GAME.finish('forfeit')
         SFX.setVol(STAT.sfx / 100 * .6)
     end
