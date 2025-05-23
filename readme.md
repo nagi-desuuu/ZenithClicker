@@ -45,6 +45,7 @@ Each mod creates unique experience with twisting the rules but also increases th
 - Climb speed **decays 67% faster.**
 - Cards are deactivated after failure.
 - All actions happen on button **release** instead of button press.
+- AS keyboard hints are not shown (if enabled).
 
 ### No Hold (`NH`)
 
@@ -101,6 +102,7 @@ Make sure you've discovered most contents before reading this section!
 - Fatigue is much harsher.
 - Passing a quest with Duo no longer gives +2 attack.
 - **You fall downward** instead of passively climbing. The speed increases quadratically from **0.6m/s** on Floor 1 to **6m/s** on Floor 10.
+- Staying on the same floor for over 30 seconds will slowly increase damage on mistake.
 
 ### Asceticism (`rNH`)
 
