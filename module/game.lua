@@ -163,7 +163,7 @@ local GAME = {
     slowmo = false,
     glassCard = false,
     invisCard = false,
-    invisDashboard = false,
+    invisUI = false,
 
     achv_perfectionistH = nil,
     achv_demoteH = nil,
@@ -2473,7 +2473,7 @@ function GAME.finish(reason)
         GAME.slowmo = false
         GAME.glassCard = false
         GAME.invisCard = false
-        GAME.invisDashboard = false
+        GAME.invisUI = false
     end
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
