@@ -914,14 +914,20 @@ function scene.overDraw()
                     gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, .25 * k * bk)
                 end
 
+                if URM and M.NH == 2 then
+                    r, g, b = .626 + r * .26, .626 + g * .26, .626 + b * .26
+                end
+
                 -- Spike ball
                 gc_setColor(r, g, b, a)
                 gc_blurCircle(-.26, 326, 270, 100 * k)
                 gc_mDraw(chargeIcon, 326, 270, GAME.time * 2.6, .25 * k * bk)
 
                 -- Spark
-                gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
-                for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
+                if not (URM and M.NH == 2) then
+                    gc_setColor(.7 + r * .3, .7 + g * .3, .7 + b * .3)
+                    for i = 1, 3 do gc_draw(SparkPS[i], 326, 270, 0, k * .8) end
+                end
 
                 -- "B2B x"
                 local x = 255 - 50 * k * bk

@@ -1796,6 +1796,11 @@ function GAME.commit(auto)
         GAME.maxSpikeWeak = max(GAME.maxSpikeWeak, GAME.spikeCounterWeak)
         if GAME.spikeCounter >= 8 then TEXTS.spike:set(tostring(GAME.spikeCounter)) end
 
+        if URM and M.NH == 2 then
+            xp = xp + surge
+            surge = 0
+        end
+
         attack = attack + surge
 
         if M.DP > 0 then
