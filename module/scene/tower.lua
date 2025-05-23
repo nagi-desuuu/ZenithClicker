@@ -591,7 +591,7 @@ function DrawBG(brightness, showRuler)
     gc_rectangle('fill', 0, 0, SCR.w, SCR.h)
 
     -- Ruler
-    if showRuler and GAME.bgH < 1700 then
+    if showRuler and GAME.bgH < 1700 and not GAME.invisUI then
         gc_replaceTransform(SCR.xOy_m)
         gc_setBlendMode('add', 'alphamultiply')
         gc_setColor(1, 1, 1, GAME.bgH <= 1650 and .626 or .626 * (1700 - GAME.bgH) / 50 * brightness / 100)
@@ -677,61 +677,65 @@ function scene.draw()
             gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
             gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
 
-            gc_replaceTransform(SCR.xOy)
-            gc_setAlpha(GigaSpeed.alpha * gigaPower)
-            gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
+            if not GAME.invisUI then
+                gc_replaceTransform(SCR.xOy)
+                gc_setAlpha(GigaSpeed.alpha * gigaPower)
+                gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
+            end
         end
     end
 
     gc_replaceTransform(SCR.xOy)
 
-    -- Mod icons
-    if GAME.uiHide > 0 then
-        gc_setColor(1, 1, 1, GAME.uiHide * (M.IN == 0 and 1 or 1 - M.IN * (.26 + .1 * sin(t * 2.6))))
-        local y = 330 + (GAME.height - GAME.bgH) * (M.VL + 1)
-        if GAME.anyRev then
-            local r = (M.AS + 1) * .026
-            gc_setColorMask(false, false, true, true)
-            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.5), y + .5 * 2.6 * sin(t * 2.5), r * sin(t * 0.5), 1)
-            gc_setColorMask(false, true, false, true)
-            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.6), y + .5 * 2.6 * sin(t * 2.6), r * sin(t * 0.6), 1)
-            gc_setColorMask(true, false, false, true)
-            gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.7), y + .5 * 2.6 * sin(t * 2.7), r * sin(t * 0.7), 1)
-            gc_setColorMask()
-        else
-            gc_draw(GAME.modIB, 1490, y, M.AS * .026 * sin(t), 1)
+    if not GAME.invisUI then
+        -- Mod icons
+        if GAME.uiHide > 0 then
+            gc_setColor(1, 1, 1, GAME.uiHide * (M.IN == 0 and 1 or 1 - M.IN * (.26 + .1 * sin(t * 2.6))))
+            local y = 330 + (GAME.height - GAME.bgH) * (M.VL + 1)
+            if GAME.anyRev then
+                local r = (M.AS + 1) * .026
+                gc_setColorMask(false, false, true, true)
+                gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.5), y + .5 * 2.6 * sin(t * 2.5), r * sin(t * 0.5), 1)
+                gc_setColorMask(false, true, false, true)
+                gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.6), y + .5 * 2.6 * sin(t * 2.6), r * sin(t * 0.6), 1)
+                gc_setColorMask(true, false, false, true)
+                gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.7), y + .5 * 2.6 * sin(t * 2.7), r * sin(t * 0.7), 1)
+                gc_setColorMask()
+            else
+                gc_draw(GAME.modIB, 1490, y, M.AS * .026 * sin(t), 1)
+            end
         end
-    end
 
-    -- Card Panel
-    gc_replaceTransform(SCR.xOy)
-    gc_translate(0, DeckPress)
-    gc_setColor(ShadeColor)
-    gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 6.26, 1586, 0, 1)
-    if GAME.revDeckSkin then
-        gc_setColor(1, 1, 1, GAME.revTimer)
-        gc_mDraw(TEXTURE.panel.glass_a, 800, panelH)
-        gc_mDraw(TEXTURE.panel.glass_b, 800, panelH)
-        gc_setColor(1, 1, 1, ThrobAlpha.bg1)
-        gc_mDraw(TEXTURE.panel.throb_a, 800, panelH)
-        gc_setColor(1, 1, 1, ThrobAlpha.bg2)
-        gc_mDraw(TEXTURE.panel.throb_b, 800, panelH)
-    end
-    gc_setColor(ShadeColor)
-    gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 12.6, -3, 0, 1)
-    gc_draw(TEXTURE.transition, 800 + 1586 / 2, panelH - 303, 1.5708, 12.6, 3, 0, 1)
-    gc_setColor(TextColor)
-    gc_setAlpha(.626)
-    gc_mRect('fill', 800, panelH - 303, 1586 + 6, -3)
-
-    -- MP & ZP Preview
-    if not GAME.playing and STAT.maxFloor >= 10 then
+        -- Card Panel
+        gc_replaceTransform(SCR.xOy)
+        gc_translate(0, DeckPress)
+        gc_setColor(ShadeColor)
+        gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 6.26, 1586, 0, 1)
+        if GAME.revDeckSkin then
+            gc_setColor(1, 1, 1, GAME.revTimer)
+            gc_mDraw(TEXTURE.panel.glass_a, 800, panelH)
+            gc_mDraw(TEXTURE.panel.glass_b, 800, panelH)
+            gc_setColor(1, 1, 1, ThrobAlpha.bg1)
+            gc_mDraw(TEXTURE.panel.throb_a, 800, panelH)
+            gc_setColor(1, 1, 1, ThrobAlpha.bg2)
+            gc_mDraw(TEXTURE.panel.throb_b, 800, panelH)
+        end
+        gc_setColor(ShadeColor)
+        gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 12.6, -3, 0, 1)
+        gc_draw(TEXTURE.transition, 800 + 1586 / 2, panelH - 303, 1.5708, 12.6, 3, 0, 1)
         gc_setColor(TextColor)
-        gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2)
-        gc_draw(TEXTS.zpPreview, 1370, 275, 0, 1, 1, TEXTS.zpPreview:getWidth())
-        if GAME.comboMP >= 6 then
-            gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))
-            gc_draw(TEXTS.mpPreview, 1370, 235, 0, 1, 1, TEXTS.mpPreview:getWidth())
+        gc_setAlpha(.626)
+        gc_mRect('fill', 800, panelH - 303, 1586 + 6, -3)
+
+        -- MP & ZP Preview
+        if not GAME.playing and STAT.maxFloor >= 10 then
+            gc_setColor(TextColor)
+            gc_setAlpha(.12 + abs(math.log(GAME.comboZP)) * 2)
+            gc_draw(TEXTS.zpPreview, 1370, 275, 0, 1, 1, TEXTS.zpPreview:getWidth())
+            if GAME.comboMP >= 6 then
+                gc_setAlpha(clampInterpolate(5, 0, 8, 1, GAME.comboMP))
+                gc_draw(TEXTS.mpPreview, 1370, 235, 0, 1, 1, TEXTS.mpPreview:getWidth())
+            end
         end
     end
 
@@ -1326,7 +1330,7 @@ function scene.overDraw()
     -- Version number
     gc_replaceTransform(SCR.xOy_d)
     gc_setColor(.626, .626, .626, .626)
-    gc_mDraw(TEXTS.version, -260 * GAME.uiHide, -10, 0, .62)
+    gc_mDraw(TEXTS.version, GAME.invisUI and 0 or -260 * GAME.uiHide, -10, 0, .62)
 end
 
 local function button_start()

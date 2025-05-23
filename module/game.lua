@@ -890,6 +890,7 @@ function GAME.readyShuffle(messiness, noSnd)
 end
 
 function GAME.showFloorText(f, name, duration)
+    if GAME.invisUI then return end
     TEXT:add {
         text = "Floor",
         x = 160, y = 290, k = 1.6, fontSize = 30,
