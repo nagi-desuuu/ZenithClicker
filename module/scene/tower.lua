@@ -1092,7 +1092,7 @@ function scene.overDraw()
                 gc_mRect('fill', 800 + 105, 965, 2, 26 - 4)
             end
         else
-            gc_mRect('fill', 800, 965, 420, 2)
+            gc_mRect('fill', 800, 965, 420, 1)
         end
         gc_setColor(rankColor[rank] or COLOR.L)
         if GAME.xpLockTimer > 0 then

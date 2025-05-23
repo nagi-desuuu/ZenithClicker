@@ -859,7 +859,7 @@ function GAME.addXP(xp)
     else
         GAME.xpLockTimer = oldLockTimer
     end
-    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
+    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank and not (URM and M.NH == 2) then GAME.xpLockLevel = GAME.xpLockLevelMax end
 end
 
 function GAME.setGigaspeedAnim(on, finish)
@@ -1951,7 +1951,7 @@ function GAME.start()
     GAME.timerMul = 1
     GAME.ultraRun = GAME.anyRev and URM
     GAME.attackMul = GAME.ultraRun and .6 or 1
-    GAME.xpLockLevelMax = URM and M.NH == 2 and 1 or 5
+    GAME.xpLockLevelMax = 5
     GAME.invincible = false
 
     TASK.unlock('sure_quit')
