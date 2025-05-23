@@ -851,7 +851,7 @@ function GAME.addXP(xp)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
-        if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, GAME.negFloor == 0 and 10 or GAME.negFloor)] then
+        if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
@@ -2261,7 +2261,7 @@ function GAME.finish(reason)
         if GAME.height >= 0 then
             endFloorStr = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
         else
-            endFloorStr = ("B$1: $2"):repD(GAME.negFloor, NegFloors[GAME.negFloor].name)
+            endFloorStr = ("B$1: $2"):repD((GAME.negFloor - 1) % 10 + 1, NegFloors[GAME.negFloor].name)
         end
         if GAME.gigaspeedEntered then
             if GAME.gigaTime then endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime) end
