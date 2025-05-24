@@ -2168,7 +2168,7 @@ function GAME.finish(reason)
                 MSG('dark', MOBILE and
                     STRING.trimIndent [[
                         You've unlocked a new REVERSED MOD!
-                        Activate it by press & hold the blue area at the left side,
+                        To activate it, press and hold the blue area at the left side,
                         then click on a card that has a star on it.
                     ]] or
                     STRING.trimIndent [[
