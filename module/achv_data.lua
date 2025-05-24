@@ -825,7 +825,7 @@ Achievements = {
     },
     { -- lovers_promise
         id = 'lovers_promise',
-        name = "Lovers' Promise",
+        name = "Lover's Promise",
         desc = [[HAR with DP on 14th day of any month (No CR)]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
