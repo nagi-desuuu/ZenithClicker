@@ -2117,6 +2117,7 @@ function GAME.finish(reason)
     SCN.scenes.tower.widgetList.help:setVisible(not GAME.zenithTraveler)
     SCN.scenes.tower.widgetList.help2:setVisible(not GAME.zenithTraveler)
     SCN.scenes.tower.widgetList.daily:setVisible(not GAME.zenithTraveler)
+    TABLE.clear(HoldingButtons)
     MSG.clear()
 
     SFX.play(
