@@ -56,7 +56,7 @@ addText("FCSplayz", 26, h, .42, 'left')
 
 h = h + 100
 addText("Text Revision", -26, h, .42, 'right')
-addText("Flowerling", 26, h, .42, 'left')
+addText("MattMayuga & Flowerling", 26, h, .42, 'left')
 
 h = h + 100
 addText("Musics", -26, h, .42, 'right')
