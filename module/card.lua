@@ -58,14 +58,11 @@ end
 local completion = GAME.completion
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
+local function tween_expertOn(t) GAME.exTimer = M.EX > 0 and t or (1 - t) end
 function Card:setActive(auto, key)
     if TASK.getLock('cannotFlip') or GAME.playing and M.NH == 1 and not auto and self.active then
         self:flick()
         SFX.play('no')
-        return
-    end
-    if not GAME.playing and TASK.getLock('expert_lock') and self.id == 'EX' then
-        TASK.unlock('expert_lock')
         return
     end
     if M.VL == 1 then
@@ -190,6 +187,8 @@ function Card:setActive(auto, key)
         self.upright = not (self.active and revOn)
         if wasRev and not revOn then self:spin() end
         if self.id == 'EX' then
+            TWEEN.new(tween_expertOn):setDuration(M.EX > 0 and .26 or .1):run()
+            TABLE.clear(HoldingButtons)
             if M.EX == 0 then BGM.set('expert', 'volume', 0, .1) end
             TWEEN.new(function(t) GAME.exTimer = M.EX > 0 and t or (1 - t) end):setDuration(M.EX > 0 and .26 or .1):run()
             if self.active then TASK.lock('expert_lock', 2.6) end

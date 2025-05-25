@@ -11,7 +11,8 @@ local MD = ModData
 ShortCut = {}
 for i = 1, 9 do ShortCut[i] = GC.newText(FONT.get(50)) end
 
-local CancelNextRelease = false
+HoldingButtons = {}
+local HoldingButtons = HoldingButtons
 
 ForceOldHitbox = false
 RevUnlocked = false
@@ -116,10 +117,6 @@ local function keyPress(key)
             if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
         end
     else
-        if CancelNextRelease then
-            CancelNextRelease = false
-            return
-        end
         if key == 'escape' then
             if not GAME.playing then
                 local W = scene.widgetList.back
@@ -215,7 +212,6 @@ function scene.load()
             12.6)
     end
     RevUnlocked = TABLE.countAll(GAME.completion, 0) < 9
-    CancelNextRelease = M.EX > 0
 
     for i = 1, 9 do ShortCut[i]:set(STAT.keybind[i]:upper()) end
 
@@ -268,6 +264,7 @@ local function getBtnPressed()
 end
 
 function scene.mouseDown(x, y, k)
+    HoldingButtons['mouse' .. k] = true
     if GAME.zenithTraveler then return switchVisitor(false) end
     mouseMove(x, y)
     GAME.nixPrompt('keep_no_mouse')
@@ -283,15 +280,13 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseClick(x, y, k)
+    if not HoldingButtons['mouse' .. k] then return end
+    HoldingButtons['mouse' .. k] = nil
     if GAME.zenithTraveler then return end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return end
 
     if getBtnPressed() > (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return end
-    if CancelNextRelease then
-        CancelNextRelease = false
-        return
-    end
     if M.EX > 0 then
         mousePress(x, y, k)
     end
@@ -328,6 +323,7 @@ end
 function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1) end
 
 function scene.keyDown(key)
+    HoldingButtons[key] = true
     -- if key == '1' then GAME.height = -1100 end
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
@@ -343,6 +339,8 @@ function scene.keyDown(key)
 end
 
 function scene.keyUp(key)
+    if not HoldingButtons[key] then return end
+    HoldingButtons[key] = nil
     if GAME.zenithTraveler then return end
     if M.EX > 0 then
         keyPress(key)
@@ -1411,8 +1409,17 @@ scene.widgetList = {
         textColor = TextColor,
         sound_hover = 'menuhover',
         fontSize = 70, text = "START",
-        onPress = function(k) if M.EX == 0 and k ~= 3 then button_start() end end,
-        onClick = function(k) if M.EX > 0 and k ~= 3 then button_start() end end,
+        onPress = function(k)
+            if k == 3 then return end
+            HoldingButtons.startBtn = true
+            if M.EX == 0 then button_start() end
+        end,
+        onClick = function(k)
+            if k == 3 then return end
+            if not HoldingButtons.startBtn then return end
+            HoldingButtons.startBtn = nil
+            if M.EX > 0 then button_start() end
+        end,
     },
     WIDGET.new {
         name = 'reset', type = 'button',
@@ -1420,15 +1427,15 @@ scene.widgetList = {
         color = 'DR',
         sound_hover = 'menutap',
         fontSize = 30, text = "RESET", textColor = 'dR',
-        onPress = function(k) if M.EX == 0 and k ~= 3 then button_reset() end end,
+        onPress = function(k)
+            if k == 3 then return end
+            HoldingButtons.resetBtn = true
+            if M.EX == 0 then button_reset() end
+        end,
         onClick = function(k)
-            if M.EX > 0 and k ~= 3 then
-                if CancelNextRelease then
-                    CancelNextRelease = false
-                    return
-                end
-                button_reset()
-            end
+            if k == 3 then return end
+            if not HoldingButtons.resetBtn then return end
+            if M.EX > 0 then button_reset() end
         end,
     },
     WIDGET.new {
@@ -1485,6 +1492,8 @@ scene.widgetList = {
             GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
             GAME.refreshLayout()
             GAME.refreshCurrentCombo()
+            PlayBGM('f0')
+
             if PieceSFXID == 7 and not GC.isWireframe() then
                 MSG({
                     cat = 'dark',
