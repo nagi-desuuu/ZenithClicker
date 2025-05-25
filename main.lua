@@ -18,14 +18,14 @@ local function q(oy, n, size)
     return GC.newQuad(
         n * size, oy,
         size, size,
-        1971, 2255
+        1971, 1451
     )
 end
 local function q2(ox, oy, w, h)
     return GC.newQuad(
         ox, oy,
         w, h,
-        1971, 2255
+        1971, 1451
     )
 end
 local function aq(x, y) return { 1, GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 2048, 2304) } end
@@ -80,56 +80,16 @@ TEXTURE = {
         rDH = q(621, 7, 183),
         rAS = q(621, 8, 183),
     },
-    modQuad_ig_ex = {
-        VL = q(804, 0, 219),
-        NH = q(804, 1, 219),
-        MS = q(804, 2, 219),
-        IN = q(804, 3, 219),
-        GV = q(804, 4, 219),
-        EX = q(804, 5, 219),
-        DP = q(804, 6, 219),
-        DH = q(804, 7, 219),
-        AS = q(804, 8, 219),
-        rVL = q(1023, 0, 219),
-        rNH = q(1023, 1, 219),
-        rMS = q(1023, 2, 219),
-        rIN = q(1023, 3, 219),
-        rGV = q(1023, 4, 219),
-        rEX = q(1023, 5, 219),
-        rDP = q(1023, 6, 219),
-        rDH = q(1023, 7, 219),
-        rAS = q(1023, 8, 219),
-    },
-    modQuad_res_ex = {
-        VL = q(1242, 0, 183),
-        NH = q(1242, 1, 183),
-        MS = q(1242, 2, 183),
-        IN = q(1242, 3, 183),
-        GV = q(1242, 4, 183),
-        EX = q(1242, 5, 183),
-        DP = q(1242, 6, 183),
-        DH = q(1242, 7, 183),
-        AS = q(1242, 8, 183),
-        rVL = q(1425, 0, 183),
-        rNH = q(1425, 1, 183),
-        rMS = q(1425, 2, 183),
-        rIN = q(1425, 3, 183),
-        rGV = q(1425, 4, 183),
-        rEX = q(1425, 5, 183),
-        rDP = q(1425, 6, 183),
-        rDH = q(1425, 7, 183),
-        rAS = q(1425, 8, 183),
-    },
     modQuad_ultra = {
-        rNH = q2(000, 1608, 315, 315),
-        rMS = q2(315, 1608, 315, 315),
-        rGV = q2(630, 1608, 315, 315),
-        rVL = q2(945, 1608, 315, 315),
-        rDH = q2(000, 1923, 315, 315),
-        rIN = q2(315, 1923, 315, 315),
-        rAS = q2(630, 1923, 315, 315),
-        rEX = q2(945, 1923, 315, 332),
-        rDP = q2(1260, 1608, 419, 378),
+        rNH = q2(-804, 1608, 315, 315),
+        rMS = q2(-489, 1608, 315, 315),
+        rGV = q2(-174, 1608, 315, 315),
+        rVL = q2(141, 1608, 315, 315),
+        rDH = q2(-804, 1923, 315, 315),
+        rIN = q2(-489, 1923, 315, 315),
+        rAS = q2(-174, 1923, 315, 315),
+        rEX = q2(141, 1923, 315, 332),
+        rDP = q2(456, 1608, 419, 378),
     },
     EX = { lock = assets 'card/lockover-9.png', front = assets 'card/expert.png', back = assets 'card/expert-back.png', throb = assets 'card/expert-throb.png', },
     NH = { lock = assets 'card/lockfull-2.png', front = assets 'card/nohold.png', back = assets 'card/nohold-back.png', throb = assets 'card/nohold-throb.png', },
