@@ -221,6 +221,14 @@ Achievements = {
         rank = numberRank(0, 0, 0, 1, 2, 4, 6),
         hide = TRUE,
     },
+    { -- clock_out
+        id = 'clock_out',
+        name = "Clock Out",
+        desc = [[Number of games finished just after reaching F10]],
+        quote = [["Well, my job here is done."]],
+        scoreSimp = function() return STAT.clockOutCount == 1 and "1 Shift" or STAT.clockOutCount .. " Shifts" end,
+        type = 'issued',
+    },
 
     { title = "Mods" },
     { -- EX

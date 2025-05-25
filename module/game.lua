@@ -2197,7 +2197,13 @@ function GAME.finish(reason)
         STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1) + (GAME.negFloor - 1)
         if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
-        if GAME.floor >= 10 then STAT.totalF10 = STAT.totalF10 + 1 end
+        if GAME.floor >= 10 then
+            STAT.totalF10 = STAT.totalF10 + 1
+            if GAME.floorTime <= 6.26 then
+                STAT.clockOutCount = STAT.clockOutCount + 1
+                IssueAchv('clock_out')
+            end
+        end
 
         local oldZP, zpGain = STAT.zp, GAME.roundHeight * GAME.comboZP
         if DailyActived then

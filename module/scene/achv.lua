@@ -63,17 +63,22 @@ local function refreshAchvList(canShuffle)
             table.insert(achvList, { title = A.hide() and "???" or A.title and A.title:upper() })
         else
             local rank, score, progress, wreath
+            if not ACHV[A.id] then
+                score = "---"
+            elseif not A.scoreSimp then
+                score = "DONE!"
+            elseif not A.scoreFull then
+                score = { COLOR.LL, A.scoreSimp(ACHV[A.id]) }
+            else
+                score = { COLOR.LL, A.scoreSimp(ACHV[A.id]), COLOR.DL, "   " .. A.scoreFull(ACHV[A.id]) }
+            end
             if A.type == 'issued' then
                 rank = ACHV[A.id] and 6 or 0
                 progress = 0
-                score = ACHV[A.id] and "DONE!" or "---"
             else
                 local r = A.rank(ACHV[A.id] or A.noScore or 0)
                 rank = floor(r)
                 progress = r < 5 and r % 1 or r % 1 / .9999
-                score = not ACHV[A.id] and "---" or
-                    { COLOR.LL, A.scoreSimp(ACHV[A.id]), COLOR.DL, A.scoreFull and
-                    "   " .. A.scoreFull(ACHV[A.id]) or "" }
                 if r >= 5 then
                     wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, r % 1))
                 end

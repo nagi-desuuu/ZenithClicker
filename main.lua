@@ -165,6 +165,7 @@ TEXTURE = {
             the_spike_of_all_time = aq(4, 2),
             the_spike_of_all_time_minus = aq(4, 2),
             vip_list = aq(6, 6),
+            clock_out = aq2(7, 9),
 
             EX = aq(3, 3),
             NH = aq(7, 3),
@@ -460,6 +461,7 @@ STAT = {
     dailyMastered = false,
     lastDay = 0,
     vipListCount = 0,
+    clockOutCount = 0,
     clicker = false,
 
     totalGame = 0,
