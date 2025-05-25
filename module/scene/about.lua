@@ -149,6 +149,7 @@ addText({
         "LARGEONIONS",
         "LAUREN SHENG",
         "LORC",
+        "MATTMAYUGA",
         "MOONIAK",
         "MRZ",
         "OBSIDIAN",
