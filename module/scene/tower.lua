@@ -1485,22 +1485,28 @@ scene.widgetList = {
             GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
             GAME.refreshLayout()
             GAME.refreshCurrentCombo()
-            BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
-
-            MSG({
-                cat = 'dark',
-                str = PieceSFXID == 6 and not URM and "O - ?" or ({
-                    "Z - Nightcore",
-                    "S - Sloooooow-mo",
-                    "J - Glass Card",
-                    "L - Invisible Card",
-                    "T - Invisible Dashboard",
-                    "O - Ultra Reversed Mods",
-                    "I - Wireframe Vision",
-                    "ALLCLEAR",
-                })[PieceSFXID],
-                time = 1.2
-            })
+            if PieceSFXID == 7 and not GC.isWireframe() then
+                MSG({
+                    cat = 'dark',
+                    str = "Wireframe Vision is not available on this platform.",
+                    time = 2.6
+                })
+            else
+                MSG({
+                    cat = 'dark',
+                    str = PieceSFXID == 6 and not URM and "O - ?" or ({
+                        "Z - Nightcore",
+                        "S - Sloooooow-mo",
+                        "J - Glass Card",
+                        "L - Invisible Card",
+                        "T - Invisible Dashboard",
+                        "O - Ultra Reversed Mods",
+                        "I - Wireframe Vision",
+                        "ALLCLEAR",
+                    })[PieceSFXID],
+                    time = 1.2
+                })
+            end
         end,
         visibleFunc = function() return not GAME.playing and TABLE.countAll(GAME.completion, 0) < 9 end,
     },
