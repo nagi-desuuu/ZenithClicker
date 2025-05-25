@@ -1949,6 +1949,7 @@ function GAME.start()
         return
     end
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
+    TASK.unlock('expert_lock')
 
     GAME.omega = false
     GAME.negFloor = 1

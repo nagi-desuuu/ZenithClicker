@@ -1232,6 +1232,13 @@ function Daemon_Fast()
             uVLpool[k] = max(v - dt, 0)
         end
 
+        if not GAME.playing then
+            if TASK.getLock('expert_lock') and FloatOnCard ~= 1 then
+                FloatOnCard = false
+                TASK.unlock('expert_lock')
+            end
+        end
+
         if GAME.revDeckSkin and SYSTEM ~= 'Web' then
             if M.NH > 0 then dt = dt * (1 - M.NH * .42) end
             if M.AS > 0 then dt = dt * (1 + M.AS) end

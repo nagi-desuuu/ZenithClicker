@@ -11,8 +11,7 @@ local MD = ModData
 ShortCut = {}
 for i = 1, 9 do ShortCut[i] = GC.newText(FONT.get(50)) end
 
-CancelNextClick = false
-CancelNextKeyClick = false
+local CancelNextRelease = false
 
 ForceOldHitbox = false
 RevUnlocked = false
@@ -24,7 +23,6 @@ local scene = {}
 
 local function switchVisitor(bool)
     if not GAME.playing and GAME.zenithTraveler ~= bool and STAT.bg then
-        CancelNextClick, CancelNextKeyClick = true, true
         SFX.play(bool and 'pause_exit' or 'pause_start')
         GAME.zenithTraveler = bool
         love.mouse.setRelativeMode(bool)
@@ -117,90 +115,96 @@ local function keyPress(key)
             end
             if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
         end
-    elseif key == 'escape' then
-        if not GAME.playing then
-            local W = scene.widgetList.back
+    else
+        if CancelNextRelease then
+            CancelNextRelease = false
+            return
+        end
+        if key == 'escape' then
+            if not GAME.playing then
+                local W = scene.widgetList.back
+                W._pressTime = W._pressTimeMax * 2
+                W._hoverTime = W._hoverTimeMax
+                if TASK.lock('sure_quit', 2.6) then
+                    SFX.play('menuclick')
+                    MSG('dark', "PRESS AGAIN TO QUIT", 2.6)
+                else
+                    SFX.play('menuback')
+                    BGM.set('all', 'volume', 0, 1.6)
+                    SCN.back()
+                end
+            end
+        elseif bindID == 20 then
+            if M.NH == 2 then return SFX.play('no') end
+            GAME.nixPrompt('keep_no_keyboard')
+            local W = scene.widgetList.reset
             W._pressTime = W._pressTimeMax * 2
             W._hoverTime = W._hoverTimeMax
-            if TASK.lock('sure_quit', 2.6) then
-                SFX.play('menuclick')
-                MSG('dark', "PRESS AGAIN TO QUIT", 2.6)
-            else
-                SFX.play('menuback')
-                BGM.set('all', 'volume', 0, 1.6)
-                SCN.back()
-            end
-        end
-    elseif bindID == 20 then
-        if M.NH == 2 then return SFX.play('no') end
-        GAME.nixPrompt('keep_no_keyboard')
-        local W = scene.widgetList.reset
-        W._pressTime = W._pressTimeMax * 2
-        W._hoverTime = W._hoverTimeMax
-        SFX.play('menuclick')
-        if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
-        GAME.cancelAll()
-        if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
-    elseif bindID == 21 or bindID == 22 then
-        GAME.nixPrompt('keep_no_keyboard')
-        scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, bindID == 21 and 1 or 2)
-        if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
-    elseif bindID == 19 then
-        GAME.nixPrompt('keep_no_keyboard')
-        local W = scene.widgetList.start
-        W._pressTime = W._pressTimeMax * 2
-        W._hoverTime = W._hoverTimeMax
-        if GAME.playing then
-            GAME.commit()
-            if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
+            SFX.play('menuclick')
+            if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
+            GAME.cancelAll()
             if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
-        else
-            GAME.start()
+        elseif bindID == 21 or bindID == 22 then
+            GAME.nixPrompt('keep_no_keyboard')
+            scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, bindID == 21 and 1 or 2)
+            if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
+        elseif bindID == 19 then
+            GAME.nixPrompt('keep_no_keyboard')
+            local W = scene.widgetList.start
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
+            if GAME.playing then
+                GAME.commit()
+                if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
+                if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
+            else
+                GAME.start()
+            end
+        elseif key == '`' then
+            if GAME.playing then
+                SFX.play('no')
+            else
+                if URM and M.VL == 2 and not UltraVlCheck('stat') then return end
+                SFX.play('menuhit1')
+                SCN.go('stat', 'none')
+            end
+            local W = scene.widgetList.stat
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
+        elseif key == 'tab' then
+            if GAME.playing then
+                SFX.play('no')
+            else
+                if URM and M.VL == 2 and not UltraVlCheck('achv') then return end
+                SFX.play('menuhit1')
+                SCN.go('achv', 'none')
+            end
+            local W = scene.widgetList.achv
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
+        elseif key == 'f1' then
+            if GAME.playing then
+                SFX.play('no')
+            else
+                if URM and M.VL == 2 and not UltraVlCheck('conf') then return end
+                SFX.play('menuhit1')
+                SCN.go('conf', 'none')
+            end
+            local W = scene.widgetList.conf
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
+        elseif key == 'f2' then
+            if GAME.playing then
+                SFX.play('no')
+            else
+                if URM and M.VL == 2 and not UltraVlCheck('reset') then return end
+                SFX.play('menuhit1')
+                SCN.go('about', 'none')
+            end
+            local W = scene.widgetList.about
+            W._pressTime = W._pressTimeMax * 2
+            W._hoverTime = W._hoverTimeMax
         end
-    elseif key == '`' then
-        if GAME.playing then
-            SFX.play('no')
-        else
-            if URM and M.VL == 2 and not UltraVlCheck('stat') then return end
-            SFX.play('menuhit1')
-            SCN.go('stat', 'none')
-        end
-        local W = scene.widgetList.stat
-        W._pressTime = W._pressTimeMax * 2
-        W._hoverTime = W._hoverTimeMax
-    elseif key == 'tab' then
-        if GAME.playing then
-            SFX.play('no')
-        else
-            if URM and M.VL == 2 and not UltraVlCheck('achv') then return end
-            SFX.play('menuhit1')
-            SCN.go('achv', 'none')
-        end
-        local W = scene.widgetList.achv
-        W._pressTime = W._pressTimeMax * 2
-        W._hoverTime = W._hoverTimeMax
-    elseif key == 'f1' then
-        if GAME.playing then
-            SFX.play('no')
-        else
-            if URM and M.VL == 2 and not UltraVlCheck('conf') then return end
-            SFX.play('menuhit1')
-            SCN.go('conf', 'none')
-        end
-        local W = scene.widgetList.conf
-        W._pressTime = W._pressTimeMax * 2
-        W._hoverTime = W._hoverTimeMax
-    elseif key == 'f2' then
-        if GAME.playing then
-            SFX.play('no')
-        else
-            if URM and M.VL == 2 and not UltraVlCheck('reset') then return end
-            SFX.play('menuhit1')
-            SCN.go('about', 'none')
-        end
-        local W = scene.widgetList.about
-        W._pressTime = W._pressTimeMax * 2
-        W._hoverTime = W._hoverTimeMax
     end
 end
 
@@ -211,9 +215,7 @@ function scene.load()
             12.6)
     end
     RevUnlocked = TABLE.countAll(GAME.completion, 0) < 9
-
-    CancelNextClick = true
-    CancelNextKeyClick = true
+    CancelNextRelease = M.EX > 0
 
     for i = 1, 9 do ShortCut[i]:set(STAT.keybind[i]:upper()) end
 
@@ -266,7 +268,6 @@ local function getBtnPressed()
 end
 
 function scene.mouseDown(x, y, k)
-    CancelNextClick = false
     if GAME.zenithTraveler then return switchVisitor(false) end
     mouseMove(x, y)
     GAME.nixPrompt('keep_no_mouse')
@@ -287,8 +288,8 @@ function scene.mouseClick(x, y, k)
     if k == 3 then return end
 
     if getBtnPressed() > (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return end
-    if CancelNextClick then
-        CancelNextClick = false
+    if CancelNextRelease then
+        CancelNextRelease = false
         return
     end
     if M.EX > 0 then
@@ -328,7 +329,6 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1)
 
 function scene.keyDown(key)
     -- if key == '1' then GAME.height = -1100 end
-    CancelNextKeyClick = false
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
             switchVisitor(false)
@@ -344,10 +344,6 @@ end
 
 function scene.keyUp(key)
     if GAME.zenithTraveler then return end
-    if CancelNextKeyClick then
-        CancelNextKeyClick = false
-        return
-    end
     if M.EX > 0 then
         keyPress(key)
     end
@@ -396,9 +392,6 @@ function scene.update(dt)
         if GAME.forfeitTimer > 1 then
             SFX.play('detonate2')
             GAME.finish('forfeit')
-            if M.EX > 0 then
-                CancelNextKeyClick = true
-            end
         end
     else
         if GAME.forfeitTimer > 0 then
@@ -1430,8 +1423,8 @@ scene.widgetList = {
         onPress = function(k) if M.EX == 0 and k ~= 3 then button_reset() end end,
         onClick = function(k)
             if M.EX > 0 and k ~= 3 then
-                if CancelNextClick then
-                    CancelNextClick = false
+                if CancelNextRelease then
+                    CancelNextRelease = false
                     return
                 end
                 button_reset()

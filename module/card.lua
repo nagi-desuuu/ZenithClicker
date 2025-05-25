@@ -64,6 +64,10 @@ function Card:setActive(auto, key)
         SFX.play('no')
         return
     end
+    if not GAME.playing and TASK.getLock('expert_lock') and self.id == 'EX' then
+        TASK.unlock('expert_lock')
+        return
+    end
     if M.VL == 1 then
         if not self.active and not auto then
             self.charge = self.charge + 1
@@ -188,10 +192,7 @@ function Card:setActive(auto, key)
         if self.id == 'EX' then
             if M.EX == 0 then BGM.set('expert', 'volume', 0, .1) end
             TWEEN.new(function(t) GAME.exTimer = M.EX > 0 and t or (1 - t) end):setDuration(M.EX > 0 and .26 or .1):run()
-            if self.active then
-                CancelNextClick = true
-                CancelNextKeyClick = true
-            end
+            if self.active then TASK.lock('expert_lock', 2.6) end
         elseif self.id == 'NH' then
             BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
         elseif self.id == 'GV' then
