@@ -1509,7 +1509,7 @@ scene.widgetList = {
                         "S - Sloooooow-mo",
                         "J - Glass Card",
                         "L - Invisible Card",
-                        "T - Invisible Dashboard",
+                        "T - Invisible UI",
                         "O - Ultra Reversed Mods",
                         "I - Wireframe Vision",
                         "ALLCLEAR",
