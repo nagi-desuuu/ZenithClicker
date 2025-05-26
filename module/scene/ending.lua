@@ -60,7 +60,7 @@ addText("MattMayuga & Flowerling", 26, h, .42, 'left')
 
 h = h + 100
 addText("Musics", -26, h, .42, 'right')
-addText("Dr Ocelot", 26, h, .42, 'left')
+addText("Dr Ocelot & Ronezkj15", 26, h, .42, 'left')
 
 h = h + 100
 addText("World Design", -26, h, .42, 'right')
@@ -175,7 +175,7 @@ function scene.load()
         GAME.finish('forfeit')
         SFX.setVol(STAT.sfx / 100)
     end
-    PlayBGM('f10', true)
+    PlayBGM('fomg', true)
     STAT.bgm = math.max(STAT.bgm, math.min(STAT.sfx, 20))
     BGM.setVol(STAT.bgm / 100)
 end
