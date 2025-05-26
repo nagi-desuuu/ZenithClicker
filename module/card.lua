@@ -59,6 +59,10 @@ local completion = GAME.completion
 local KBIsDown = love.keyboard.isDown
 local function tween_deckPress(t) DeckPress = 26 * (1 - t) end
 local function tween_expertOn(t) GAME.exTimer = M.EX > 0 and t or (1 - t) end
+local function task_refreshBGM()
+    TASK.yieldT(.1)
+    RefreshBGM()
+end
 function Card:setActive(auto, key)
     if TASK.getLock('cannotFlip') or GAME.playing and M.NH == 1 and not auto and self.active then
         self:flick()
@@ -123,7 +127,7 @@ function Card:setActive(auto, key)
             GAME.totalFlip = GAME.totalFlip + 1
             if not GAME.achv_psychokinesisH then
                 GAME.achv_psychokinesisH = GAME.roundHeight
-                if GAME.totalQuest >= 3 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 3 then SFX.play('btb_break') end
             end
             if self.touchCount == 1 then
                 if (self.required or self.required2) and not GAME.hardMode then
@@ -135,7 +139,7 @@ function Card:setActive(auto, key)
         end
         if M.DP > 0 and not auto and self.id == 'DP' and self.active and not (URM and M.DP == 2) then
             if GAME.swapControl() then
-                SFX.play('party_ready', .8, 0, Tone(0))
+                SFX.play('party_ready', .8)
             end
         end
         if not auto then
@@ -185,34 +189,23 @@ function Card:setActive(auto, key)
         --     end
         -- end
         self.upright = not (self.active and revOn)
+        if revOn or wasRev then GAME.refreshRev() end
+        TASK.removeTask_code(task_refreshBGM)
+        TASK.new(task_refreshBGM)
         if wasRev and not revOn then self:spin() end
         if self.id == 'EX' then
             TWEEN.new(tween_expertOn):setDuration(M.EX > 0 and .26 or .1):run()
             TABLE.clear(HoldingButtons)
-            if M.EX == 0 then BGM.set('expert', 'volume', 0, .1) end
-            TWEEN.new(function(t) GAME.exTimer = M.EX > 0 and t or (1 - t) end):setDuration(M.EX > 0 and .26 or .1):run()
-            if self.active then TASK.lock('expert_lock', 2.6) end
-        elseif self.id == 'NH' then
-            BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
-        elseif self.id == 'GV' then
-            local v = M.GV > 0 and 2 ^ (M.GV / 12) or 1
-            BGM.set('all', 'pitch', v, .26)
-            BGM.set('piano2', 'pitch', 2 * v, .26)
         elseif self.id == 'DH' then
             RefreshButtonText()
         elseif self.id == 'IN' then
-            BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
             for _, C in ipairs(CD) do C:flip() end
             noSpin = M.IN == 1
         elseif self.id == 'AS' then
             RefreshButtonText()
         elseif self.id == 'DP' then
-            BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
-            BGM.set('piano2', 'volume', M.DP > 0 and .626 or 0, .26)
         end
         SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler and M.NH < 2)
-        if revOn or wasRev then GAME.refreshRev() end
-        if VALENTINE then BGM.set('piano2', 'volume', (M.DP > 0 or VALENTINE and not GAME.anyRev) and .626 or 0, .26) end
         GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
         GAME.refreshPBText()
         GAME.refreshRPC()

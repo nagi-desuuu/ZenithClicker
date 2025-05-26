@@ -246,7 +246,7 @@ function RefreshProfile()
         rating >= cap and "THE CHOSEN ONE." or
         rating >= 25000 and "THE VERY BEST!" or
         rating >= 24500 and "ALMOST THERE!" or
-        rating >= 23800 and "YOU ARE GETTING THERE" or
+        rating >= 23800 and "YOU ARE GETTING THERE!" or
         rating >= 22050 and "YOU'RE NOT FAR OFF." or
         "CALCULATED FROM CAREER"
     )

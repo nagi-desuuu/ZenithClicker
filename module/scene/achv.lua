@@ -36,6 +36,7 @@ local maxScroll = 0
 local tempText = GC.newText(FONT.get(30))
 local timer = 0
 local whenItsReady = false
+local hyper
 local clearNotice
 local overallProgress = {
     rank = { [0] = 0, 0, 0, 0, 0, 0 },
@@ -303,6 +304,8 @@ function scene.load()
         whenItsReady = URM and M.IN == 2 or MATH.roll(.01 + M.IN * .026)
     end
 
+    hyper = M.EX > 0 or BGM.getPlaying()[1] == 'rhyper'
+
     refreshAchvList(true)
 
     maxScroll = max(ceil((#achvList - 12) / 2) * 140, 0)
@@ -432,7 +435,7 @@ function scene.draw()
                     gc_ucs_move('m', i % 2 == 1 and -626 or 26, floor((i - 1) / 2) * 140)
                 end
                 -- Bottom rectangle
-                if M.EX > 0 then
+                if hyper then
                     if overallProgress.countStart == 6 then
                         gc_setColor(COLOR.rainbow_dark(i / 2.6 - t * 2.6, .42))
                     elseif a.type == 'competitive' and (notAllRank5 and a.rank or a.wreath or 0) == overallProgress.countStart then

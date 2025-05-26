@@ -389,6 +389,10 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     chain2     = GC.newText(FONT.get(50, 'led')),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
     spike      = GC.newText(FONT.get(50)),
+    hyperspeed = GC.newText(FONT.get(50), {
+        COLOR.R, "H", COLOR.F, "Y", COLOR.O, "P", COLOR.Y, "E", COLOR.K, "R",
+        COLOR.G, "S", COLOR.J, "P", COLOR.C, "E", COLOR.S, "E", COLOR.B, "D"
+    }),
     gigaspeed  = GC.newText(FONT.get(50), {
         COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
         COLOR.K, "A", COLOR.G, "S", COLOR.J, "P",
@@ -569,7 +573,7 @@ function ReleaseAchvBuffer()
         msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 2.6
         MSG { msg[1], msg[2], time = msgTime, last = true, alpha = .75 }
         if TASK.lock('achv_sfx_' .. msg[3], .08) then
-            SFX.play('achievement_' .. msg[3], .7, 0, Tone(0))
+            SFX.play('achievement_' .. msg[3], .7)
         end
     end
     TABLE.clear(bufferedMsg)
@@ -635,15 +639,6 @@ for i = 1, 3 do
 end
 
 BgScale = 1
-BgmSets = {
-    all = {
-        'piano',
-        'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin',
-        'expert', 'rev',
-        'piano2', 'violin2',
-    },
-    assist = { 'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin' },
-}
 
 require 'module.game_data'
 require 'module.achv_data'
@@ -761,14 +756,142 @@ local function starCursor(x, y)
     end
 end
 
+--[[
+# F0 (Watchful Eye)           4|4      ♩ = 184         C Minor
+# F1 (Divine Registration)    4|4      ♩ = 184         C Minor
+# F2 (Zenith Hotel)           4|4      ♩ = 110         D Major / B Minor
+# F3 (Empty Prayers)         12|8      ♩.= 120         C Major / A Minor
+# F4 (Crowd Control)          5|8      ♪ = 180         F♯ Minor
+# F5 (Phantom Memories)       4|4 6|8  ♩ = 130 ♩.= 130 E Minor
+# F6 (Echo)                   4|4      ♩ = 65          A Minor
+# F7 (Cryptic Chemistry)      4|4      ♩ = 120         A+50 Minor
+# F8 (Chrono Flux)            4|4      ♩ = 150         E Minor
+# F9 (Broken Record)          4|4      ♩ = 160         E Minor
+# F10 (Divine Confirmation)   4|4 3|4  ♩ = 100 ♩ = 100 C Major / A Minor
+# Hyper (Schnellfeuer Bullet) 4|4      ♩ = 240         C♯ Minor
+]]
+
+BgmSet = {
+    f0 = {
+        'piano',
+        'arp', 'bass', 'guitar', 'pad', 'staccato', 'violin',
+        'expert', 'rev',
+        'piano2', 'violin2',
+    },
+    f1 = { 'f1', 'f1ex', 'f1rev' },
+}
+
+---@enum (key) ZC.bgmName
+BgmData = {
+    f0 = { meta = '184 BPM  C Minor', bpm = 184, toneFix = 0, loop = { 0, 114.7826 } },
+    f1 = { meta = '184 BPM  C Minor', bpm = 184, toneFix = 0, loop = { 7.826, 92.608 }, introLen = 1.304, teleport = { -1, 7.826 } },
+    f2 = { meta = '110 BPM  D Major & B Minor', bpm = 110, toneFix = -1, loop = { 26.181, 113.454 } },
+    f2r = { meta = '110 BPM  D Major & B Minor', bpm = 110, toneFix = -1, loop = { 26.181, 113.454 } },
+    f3 = { meta = '120 BPM  C Major & A Minor', bpm = 120, toneFix = -1, loop = { 48, 128 } },
+    f3r = { meta = '120 BPM  C Major & A Minor', bpm = 120, toneFix = -1, loop = { 48, 128 } },
+    f4 = { meta = '180 BPM  F# Minor', bpm = 180, toneFix = 1, loop = { 13.333, 93.333 } },
+    f4r = { meta = '180 BPM  F# Minor', bpm = 180, toneFix = 1, loop = { 13.333, 93.333 } },
+    f5 = { meta = '130 BPM  E Minor', bpm = 130, toneFix = -1, loop = { 96, 169.846 } },
+    f5r = { meta = '130 BPM  E Minor', bpm = 130, toneFix = -1, loop = { 96, 169.846 } },
+    f6 = { meta = '65 BPM  A Minor', bpm = 65, toneFix = 2, loop = { 29.538, 103.384 } },
+    f6r = { meta = '65 BPM  A Minor', bpm = 65, toneFix = 2, loop = { 29.538, 103.384 } },
+    f7 = { meta = '120 BPM  A+50c Minor', bpm = 120, toneFix = 2.5, loop = { 128, 192 } },
+    f7r = { meta = '120 BPM  A+50c Minor', bpm = 120, toneFix = 2.5, loop = { 128, 192 }, teleport = { 8, 32 } },
+    f8 = { meta = '150 BPM  E Minor', bpm = 150, toneFix = -1, loop = { 38.4, 134.4 } },
+    f8r = { meta = '150 BPM  E Minor', bpm = 150, toneFix = -1, loop = { 38.4, 134.4 } },
+    f9 = { meta = '160 BPM  E Minor', bpm = 160, toneFix = -1, loop = { 36, 144 } },
+    f9r = { meta = '160 BPM  E Minor', bpm = 160, toneFix = -1, loop = { 36, 144 } },
+    f10 = { meta = '100 BPM  C Major & A Minor', bpm = 100, toneFix = 2, loop = { 122.4, 232.8 } },
+    f10r = { meta = '100 BPM  C Major & A Minor', bpm = 100, toneFix = 2, loop = { 122.4, 232.8 }, teleport = { 31.2, 98.4 } },
+    fomg = { meta = '120 BPM  C# Major & A# Minor', bpm = 120, toneFix = 3, loop = { 38.4 - 11.862, 144 - 11.862 }, end1 = 144 - 11.862, end2 = 153.6 - 11.862 },
+    giga = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 76, 140 }, introLen = 2, teleport = { -1, 20 }, end1 = 140, end2 = 142, end3 = 144, end4 = 146 },
+    gigar = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 84 - 15.565, 172 - 15.565 }, teleport = { 0, 18 - 15.565 } },
+}
+
+BgmPlaying = false ---@type ZC.bgmName | false
+BgmLooping = false
+BgmNeedSkip = false
+
+---@param name ZC.bgmName
+---@param force? boolean speedrun or music player
+function PlayBGM(name, force)
+    if GAME.gigaMusic and not force then return end
+
+    print(GAME.playing)
+    if GAME.playing and (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev)) then name = name .. 'r' end
+    if name:sub(1, 2) == 'f0' then
+        BgmPlaying = 'f0'
+    elseif name:sub(1, 2) == 'f1' and name:sub(1, 3) ~= 'f10' then
+        BgmPlaying = 'f1'
+    else
+        BgmPlaying = name
+    end
+
+    BgmLooping = BgmData[BgmPlaying].loop
+    BgmNeedSkip = BgmData[BgmPlaying].teleport
+
+    if BgmPlaying == 'f0' then
+        BgmLooping = false
+        BGM.play(BgmSet.f0)
+        RefreshBGM(name)
+    elseif BgmPlaying == 'f1' then
+        BGM.play(BgmSet.f1, force and '' or '-sdin')
+        local start = math.random(3, 5) * BgmData.f1.introLen
+        BgmNeedSkip[1] = start + BgmData.f1.introLen
+        BGM.set('all', 'seek', start, start)
+        RefreshBGM(name)
+    elseif name == 'giga' then
+        BGM.play('giga', '-sdin')
+        local start = (GAME.playing and GAME.floor or math.random(0, 9)) * BgmData.giga.introLen
+        BgmNeedSkip[1] = start + BgmData.giga.introLen
+        BGM.set('all', 'seek', start, start)
+        RefreshBGM()
+    else
+        if BGM.play(name, force and '' or '-sdin') then
+            RefreshBGM()
+            return true
+        end
+    end
+end
+
+function RefreshBGM(mode)
+    local pitch = M.GV > 0 and 2 ^ (M.GV / 12) or 1
+    if GAME.slowmo then pitch = pitch / 2 end
+    if GAME.nightcore then pitch = pitch * 2 end
+    BGM.set('all', 'pitch', pitch, .26)
+    if BgmPlaying == 'f0' then
+        local revMode = mode == 'f0r' or (URM or M.EX == 2) and GAME.anyRev
+        BGM.set('all', 'volume', revMode and 0 or 1, 2.6)
+        BGM.set('expert', 'volume', M.EX > 0 and 1 or 0, .26)
+        BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
+        BGM.set('piano2', 'pitch', 2 * pitch, 0)
+        BGM.set('piano2', 'volume', (M.DP > 0 or VALENTINE and not revMode) and .626 or 0, .26)
+        BGM.set('violin', 'volume', M.DP == 2 and 1 or 0, .26)
+        BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
+        BGM.set('rev', 'volume', revMode and (M.DP > 0 and .5 or .7) or 0, revMode and 1.6 or 2.6)
+    elseif BgmPlaying == 'f1' then
+        local revMode = mode == 'f1r' or M.EX == 2 or (URM and GAME.anyRev)
+        BGM.set('f1', 'volume', 1)
+        BGM.set('f1ex', 'volume', (mode == 'f1ex' or mode == 'f1r' or M.EX > 0) and 1 or 0, 0)
+        BGM.set('f1rev', 'volume', revMode and 1 or 0, 0)
+    end
+    BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
+end
+
+function Task_music()
+    BGM.stop(4.2)
+    TASK.yieldT(3.5)
+    PlayBGM('f0')
+end
+
 function Tone(pitch)
-    return pitch + M.GV + (GAME.omega and 1 or 0)
+    return pitch + M.GV + BgmData[BgmPlaying].toneFix
 end
 
 function ApplySettings()
     love.mouse.setVisible(STAT.syscursor)
     ZENITHA.globalEvent.drawCursor = STAT.syscursor and NULL or starCursor
-    SFX.setVol(STAT.sfx / 100 * .6)
+    SFX.setVol(STAT.sfx / 100)
     BGM.setVol(STAT.bgm / 100)
 end
 
@@ -1107,18 +1230,19 @@ DiscordState = {}
 function Daemon_Slow()
     TASK.yieldT(1)
     local lib = BGM._srcLib
-    local set = BgmSets.all
     local length = BGM.getDuration()
     while true do
-        local t0 = lib[set[1]].source:tell()
-        for i = #set, 2, -1 do
-            local obj = lib[set[i]]
-            local T = t0
-            if set[i] == 'piano2' then T = T * 2 % length end
-            if set[i] == 'violin2' then T = (T - 8 * 60 / 184) % length end
-            if math.abs(obj.source:tell() - T) > 0.026 then
-                -- print('Desync', set[i])
-                obj.source:seek(math.max(T, 0))
+        if BgmPlaying == 'f0' then
+            local t0 = lib[BgmSet.f0[1]].source:tell()
+            for i = #BgmSet.f0, 2, -1 do
+                local obj = lib[BgmSet.f0[i]]
+                local T = t0
+                if BgmSet.f0[i] == 'piano2' then T = T * 2 % length end
+                if BgmSet.f0[i] == 'violin2' then T = (T - 8 * 60 / BgmData.f0.bpm) % length end
+                if math.abs(obj.source:tell() - T) > 0.026 then
+                    -- print('Desync', set[i])
+                    obj.source:seek(math.max(T, 0))
+                end
             end
         end
         if DiscordState.needUpdate and not TASK.getLock('RPC_update') then
@@ -1140,46 +1264,48 @@ function Daemon_Fast()
     local msIsDown = love.mouse.isDown
     local expApproach = MATH.expApproach
 
-    local bar = 2 * 60 / 184 * 4
-    local t1, step1 = -.1, 2 * 60 / 184
-    local t2, step2 = 0, 2 * 60 / 184 / 4
-    local exLastVol = 0
+    local t1 = -.1
     local t = 0
     while true do
-        local T = BGM.tell()
-        ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
-        ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
-        ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
+        if BgmPlaying then
+            local bar = 2 * 60 / BgmData[BgmPlaying].bpm * 4
+            local step1 = 2 * 60 / BgmData[BgmPlaying].bpm
+            local T = BGM.tell()
+            ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
+            ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
+            ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
 
-        if GigaSpeed.alpha > 0 then
-            GigaSpeed.r, GigaSpeed.g, GigaSpeed.b = hsv(T / bar % 1, .626, 1)
-            GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
-        end
-
-        if T < t1 then t1 = -.1 end
-        if T > t1 + step1 then
-            t1 = t1 + step1
-            if M.MS == 0 then
-                for i = 1, 9 do Cards[i].visY = 0 end
-            elseif URM and M.MS == 2 then
-                for i = 1, 9 do Cards[i].visY = math.random(-42, 42) end
-            else
-                for i = 1, 9 do Cards[i].visY = M.MS * math.random(-4, 4) end
+            -- Giga anim
+            if GigaSpeed.alpha > 0 then
+                GigaSpeed.r, GigaSpeed.g, GigaSpeed.b = hsv(T / bar % 1, .626, 1)
+                GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
             end
-            GAME.refreshLayout()
-        end
 
-        if T < t2 then t2 = 0 end
-        if T > t2 + step2 then
-            t2 = t2 + step2
-            if M.EX > 0 then
-                if not SCN.swapping then
-                    local r = math.random()
-                    local f = GAME.floor
-                    r = 1 + (r - 1) / (f * r + 1)
-                    r = MATH.clamp(r, exLastVol - (26 - f) * .02, exLastVol + (26 - f) * .02)
-                    BGM.set('expert', 'volume', r, r > exLastVol and .0626 or .26)
-                    exLastVol = r
+            -- MS shaking
+            if T < t1 then t1 = -.1 end
+            if T > t1 + step1 then
+                t1 = t1 + step1
+                if M.MS == 0 then
+                    for i = 1, 9 do Cards[i].visY = 0 end
+                elseif URM and M.MS == 2 then
+                    for i = 1, 9 do Cards[i].visY = math.random(-42, 42) end
+                else
+                    for i = 1, 9 do Cards[i].visY = M.MS * math.random(-4, 4) end
+                end
+                GAME.refreshLayout()
+            end
+
+            -- Time Control
+            local data = BgmData[BgmPlaying]
+            if BgmLooping then
+                if BGM.tell() > BgmLooping[2] then
+                    BGM.set('all', 'seek', BgmLooping[1])
+                end
+            end
+            if BgmNeedSkip then
+                if BGM.tell() > data.teleport[1] then
+                    BGM.set('all', 'seek', data.teleport[2])
+                    BgmNeedSkip = false
                 end
             end
         end
@@ -1192,13 +1318,6 @@ function Daemon_Fast()
 
         for k, v in next, uVLpool do
             uVLpool[k] = max(v - dt, 0)
-        end
-
-        if not GAME.playing then
-            if TASK.getLock('expert_lock') and FloatOnCard ~= 1 then
-                FloatOnCard = false
-                TASK.unlock('expert_lock')
-            end
         end
 
         if GAME.revDeckSkin and SYSTEM ~= 'Web' then

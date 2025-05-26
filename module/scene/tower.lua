@@ -740,16 +740,16 @@ function scene.draw()
         gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 204)
         gc_mDraw(TEXTS.zpChange, 220, 95, 0, .626)
-        gc_draw(TEXTS.endResult, -601, 80, 0, .626)
-        gc_draw(TEXTS.floorTime, -601, 236 - GAME.uiHide * 150, 0, .42)
-        gc_draw(TEXTS.rankTime, -511, 236 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.endResult, -617, 80, 0, .626)
+        gc_draw(TEXTS.floorTime, -617, 236 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.rankTime, -527, 236 - GAME.uiHide * 150, 0, .42)
         gc_setColor(COLOR.L)
         gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 201)
-        gc_draw(TEXTS.endResult, -600, 78, 0, .626)
+        gc_draw(TEXTS.endResult, -616, 78, 0, .626)
         gc_setColor(COLOR.DL)
-        gc_draw(TEXTS.floorTime, -600, 234 - GAME.uiHide * 150, 0, .42)
-        gc_draw(TEXTS.rankTime, -510, 234 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.floorTime, -616, 234 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.rankTime, -526, 234 - GAME.uiHide * 150, 0, .42)
         gc_setColor(COLOR.dL)
         gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
     end
@@ -809,8 +809,9 @@ function scene.overDraw()
     if GigaSpeed.textTimer then
         gc_setBlendMode('add', 'alphamultiply')
         gc_setColor(.26, .26, .26)
+        local obj = (M.EX == 2 or GAME.ultraRun) and TEXTS.gigaspeed or TEXTS.hyperspeed
         for p = -10, 10, 3 do
-            gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 7 * 1800, 395, 0, 1.6)
+            gc_mDraw(obj, 800 + (GigaSpeed.textTimer + p * .01) ^ 7 * 1800, 395, 0, 1.6)
         end
         gc_setBlendMode('alpha')
     end

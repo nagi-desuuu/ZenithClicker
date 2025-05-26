@@ -173,8 +173,9 @@ function scene.load()
         SFX.setVol(0)
         GAME.negFloor = 10
         GAME.finish('forfeit')
-        SFX.setVol(STAT.sfx / 100 * .6)
+        SFX.setVol(STAT.sfx / 100)
     end
+    PlayBGM('f10', true)
     STAT.bgm = math.max(STAT.bgm, math.min(STAT.sfx, 20))
     BGM.setVol(STAT.bgm / 100)
 end
@@ -182,8 +183,6 @@ end
 function scene.unload()
     GAME.bgH = GAME.height
     TEXTS.endHeight:set("Thanks for playing!")
-    BGM.set('violin2', 'volume', GAME.mod.DP == 2 and 1 or 0, .26)
-    BGM.set('piano2', 'volume', GAME.mod.DP > 0 and .626 or 0, .26)
     TASK.new(function()
         for i = 1, 100 do
             TASK.yieldT(.01)

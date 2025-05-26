@@ -74,6 +74,7 @@ local ins, rem = table.insert, table.remove
 ---@field chain number
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered false | number time when enter
+---@field gigaMusic boolean
 ---@field atkBuffer number
 ---@field atkBufferCap number
 ---@field shuffleMessiness number | false
@@ -432,55 +433,6 @@ function GAME.getComboName(list, mode)
     end
 end
 
----@param event 'start' | 'finish' | 'revSwitched' | 'ingame' | 'init'
-function GAME.updateBgm(event)
-    if event == 'start' then
-        BGM.set(BgmSets.assist, 'volume', 1)
-        BGM.set('bass', 'volume', .26)
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', M.DP > 0 and .5 or .7)
-        end
-    elseif event == 'finish' then
-        BGM.set(BgmSets.assist, 'volume', 0)
-        local l = TABLE.copy(BgmSets.assist)
-        for _ = 1, MATH.clamp(GAME.floor - 6, 2, 4) do
-            BGM.set(TABLE.popRandom(l), 'volume', 1)
-        end
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', M.DP > 0 and .5 or .7)
-            if M.DP == 2 then BGM.set('violin', 'volume', 1) end
-        end
-    elseif event == 'revSwitched' then
-        if GAME.anyRev then
-            BGM.set('rev', 'volume', M.DP > 0 and .5 or .7, 4.2)
-            BGM.set(BgmSets.assist, 'volume', 0, 4.2)
-            if M.DP == 2 then BGM.set('violin', 'volume', 1) end
-        else
-            BGM.set('rev', 'volume', 0, 2.6)
-            local l = TABLE.copy(BgmSets.assist)
-            for _ = 1, 2 do
-                BGM.set(TABLE.popRandom(l), 'volume', 1, 4.2)
-            end
-        end
-    elseif event == 'ingame' then
-        if GAME.floor < 10 then
-            BGM.set('staccato', 'volume', clampInterpolate(1, 1, 6, .26, GAME.floor))
-            BGM.set('bass', 'volume', clampInterpolate(1, .26, 9, 1, GAME.floor))
-        else
-            local f = GAME.fatigue
-            BGM.set('staccato', 'volume', f == 1 and 0 or 1)
-            BGM.set('bass', 'volume', min((f - 1) * .4, 1))
-        end
-    elseif event == 'init' then
-        BGM.play(BgmSets.all)
-        BGM.set('all', 'volume', 0, 0)
-        BGM.set('piano', 'volume', 1)
-        BGM.set('piano2', 'pitch', 2, 0)
-        BGM.set('piano2', 'volume', VALENTINE and .626 or 0, 4.2)
-        BGM.set(TABLE.getRandom(BgmSets.assist), 'volume', 1, 10)
-    end
-end
-
 function GAME.anim_setMenuHide(t)
     GAME.uiHide = t
     local w = SCN.scenes.tower.widgetList
@@ -517,7 +469,7 @@ end
 
 function GAME.task_fatigueWarn()
     for _ = 1, 3 do
-        for _ = 1, M.DP == 2 and 1 or 3 do SFX.play('warning', 1, 0, Tone(0)) end
+        for _ = 1, M.DP == 2 and 1 or 3 do SFX.play('warning', 1) end
         TASK.yieldT(1)
     end
 end
@@ -778,15 +730,15 @@ function GAME.takeDamage(dmg, reason, toAlly)
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
     if not GAME.achv_perfectionistH then
         GAME.achv_perfectionistH = GAME.roundHeight
-        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+        if GAME.totalQuest >= 26 then SFX.play('btb_break') end
     end
     if not GAME.achv_spotlessH then
         GAME.achv_spotlessH = GAME.roundHeight
-        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+        if GAME.totalQuest >= 26 then SFX.play('btb_break') end
     end
     if not GAME.achv_protectH and GAME.comboStr == 'rDP' and min(GAME.life, GAME.life2) < 10 then
         GAME.achv_protectH = GAME.roundHeight
-        if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+        if GAME.totalQuest >= 26 then SFX.play('btb_break') end
     end
 
     if GAME[k] <= .01 then -- Prevent float number precision error
@@ -856,13 +808,17 @@ function GAME.addXP(xp)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
+        if GAME.gigaspeed and not GAME.gigaMusic and GAME.rank >= GigaMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
+            GAME.gigaMusic = true
+            PlayBGM('giga', true)
+        end
     else
         GAME.xpLockTimer = oldLockTimer
     end
     if GAME.rankupLast and GAME.xp >= 2 * GAME.rank and not (URM and M.NH == 2) then GAME.xpLockLevel = GAME.xpLockLevelMax end
 end
 
-function GAME.setGigaspeedAnim(on, finish)
+function GAME.setGigaspeedAnim(on, mode)
     GAME.gigaspeed = on
     local s = GigaSpeed.alpha
     if on then
@@ -875,7 +831,9 @@ function GAME.setGigaspeedAnim(on, finish)
         if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
         if GAME.comboMP >= 15 then IssueAchv('abyss_weaver') end
     else
-        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(finish and 6.26 or 3.55)
+        GAME.gigaMusic = false
+        if mode == 'drop' then PlayBGM('f' .. max(GAME.floor, GAME.negFloor)) end
+        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(mode == 'f10' and 6.26 or 3.55)
             :setUnique('giga'):run()
     end
 end
@@ -971,7 +929,7 @@ function GAME.upFloor()
     if GAME.gigaspeed then
         SFX.play('zenith_split_cleared', 1, 0, Tone(-1))
     elseif GAME.floor > 1 then
-        SFX.play('zenith_levelup_g', 1, 0, Tone(0))
+        SFX.play('zenith_levelup_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
     end
 
     -- End game
@@ -984,7 +942,7 @@ function GAME.upFloor()
                 SaveStat()
             end
             GAME.gigaTime = GAME.time
-            GAME.setGigaspeedAnim(false, true)
+            GAME.setGigaspeedAnim(false, 'f10')
             local t = BEST.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
@@ -1012,8 +970,8 @@ function GAME.upFloor()
         SubmitAchv('zenith_speedrun_plus', roundTime)
         SubmitAchv('detail_oriented', GAME.totalFlip)
     end
-    GAME.updateBgm('ingame')
     GAME.refreshRPC()
+    PlayBGM('f' .. GAME.floor)
 end
 
 function GAME.nextFatigue()
@@ -1056,13 +1014,11 @@ function GAME.nextFatigue()
         end
     end
 
-    if GAME.floor >= 10 then GAME.updateBgm('ingame') end
     GAME.fatigue = GAME.fatigue + 1
 end
 
 function GAME.downFloor()
     GAME.negFloor = GAME.negFloor + 1
-
     GAME.floorTime = 0
     if GAME.negFloor > 1 then
         if M.MS == 1 then
@@ -1082,9 +1038,10 @@ function GAME.downFloor()
 
     -- Text & SFX
     GAME.showFloorText(-GAME.negFloor, NegFloors[GAME.negFloor].name, 6.2)
-    SFX.play('zenith_levelup_g', 1, 0, Tone(-5))
+    SFX.play('zenith_levelup_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
 
     GAME.refreshRPC()
+    PlayBGM('f' .. GAME.negFloor)
 end
 
 function GAME.nextNegEvent()
@@ -1152,7 +1109,7 @@ function GAME.refreshRPC()
         end
     else
         stateStr = "Enjoying music"
-        if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
+        -- if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
         if M.IN > 0 then
             stateStr = stateStr:gsub("j", "r"):gsub("s", "z"):gsub("tch", "dge")
@@ -1179,7 +1136,7 @@ function GAME.refreshModIcon()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     if #hand == 1 then
-        local quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig_ex[hand[1]]
+        local quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
         local k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.872 or #hand[1] == 3 and .7023 or .62
         local _, _, w = quad:getViewport()
         GAME.modIB:add(
@@ -1187,14 +1144,14 @@ function GAME.refreshModIcon()
             0, k, nil, w * .5, w * .5
         )
     elseif #hand == 2 then
-        local quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig_ex[hand[2]]
+        local quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig[hand[2]]
         local k = quad == TEXTURE.modQuad_ultra[hand[2]] and 0.7023 or #hand[1] == 3 and .626 or .5
         local _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 35, 0,
             0, k, nil, w * .5, w * .5
         )
-        quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig_ex[hand[1]]
+        quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
         k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.7023 or #hand[1] == 3 and .626 or .5
         _, _, w = quad:getViewport()
         GAME.modIB:add(
@@ -1225,16 +1182,16 @@ function GAME.refreshResultModIcon()
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
     if #hand == 1 then
         GAME.resIB:add(
-            TEXTURE.modQuad_res_ex[hand[1]], 0, 0,
+            TEXTURE.modQuad_res[hand[1]], 0, 0,
             0, #hand[1] == 3 and .626 or .5, nil, 183 * .5, 183 * .5
         )
     elseif #hand == 2 then
         GAME.resIB:add(
-            TEXTURE.modQuad_res_ex[hand[2]], 35, 0,
+            TEXTURE.modQuad_res[hand[2]], 35, 0,
             0, #hand[2] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
         )
         GAME.resIB:add(
-            TEXTURE.modQuad_res_ex[hand[1]], -35, 0,
+            TEXTURE.modQuad_res[hand[1]], -35, 0,
             0, #hand[1] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
         )
     else
@@ -1398,8 +1355,6 @@ function GAME.refreshRev()
             ShadeColor[2] = lerp(BaseShadeColor[2], 0, t)
             ShadeColor[3] = lerp(BaseShadeColor[3], 0, t)
         end):setUnique('revSwitched'):setDuration(.26):run()
-
-        GAME.updateBgm('revSwitched')
     end
 end
 
@@ -1508,12 +1463,12 @@ function GAME.commit(auto)
         if noRep then
             if not GAME.achv_honeymoonH then
                 GAME.achv_honeymoonH = GAME.roundHeight
-                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 10 then SFX.play('btb_break') end
             end
         else
             if not GAME.achv_breakupH then
                 GAME.achv_breakupH = GAME.roundHeight
-                if GAME.totalQuest >= 10 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 10 then SFX.play('btb_break') end
             end
         end
     end
@@ -1658,7 +1613,7 @@ function GAME.commit(auto)
 
             if not GAME.achv_perfectionistH then
                 GAME.achv_perfectionistH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
         else
             -- Perfect
@@ -1693,20 +1648,20 @@ function GAME.commit(auto)
                 elseif GAME.chain < 12 then
                     SFX.play('b2bcharge_2', .8)
                 elseif GAME.chain < 24 then
-                    SFX.play('b2bcharge_3', .8)
+                    SFX.play('b2bcharge_3', .7)
                 else
-                    SFX.play('b2bcharge_4', .8)
+                    SFX.play('b2bcharge_4', .626)
                 end
             end
 
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
             if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then
                 GAME.achv_arroganceH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
             if not GAME.achv_powerlessH and GAME.chain >= 4 then
                 GAME.achv_powerlessH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
         end
         if dblCorrect then
@@ -1816,7 +1771,7 @@ function GAME.commit(auto)
                 attack = attack / 2
             elseif not GAME.achv_carriedH then
                 GAME.achv_carriedH = GAME.roundHeight
-                if GAME.totalQuest >= 26 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
         end
 
@@ -1861,7 +1816,7 @@ function GAME.commit(auto)
             if #combo >= 4 then
                 local pwr = #combo * 2 - 7
                 if TABLE.find(combo, 'DH') then pwr = pwr + 1 end
-                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 5), 1, 0, Tone(0))
+                SFX.play('garbagewindup_' .. MATH.clamp(pwr, 1, 5), 1, 0)
             end
             GAME.questReady()
             GAME.totalQuest = GAME.totalQuest + 1
@@ -1876,7 +1831,7 @@ function GAME.commit(auto)
 
         if M.DP > 0 and (correct == 2 or dblCorrect) then
             if GAME.swapControl() then
-                SFX.play('party_ready', 1, 0, Tone(0))
+                SFX.play('party_ready', 1)
             end
         end
 
@@ -1949,6 +1904,7 @@ function GAME.start()
         return
     end
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
+    TASK.removeTask_code(Task_music)
 
     GAME.omega = false
     GAME.negFloor = 1
@@ -2026,6 +1982,7 @@ function GAME.start()
     GAME.chain = 0
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
+    GAME.gigaMusic = false
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
     GAME.shuffleMessiness = false
@@ -2085,7 +2042,6 @@ function GAME.start()
     TASK.new(task_startSpin)
 
     TWEEN.new(GAME.anim_setMenuHide):setOnFinish(GAME.anim_setMenuHide_finish):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
-    GAME.updateBgm('start')
 
     GAME.achv_perfectionistH = nil
     GAME.achv_demoteH = nil
@@ -2146,6 +2102,7 @@ function GAME.finish(reason)
     GAME.playing = false
     if M.DH == 2 then GAME.finishTime = love.timer.getTime() end
     GAME.life, GAME.life2 = 0, 0
+    GAME.gigaMusic = false
     GAME.currentTask = false
 
     local unlockDuo
@@ -2271,13 +2228,26 @@ function GAME.finish(reason)
         TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
         local endFloorStr
         if GAME.height >= 0 then
-            endFloorStr = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
+            if GAME.floor >= 10 and GAME.omega then
+                endFloorStr = "FΩ: " .. Floors[11].name
+            else
+                endFloorStr = ("F$1: $2"):repD(GAME.floor, Floors[GAME.floor].name)
+            end
         else
             endFloorStr = ("B$1: $2"):repD((GAME.negFloor - 1) % 10 + 1, NegFloors[GAME.negFloor].name)
         end
         if GAME.gigaspeedEntered then
-            if GAME.gigaTime then endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime) end
-            local l = endFloorStr:atomize()
+            if GAME.gigaTime then
+                if endFloorStr:find("F10") then
+                    endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime)
+                else
+                    endFloorStr = endFloorStr .. "    F10 in " .. STRING.time_simp(GAME.gigaTime)
+                end
+            end
+            local l = {}
+            for _, codepoint in STRING.u8codes(endFloorStr) do
+                ins(l, STRING.u8char(codepoint))
+            end
             local len = #l
             for i = len, 1, -1 do ins(l, i, { COLOR.HSV(lerp(.026, .626, i / len), GAME.gigaTime and .6 or .2, 1) }) end
             TEXTS.endFloor:set(l)
@@ -2461,7 +2431,7 @@ function GAME.finish(reason)
     end
     ReleaseAchvBuffer()
 
-    GAME.setGigaspeedAnim(false)
+    GAME.setGigaspeedAnim(false, 'fin')
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
     GAME.refreshCurrentCombo()
@@ -2491,11 +2461,12 @@ function GAME.finish(reason)
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
     GAME.refreshRPC()
-    GAME.updateBgm('finish')
     if reason ~= 'forfeit' then
         TASK.lock('cannotStart', 1)
         TASK.lock('cannotFlip', .626)
     end
+    TASK.removeTask_code(Task_music)
+    TASK.new(Task_music)
     collectgarbage()
 end
 
@@ -2619,7 +2590,7 @@ function GAME.update(dt)
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
                     if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
-                        GAME.setGigaspeedAnim(false)
+                        GAME.setGigaspeedAnim(false, 'drop')
                         SFX.play('zenith_speedrun_end')
                         SFX.play('zenith_speedrun_end')
                         if MATH.between(GAME.height, Floors[9].top - 50, Floors[9].top) then IssueAchv('cut_off') end
@@ -2628,7 +2599,7 @@ function GAME.update(dt)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
                     if not GAME.achv_demoteH then
                         GAME.achv_demoteH = GAME.roundHeight
-                        if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break', 1, 0, Tone(0)) end
+                        if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break') end
                     end
                 end
             end
@@ -2652,11 +2623,12 @@ function GAME.update(dt)
 
         if GAME.floor >= 10 then
             -- Omega floor
-            -- if not GAME.omega and GAME.height >= 6200 then
-            --     GAME.omega = true
-            --     GAME.showFloorText("Ω", "The Frontier", 6.2)
-            --     SFX.play('zenith_levelup_g', 1, 0, Tone(0))
-            -- end
+            if not GAME.omega and GAME.height >= 6200 then
+                GAME.omega = true
+                GAME.showFloorText("Ω", Floors[11].name, 6.2)
+                SFX.play('zenith_levelup_a', 1, 0, Tone(1))
+                PlayBGM('fomg')
+            end
 
             -- KM line text
             if TASK.lock('kmTimer', 1) then

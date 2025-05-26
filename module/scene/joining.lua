@@ -20,7 +20,6 @@ function scene.update(dt)
             BGM.load(FILE.load('module/bgm_data.lua', '-luaon'))
             SFX.load('assets/sfx.ogg', FILE.load('module/sfx_data.lua', '-luaon'))
             SFX.load('garbagewindup_5', 'assets/windup_5.ogg')
-            GAME.updateBgm('init')
             TASK.new(Daemon_Slow)
             TASK.new(Daemon_Fast)
             ---@diagnostic disable-next-line
@@ -34,6 +33,7 @@ function scene.update(dt)
     elseif t2 > 0 then
         t2 = t2 - dt
         if t2 <= 0 then
+            PlayBGM('f0')
             SCN.swapTo('tower')
         end
     end

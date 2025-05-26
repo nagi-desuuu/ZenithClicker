@@ -11,10 +11,45 @@ local clr = {
 }
 local colorRev = false
 local bindBuffer
+local musicPlayer
+local playingBgmTitle = 'kagari cute'
+local playingBgmLength = 2202.8
+local playingBgmLengthStr = '22:02.8'
+local songList = {
+    f0 = "Dr Ocelot - Watchful Eye",
+    f1 = "Dr Ocelot - Divine Registration",
+    f2 = "Dr Ocelot - Zenith Hotel",
+    f3 = "Dr Ocelot - Empty Prayers",
+    f4 = "Dr Ocelot - Crowd Control",
+    f5 = "Dr Ocelot - Phantom Memories",
+    f6 = "Dr Ocelot - Echo",
+    f7 = "Dr Ocelot - Cryptic Chemistry",
+    f8 = "Dr Ocelot - Chrono Flux",
+    f9 = "Dr Ocelot - Broken Record",
+    f10 = "Dr Ocelot - Divine Confirmation",
+    giga = "Dr Ocelot - Schnellfeuer BULLET",
+    f1ex = "Dr Ocelot - Infernal Registration",
+
+    f0r = "Dr Ocelot - Awaiting Judgement",
+    f1r = "Dr Ocelot - Desecrated Ruins",
+    f2r = "Dr Ocelot - The Age of Vanity",
+    f3r = "Dr Ocelot - A Rigged Game",
+    f4r = "Dr Ocelot - Spectacles of Violence",
+    f5r = "Dr Ocelot - The Past Repeats",
+    f6r = "Dr Ocelot - Damning Evidence",
+    f7r = "Dr Ocelot - Cryptic Heresy",
+    f8r = "Dr Ocelot - Futile Ambition",
+    f9r = "Dr Ocelot - Mere Sacrifices",
+    f10r = "Dr Ocelot - False God",
+    gigar = "Dr Ocelot - Kugelhagel OVERDRIVE",
+
+    fomg = "Ronezkj15 - Floor Omega",
+}
 
 function scene.load()
     MSG.clear()
     bindBuffer = nil
+    musicPlayer = false
     SetMouseVisible(true)
     if GAME.anyRev ~= colorRev then
         colorRev = GAME.anyRev
@@ -95,6 +130,15 @@ function scene.keyDown(key, isRep)
                 SFX.play('irs')
             end
         end
+    elseif musicPlayer then
+        if key == 'left' then
+            BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
+        elseif key == 'right' then
+            BGM.set('all', 'seek', math.min(BGM.tell() + 5, BGM.getDuration()))
+        elseif key == 'space' then
+            BgmLooping, BgmNeedSkip = false, false
+        end
+        return true
     end
     ZENITHA.setCursorVis(true)
     return true
@@ -131,9 +175,17 @@ end
 function scene.draw()
     DrawBG(STAT.bgBrightness)
 
+    local t = love.timer.getTime()
+
     -- Panel
     gc_replaceTransform(SCR.xOy)
     gc.translate(800 - w / 2, 510 - h / 2)
+    if musicPlayer then
+        local beat = 60 / BgmData[BgmPlaying].bpm
+        local dy = MATH.clamp(6 * math.sin(t / beat * 3.1416), -2.6, 2.6)
+        gc.translate(0, dy)
+        SCN.curScroll = -dy
+    end
     gc_setColor(clr.D)
     gc_rectangle('fill', 0, 0, w, h)
     gc_setColor(0, 0, 0, .26)
@@ -154,6 +206,47 @@ function scene.draw()
         FONT.set(30)
         gc_print("Press key for...", 610, 680, 0, .872)
         gc_print(bindHint[#bindBuffer + 1], 610, 710, 0, .872)
+    end
+
+    -- Music player info
+    if musicPlayer then
+        local sx, len = 260, 570
+
+        FONT.set(30)
+        gc_setColor(clr.T)
+        gc_print(STRING.time_simp(BGM.tell()), sx, 249, 0, .626)
+        gc_print(playingBgmLengthStr, sx + len - 45, 249, 0, .626)
+
+        local data = BgmData[BgmPlaying]
+        if BgmLooping then
+            if data.loop[1] == 0 then
+                gc_print('D.C.', sx + len * data.loop[2] / playingBgmLength, 235, 0, .3)
+            else
+                gc_print('S', sx + len * data.loop[1] / playingBgmLength, 235, 0, .3)
+                gc_print('D.S.', sx + len * data.loop[2] / playingBgmLength, 235, 0, .3)
+            end
+        end
+
+        gc_setColor(clr.L)
+        gc_rectangle('fill', sx, 246, len, 4)
+        gc_setColor(clr.LT)
+        gc_rectangle('fill', sx, 246, len * BGM.tell() / playingBgmLength, 4)
+
+        if BgmNeedSkip then
+            local alpha = .26 + .62 * (-2.6 * t % 1)
+            gc_setColor(COLOR.C)
+            gc_setAlpha(alpha)
+            gc_mRect('fill', sx + len * BgmNeedSkip[1] / playingBgmLength, 248, 2, 9)
+            gc_setColor(COLOR.O)
+            gc_setAlpha(alpha)
+            gc_mRect('fill', sx + len * BgmNeedSkip[2] / playingBgmLength, 248, 2, 9)
+        end
+
+        gc_setColor(clr.LT)
+        gc_setAlpha(.626 + .26 * math.sin(t))
+        gc_mStr(playingBgmTitle, sx + len / 2, 200)
+        gc_setAlpha(.26)
+        gc_printf(data.meta, sx + len / 2, 256, len, 'center', 0, .42, .42, len / 2)
     end
 
     -- Top bar & title
@@ -193,6 +286,39 @@ scene.widgetList = {
         color = clr.T,
         fontSize = 50,
         x = baseX + 30, y = baseY + 50,
+    },
+    WIDGET.new {
+        name = 'mp_prev5s', type = 'button',
+        x = baseX + 230, y = baseY + 115, w = 380, h = 50,
+        color = clr.L,
+        fontSize = 30, textColor = clr.LT, text = "BACK  5S",
+        sound_hover = 'menutap',
+        onClick = function()
+            BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
+        end,
+        visibleFunc = FALSE,
+    },
+    WIDGET.new {
+        name = 'mp_next5s', type = 'button',
+        x = baseX + 640, y = baseY + 115, w = 380, h = 50,
+        color = clr.L,
+        fontSize = 30, textColor = clr.LT, text = "FORWARD  5S",
+        sound_hover = 'menutap',
+        onClick = function()
+            BGM.set('all', 'seek', math.min(BGM.tell() + 5, BGM.getDuration()))
+        end,
+        visibleFunc = FALSE,
+    },
+    WIDGET.new {
+        name = 'mp_noLoop', type = 'button',
+        x = baseX + 230, y = baseY + 185, w = 380, h = 50,
+        color = clr.L,
+        fontSize = 30, textColor = clr.LT, text = "NO REPEAT MARKS",
+        sound_hover = 'menutap',
+        onClick = function()
+            BgmLooping, BgmNeedSkip = false, false
+        end,
+        visibleFunc = FALSE,
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
@@ -239,6 +365,7 @@ scene.widgetList = {
             until true
             SFX.play('staffwarning')
         end,
+        visibleFunc = TRUE,
     },
     WIDGET.new {
         name = 'changeAboutme', type = 'button',
@@ -284,6 +411,7 @@ scene.widgetList = {
             until true
             SFX.play('staffwarning')
         end,
+        visibleFunc = TRUE,
     },
     WIDGET.new {
         name = 'export', type = 'button',
@@ -304,6 +432,7 @@ scene.widgetList = {
             MSG('dark', "Progress exported!")
             SFX.play('social_notify_minor')
         end,
+        visibleFunc = TRUE,
     },
     WIDGET.new {
         name = 'import', type = 'button',
@@ -315,30 +444,45 @@ scene.widgetList = {
         onClick = function()
             -- MSG.clear()
             local data = CLIPBOARD.get()
+            data = data:trim()
             if #data == 0 then
                 MSG('dark', "No data in clipboard")
                 return
             end
-            if data:trim() == 'cmd' then
+            if data == 'cmd' then
                 SFX.play('cutin_superlobby', 1, 0, Tone(-2))
                 SCN.go('_console')
                 return
-            elseif data:trim() == 'fps' then
+            elseif data == 'fps' then
                 SFX.play('map_change', .626, 0, Tone(-3.5))
                 ZENITHA.setShowFPS(true)
                 return
-            elseif data:trim() == 'tapper' then
+            elseif data == 'tapper' then
                 SFX.play('social_invite')
                 TEXTS.version:set(SYSTEM .. " T" .. (require 'version'.verStr))
                 ForceOldHitbox = true
                 return
-            elseif data:trim() == 'true_ending' then
-                BGM.set('all', 'volume', 1)
+            elseif data == 'true_ending' then
                 SFX.play('warp')
                 SCN.go('ending', 'warp')
                 return
+            elseif songList[data] then
+                TASK.removeTask_code(Task_music)
+                PlayBGM(data, true)
+                playingBgmTitle = songList[data]
+                playingBgmLength = BGM.getDuration()
+                playingBgmLengthStr = STRING.time_simp(playingBgmLength)
+                if not musicPlayer then
+                    musicPlayer = true
+                    scene.widgetList.mp_prev5s:setVisible(true)
+                    scene.widgetList.mp_next5s:setVisible(true)
+                    scene.widgetList.mp_noLoop:setVisible(true)
+                    scene.widgetList.changeAboutme:setVisible(false)
+                    scene.widgetList.changeName:setVisible(false)
+                    scene.widgetList.export:setVisible(false)
+                end
+                return
             end
-            data = data:trim()
             if TASK.lock('import', 4.2) then
                 SFX.play('notify')
                 MSG('dark',

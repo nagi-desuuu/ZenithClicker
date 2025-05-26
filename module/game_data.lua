@@ -6,6 +6,7 @@
 ---------------------------------------------------------------------
 
 GigaSpeedReq = { [0] = 7, 8, 8, 9, 9, 10, 1e99, 1e99, 1e99, 1e99, 1e99 }
+GigaMusicReq = { [0] = 7, 11, 11, 12, 12, 13, 13, 1e99, 1e99, 1e99 }
 
 GravityTimer = {
     { 9.0, 8.0, 7.5, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0 },
@@ -505,6 +506,7 @@ Floors = {
     { top = 1350, event = { 'dmgDelay', -1, 'dmgCycle', -.5 },                 name = "The Core" },
     { top = 1650, event = { 'dmgDelay', -.5, 'dmgWrong', 1 },                  name = "Corruption",          MSshuffle = 4 },
     { top = 1e99, event = { 'dmgDelay', -.5, 'dmgCycle', -.5, 'dmgTime', 1 },  name = "Platform of the Gods" },
+    { top = 1e99, name = "Stellar Nebula Frontier" }, -- Only name is used
     -- Initial: Delay=15. Cycle=5, Wrong=1
     -- Total: Delay-10, Cycle-3, Wrong+4
 }
@@ -655,7 +657,7 @@ NegEvents = {
             GAME.attackMul = GAME.attackMul - .1
             GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.IN = 0
-            BGM.set('all', 'highgain', 1)
+            RefreshBGM()
             for _, C in ipairs(Cards) do C:flip() end
             GAME.refreshModIcon()
             GAME.refreshRPC()
@@ -687,9 +689,7 @@ NegEvents = {
             GAME.mod.GV = 0
             GAME.refreshModIcon()
             GAME.refreshRPC()
-            local v = GAME.mod.GV > 0 and 2 ^ (GAME.mod.GV / 12) or 1
-            BGM.set('all', 'pitch', v, .26)
-            BGM.set('piano2', 'pitch', 2 * v, .26)
+            RefreshBGM()
         end,
     },
     { h = -200 }, { event = { 'invisUI', false } },
@@ -807,7 +807,6 @@ NegEvents = {
         size = 2.6,
         duration = 16,
         event = function()
-            BGM.set('all', 'volume', 1, 2.6)
             GAME.time = math.max(GAME.time, 419)
         end
     },
