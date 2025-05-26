@@ -202,7 +202,7 @@ Achievements = {
         id = 'the_spike_of_all_time',
         name = "The Spike of All Time",
         desc = [[Largest spike sent (excluding Surge)]],
-        quote = [[Flashy techniques are a staple amongst glory-seeking competitors...]],
+        quote = [[Flashy techniques are a staple amongst the glory-seeking competitive climbers...]],
         scoreSimp = function(spike) return floor(spike) .. " Spike" end,
         rank = numberRank(0, 12, 20, 26, 42, 62, 100),
     },
@@ -1178,7 +1178,7 @@ Achievements = {
     { -- cut_off
         ex = true,
         id = 'cut_off',
-        name = "Cut-Off",
+        name = "Cut Off",
         desc = [[Lose GIGASPEED above 1600m on F9]],
         quote = [[Tripped right at the finish line!]],
         type = 'issued',
