@@ -189,6 +189,7 @@ function scene.unload()
             BGM.setVol(STAT.bgm / 100 * i / 100)
         end
     end)
+    PlayBGM('f0')
 end
 
 function scene.keyDown() return true end
