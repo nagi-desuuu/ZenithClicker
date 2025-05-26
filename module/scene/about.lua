@@ -2,7 +2,7 @@
 local scene = {}
 
 local scroll, scroll1 = 0, 0
-local maxScroll = 500
+local maxScroll = 400
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
@@ -66,33 +66,33 @@ addText({ clr.z, "MRZ" }, 0, 60, .5)
 addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 100, .26)
 addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 120, .2)
 
-addText({ clr.asrial, "DJ  ASRIEL" }, -320, 160, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -320, 200, .26)
-addText({ COLOR.LD, "Background Reconstruction & Game Icon" }, -320, 220, .2)
+addText({ clr.asrial, "DJ  ASRIEL" }, -160, 160, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -160, 200, .26)
+addText({ COLOR.LD, "Background Reconstruction & Game Icon" }, -160, 220, .2)
 
-addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 160, .5)
-addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 200, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, 0, 220, .2)
+addText({ clr.ccyt, "CREEPERCRAFTYT" }, 160, 160, .5)
+addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 160, 200, .26)
+addText({ COLOR.LD, "Mod Icons Remake" }, 160, 220, .2)
 
-addText({ clr.ccyt, "CREEPERCRAFTYT" }, 320, 160, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 320, 200, .26)
-addText({ COLOR.LD, "Mod Icons Remake" }, 320, 220, .2)
+addText({ clr.flower, "FLOWERLING" }, -480, 160, .5)
+addText({ COLOR.LD, "TEXT REVISION" }, -480, 200, .26)
 
-addText({ clr.flower, "FLOWERLING" }, -160, 260, .5)
-addText({ COLOR.LD, "TEXT REVISION" }, -160, 300, .26)
+addText({ clr.matt, "MATTMAYUGA" }, 480, 160, .5)
+addText({ COLOR.LD, "TEXT REVISION" }, 480, 200, .26)
 
-addText({ clr.matt, "MATTMAYUGA" }, 160, 260, .5)
-addText({ COLOR.LD, "TEXT REVISION" }, 160, 300, .26)
+addText({ clr.osk, "OSK" }, -320, 260, .5)
+addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -320, 300, .26)
+addText({ COLOR.LD, "of the Original Game: TETR.IO" }, -320, 320, .2)
 
-addText({ clr.osk, "OSK" }, -160, 360, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -160, 400, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, -160, 420, .2)
+addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 260, .5)
+addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 300, .26)
+addText({ COLOR.LD, "of both TETR.IO and Zenith Clicker" }, 0, 320, .2)
 
-addText({ clr.garbo, "GARBO" }, 160, 360, .5)
-addText({ COLOR.LD, "GAME & WORLD DESIGN…" }, 160, 400, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, 160, 420, .2)
+addText({ clr.garbo, "GARBO" }, 320, 260, .5)
+addText({ COLOR.LD, "GAME & WORLD DESIGN…" }, 320, 300, .26)
+addText({ COLOR.LD, "of the Original Game: TETR.IO" }, 320, 320, .2)
 
-addSection(810)
+addSection(710)
 
 addText({ COLOR.O, "ART BY" }, 0, 20, .3)
 
@@ -105,9 +105,11 @@ addText({ COLOR.LD, "FLOORS 9-10" }, 100 * 1.26, 100, .26)
 addText("RICMAN", 300 * 1.26, 62, .46)
 addText({ COLOR.LD, "CARD ART" }, 300 * 1.26, 100, .26)
 
-addSection(960)
+addSection(860)
 
 addText({
+    COLOR.O, "MUSICS BY ",
+    clr.ocelot, "DOKTOROCELOT      ",
     COLOR.O, "EXTRA MUSIC BY ",
     clr.rzkj, "RONEZKJ15",
 }, 0, 20, .32)
@@ -141,7 +143,7 @@ addText({
     COLOR.L, "GAME-ICONS.NET"
 }, 0, 140, .32)
 
-addSection(1150)
+addSection(1050)
 
 addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 20, .3)
 
