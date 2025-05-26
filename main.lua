@@ -813,12 +813,19 @@ BgmPlaying = false ---@type ZC.bgmName | false
 BgmLooping = false
 BgmNeedSkip = false
 
+function RevMusicMode()
+    return
+        URM and M.EX == 2 or                   -- uEX
+        GAME.anyRev and GAME.comboZP >= 2.6 or -- rev run with 2.6x ZP
+        GAME.anyUltra and GAME.comboZP >= 1.2  -- ultra run with 2x ZP
+end
+
 ---@param name ZC.bgmName
 ---@param force? boolean speedrun or music player
 function PlayBGM(name, force)
     if GAME.gigaMusic and not force then return end
 
-    if GAME.playing and (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev)) then name = name .. 'r' end
+    if GAME.playing and RevMusicMode() then name = name .. 'r' end
     if name:sub(1, 2) == 'f0' then
         BgmPlaying = 'f0'
     elseif name:sub(1, 2) == 'f1' and name:sub(1, 3) ~= 'f10' then
@@ -861,7 +868,7 @@ function RefreshBGM(mode)
     if GAME.nightcore then pitch = pitch * 2 end
     BGM.set('all', 'pitch', pitch, .26)
     if BgmPlaying == 'f0' then
-        local revMode = mode == 'f0r' or (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev))
+        local revMode = mode == 'f0r' or RevMusicMode()
         BGM.set('all', 'volume', revMode and 0 or 1, 2.6)
         BGM.set('expert', 'volume', M.EX > 0 and 1 or 0, .26)
         BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
@@ -871,7 +878,7 @@ function RefreshBGM(mode)
         BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
         BGM.set('rev', 'volume', revMode and (M.DP > 0 and .5 or .7) or 0, revMode and 1.6 or 2.6)
     elseif BgmPlaying == 'f1' then
-        local revMode = mode == 'f1r' or (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev))
+        local revMode = mode == 'f1r' or RevMusicMode()
         BGM.set('f1', 'volume', 1)
         BGM.set('f1ex', 'volume', (mode == 'f1ex' or mode == 'f1r' or M.EX > 0) and 1 or 0, 0)
         BGM.set('f1rev', 'volume', revMode and 1 or 0, 0)

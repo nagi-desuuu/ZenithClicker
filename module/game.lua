@@ -126,7 +126,7 @@ local GAME = {
     resIB = GC.newSpriteBatch(TEXTURE.modIcon),
     comboMP = 0,
     comboZP = 1,
-    ultraRun = false,
+    isUltraRun = false,
 
     completion = { -- 0=not mastered, 1=mastered, 2=rev mastered
         EX = 0,
@@ -1328,6 +1328,7 @@ function GAME.refreshRev()
     end
     if hasRev ~= GAME.anyRev then
         GAME.anyRev = hasRev
+        GAME.refreshUltra()
 
         local W
         W = SCN.scenes.tower.widgetList.stat
@@ -1358,6 +1359,10 @@ function GAME.refreshRev()
             ShadeColor[3] = lerp(BaseShadeColor[3], 0, t)
         end):setUnique('revSwitched'):setDuration(.26):run()
     end
+end
+
+function GAME.refreshUltra()
+    GAME.anyUltra = URM and GAME.anyRev
 end
 
 function GAME.refreshLifeState()
@@ -1912,8 +1917,8 @@ function GAME.start()
     GAME.negFloor = 1
     GAME.negEvent = 1
     GAME.timerMul = 1
-    GAME.ultraRun = GAME.anyRev and URM
-    GAME.attackMul = GAME.ultraRun and .6 or 1
+    GAME.isUltraRun = GAME.anyUltra
+    GAME.attackMul = GAME.isUltraRun and .6 or 1
     GAME.xpLockLevelMax = 5
     GAME.invincible = false
 

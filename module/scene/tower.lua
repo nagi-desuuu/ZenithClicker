@@ -735,7 +735,7 @@ function scene.draw()
         gc_replaceTransform(SCR.xOy_u)
         gc_translate(0, -224 * GAME.uiHide)
         gc_setColor(1, 1, 1)
-        gc_draw(GAME.resIB, 400, 150, 0, GAME.ultraRun and 1.26 or .9)
+        gc_draw(GAME.resIB, 400, 150, 0, GAME.isUltraRun and 1.26 or .9)
         gc_setColor(COLOR.D)
         gc_mDraw(TEXTS.endHeight, 0, 135, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 204)
@@ -1498,6 +1498,7 @@ scene.widgetList = {
             GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
             GAME.refreshLayout()
             GAME.refreshCurrentCombo()
+            GAME.refreshUltra()
             PlayBGM('f0')
 
             if PieceSFXID == 7 and not GC.isWireframe() then
