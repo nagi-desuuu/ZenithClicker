@@ -1128,10 +1128,10 @@ Achievements = {
         quote = [[Supercharged Perf%]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
-    { -- teraspeed
+    { -- petaspeed
         ex = true,
-        id = 'teraspeed',
-        name = "TeraSpeed",
+        id = 'petaspeed',
+        name = "Petaspeed",
         desc = [[Highest (climb speed) rank reached]],
         quote = [[Chasing for the ultimate speed, with all else cast aside.]],
         scoreSimp = function(rank) return "Rank " .. rank end,

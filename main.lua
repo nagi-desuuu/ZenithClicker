@@ -272,7 +272,7 @@ TEXTURE = {
             ultra_dash = aq(5, 6),
             perfect_speedrun = aq(5, 6),
             the_perfectionist = aq(5, 6),
-            teraspeed = aq(5, 6),
+            petaspeed = aq(5, 6),
             cruise_control = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
@@ -389,14 +389,15 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     chain2     = GC.newText(FONT.get(50, 'led')),
     b2b        = GC.newText(FONT.get(30), "B2B x"),
     spike      = GC.newText(FONT.get(50)),
-    hyperspeed = GC.newText(FONT.get(50), {
-        COLOR.R, "H", COLOR.F, "Y", COLOR.O, "P", COLOR.Y, "E", COLOR.K, "R",
-        COLOR.G, "S", COLOR.J, "P", COLOR.C, "E", COLOR.S, "E", COLOR.B, "D"
-    }),
     gigaspeed  = GC.newText(FONT.get(50), {
-        COLOR.R, "G", COLOR.O, "I", COLOR.Y, "G",
+        COLOR.dR, "G", COLOR.dO, "I", COLOR.dY, "G",
+        COLOR.dK, "A", COLOR.dG, "S", COLOR.dJ, "P",
+        COLOR.dC, "E", COLOR.dS, "E", COLOR.dB, "D"
+    }),
+    teraspeed  = GC.newText(FONT.get(50), {
+        COLOR.R, "T", COLOR.O, "E", COLOR.Y, "R",
         COLOR.K, "A", COLOR.G, "S", COLOR.J, "P",
-        COLOR.C, "E", COLOR.S, "E", COLOR.B, "D"
+        COLOR.C, "E", COLOR.S, "E", COLOR.B, "D",
     }),
     gigatime   = GC.newText(FONT.get(50)),
     floorTime  = GC.newText(FONT.get(30)),
@@ -803,7 +804,7 @@ BgmData = {
     f9r = { meta = '160 BPM  E Minor', bpm = 160, toneFix = -1, loop = { 36, 144 } },
     f10 = { meta = '100 BPM  C Major & A Minor', bpm = 100, toneFix = 2, loop = { 122.4, 232.8 } },
     f10r = { meta = '100 BPM  C Major & A Minor', bpm = 100, toneFix = 2, loop = { 122.4, 232.8 }, teleport = { 31.2, 98.4 } },
-    fomg = { meta = '120 BPM  C# Major & A# Minor', bpm = 120, toneFix = 3, loop = { 38.4 - 11.862, 144 - 11.862 }, end1 = 144 - 11.862, end2 = 153.6 - 11.862 },
+    fomg = { meta = '90 & 100 BPM  C# Major & A# Minor', bpm = 100, toneFix = 3, loop = { 38.4 - 11.862, 144 - 11.862 }, end1 = 144 - 11.862, end2 = 153.6 - 11.862 },
     giga = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 76, 140 }, introLen = 2, teleport = { -1, 20 }, end1 = 140, end2 = 142, end3 = 144, end4 = 146 },
     gigar = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 84 - 15.565, 172 - 15.565 }, teleport = { 0, 18 - 15.565 } },
 }
@@ -860,7 +861,7 @@ function RefreshBGM(mode)
     if GAME.nightcore then pitch = pitch * 2 end
     BGM.set('all', 'pitch', pitch, .26)
     if BgmPlaying == 'f0' then
-        local revMode = mode == 'f0r' or (URM or M.EX == 2) and GAME.anyRev
+        local revMode = mode == 'f0r' or (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev))
         BGM.set('all', 'volume', revMode and 0 or 1, 2.6)
         BGM.set('expert', 'volume', M.EX > 0 and 1 or 0, .26)
         BGM.set('piano', 'volume', M.NH == 0 and 1 or M.NH == 1 and .26 or 0)
@@ -870,7 +871,7 @@ function RefreshBGM(mode)
         BGM.set('violin2', 'volume', M.DP == 2 and 1 or 0, .26)
         BGM.set('rev', 'volume', revMode and (M.DP > 0 and .5 or .7) or 0, revMode and 1.6 or 2.6)
     elseif BgmPlaying == 'f1' then
-        local revMode = mode == 'f1r' or M.EX == 2 or (URM and GAME.anyRev)
+        local revMode = mode == 'f1r' or (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev))
         BGM.set('f1', 'volume', 1)
         BGM.set('f1ex', 'volume', (mode == 'f1ex' or mode == 'f1r' or M.EX > 0) and 1 or 0, 0)
         BGM.set('f1rev', 'volume', revMode and 1 or 0, 0)
@@ -1416,6 +1417,10 @@ function Initialize(save)
     if STAT.version == 174 then
         ACHV.overprotection, ACHV.overprotectiveness = ACHV.overprotection, nil
         STAT.version = 175
+    end
+    if STAT.version == 175 then
+        ACHV.petaspeed, ACHV.teraspeed = ACHV.teraspeed, nil
+        STAT.version = 176
     end
 
     -- Some Initialization

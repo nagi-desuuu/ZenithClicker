@@ -809,9 +809,14 @@ function scene.overDraw()
     if GigaSpeed.textTimer then
         gc_setBlendMode('add', 'alphamultiply')
         gc_setColor(.26, .26, .26)
-        local obj = (M.EX == 2 or GAME.ultraRun) and TEXTS.gigaspeed or TEXTS.hyperspeed
-        for p = -10, 10, 3 do
-            gc_mDraw(obj, 800 + (GigaSpeed.textTimer + p * .01) ^ 7 * 1800, 395, 0, 1.6)
+        if GAME.gigaMusic then
+            for p = -10, 10, 3 do
+                gc_mDraw(TEXTS.teraspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 5 * 2600, 355, 0, 2.6)
+            end
+        else
+            for p = -10, 10, 3 do
+                gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + p * .012) ^ 5 * 2600, 395, 0, 1.6)
+            end
         end
         gc_setBlendMode('alpha')
     end

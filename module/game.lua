@@ -810,6 +810,8 @@ function GAME.addXP(xp)
         end
         if GAME.gigaspeed and not GAME.gigaMusic and GAME.rank >= GigaMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.gigaMusic = true
+            TASK.removeTask_code(GAME.task_gigaspeed)
+            TASK.new(GAME.task_gigaspeed)
             PlayBGM('giga', true)
         end
     else
@@ -2342,7 +2344,7 @@ function GAME.finish(reason)
 
         SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)
-        SubmitAchv('teraspeed', GAME.peakRank)
+        SubmitAchv('petaspeed', GAME.peakRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
         for i = 1, #maxCSP do
             if maxCSP[i][2] >= 60 then
