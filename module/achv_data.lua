@@ -33,6 +33,9 @@ end
 local function heightNumber(score)
     return string.format("%.1fm", score)
 end
+local function issuedScore()
+    return "DONE!"
+end
 
 ---@class Achievement
 ---@field title? string
@@ -1468,8 +1471,12 @@ for i = 1, #Achievements do
         assert(achv.type == 'issued' or type(achv.rank) == 'function', "Invalid field 'rank' - " .. id)
 
         if achv.scoreSimp == nil then
-            achv.scoreSimp = heightFloor
-            achv.scoreFull = heightNumber
+            if achv.type == 'issued' then
+                achv.scoreSimp = issuedScore
+            else
+                achv.scoreSimp = heightFloor
+                achv.scoreFull = heightNumber
+            end
         end
         assert(type(achv.scoreSimp) == 'function', "Invalid field 'scoreSimp' - " .. id)
         assert(achv.scoreFull == nil or type(achv.scoreFull) == 'function', "Invalid field 'scoreFull' - " .. id)

@@ -66,8 +66,6 @@ local function refreshAchvList(canShuffle)
             local rank, score, progress, wreath
             if not ACHV[A.id] then
                 score = "---"
-            elseif not A.scoreSimp then
-                score = "DONE!"
             elseif not A.scoreFull then
                 score = { COLOR.LL, A.scoreSimp(ACHV[A.id]) }
             else
