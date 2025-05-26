@@ -817,7 +817,6 @@ BgmNeedSkip = false
 function PlayBGM(name, force)
     if GAME.gigaMusic and not force then return end
 
-    print(GAME.playing)
     if GAME.playing and (M.EX == 2 and URM or ((GAME.comboZP >= 2.6 or URM) and GAME.anyRev)) then name = name .. 'r' end
     if name:sub(1, 2) == 'f0' then
         BgmPlaying = 'f0'
