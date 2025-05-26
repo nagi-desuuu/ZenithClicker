@@ -467,7 +467,7 @@ scene.widgetList = {
                 SCN.go('ending', 'warp')
                 return
             elseif songList[data] then
-                TASK.removeTask_code(Task_music)
+                TASK.removeTask_code(Task_MusicEnd)
                 PlayBGM(data, true)
                 playingBgmTitle = songList[data]
                 playingBgmLength = BGM.getDuration()

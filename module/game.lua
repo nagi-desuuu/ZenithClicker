@@ -1904,7 +1904,7 @@ function GAME.start()
         return
     end
     if URM and M.VL == 2 and not UltraVlCheck('start') then return end
-    TASK.removeTask_code(Task_music)
+    TASK.removeTask_code(Task_MusicEnd)
 
     GAME.omega = false
     GAME.negFloor = 1
@@ -2465,8 +2465,8 @@ function GAME.finish(reason)
         TASK.lock('cannotStart', 1)
         TASK.lock('cannotFlip', .626)
     end
-    TASK.removeTask_code(Task_music)
-    TASK.new(Task_music)
+    TASK.removeTask_code(Task_MusicEnd)
+    TASK.new(Task_MusicEnd)
     collectgarbage()
 end
 

@@ -854,6 +854,7 @@ function PlayBGM(name, force)
 end
 
 function RefreshBGM(mode)
+    if not BGM.isPlaying() then return end
     local pitch = M.GV > 0 and 2 ^ (M.GV / 12) or 1
     if GAME.slowmo then pitch = pitch / 2 end
     if GAME.nightcore then pitch = pitch * 2 end
@@ -877,9 +878,14 @@ function RefreshBGM(mode)
     BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
 end
 
-function Task_music()
-    BGM.stop(4.2)
-    TASK.yieldT(3.5)
+function Task_MusicEnd()
+    if GAME.floor == 1 then
+        BGM.stop(.626)
+        TASK.yieldT(.26)
+    else
+        BGM.stop(4.2)
+        TASK.yieldT(3.5)
+    end
     PlayBGM('f0')
 end
 
