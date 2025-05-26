@@ -11,7 +11,7 @@ local clr = {
 }
 local colorRev = false
 local bindBuffer
-local musicPlayer
+MusicPlayer = false
 local playingBgmTitle = 'kagari cute'
 local playingBgmLength = 2202.8
 local playingBgmLengthStr = '22:02.8'
@@ -46,10 +46,18 @@ local songList = {
     fomg = "Ronezkj15 - Floor Omega",
 }
 
+local function refreshWidgets()
+    scene.widgetList.mp_prev5s:setVisible(true)
+    scene.widgetList.mp_next5s:setVisible(true)
+    scene.widgetList.mp_noLoop:setVisible(true)
+    scene.widgetList.changeAboutme:setVisible(false)
+    scene.widgetList.changeName:setVisible(false)
+    scene.widgetList.export:setVisible(false)
+end
+
 function scene.load()
     MSG.clear()
     bindBuffer = nil
-    musicPlayer = false
     SetMouseVisible(true)
     if GAME.anyRev ~= colorRev then
         colorRev = GAME.anyRev
@@ -62,6 +70,7 @@ function scene.load()
     TASK.unlock('export')
     TASK.unlock('import')
     TASK.unlock('rebind_control')
+    refreshWidgets()
 end
 
 -- function scene.unload()
@@ -130,7 +139,7 @@ function scene.keyDown(key, isRep)
                 SFX.play('irs')
             end
         end
-    elseif musicPlayer then
+    elseif MusicPlayer then
         if key == 'left' then
             BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
         elseif key == 'right' then
@@ -180,7 +189,7 @@ function scene.draw()
     -- Panel
     gc_replaceTransform(SCR.xOy)
     gc.translate(800 - w / 2, 510 - h / 2)
-    if musicPlayer then
+    if MusicPlayer then
         local beat = 60 / BgmData[BgmPlaying].bpm
         local dy = MATH.clamp(6 * math.sin(t / beat * 3.1416), -2.6, 2.6)
         gc.translate(0, dy)
@@ -209,7 +218,7 @@ function scene.draw()
     end
 
     -- Music player info
-    if musicPlayer then
+    if MusicPlayer then
         local sx, len = 260, 570
 
         FONT.set(30)
@@ -472,14 +481,9 @@ scene.widgetList = {
                 playingBgmTitle = songList[data]
                 playingBgmLength = BGM.getDuration()
                 playingBgmLengthStr = STRING.time_simp(playingBgmLength)
-                if not musicPlayer then
-                    musicPlayer = true
-                    scene.widgetList.mp_prev5s:setVisible(true)
-                    scene.widgetList.mp_next5s:setVisible(true)
-                    scene.widgetList.mp_noLoop:setVisible(true)
-                    scene.widgetList.changeAboutme:setVisible(false)
-                    scene.widgetList.changeName:setVisible(false)
-                    scene.widgetList.export:setVisible(false)
+                if not MusicPlayer then
+                    MusicPlayer = true
+                    refreshWidgets()
                 end
                 return
             end
