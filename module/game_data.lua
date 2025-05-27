@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------
 --                      SPOILER WARNING                            --
 -- This file contains secrets that may spoil your game experience. --
---  Be sure your finished the game, including Ultra Reversed Mods  --
+-- Be sure you've finished the game, including Ultra Reversed Mods --
 --                   Read at your own risk.                        --
 ---------------------------------------------------------------------
 
