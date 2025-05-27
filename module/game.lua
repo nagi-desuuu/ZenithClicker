@@ -1926,7 +1926,7 @@ function GAME.start()
     GAME.negEvent = 1
     GAME.timerMul = 1
     GAME.isUltraRun = GAME.anyUltra
-    GAME.attackMul = GAME.isUltraRun and .6 or 1
+    GAME.attackMul = GAME.isUltraRun and .626 or 1
     GAME.xpLockLevelMax = 5
     GAME.invincible = false
 
