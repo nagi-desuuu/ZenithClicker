@@ -47,12 +47,12 @@ local songList = {
 }
 
 local function refreshWidgets()
-    scene.widgetList.mp_prev5s:setVisible(true)
-    scene.widgetList.mp_next5s:setVisible(true)
-    scene.widgetList.mp_noLoop:setVisible(true)
-    scene.widgetList.changeAboutme:setVisible(false)
-    scene.widgetList.changeName:setVisible(false)
-    scene.widgetList.export:setVisible(false)
+    scene.widgetList.mp_prev5s:setVisible(MusicPlayer)
+    scene.widgetList.mp_next5s:setVisible(MusicPlayer)
+    scene.widgetList.mp_noLoop:setVisible(MusicPlayer)
+    scene.widgetList.changeAboutme:setVisible(not MusicPlayer)
+    scene.widgetList.changeName:setVisible(not MusicPlayer)
+    scene.widgetList.export:setVisible(not MusicPlayer)
 end
 
 local function refreshSongInfo()
