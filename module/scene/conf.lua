@@ -460,43 +460,51 @@ scene.widgetList = {
         sound_release = 'menuclick',
         onClick = function()
             -- MSG.clear()
-            local data = CLIPBOARD.get()
-            data = data:trim()
-            if #data == 0 then
-                MSG('dark', "No data in clipboard")
-                return
-            end
-            if data == 'cmd' then
-                SFX.play('cutin_superlobby', 1, 0, Tone(-2))
-                SCN.go('_console')
-                return
-            elseif data == 'fps' then
-                SFX.play('map_change', .626, 0, Tone(-3.5))
-                ZENITHA.setShowFPS(true)
-                return
-            elseif data == 'tapper' then
-                SFX.play('social_invite')
-                TEXTS.version:set(SYSTEM .. " T" .. (require 'version'.verStr))
-                ForceOldHitbox = true
-                return
-            elseif data == 'true_ending' then
-                SFX.play('warp')
-                SCN.go('ending', 'warp')
-                return
-            elseif data == 'mp' or data == 'music' then
-                if not BGM.isPlaying() or MusicPlayer then return end
-                MusicPlayer = true
-                refreshWidgets()
-                refreshSongInfo()
-                return
-            elseif songList[data] then
-                TASK.removeTask_code(Task_MusicEnd)
-                PlayBGM(data, true)
-                if not MusicPlayer then
+            local data = CLIPBOARD.get():filterASCII():trim()
+            if #data <= 26 then
+                if data == '' then
+                    MSG('dark', "No data in clipboard")
+                elseif data == 'cmd' then
+                    SFX.play('cutin_superlobby', 1, 0, Tone(-2))
+                    SCN.go('_console')
+                elseif data == 'fps' then
+                    SFX.play('map_change', .626, 0, Tone(-3.5))
+                    ZENITHA.setShowFPS(true)
+                elseif data == 'tapper' then
+                    SFX.play('social_invite')
+                    TEXTS.version:set(SYSTEM .. " T" .. (require 'version'.verStr))
+                    ForceOldHitbox = true
+                elseif data == 'true_ending' then
+                    SFX.play('warp')
+                    SCN.go('ending', 'warp')
+                elseif data == 'mp' or data == 'music' then
+                    if not BGM.isPlaying() or MusicPlayer then return end
                     MusicPlayer = true
                     refreshWidgets()
+                    refreshSongInfo()
+                elseif songList[data] then
+                    TASK.removeTask_code(Task_MusicEnd)
+                    PlayBGM(data, true)
+                    if not MusicPlayer then
+                        MusicPlayer = true
+                        refreshWidgets()
+                    end
+                    refreshSongInfo()
+                else
+                    local msg = "Invalid code '" .. data .. "' in clipboard."
+                    if MATH.roll(.26) then
+                        msg = msg .. "\n" .. TABLE.getRandom {
+                            "Try 'cmd'",
+                            "Try 'fps'",
+                            "Try 'tapper'",
+                            MATH.coin("Try 'mp'", "Try 'music'"),
+                            "Try 'f" .. STAT.maxFloor .. "'",
+                            STAT.clicker and "Try 'true_ending'" or nil,
+                        }
+                    end
+                    MSG('dark', msg)
+                    SFX.play('staffwarning')
                 end
-                refreshSongInfo()
                 return
             end
             if TASK.lock('import', 4.2) then
