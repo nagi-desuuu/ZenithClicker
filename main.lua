@@ -824,7 +824,7 @@ end
 ---@param name ZC.bgmName
 ---@param force? boolean speedrun or music player
 function PlayBGM(name, force)
-    if GAME.gigaMusic and not force then return end
+    if GAME.teramusic and not force then return end
 
     if GAME.playing and RevMusicMode() then name = name .. 'r' end
     if name == 'fomgr' then name = 'fomg' end

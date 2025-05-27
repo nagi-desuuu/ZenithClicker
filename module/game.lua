@@ -74,7 +74,7 @@ local ins, rem = table.insert, table.remove
 ---@field chain number
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered false | number time when enter
----@field gigaMusic boolean
+---@field teramusic boolean
 ---@field atkBuffer number
 ---@field atkBufferCap number
 ---@field shuffleMessiness number | false
@@ -808,8 +808,8 @@ function GAME.addXP(xp)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
-        if GAME.gigaspeed and not GAME.gigaMusic and GAME.rank >= GigaMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
-            GAME.gigaMusic = true
+        if GAME.gigaspeed and not GAME.teraspeedFloor and GAME.rank >= TeraMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
+            GAME.teramusic = true
             GAME.teraspeedFloor = GAME.floor
             TASK.removeTask_code(GAME.task_gigaspeed)
             TASK.new(GAME.task_gigaspeed)
@@ -821,7 +821,7 @@ function GAME.addXP(xp)
     if GAME.rankupLast and GAME.xp >= 2 * GAME.rank and not (URM and M.NH == 2) then GAME.xpLockLevel = GAME.xpLockLevelMax end
 end
 
-function GAME.setGigaspeedAnim(on, mode)
+function GAME.setGigaspeedAnim(on)
     GAME.gigaspeed = on
     local s = GigaSpeed.alpha
     if on then
@@ -835,10 +835,15 @@ function GAME.setGigaspeedAnim(on, mode)
         if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
         if GAME.comboMP >= 15 then IssueAchv('abyss_weaver') end
     else
-        GAME.gigaMusic = false
-        if mode == 'drop' then PlayBGM('f' .. max(GAME.floor, GAME.negFloor)) end
         TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(mode == 'f10' and 6.26 or 3.55)
             :setUnique('giga'):run()
+    end
+end
+
+function GAME.stopTeraspeed(mode)
+    GAME.teramusic = false
+    if mode == 'drop' then
+        PlayBGM('f' .. max(GAME.floor, GAME.negFloor), true)
     end
 end
 
@@ -892,17 +897,7 @@ function GAME.upFloor()
     -- Update section time
     if GAME.floor > 0 then
         ins(GAME.secTime, GAME.floorTime)
-        local secTimeStr = ""
-        for i = 1, #GAME.secTime do
-            secTimeStr = secTimeStr .. ("%s - %.3f″"):format(
-                (i > 1 and "\nF" or "F") .. i .. (
-                    i == GAME.teraspeedFloor and "t" or
-                    i == GAME.gigaspeedFloor and "g" or
-                    ""
-                ), GAME.secTime[i]
-            )
-        end
-        TEXTS.floorTime:set(secTimeStr)
+        GAME.refreshSectionTime()
     end
 
     GAME.floor = GAME.floor + 1
@@ -951,7 +946,8 @@ function GAME.upFloor()
                 SaveStat()
             end
             GAME.gigaTime = GAME.time
-            GAME.setGigaspeedAnim(false, 'f10')
+            GAME.setGigaspeedAnim(false)
+            GAME.stopTeraspeed('f10')
             local t = BEST.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
@@ -1323,6 +1319,20 @@ function GAME.refreshPBText()
             TEXTS.pb:set(("BEST: %.1fm  <F%d>"):format(height, f))
         end
     end
+end
+
+function GAME.refreshSectionTime()
+    local secTimeStr = ""
+    for i = 1, #GAME.secTime do
+        secTimeStr = secTimeStr .. ("%s - %.3f″"):format(
+            (i > 1 and "\nF" or "F") .. i .. (
+                i == GAME.teraspeedFloor and "t" or
+                i == GAME.gigaspeedFloor and "g" or
+                ""
+            ), GAME.secTime[i]
+        )
+    end
+    TEXTS.floorTime:set(secTimeStr)
 end
 
 function GAME.refreshRev()
@@ -1999,7 +2009,7 @@ function GAME.start()
     GAME.gigaspeedEntered = false
     GAME.gigaspeedFloor = false
     GAME.teraspeedFloor = false
-    GAME.gigaMusic = false
+    GAME.teramusic = false
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
     GAME.shuffleMessiness = false
@@ -2119,7 +2129,7 @@ function GAME.finish(reason)
     GAME.playing = false
     if M.DH == 2 then GAME.finishTime = love.timer.getTime() end
     GAME.life, GAME.life2 = 0, 0
-    GAME.gigaMusic = false
+    GAME.teramusic = false
     GAME.currentTask = false
 
     local unlockDuo
@@ -2296,9 +2306,9 @@ function GAME.finish(reason)
 
             table.sort(maxCSP, function(a, b) return a[1] < b[1] end)
             local bestPos, bestSum = 0, 0
-            for i = min(mainRank[1], 26 - 8), max(mainRank[1] - 8, 1), -1 do
+            for i = min(mainRank[1], 26 - 9), max(mainRank[1] - 9, 1), -1 do
                 local sum = 0
-                for j = i, i + 8 do
+                for j = i, i + 9 do
                     sum = sum + maxCSP[j][2]
                 end
                 if sum > bestSum then
@@ -2308,7 +2318,7 @@ function GAME.finish(reason)
             end
 
             local rankTimeText = {}
-            for i = bestPos + 8, bestPos, -1 do
+            for i = bestPos + 9, bestPos, -1 do
                 ins(rankTimeText, { 1, 1, 1, max(maxCSP[i][2] / mainRank[2], .42) })
                 ins(rankTimeText, ("Rank%d - %.1f″\n"):format(maxCSP[i][1], maxCSP[i][2]))
             end
@@ -2449,7 +2459,8 @@ function GAME.finish(reason)
     end
     ReleaseAchvBuffer()
 
-    GAME.setGigaspeedAnim(false, 'fin')
+    GAME.setGigaspeedAnim(false)
+    GAME.stopTeraspeed('fin')
     TASK.removeTask_code(task_startSpin)
     GAME.refreshLockState()
     GAME.refreshCurrentCombo()
@@ -2607,11 +2618,15 @@ function GAME.update(dt)
                     GAME.rank = GAME.rank - 1
                     GAME.xp = 4 * GAME.rank
                     GAME.rankupLast = false
-                    if GAME.gigaspeed and GAME.rank < GigaSpeedReq[0] then
-                        GAME.setGigaspeedAnim(false, 'drop')
-                        SFX.play('zenith_speedrun_end')
-                        SFX.play('zenith_speedrun_end')
-                        if MATH.between(GAME.height, Floors[9].top - 50, Floors[9].top) then IssueAchv('cut_off') end
+                    if GAME.gigaspeed then
+                        if GAME.rank < GigaSpeedReq[0] then
+                            GAME.setGigaspeedAnim(false)
+                            SFX.play('zenith_speedrun_end')
+                            SFX.play('zenith_speedrun_end')
+                            if MATH.between(GAME.height, Floors[9].top - 50, Floors[9].top) then IssueAchv('cut_off') end
+                        elseif GAME.teramusic and GAME.rank < TeraMusicReq[0] then
+                            GAME.stopTeraspeed('drop')
+                        end
                     end
                     TEXTS.rank:set("R-" .. GAME.rank)
                     SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
@@ -2646,6 +2661,8 @@ function GAME.update(dt)
                 GAME.showFloorText("Ω", Floors[11].name, 6.2)
                 SFX.play('zenith_levelup_a', 1, 0, Tone(1))
                 PlayBGM('fomg')
+                ins(GAME.secTime, GAME.floorTime)
+                GAME.refreshSectionTime()
             end
 
             -- KM line text

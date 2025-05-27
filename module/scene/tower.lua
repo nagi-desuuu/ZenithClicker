@@ -741,15 +741,15 @@ function scene.draw()
         gc_mDraw(TEXTS.endFloor, 0, 204)
         gc_mDraw(TEXTS.zpChange, 220, 95, 0, .626)
         gc_draw(TEXTS.endResult, -617, 80, 0, .626)
-        gc_draw(TEXTS.floorTime, -617, 236 - GAME.uiHide * 150, 0, .42)
-        gc_draw(TEXTS.rankTime, -527, 236 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.floorTime, -617, 226 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.rankTime, -527, 226 - GAME.uiHide * 150, 0, .42)
         gc_setColor(COLOR.L)
         gc_mDraw(TEXTS.endHeight, 0, 130, 0, 1.8)
         gc_mDraw(TEXTS.endFloor, 0, 201)
         gc_draw(TEXTS.endResult, -616, 78, 0, .626)
         gc_setColor(COLOR.DL)
-        gc_draw(TEXTS.floorTime, -616, 234 - GAME.uiHide * 150, 0, .42)
-        gc_draw(TEXTS.rankTime, -526, 234 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.floorTime, -616, 224 - GAME.uiHide * 150, 0, .42)
+        gc_draw(TEXTS.rankTime, -526, 224 - GAME.uiHide * 150, 0, .42)
         gc_setColor(COLOR.dL)
         gc_mDraw(TEXTS.zpChange, 220, 93, 0, .626)
     end
@@ -809,7 +809,7 @@ function scene.overDraw()
     if GigaSpeed.textTimer then
         gc_setBlendMode('add', 'alphamultiply')
         gc_setColor(.26, .26, .26)
-        if GAME.gigaMusic then
+        if GAME.teramusic then
             for p = -10, 10, 3 do
                 gc_mDraw(TEXTS.teraspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 5 * 2600, 355, 0, 2.6)
             end
