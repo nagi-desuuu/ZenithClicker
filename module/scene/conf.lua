@@ -27,7 +27,7 @@ local songList = {
     f8 = "Dr Ocelot - Chrono Flux",
     f9 = "Dr Ocelot - Broken Record",
     f10 = "Dr Ocelot - Divine Confirmation",
-    giga = "Dr Ocelot - Schnellfeuer BULLET",
+    tera = "Dr Ocelot - Schnellfeuer BULLET",
     f1ex = "Dr Ocelot - Infernal Registration",
 
     f0r = "Dr Ocelot - Awaiting Judgement",
@@ -41,7 +41,7 @@ local songList = {
     f8r = "Dr Ocelot - Futile Ambition",
     f9r = "Dr Ocelot - Mere Sacrifices",
     f10r = "Dr Ocelot - False God",
-    gigar = "Dr Ocelot - Kugelhagel OVERDRIVE",
+    terar = "Dr Ocelot - Kugelhagel OVERDRIVE",
 
     fomg = "Ronezkj15 - Floor Omega",
 }

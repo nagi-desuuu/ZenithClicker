@@ -813,7 +813,7 @@ function GAME.addXP(xp)
             GAME.teraspeedFloor = GAME.floor
             TASK.removeTask_code(GAME.task_gigaspeed)
             TASK.new(GAME.task_gigaspeed)
-            PlayBGM('giga', true)
+            PlayBGM('tera', true)
         end
     else
         GAME.xpLockTimer = oldLockTimer

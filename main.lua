@@ -806,8 +806,8 @@ BgmData = {
     f10 = { meta = '100 BPM  C Major & A Minor', bpm = 100, toneFix = 2, loop = { 122.4, 232.8 } },
     f10r = { meta = '100 BPM  C Major & A Minor', bpm = 100, toneFix = 2, loop = { 122.4, 232.8 }, teleport = { 31.2, 98.4 } },
     fomg = { meta = '90 & 100 BPM  C# Major & A# Minor', bpm = 100, toneFix = 3, loop = { 38.4 - 11.862, 144 - 11.862 }, end1 = 144 - 11.862, end2 = 153.6 - 11.862 },
-    giga = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 76, 140 }, introLen = 2, teleport = { -1, 20 }, end1 = 140, end2 = 142, end3 = 144, end4 = 146 },
-    gigar = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 84 - 15.565, 172 - 15.565 }, teleport = { 0, 18 - 15.565 } },
+    tera = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 76, 140 }, introLen = 2, teleport = { -1, 20 }, end1 = 140, end2 = 142, end3 = 144, end4 = 146 },
+    terar = { meta = '240 BPM  C# Minor', bpm = 240, toneFix = 1, loop = { 84 - 15.565, 172 - 15.565 }, teleport = { 0, 18 - 15.565 } },
 }
 
 BgmPlaying = false ---@type ZC.bgmName | false
@@ -850,10 +850,10 @@ function PlayBGM(name, force)
         BgmNeedSkip[1] = start + BgmData.f1.introLen
         BGM.set('all', 'seek', start, start)
         RefreshBGM(name)
-    elseif name == 'giga' then
-        BGM.play('giga', '-sdin')
-        local start = (GAME.playing and GAME.floor or math.random(0, 9)) * BgmData.giga.introLen
-        BgmNeedSkip[1] = start + BgmData.giga.introLen
+    elseif name == 'tera' then
+        BGM.play('tera', '-sdin')
+        local start = (GAME.playing and GAME.floor or math.random(0, 9)) * BgmData.tera.introLen
+        BgmNeedSkip[1] = start + BgmData.tera.introLen
         BGM.set('all', 'seek', start, start)
         RefreshBGM()
     else
