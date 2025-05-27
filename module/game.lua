@@ -2429,10 +2429,10 @@ function GAME.finish(reason)
                 'swamp_water_pro',
                 'swamp_water_x',
             }
-            local success
+            local swFin
             for i = #hand, 7, -1 do
-                if GAME.anyRev then success = SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight, success) or success end
-                success = SubmitAchv(sw[i - 6], GAME.roundHeight, success) or success
+                if GAME.anyRev then swFin = SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight, swFin) or swFin end
+                swFin = SubmitAchv(sw[i - 6], GAME.roundHeight, swFin) or swFin
             end
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)

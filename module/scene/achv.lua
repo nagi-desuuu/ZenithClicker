@@ -209,6 +209,7 @@ local function refreshAchivement()
         'swamp_water_pro',
         'swamp_water_x',
     }
+    local swFin
     local maxMMP, maxZP = 0, 0
     for k, v in next, BEST.highScore do
         submit(k, v)
@@ -216,8 +217,8 @@ local function refreshAchivement()
         local count = (#k - revCount) / 2
         if count == 9 or count >= 7 and not k:find('DP') then
             for i = count, 7, -1 do
-                SubmitAchv(sw[i - 6], v, true)
-                if revCount > 0 then SubmitAchv(sw[i - 6] .. '_plus', v, true) end
+                if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', v, swFin) or swFin end
+                swFin = SubmitAchv(sw[i - 6], v, swFin) or swFin
             end
         end
         local mp = count + revCount
@@ -302,7 +303,7 @@ function scene.load()
         whenItsReady = URM and M.IN == 2 or MATH.roll(.01 + M.IN * .026)
     end
 
-    hyper = M.EX > 0 or BGM.getPlaying()[1]:sub(1,4) == 'tera'
+    hyper = M.EX > 0 or BGM.getPlaying()[1]:sub(1, 4) == 'tera'
 
     refreshAchvList(true)
 
