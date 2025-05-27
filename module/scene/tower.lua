@@ -1090,7 +1090,7 @@ function scene.overDraw()
             end
         end
         if GAME.rankupLast then
-            if GAME.xpLockLevel < 5 then
+            if GAME.xpLockLevel < 5 and not (URM and M.NH == 2) then
                 gc_mRect('fill', 800 - 105, 965, 2, 26 - 4)
                 gc_mRect('fill', 800 + 105, 965, 2, 26 - 4)
             end
