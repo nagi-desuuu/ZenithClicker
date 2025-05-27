@@ -246,7 +246,11 @@ function scene.draw()
 
         gc_setColor(clr.L)
         gc_rectangle('fill', sx, 246, len, 4)
-        gc_setColor(clr.LT)
+        if BgmPlaying == 'tera' or BgmPlaying == 'terar' then
+            gc_setColor(COLOR.rainbow_light(2.6 * t))
+        else
+            gc_setColor(clr.LT)
+        end
         gc_rectangle('fill', sx, 246, len * BGM.tell() / playingBgmLength, 4)
 
         if BgmNeedSkip then
