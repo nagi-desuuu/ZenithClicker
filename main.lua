@@ -826,6 +826,7 @@ function PlayBGM(name, force)
     if GAME.gigaMusic and not force then return end
 
     if GAME.playing and RevMusicMode() then name = name .. 'r' end
+    if name == 'fomgr' then name = 'fomg' end
     if name:sub(1, 2) == 'f0' then
         BgmPlaying = 'f0'
     elseif name:sub(1, 2) == 'f1' and name:sub(1, 3) ~= 'f10' then
@@ -834,6 +835,7 @@ function PlayBGM(name, force)
         BgmPlaying = name
     end
 
+    if not BgmData[BgmPlaying] then return end
     BgmLooping = BgmData[BgmPlaying].loop
     BgmNeedSkip = BgmData[BgmPlaying].teleport
 
