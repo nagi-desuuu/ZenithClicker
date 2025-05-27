@@ -2372,9 +2372,9 @@ function GAME.finish(reason)
         SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
         SubmitAchv('powerless', GAME.achv_powerlessH or GAME.roundHeight)
-        SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
-        SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike)
-        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', roundedH) end
+        local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
+        SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
+        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1)) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
         SubmitAchv('psychokinesis', GAME.achv_psychokinesisH or GAME.roundHeight)
         if Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
@@ -2429,9 +2429,10 @@ function GAME.finish(reason)
                 'swamp_water_pro',
                 'swamp_water_x',
             }
+            local success
             for i = #hand, 7, -1 do
-                SubmitAchv(sw[i - 6], GAME.roundHeight)
-                if GAME.anyRev then SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight) end
+                if GAME.anyRev then success = SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight, success) or success end
+                success = SubmitAchv(sw[i - 6], GAME.roundHeight, success) or success
             end
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)

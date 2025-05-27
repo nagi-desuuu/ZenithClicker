@@ -539,6 +539,7 @@ function IssueAchv(id, silent)
     return true
 end
 
+---@return true? success
 function SubmitAchv(id, score, silent)
     local A = Achievements[id]
     if not A then return end
