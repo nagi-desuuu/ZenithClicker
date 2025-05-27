@@ -12,7 +12,7 @@ local clr = {
 local colorRev = false
 local bindBuffer
 MusicPlayer = false
-local playingBgmTitle = 'kagari cute'
+local playingBgmTitle = 'Philosophyz'
 local playingBgmLength = 2202.8
 local playingBgmLengthStr = '22:02.8'
 local songList = {
@@ -55,6 +55,13 @@ local function refreshWidgets()
     scene.widgetList.export:setVisible(false)
 end
 
+local function refreshSongInfo()
+    if not MusicPlayer then return end
+    playingBgmTitle = BgmPlaying == 'f0' and RevMusicMode() and songList.f0r or songList[BgmPlaying] or "Rewrite"
+    playingBgmLength = BGM.getDuration()
+    playingBgmLengthStr = STRING.time_simp(playingBgmLength)
+end
+
 function scene.load()
     MSG.clear()
     bindBuffer = nil
@@ -71,6 +78,7 @@ function scene.load()
     TASK.unlock('import')
     TASK.unlock('rebind_control')
     refreshWidgets()
+    refreshSongInfo()
 end
 
 -- function scene.unload()
@@ -475,16 +483,20 @@ scene.widgetList = {
                 SFX.play('warp')
                 SCN.go('ending', 'warp')
                 return
+            elseif data == 'mp' or data == 'music' then
+                if not BGM.isPlaying() or MusicPlayer then return end
+                MusicPlayer = true
+                refreshWidgets()
+                refreshSongInfo()
+                return
             elseif songList[data] then
                 TASK.removeTask_code(Task_MusicEnd)
                 PlayBGM(data, true)
-                playingBgmTitle = songList[data]
-                playingBgmLength = BGM.getDuration()
-                playingBgmLengthStr = STRING.time_simp(playingBgmLength)
                 if not MusicPlayer then
                     MusicPlayer = true
                     refreshWidgets()
                 end
+                refreshSongInfo()
                 return
             end
             if TASK.lock('import', 4.2) then
@@ -512,8 +524,8 @@ scene.widgetList = {
             TABLE.update(STAT, res1)
             BEST, ACHV = res2, res3
             setmetatable(BEST.highScore, Metatable.best_highscore)
-            setmetatable(BEST.speedrun, Metatable.best_speedrun)
             GAME.refreshLockState()
+            setmetatable(BEST.speedrun, Metatable.best_speedrun)
             if STAT.system ~= SYSTEM then
                 STAT.system = SYSTEM
                 IssueAchv('zenith_relocation')
