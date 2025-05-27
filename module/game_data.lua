@@ -631,9 +631,15 @@ NegEvents = {
     { event = { 'attackMul', -.1, 'timerMul', -.25 } },
     { h = -55 }, { text = 'b2.begin' },
     { h = -60 },
-    { text = 'b2.effStart', event = { 'nightcore', true } },
+    {
+        text = 'b2.effStart',
+        event = function()
+            GAME.nightcore = true
+            RefreshBGM()
+        end
+    },
     { h = -90 },
-    { text = 'b2.noVL',     color = 'lB',                 cond = function() return GAME.mod.VL == 0 end },
+    { text = 'b2.noVL', color = 'lB', cond = function() return GAME.mod.VL == 0 end },
     {
         text = 'b2.VLoff',
         color = 'lO',
@@ -663,7 +669,14 @@ NegEvents = {
             GAME.refreshRPC()
         end,
     },
-    { h = -150 }, { event = { 'nightcore', false } },
+    { h = -150 },
+    {
+        event = function()
+            GAME.nightcore = false
+            RefreshBGM()
+        end
+    },
+
 
     -- B3: Underground Parking
     { h = -150 }, { event = { 'dmgDelay', -2, 'dmgCycle', -.5 } },
@@ -794,8 +807,22 @@ NegEvents = {
     { h = -1191 }, { sfx = 'b2bcharge_distance_1' },
     { h = -1194 }, { sfx = 'b2bcharge_distance_1' },
     { h = -1197 }, { sfx = 'b2bcharge_distance_1' },
-    { h = -1200 }, { event = { 'nightcore', true } },
-    { h = -1350 }, { event = { 'nightcore', false } },
+    { h = -1200 },
+    {
+        event = function()
+            GAME.nightcore = true
+            RefreshBGM()
+        end
+    },
+
+    { h = -1350 },
+    {
+        event = function()
+            GAME.nightcore = false
+            RefreshBGM()
+        end
+    },
+
 
     -- B9: Distorted Gateways
     { h = -1350 }, { event = { 'dmgDelay', -.5 } },
