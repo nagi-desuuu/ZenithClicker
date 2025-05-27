@@ -810,6 +810,7 @@ function GAME.addXP(xp)
         end
         if GAME.gigaspeed and not GAME.gigaMusic and GAME.rank >= GigaMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.gigaMusic = true
+            GAME.teraspeedFloor = GAME.floor
             TASK.removeTask_code(GAME.task_gigaspeed)
             TASK.new(GAME.task_gigaspeed)
             PlayBGM('giga', true)
@@ -825,6 +826,7 @@ function GAME.setGigaspeedAnim(on, mode)
     local s = GigaSpeed.alpha
     if on then
         GAME.gigaspeedEntered = GAME.time
+        GAME.gigaspeedFloor = GAME.floor
         TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 1, t) end)
             :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
@@ -892,8 +894,13 @@ function GAME.upFloor()
         ins(GAME.secTime, GAME.floorTime)
         local secTimeStr = ""
         for i = 1, #GAME.secTime do
-            if i > 1 then secTimeStr = secTimeStr .. "\n" end
-            secTimeStr = secTimeStr .. ("F%d - %.3f″"):format(i, GAME.secTime[i])
+            secTimeStr = secTimeStr .. ("%s - %.3f″"):format(
+                (i > 1 and "\nF" or "F") .. i .. (
+                    i == GAME.teraspeedFloor and "t" or
+                    i == GAME.gigaspeedFloor and "g" or
+                    ""
+                ), GAME.secTime[i]
+            )
         end
         TEXTS.floorTime:set(secTimeStr)
     end
@@ -1990,6 +1997,8 @@ function GAME.start()
     GAME.chain = 0
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
+    GAME.gigaspeedFloor = false
+    GAME.teraspeedFloor = false
     GAME.gigaMusic = false
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
