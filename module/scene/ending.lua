@@ -175,6 +175,7 @@ function scene.load()
         GAME.finish('forfeit')
         SFX.setVol(STAT.sfx / 100)
     end
+    TASK.removeTask_code(Task_MusicEnd)
     PlayBGM('fomg', true)
     STAT.bgm = math.max(STAT.bgm, math.min(STAT.sfx, 20))
     BGM.setVol(STAT.bgm / 100)
