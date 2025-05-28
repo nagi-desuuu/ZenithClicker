@@ -2129,32 +2129,38 @@ function GAME.finish(reason)
     local unlockDuo
     if GAME.totalQuest > 2.6 then
         if GAME.floor >= 10 then
-            local unlockRev
+            local unlockRev = 0
             for k, v in next, M do
                 if v > GAME.completion[k] then
                     if GAME.completion[k] == 0 then
                         if k == 'DP' then
                             unlockDuo = true
                         else
-                            unlockRev = true
+                            unlockRev = unlockRev + 1
                         end
                         RevUnlocked = true
                     end
                     GAME.completion[k] = v
                 end
             end
-            if unlockRev then
-                MSG('dark', MOBILE and
+            if unlockRev > 0 or not GAME.anyRev and MATH.roll(.1) and TABLE.countAll(GAME.completion, 2) == 9 then
+                local hintText
+                if unlockRev == 0 then
+                    hintText = "You've already unlocked REVERSED MOD!\n"
+                else
+                    hintText = "You've already unlocked " .. (unlockRev == 1 and "a new REVERSED MOD!\n" or unlockRev .. " new REVERSED MODS!\n")
+                end
+                hintText = hintText .. (
+                    MOBILE and
                     STRING.trimIndent [[
-                        You've unlocked a new REVERSED MOD!
                         To activate it, press and hold the blue area at the left side,
                         then click on a card that has a star on it.
                     ]] or
                     STRING.trimIndent [[
-                        You've unlocked a new REVERSED MOD!
                         Activate it by right-clicking on a card that has a star on it.
                     ]]
-                    , 6.26)
+                )
+                MSG('dark', hintText, 6.26)
                 SFX.play('notify')
             end
         end
