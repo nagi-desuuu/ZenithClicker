@@ -629,6 +629,7 @@ function scene.draw()
 
     -- Wind Particles
     if GAME.height <= 1650 then
+        gc_replaceTransform(SCR.origin)
         local dh = GAME.bgH - GAME.bgLastH
         GAME.bgLastH = GAME.bgH
         for i = 1, 62 do
