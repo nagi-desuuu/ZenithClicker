@@ -826,6 +826,8 @@ end
 function PlayBGM(name, force)
     if GAME.teramusic and not force then return end
 
+    local last = BgmPlaying
+
     if GAME.playing and RevMusicMode() then name = name .. 'r' end
     if name == 'fomgr' then name = 'fomg' end
     if name:sub(1, 2) == 'f0' then
@@ -852,7 +854,10 @@ function PlayBGM(name, force)
         RefreshBGM(name)
     elseif name == 'tera' then
         BGM.play('tera', '-sdin')
-        local start = (GAME.playing and GAME.floor or math.random(0, 9)) * BgmData.tera.introLen
+        local startFrom
+        startFrom = last and tonumber(last:match("%d+"))
+        if startFrom then startFrom = startFrom - 1 end
+        local start = (GAME.playing and GAME.floor or startFrom or math.random(0, 9)) * BgmData.tera.introLen
         BgmNeedSkip[1] = start + BgmData.tera.introLen
         BGM.set('all', 'seek', start, start)
         RefreshBGM()
