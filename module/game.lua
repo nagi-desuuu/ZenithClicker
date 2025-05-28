@@ -1320,7 +1320,7 @@ function GAME.refreshSectionTime()
             i,
             i == GAME.gigaspeedFloor and "g" or "",
             i == GAME.teraspeedFloor and "t" or "",
-            i == #GAME.secTime and "x" or "-",
+            not GAME.playing and i == #GAME.secTime and "x" or "-",
             GAME.secTime[i]
         )
     end
@@ -2145,7 +2145,7 @@ function GAME.finish(reason)
                     GAME.completion[k] = v
                 end
             end
-            if unlockRev > 0 or not GAME.anyRev and MATH.roll(.1) and TABLE.countAll(GAME.completion, 2) == 9 then
+            if unlockRev > 0 or not GAME.anyRev and MATH.roll(.1) and TABLE.countAll(GAME.completion, 2) == 0 then
                 local hintText
                 if unlockRev == 0 then
                     hintText = "You've already unlocked REVERSED MOD!\n"
