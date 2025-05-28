@@ -496,6 +496,7 @@ scene.widgetList = {
                     SCN.go('ending', 'warp')
                 elseif data == 'test' then
                     TestMode = true
+                    SFX.play('maintenance')
                 elseif data == 'mp' or data == 'music' then
                     if not BGM.isPlaying() or MusicPlayer then return end
                     MusicPlayer = true
@@ -523,7 +524,9 @@ scene.widgetList = {
                     end
                     MSG('dark', msg)
                     SFX.play('staffwarning')
+                    return
                 end
+                LOG('info', "Secret: " .. data)
                 return
             end
             if TASK.lock('import', 4.2) then

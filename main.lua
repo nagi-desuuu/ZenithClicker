@@ -955,13 +955,13 @@ function RefreshDaily()
         MSG('warn', "Back to the future?", 26)
     else
         if MATH.between(dayPast, 1, 2600) then
-            print("Daily Reset:")
-            print("Old ZP & Daily HS: " .. STAT.zp .. "  " .. STAT.dailyHS)
+            LOG('info', "Daily Reset:")
+            LOG('info', "Old ZP & Daily HS: " .. STAT.zp .. "  " .. STAT.dailyHS)
             STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
             STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
             STAT.dailyBest = 0
             STAT.dailyMastered = false
-            print("New ZP & Daily HS: " .. STAT.zp .. "  " .. STAT.dailyHS)
+            LOG('info', "New ZP & Daily HS: " .. STAT.zp .. "  " .. STAT.dailyHS)
         end
         STAT.lastDay = os.time()
     end
@@ -990,7 +990,7 @@ function RefreshDaily()
                 DAILY[r2] = 'r' .. DAILY[r2]
             end
         end
-        print("Today's Daily Challenge:  " .. table.concat(DAILY, ' '))
+        LOG('info', "Today's Daily Challenge:  " .. table.concat(DAILY, ' '))
     end
 
     local v = os.date('!%d') == '14'

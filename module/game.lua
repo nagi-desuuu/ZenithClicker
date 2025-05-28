@@ -2128,6 +2128,8 @@ function GAME.finish(reason)
 
     local unlockDuo
     if GAME.totalQuest > 2.6 then
+        LOG('info', ("[%s] (%s) F%d %.2fm in %.3fs"):format(reason, table.concat(GAME.getHand(true), ', '), GAME.floor, GAME.height, GAME.time))
+
         if GAME.floor >= 10 then
             local unlockRev = 0
             for k, v in next, M do

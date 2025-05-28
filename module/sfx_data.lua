@@ -237,7 +237,7 @@ return {
     -- level10=                     {68,  5},
     -- level100=                    {187, 5},
     -- level500=                    {587, 5},
-    -- maintenance=                 {178, 1.1},
+    maintenance = { 178, 1.1 },
     map_change = { 538, 2.12 },
     -- matchintro=                  {489, 16.5},
     -- mission_free=                {88,  3.4},
