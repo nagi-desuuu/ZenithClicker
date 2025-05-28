@@ -890,7 +890,7 @@ function RefreshBGM(mode)
 end
 
 function Task_MusicEnd()
-    if GAME.floor == 1 then
+    if BgmPlaying == 'tera' or GAME.floor == 1 then
         BGM.stop(.626)
         TASK.yieldT(.26)
     else
