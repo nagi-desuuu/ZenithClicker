@@ -60,6 +60,7 @@ local function refreshSongInfo()
     playingBgmTitle = BgmPlaying == 'f0' and RevMusicMode() and songList.f0r or songList[BgmPlaying] or "Rewrite"
     playingBgmLength = BGM.getDuration()
     playingBgmLengthStr = STRING.time_simp(playingBgmLength)
+    GAME.refreshRPC()
 end
 
 function scene.load()
@@ -110,6 +111,7 @@ local bindHint = {
     "RIGHTCLK",
 }
 
+local KBisDown = love.keyboard.isDown
 local function isLegalKey(key)
     if key:find('ctrl') or key:find('alt') or key == 'f1' or key == 'f2' or key == 'tab' or key == '`' then
         SFX.play('finessefault', .626)
@@ -122,7 +124,18 @@ local function isLegalKey(key)
 end
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if key == 'escape' or (key == 'f1' and not bindBuffer) then
+    if KBisDown('lctrl', 'rctrl') and key:match("f%d") then
+        if key == 'f11' then key = 'fomg' end
+        if key == 'f12' then key = 'tera' end
+        TASK.removeTask_code(Task_MusicEnd)
+        if KBisDown('lshift', 'rshift') then key = key .. 'r' end
+        PlayBGM(key, true)
+        if not MusicPlayer then
+            MusicPlayer = true
+            refreshWidgets()
+        end
+        refreshSongInfo()
+    elseif key == 'escape' or (key == 'f1' and not bindBuffer) then
         if bindBuffer then
             bindBuffer = nil
             MSG('dark', "Keybinding cancelled")

@@ -1025,8 +1025,10 @@ function ZENITHA.globalEvent.resize()
     end
 end
 
+local KBisDown = love.keyboard.isDown
 function ZENITHA.globalEvent.keyDown(key, isRep)
     if isRep then return end
+    if KBisDown('lctrl', 'rctrl') then return end
     if key == 'f12' then
         if TASK.lock('dev') then
             MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!", 6.26)
