@@ -124,9 +124,9 @@ local function isLegalKey(key)
 end
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if KBisDown('lctrl', 'rctrl') and (key:match("f%d") and tonumber(key:sub(2)) <= 10 or key == 'o' or key == 'insert') then
+    if KBisDown('lctrl', 'rctrl') and (key:match("f%d") and tonumber(key:sub(2)) <= 10 or key == 'o' or key == 'pause' or key == 'break') then
         if key == 'o' then key = 'fomg' end
-        if key == 'insert' then key = 'tera' end
+        if key == 'pause' or key == 'break' then key = 'tera' end
         TASK.removeTask_code(Task_MusicEnd)
         if KBisDown('lshift', 'rshift') then key = key .. 'r' end
         PlayBGM(key, true)
@@ -494,6 +494,8 @@ scene.widgetList = {
                 elseif data == 'true_ending' then
                     SFX.play('warp')
                     SCN.go('ending', 'warp')
+                elseif data == 'test' then
+                    TestMode = true
                 elseif data == 'mp' or data == 'music' then
                     if not BGM.isPlaying() or MusicPlayer then return end
                     MusicPlayer = true

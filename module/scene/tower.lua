@@ -324,7 +324,6 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1)
 
 function scene.keyDown(key)
     HoldingButtons[key] = true
-    -- if key == '1' then GAME.height = -1100 end
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
             switchVisitor(false)
@@ -1319,6 +1318,13 @@ function scene.overDraw()
             gc_setLineWidth(10)
             gc_line(0, 0, 420 * cos(a), 420 * sin(a))
         end
+    end
+
+    -- Test mode
+    if TestMode then
+        gc_replaceTransform(SCR.xOy_u)
+        gc_setColor(1, 1, 1, .26)
+        gc_mDraw(TEXTS.test, -260, 260, -.16 + sin(t * 2.6) * .0626, 8.72)
     end
 
     -- Ultra cover

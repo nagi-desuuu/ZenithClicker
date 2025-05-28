@@ -407,6 +407,7 @@ TEXTS = { -- Font size can only be 30 and 50 here !!!
     slogan_rEX = GC.newText(FONT.get(30), "OVERFLOW THE TOWER!"),
     forfeit    = GC.newText(FONT.get(50), "KEEP HOLDING TO FORFEIT"),
     credit     = GC.newText(FONT.get(30), "All assets from TETR.IO"),
+    test       = GC.newText(FONT.get(50), "TEST"),
 }
 if fontNotLoaded then
     TASK.new(function()
@@ -494,11 +495,13 @@ ACHV = {}
 
 AchvNotice = {}
 
-function SaveBest() love.filesystem.write('best.luaon', 'return' .. TABLE.dumpDeflate(BEST)) end
+TestMode = false
 
-function SaveStat() love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDeflate(STAT)) end
+function SaveBest() if not TestMode then love.filesystem.write('best.luaon', 'return' .. TABLE.dumpDeflate(BEST)) end end
 
-function SaveAchv() love.filesystem.write('achv.luaon', 'return' .. TABLE.dumpDeflate(ACHV)) end
+function SaveStat() if not TestMode then love.filesystem.write('stat.luaon', 'return' .. TABLE.dumpDeflate(STAT)) end end
+
+function SaveAchv() if not TestMode then love.filesystem.write('achv.luaon', 'return' .. TABLE.dumpDeflate(ACHV)) end end
 
 MSG.setSafeY(75)
 MSG.addCategory('dark', COLOR.D, COLOR.L)
@@ -518,6 +521,7 @@ local msgTime = 0
 local bufferedMsg = {}
 
 function IssueAchv(id, silent)
+    if TestMode then return end
     local A = Achievements[id]
     if not A or ACHV[id] then return end
 
@@ -541,6 +545,7 @@ end
 
 ---@return true? success
 function SubmitAchv(id, score, silent)
+    if TestMode then return end
     local A = Achievements[id]
     if not A then return end
     local oldScore = ACHV[id] or A.noScore or 0
@@ -570,6 +575,7 @@ function SubmitAchv(id, score, silent)
 end
 
 function ReleaseAchvBuffer()
+    if TestMode then return end
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
         msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 2.6

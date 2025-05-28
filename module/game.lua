@@ -2511,16 +2511,25 @@ local questStyleDP = {
     { k = 0.7, y = 25,  a = .7 },
 }
 
+local KBisDown = love.keyboard.isDown
 function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
     if GAME.playing then
-        -- if love.keyboard.isDown('[') then
-        --     GAME.addHeight(dt * 260)
-        -- elseif love.keyboard.isDown(']') then
-        --     GAME.addXP(dt * 42)
-        -- elseif love.keyboard.isDown('\\') then
-        --     GAME.addHeight(-dt * 260)
-        -- end
+        if TestMode then
+            if KBisDown('[') then GAME.xp = GAME.xp - dt * GAME.rank * 8 end
+            if KBisDown(']') then GAME.addXP(dt * GAME.rank * 8) end
+            if KBisDown('-') then GAME.addHeight(-dt * 260) end
+            if KBisDown('=') then GAME.addHeight(dt * 260) end
+            if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
+            if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
+                GAME.chain = GAME.chain + 1
+                TEXTS.chain:set(tostring(GAME.chain))
+            end
+            if KBisDown('return') and TASK.lock("test_eliminate", .26) then
+                GAME.addHeight(15)
+                SFX.play('elim')
+            end
+        end
 
         -- Quest animattion
         local style = M.DP == 0 and questStyle or questStyleDP
