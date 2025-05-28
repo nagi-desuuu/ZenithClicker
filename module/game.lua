@@ -1103,23 +1103,17 @@ function GAME.refreshRPC()
         if #hand > 0 then
             local comboName = GAME.getComboName(hand, 'rpc')
             stateStr = stateStr .. " - "
-            if URM and GAME.anyRev then
+            if GAME.anyUltra then
                 ---@cast comboName string
-                comboName =
-                    comboName:sub(1, 1) == "\"" and
-                    "\"ULTRA " .. comboName:sub(2) or
-                    "ULTRA " .. comboName
+                comboName = comboName:gsub("([^\"])", "ULTRA %1", 1)
             end
             stateStr = stateStr .. comboName
         end
     else
         stateStr = "Enjoying music"
-        -- if M.NH > 0 then stateStr = stateStr .. " (Inst.)" end
+        if BgmPlaying ~= 'f0' then stateStr = stateStr .. "(" .. BgmPlaying .. ")" end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
-        if M.IN > 0 then
-            stateStr = stateStr:gsub("j", "r"):gsub("s", "z"):gsub("tch", "dge")
-                :gsub("p", "b"):gsub("c", "g"):gsub("t", "d")
-        end
+        if M.IN > 0 then stateStr = stateStr:gsub(".", { j = "r", s = "z", p = "b", c = "g", t = "d" }) end
     end
 
     DiscordState = {
@@ -1220,12 +1214,9 @@ end
 function GAME.refreshCurrentCombo()
     local hand = GAME.getHand(not GAME.playing)
     local comboName = GAME.getComboName(hand, 'button')
-    if not GAME.playing and URM and GAME.anyRev and #hand > 0 then
+    if not GAME.playing and GAME.anyUltra and #hand > 0 then
         ---@cast comboName string
-        comboName =
-            comboName:sub(1, 1) == "\"" and
-            "\"ULTRA " .. comboName:sub(2) or
-            "ULTRA " .. comboName
+        comboName = comboName:gsub("([^\"])", "ULTRA %1", 1)
     end
     TEXTS.mod:set(comboName)
     if not GAME.playing then

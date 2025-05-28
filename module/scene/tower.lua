@@ -1497,8 +1497,8 @@ scene.widgetList = {
 
             GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
             GAME.refreshLayout()
-            GAME.refreshCurrentCombo()
             GAME.refreshUltra()
+            GAME.refreshCurrentCombo()
             RefreshBGM()
 
             if PieceSFXID == 7 and not GC.isWireframe() then
