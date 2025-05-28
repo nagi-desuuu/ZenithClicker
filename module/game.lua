@@ -1324,12 +1324,13 @@ end
 function GAME.refreshSectionTime()
     local secTimeStr = ""
     for i = 1, #GAME.secTime do
-        secTimeStr = secTimeStr .. ("%s - %.3f″"):format(
-            (i > 1 and "\nF" or "F") .. i .. (
-                i == GAME.teraspeedFloor and "t" or
-                i == GAME.gigaspeedFloor and "g" or
-                ""
-            ), GAME.secTime[i]
+        secTimeStr = secTimeStr .. ("%sF%d%s%s %s %.3f″"):format(
+            (i > 1 and "\n" or ""),
+            i,
+            i == GAME.gigaspeedFloor and "g" or "",
+            i == GAME.teraspeedFloor and "t" or "",
+            i == #GAME.secTime and "x" or "-",
+            GAME.secTime[i]
         )
     end
     TEXTS.floorTime:set(secTimeStr)
@@ -2128,6 +2129,8 @@ function GAME.finish(reason)
 
     GAME.playing = false
     if M.DH == 2 then GAME.finishTime = love.timer.getTime() end
+    ins(GAME.secTime, GAME.floorTime)
+    GAME.refreshSectionTime()
     GAME.life, GAME.life2 = 0, 0
     GAME.teramusic = false
     GAME.currentTask = false
@@ -2301,14 +2304,15 @@ function GAME.finish(reason)
         local maxCSP = {}
         for i = 1, #GAME.rankTimer do ins(maxCSP, { i, GAME.rankTimer[i] }) end
         do
+            local rankTimeCount = 11
             table.sort(maxCSP, function(a, b) return a[2] > b[2] end)
             local mainRank = maxCSP[1]
 
             table.sort(maxCSP, function(a, b) return a[1] < b[1] end)
             local bestPos, bestSum = 0, 0
-            for i = min(mainRank[1], 26 - 9), max(mainRank[1] - 9, 1), -1 do
+            for i = min(mainRank[1], 26 - (rankTimeCount - 1)), max(mainRank[1] - (rankTimeCount - 1), 1), -1 do
                 local sum = 0
-                for j = i, i + 9 do
+                for j = i, i + (rankTimeCount - 1) do
                     sum = sum + maxCSP[j][2]
                 end
                 if sum > bestSum then
@@ -2318,7 +2322,7 @@ function GAME.finish(reason)
             end
 
             local rankTimeText = {}
-            for i = bestPos + 9, bestPos, -1 do
+            for i = bestPos + (rankTimeCount - 1), bestPos, -1 do
                 ins(rankTimeText, { 1, 1, 1, max(maxCSP[i][2] / mainRank[2], .42) })
                 ins(rankTimeText, ("Rank%d - %.1f″\n"):format(maxCSP[i][1], maxCSP[i][2]))
             end
