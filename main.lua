@@ -1248,7 +1248,7 @@ function Daemon_Slow()
     local lib = BGM._srcLib
     local length = BGM.getDuration()
     while true do
-        if BgmPlaying == 'f0' then
+        if BgmPlaying == 'f0' and BGM.isPlaying() then
             local t0 = lib[BgmSet.f0[1]].source:tell()
             for i = #BgmSet.f0, 2, -1 do
                 local obj = lib[BgmSet.f0[i]]
