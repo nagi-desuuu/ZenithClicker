@@ -1111,7 +1111,7 @@ function GAME.refreshRPC()
         end
     else
         stateStr = "Enjoying music"
-        if BgmPlaying ~= 'f0' then stateStr = stateStr .. "(" .. BgmPlaying .. ")" end
+        if BgmPlaying ~= 'f0' then stateStr = stateStr .. " (" .. BgmPlaying .. ")" end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
         if M.IN > 0 then stateStr = stateStr:gsub(".", { j = "r", s = "z", p = "b", c = "g", t = "d" }) end
     end
