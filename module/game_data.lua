@@ -547,7 +547,7 @@ local NegTexts = {
         effStart = [[But you feel like you're lost...]],
         mid1 = [["Where am I?"]],
         noGV = [[You feel you are not going fast enough...]],
-        GVoff = [[You unconsciously quickened your pace...]],
+        GVoff = [[You subconciously quickened your pace...]],
         mid2 = [["Where am I going?"]],
     },
     b4 = { -- The Bunker
