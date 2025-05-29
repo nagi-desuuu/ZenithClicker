@@ -529,7 +529,7 @@ local NegTexts = {
         desc = [[A basic storage room for the floors above... and below.]],
         begin = [[You find yourself in an unfamiliar place.]],
         noAS = [[You passed the security check without any prohibited items.]],
-        ASoff = [[To prevent mech heart users, AS mod is not allowed here.]],
+        ASoff = [[To prevent mech heart users, the AS mod has been confiscated.]],
         -- egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
     },
     b2 = { -- Zenith Restaurant

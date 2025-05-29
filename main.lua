@@ -869,9 +869,8 @@ function PlayBGM(name, force)
         BGM.set('all', 'seek', start, start)
         RefreshBGM()
     else
-        if BGM.play(name, force and '' or '-sdin') then
-            RefreshBGM()
-        end
+        BGM.play(name, force and '' or '-sdin')
+        RefreshBGM()
     end
 end
 
