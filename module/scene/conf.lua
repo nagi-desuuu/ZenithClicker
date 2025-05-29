@@ -197,6 +197,8 @@ function scene.keyDown(key, isRep)
     return true
 end
 
+scene.resize = refreshWidgets
+
 -- Panel size
 local w, h = 900, 830
 local baseX, baseY = (1600 - w) / 2, (1000 - h) / 2
@@ -229,13 +231,20 @@ function scene.draw()
     DrawBG(STAT.bgBrightness)
 
     local t = love.timer.getTime()
+    local playTime = 0
+    local beatLen = 0
+    local beatBar = 0
+    if MusicPlayer then
+        playTime = BGM.tell()
+        beatLen = 60 / BgmData[BgmPlaying].bpm
+        beatBar = BgmData[BgmPlaying].bar
+    end
 
     -- Panel
     gc_replaceTransform(SCR.xOy)
     gc.translate(800 - w / 2, 510 - h / 2)
-    if MusicPlayer and BGM.isPlaying() then
-        local beat = 60 / BgmData[BgmPlaying].bpm
-        local dy = MATH.clamp(6 * math.sin(BGM.tell() / beat * 3.1416), -2.6, 2.6)
+    if MusicPlayer then
+        local dy = MATH.clamp(6 * math.sin(playTime / beatLen * 3.1416), -2.6, 2.6)
         gc.translate(0, dy)
         SCN.curScroll = -dy
     end
@@ -267,7 +276,7 @@ function scene.draw()
 
         FONT.set(30)
         gc_setColor(clr.T)
-        gc_print(STRING.time_simp(BGM.tell()), sx, 249, 0, .626)
+        gc_print(STRING.time_simp(playTime), sx, 249, 0, .626)
         gc_print(playingBgmLengthStr, sx + len - 45, 249, 0, .626)
 
         local data = BgmData[BgmPlaying]
@@ -287,7 +296,14 @@ function scene.draw()
         else
             gc_setColor(bgmColors[BgmPlaying] or clr.LT)
         end
-        gc_rectangle('fill', sx, 246, len * BGM.tell() / playingBgmLength, 4)
+        gc_rectangle('fill', sx, 246, len * playTime / playingBgmLength, 4)
+
+        gc_mStr(playingBgmTitle, sx + len / 2, 200)
+        gc_setColor(1, 1, 1, .35 - .26 * math.sin(playTime / (beatBar * beatLen) * 3.1416))
+        gc_mStr(playingBgmTitle, sx + len / 2, 200)
+        gc_setColor(clr.LT)
+        gc_setAlpha(.26)
+        gc_printf(data.meta, sx + len / 2, 256, 2 * len, 'center', 0, .42, .42, len)
 
         if BgmNeedSkip then
             local alpha = .26 + .62 * (-2.6 * t % 1)
@@ -298,12 +314,6 @@ function scene.draw()
             gc_setAlpha(alpha)
             gc_mRect('fill', sx + len * BgmNeedSkip[2] / playingBgmLength, 248, 2, 9)
         end
-
-        gc_setColor(clr.LT)
-        gc_setAlpha(.626 + .26 * math.sin(t))
-        gc_mStr(playingBgmTitle, sx + len / 2, 200)
-        gc_setAlpha(.26)
-        gc_printf(data.meta, sx + len / 2, 256, len, 'center', 0, .42, .42, len / 2)
     end
 
     -- Top bar & title
