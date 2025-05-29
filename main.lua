@@ -957,12 +957,13 @@ function RefreshDaily()
     else
         if MATH.between(dayPast, 1, 2600) then
             LOG('info', "Daily Reset:")
-            LOG('info', "Old ZP / DZP: " .. STAT.zp .. " / " .. STAT.dzp)
+            local oldZP, oldDZP = STAT.zp, STAT.dzp
             STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
             STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
             STAT.dailyBest = 0
             STAT.dailyMastered = false
-            LOG('info', "New ZP / DZP: " .. STAT.zp .. " / " .. STAT.dzp)
+            LOG('info', "ZP: " .. math.floor(oldZP / 1000 + .5) .. "k -> " .. math.floor(STAT.zp / 1000 + .5) .. "k")
+            LOG('info', "DZP: " .. math.floor(oldDZP) .. " -> " .. math.floor(STAT.dzp))
         end
         STAT.lastDay = os.time()
     end
@@ -991,7 +992,7 @@ function RefreshDaily()
                 DAILY[r2] = 'r' .. DAILY[r2]
             end
         end
-        LOG('info', "Today's Daily Challenge:  " .. table.concat(DAILY, ' '))
+        LOG('info', "Today's Daily Challenge: " .. table.concat(DAILY, ' '))
     end
 
     local v = os.date('!%d') == '14'
