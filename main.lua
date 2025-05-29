@@ -871,7 +871,6 @@ function PlayBGM(name, force)
     else
         if BGM.play(name, force and '' or '-sdin') then
             RefreshBGM()
-            return true
         end
     end
 end
@@ -910,6 +909,7 @@ function Task_MusicEnd()
         TASK.yieldT(3.5)
     end
     PlayBGM('f0')
+    GAME.refreshRPC()
 end
 
 function Tone(pitch)

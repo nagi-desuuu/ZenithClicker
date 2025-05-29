@@ -814,6 +814,7 @@ function GAME.addXP(xp)
             TASK.removeTask_code(GAME.task_gigaspeed)
             TASK.new(GAME.task_gigaspeed)
             PlayBGM('tera', true)
+            GAME.refreshRPC()
         end
     else
         GAME.xpLockTimer = oldLockTimer
@@ -975,8 +976,8 @@ function GAME.upFloor()
         SubmitAchv('zenith_speedrun_plus', roundTime)
         SubmitAchv('detail_oriented', GAME.totalFlip)
     end
-    GAME.refreshRPC()
     PlayBGM('f' .. GAME.floor)
+    GAME.refreshRPC()
 end
 
 function GAME.nextFatigue()
@@ -1090,14 +1091,14 @@ function GAME.refreshRPC()
     local stateStr
     if GAME.playing then
         if DailyActived then
-            stateStr = GAME.gigaspeed and "Daily speedrun: " or "Daily game: "
+            stateStr = GAME.teramusic and "Daily SPEEDRUN:" or GAME.gigaspeed and "Daily speedrun: " or "Daily game: "
         else
-            stateStr = GAME.gigaspeed and "Speedrun: " or "In game: "
+            stateStr = GAME.teramusic and "SPEEDRUN:" or GAME.gigaspeed and "Speedrun: " or "In game: "
         end
         if GAME.negFloor > 1 then
             stateStr = stateStr .. "B" .. GAME.negFloor
         else
-            stateStr = stateStr .. "F" .. GAME.floor
+            stateStr = stateStr .. "F" .. (GAME.floor == 10 and GAME.omega and "Ω" or GAME.floor)
         end
         local hand = GAME.getHand(true)
         if #hand > 0 then
@@ -1111,7 +1112,9 @@ function GAME.refreshRPC()
         end
     else
         stateStr = "Enjoying music"
-        if BgmPlaying ~= 'f0' then stateStr = stateStr .. " (" .. BgmPlaying .. ")" end
+        if BgmPlaying and BgmPlaying ~= 'f0' then
+            stateStr = stateStr .. " (" .. BgmPlaying:upper():gsub("R$", "-R") .. ")"
+        end
         if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
         if M.IN > 0 then stateStr = stateStr:gsub(".", { j = "r", s = "z", p = "b", c = "g", t = "d" }) end
     end
