@@ -1512,6 +1512,7 @@ scene.widgetList = {
             GAME.refreshUltra()
             GAME.refreshCurrentCombo()
             RefreshBGM()
+            GAME.refreshRPC()
 
             if PieceSFXID == 7 and not GC.isWireframe() then
                 MSG({

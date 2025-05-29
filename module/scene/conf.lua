@@ -233,9 +233,9 @@ function scene.draw()
     -- Panel
     gc_replaceTransform(SCR.xOy)
     gc.translate(800 - w / 2, 510 - h / 2)
-    if MusicPlayer then
+    if MusicPlayer and BGM.isPlaying() then
         local beat = 60 / BgmData[BgmPlaying].bpm
-        local dy = MATH.clamp(6 * math.sin(t / beat * 3.1416), -2.6, 2.6)
+        local dy = MATH.clamp(6 * math.sin(BGM.tell() / beat * 3.1416), -2.6, 2.6)
         gc.translate(0, dy)
         SCN.curScroll = -dy
     end

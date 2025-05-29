@@ -1115,7 +1115,10 @@ function GAME.refreshRPC()
         if BgmPlaying and BgmPlaying ~= 'f0' then
             stateStr = stateStr .. " (" .. BgmPlaying:upper():gsub("R$", "-R") .. ")"
         end
-        if M.GV > 0 then stateStr = stateStr .. " (+" .. M.GV .. ")" end
+        local pitch = URM and M.GV == 2 and 3 or M.GV
+        if GAME.nightcore then pitch = pitch + 12 end
+        if GAME.slowmo then pitch = pitch - 12 end
+        if pitch ~= 0 then stateStr = stateStr .. (pitch > 0 and " (+" or " (") .. pitch .. ")" end
         if M.IN > 0 then stateStr = stateStr:gsub(".", { j = "r", s = "z", p = "b", c = "g", t = "d" }) end
     end
 

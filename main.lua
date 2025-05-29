@@ -877,7 +877,7 @@ end
 
 function RefreshBGM(mode)
     if not BGM.isPlaying() then return end
-    local pitch = M.GV > 0 and 2 ^ (M.GV / 12) or 1
+    local pitch = M.GV > 0 and 2 ^ ((URM and M.GV == 2 and 3 or M.GV) / 12) or 1
     if GAME.slowmo then pitch = pitch / 2 end
     if GAME.nightcore then pitch = pitch * 2 end
     BGM.set('all', 'pitch', pitch, .26)
@@ -913,7 +913,7 @@ function Task_MusicEnd()
 end
 
 function Tone(pitch)
-    return pitch + M.GV + BgmData[BgmPlaying].toneFix
+    return pitch + (URM and M.GV == 2 and 3 or M.GV) + BgmData[BgmPlaying].toneFix
 end
 
 function ApplySettings()
