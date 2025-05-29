@@ -2,30 +2,11 @@
 local scene = {}
 
 local scroll, scroll1 = 0, 0
-local maxScroll = 400
+local maxScroll = 520
 
 local clr = {
     D = { COLOR.HEX '1F1F1F' },
     L = { COLOR.HEX '656565' },
-
-    z = { COLOR.HEX "80CCFF" },
-
-    asrial = { COLOR.HEX "DDFF80" },
-    ccyt = { COLOR.HEX "77DD66" },
-    rzkj = { COLOR.HEX "9DBCFF" },
-
-    flower = { COLOR.HEX "F880F0" },
-    _ = { COLOR.HEX "000000" },
-    matt = { COLOR.HEX "FFE590" },
-
-    osk = { COLOR.HEX "DD99FF" },
-    ocelot = { COLOR.HEX "FF99CC" },
-    garbo = { COLOR.HEX "3A66DD" },
-
-    flmk = { COLOR.HEX "B7A0FF" },
-    sheep = { COLOR.HEX "FF82F0" },
-    fcs = { COLOR.HEX "E9C6FF" },
-    obs = { COLOR.HEX "BAFEFF" },
 }
 
 AboutText = GC.newText(FONT.get(70))
@@ -62,88 +43,52 @@ addSection(350)
 
 addText({ COLOR.O, "THE TEAM" }, 0, 20, .3)
 
-addText({ clr.z, "MRZ" }, 0, 60, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER" }, 0, 100, .26)
-addText({ COLOR.LD, "Programming, Game Design, General Development" }, 0, 120, .2)
+local function addMajorCredit(x, y, color, name, role, desc)
+    addText({ color, name }, x, y, .5)
+    addText({ COLOR.LD, role }, x, y + 40, .26)
+    if desc then addText({ COLOR.LD, desc }, x, y + 60, .2) end
+end
 
-addText({ clr.asrial, "DJ  ASRIEL" }, -160, 160, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, -160, 200, .26)
-addText({ COLOR.LD, "Background Reconstruction & Game Icon" }, -160, 220, .2)
+addMajorCredit(0000, 060, { COLOR.HEX '80CCFF' }, "MRZ", "FOUNDER & LEAD PRODUCER", "Programming, Game Design, General Development")
+addMajorCredit(-320, 160, { COLOR.HEX 'DDFF80' }, "DJ  ASRIEL", "ASSISTING GRAPHICS DESIGN", "Background Reconstruction & Game Icon")
+addMajorCredit(0000, 160, { COLOR.HEX '77DD66' }, "CREEPERCRAFTYT", "ASSISTING GRAPHICS DESIGN", "Mod Icons Remake")
+addMajorCredit(0320, 160, { COLOR.HEX '9DBCFF' }, "RONEZKJ15", "MUSIC", "Extra Music")
+addMajorCredit(-320, 260, { COLOR.HEX 'DD99FF' }, "OSK", "FOUNDER & LEAD PRODUCER", "of the Original Game: TETR.IO")
+addMajorCredit(0000, 260, { COLOR.HEX 'FF99CC' }, "DOKTOROCELOT", "AUDIO & MUSIC", "of both TETR.IO and Zenith Clicker")
+addMajorCredit(0320, 260, { COLOR.HEX '3A66DD' }, "GARBO", "GAME & WORLD DESIGN", "of the Original Game: TETR.IO")
+addMajorCredit(-320, 360, { COLOR.HEX 'F880F0' }, "FLOWERLING", "TEXT REVISION")
+addMajorCredit(0000, 360, { COLOR.HEX 'B7A0FF' }, "FLOMIKEL", "TEXTS & WORLD DESIGN", "Achievement Texts & Extra World Design")
+addMajorCredit(0320, 360, { COLOR.HEX 'FFE590' }, "MATTMAYUGA", "TEXT REVISION")
+addMajorCredit(-320, 460, { COLOR.HEX '8BD6C3' }, "OBSIDIAN", "TEXTS", "Achievement Texts")
+addMajorCredit(0000, 460, { COLOR.HEX 'FF82F0' }, "SPRITZY SHEEP", "WORLD DESIGN", "Extra World Design")
+addMajorCredit(0320, 460, { COLOR.HEX 'E9C6FF' }, "FCSPLAYZ", "SOME TEXTS")
 
-addText({ clr.ccyt, "CREEPERCRAFTYT" }, 160, 160, .5)
-addText({ COLOR.LD, "ASSISTING GRAPHICS DESIGN" }, 160, 200, .26)
-addText({ COLOR.LD, "Mod Icons Remake" }, 160, 220, .2)
-
-addText({ clr.flower, "FLOWERLING" }, -480, 160, .5)
-addText({ COLOR.LD, "TEXT REVISION" }, -480, 200, .26)
-
-addText({ clr.matt, "MATTMAYUGA" }, 480, 160, .5)
-addText({ COLOR.LD, "TEXT REVISION" }, 480, 200, .26)
-
-addText({ clr.osk, "OSK" }, -320, 260, .5)
-addText({ COLOR.LD, "FOUNDER & LEAD PRODUCER…" }, -320, 300, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, -320, 320, .2)
-
-addText({ clr.ocelot, "DOKTOROCELOT" }, 0, 260, .5)
-addText({ COLOR.LD, "AUDIO & MUSIC" }, 0, 300, .26)
-addText({ COLOR.LD, "of both TETR.IO and Zenith Clicker" }, 0, 320, .2)
-
-addText({ clr.garbo, "GARBO" }, 320, 260, .5)
-addText({ COLOR.LD, "GAME & WORLD DESIGN…" }, 320, 300, .26)
-addText({ COLOR.LD, "of the Original Game: TETR.IO" }, 320, 320, .2)
-
-addSection(710)
+addSection(910)
 
 addText({ COLOR.O, "ART BY" }, 0, 20, .3)
 
-addText("LARGEONIONS", -300 * 1.26, 62, .46)
-addText({ COLOR.LD, "FLOORS 1-5" }, -300 * 1.26, 100, .26)
-addText("S. ZHANG", -100 * 1.26, 62, .46)
-addText({ COLOR.LD, "FLOORS 6-8" }, -100 * 1.26, 100, .26)
-addText("LAUREN SHENG", 100 * 1.26, 62, .46)
-addText({ COLOR.LD, "FLOORS 9-10" }, 100 * 1.26, 100, .26)
-addText("RICMAN", 300 * 1.26, 62, .46)
-addText({ COLOR.LD, "CARD ART" }, 300 * 1.26, 100, .26)
+addMajorCredit(-390, 62, COLOR.L, "LARGEONIONS", "FLOORS 1-5")
+addMajorCredit(-130, 62, COLOR.L, "S. ZHANG", "FLOORS 6-8")
+addMajorCredit(0130, 62, COLOR.L, "LAUREN SHENG", "FLOORS 9-10")
+addMajorCredit(0390, 62, COLOR.L, "RICMAN", "CARD ART")
 
-addSection(860)
-
-addText({
-    COLOR.O, "MUSICS BY ",
-    clr.ocelot, "DOKTOROCELOT      ",
-    COLOR.O, "EXTRA MUSIC BY ",
-    clr.rzkj, "RONEZKJ15",
-}, 0, 20, .32)
-
-addText({
-    COLOR.O, "MANY TEXTS BY ",
-    clr.flmk, "FLOMIKEL ",
-    COLOR.O, "& ",
-    clr.sheep, "SPRITZY SHEEP ",
-    COLOR.O, "& ",
-    clr.fcs, "FCSPLAYZ ",
-    COLOR.O, "& ",
-    clr.obs, "OBSIDIAN "
-}, 0, 60, .32)
+addSection(1060)
 
 addText({
     COLOR.O, "FONTS BY ",
     COLOR.L, "ADRIAN FRUTIGER (D-DIN-PRO) ",
     COLOR.O, "& ",
     COLOR.L, "MOONIAK (ABHAYALIBRE)"
-}, 0, 100, .32)
+}, 0, 20, .32)
 
 addText({
     COLOR.O, "SOME ACHV ICONS BY ",
-    COLOR.L, "LORC ",
-    COLOR.O, "& ",
-    COLOR.L, "DELAPOUITE ",
-    COLOR.O, "& ",
-    COLOR.L, "QUOTING ",
+    COLOR.L, "LORC, DELAPOUITE, QUOTING ",
     COLOR.O, "FROM ",
     COLOR.L, "GAME-ICONS.NET"
-}, 0, 140, .32)
+}, 0, 60, .32)
 
-addSection(1050)
+addSection(1170)
 
 addText({ COLOR.O, "ALL PARTICIPANTS" }, 0, 20, .3)
 
