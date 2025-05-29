@@ -5,7 +5,8 @@ require 'Zenitha'
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
 ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText("")
+ZENITHA.setVersionText(require('version').appVer)
+ZENITHA.setShowVersionText(false)
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -956,12 +957,12 @@ function RefreshDaily()
     else
         if MATH.between(dayPast, 1, 2600) then
             LOG('info', "Daily Reset:")
-            LOG('info', "Old ZP & Daily HS: " .. STAT.zp .. "  " .. STAT.dailyHS)
+            LOG('info', "Old ZP / DZP: " .. STAT.zp .. " / " .. STAT.dzp)
             STAT.zp = MATH.expApproach(STAT.zp, 0, dayPast * .026)
             STAT.dzp = MATH.expApproach(STAT.dzp, 0, dayPast * .0626)
             STAT.dailyBest = 0
             STAT.dailyMastered = false
-            LOG('info', "New ZP & Daily HS: " .. STAT.zp .. "  " .. STAT.dailyHS)
+            LOG('info', "New ZP / DZP: " .. STAT.zp .. " / " .. STAT.dzp)
         end
         STAT.lastDay = os.time()
     end
