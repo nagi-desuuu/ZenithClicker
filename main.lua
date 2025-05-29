@@ -120,6 +120,7 @@ TEXTURE = {
     stat = {
         avatar = assets 'stat/avatar.png',
         clicker = assets 'stat/clicker.png',
+        clicker_star = assets 'stat/clicker_star.png',
         rank = {
             [0] = assets 'rank/z.png',
             assets 'rank/d.png',
