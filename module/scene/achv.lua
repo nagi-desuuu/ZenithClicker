@@ -28,6 +28,7 @@ local M = GAME.mod
 ---@field score table
 ---@field type string
 ---@field hidden boolean
+---@field overDev boolean
 
 ---@type (AchvItem | EmptyAchv)[]
 local achvList = {}
@@ -63,7 +64,7 @@ local function refreshAchvList(canShuffle)
         if not A.id then
             table.insert(achvList, { title = A.hide() and "???" or A.title and A.title:upper() })
         else
-            local rank, score, progress, wreath
+            local rank, score, progress, wreath, overDev
             if not ACHV[A.id] then
                 score = "---"
             elseif not A.scoreFull then
@@ -75,7 +76,8 @@ local function refreshAchvList(canShuffle)
                 rank = ACHV[A.id] and 6 or 0
                 progress = 0
             else
-                local r = A.rank(ACHV[A.id] or A.noScore or 0)
+                local selfScore = ACHV[A.id] or A.noScore or 0
+                local r = A.rank(selfScore)
                 rank = floor(r)
                 progress = r < 5 and r % 1 or r % 1 / .9999
                 if r >= 5 then
@@ -87,6 +89,8 @@ local function refreshAchvList(canShuffle)
                     overallProgress.ptGet = overallProgress.ptGet + floor(rank)
                     overallProgress.ptAll = overallProgress.ptAll + 5
                 end
+                local devScore = DevScore[A.id] or A.noScore or 0
+                overDev = selfScore == devScore or A.comp(selfScore, devScore)
             end
             tempText:set(A.desc)
             local hidden = A.hide() and not ACHV[A.id]
@@ -101,6 +105,7 @@ local function refreshAchvList(canShuffle)
                 score = score,
                 type = A.type,
                 hidden = A.hide ~= FALSE,
+                overDev = overDev,
             })
         end
     end
@@ -437,6 +442,7 @@ function scene.draw()
                 else
                     gc_ucs_move('m', i % 2 == 1 and -626 or 26, floor((i - 1) / 2) * 140)
                 end
+
                 -- Bottom rectangle
                 if hyper then
                     if overallProgress.countStart == 6 then
@@ -450,14 +456,17 @@ function scene.draw()
                     gc_setColor(0, 0, 0, .626)
                 end
                 gc_rectangle('fill', 0, 0, 600, 130)
+
                 -- Flashing notice
                 if AchvNotice[a.id] then
                     gc_setColor(1, 1, 1, .1 + .1 * sin(t * (6.2 + M.VL * 4.2)))
                     gc_rectangle('fill', 0, 0, 600, 130)
                 end
+
                 -- Badge base
                 gc_setColor(1, 1, 1)
                 gc_mDraw(texture.frame[a.rank], 65, 65, 0, .42)
+
                 -- Progress ring
                 if a.progress > 0 then
                     if colorRev then gc_setColor(COLOR.lR) end
@@ -476,6 +485,7 @@ function scene.draw()
                     gc_mDraw(texture.ring, 65, 65, 3.1416, .42)
                     gc_stc_stop()
                 end
+
                 -- Glint
                 if a.rank >= 1 then
                     gc_setBlendMode('add', 'alphamultiply')
@@ -503,19 +513,18 @@ function scene.draw()
                     gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
                 end
 
-                -- Texts
-                gc_setColor(AchvData[a.rank].fg2)
-                gc_print(a.score, 130, 35, 0)
-                gc_setColor(colorRev and COLOR.LR or COLOR.L)
-                gc_print(a.name, 130, 7, 0, .7)
-                if a.descWidth < 1050 then
-                    gc_print(a.desc, 130, 77, 0, min(400 / a.descWidth, .4), .4)
-                else
-                    gc_printf(a.desc, 130, 73, 1100, 'left', 0, .4)
-                end
+                -- Credits
                 gc_setColor(colorRev and COLOR.dR or COLOR.LD)
                 gc_print(A.quote, 130, a.descWidth <= 1050 and 98 or 103, 0, .42)
                 gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
+
+                -- Dev
+                if a.overDev then
+                    gc_setColor(1, 1, 1, .626)
+                    gc_mDraw(texture.overDev, 600 - 12, 130 - 18, 0, .1)
+                end
+
+                -- Tags
                 local x = 600 - 15
                 if A.ex then
                     gc_mDraw(texture.extra, x, 15, 0, .42)
@@ -531,6 +540,18 @@ function scene.draw()
                     gc_mDraw(texture.event, x, 15, 0, .2)
                 end
 
+                -- Texts
+                gc_setColor(AchvData[a.rank].fg2)
+                gc_print(a.score, 130, 35, 0)
+                gc_setColor(colorRev and COLOR.LR or COLOR.L)
+                gc_print(a.name, 130, 7, 0, .7)
+                if a.descWidth < 1050 then
+                    gc_print(a.desc, 130, 77, 0, min(400 / a.descWidth, .4), .4)
+                else
+                    gc_printf(a.desc, 130, 73, 1100, 'left', 0, .4)
+                end
+
+                -- Hidden covering
                 if M.IN > 0 and a.hidden then
                     gc_setColor(clr.D)
                     gc_setAlpha(M.IN * (.3 + .1 * sin(ceil(i / 2) * 1.2 - t * 2.6)))

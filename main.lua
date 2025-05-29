@@ -331,6 +331,7 @@ TEXTURE = {
         hidden = assets 'achievements/hidden.png',
         event = assets 'achievements/event.png',
         extra = assets 'achievements/extra.png',
+        overDev = assets 'achievements/verified-halfmod.png',
     },
 
     logo = assets 'icon.png',
