@@ -322,11 +322,16 @@ end
 
 function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1) end
 
+local KBisDown = love.keyboard.isDown
 function scene.keyDown(key)
     HoldingButtons[key] = true
     if GAME.zenithTraveler then
         if key == 'escape' or key == '\\' or key == 'space' then
             switchVisitor(false)
+        elseif KBisDown('lctrl', 'rctrl') and key:match('^f%d%d?$') and tonumber(key:match('%d+')) <= 10 then
+            local floor = tonumber(key:sub(2))
+            GAME.height = Floors[floor - 1].top
+            if floor == 10 then GAME.height = GAME.height + 6.26 end
         end
     else
         if M.EX == 0 then

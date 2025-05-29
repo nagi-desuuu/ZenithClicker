@@ -124,7 +124,7 @@ local function isLegalKey(key)
 end
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if KBisDown('lctrl', 'rctrl') and (key:match("f%d") and tonumber(key:sub(2)) <= 10 or key == 'o' or key == 'pause' or key == 'break') then
+    if KBisDown('lctrl', 'rctrl') and (key:match('^f%d%d?$') and tonumber(key:match('%d+')) <= 10 or key == 'o' or key == 'pause' or key == 'break') then
         if key == 'o' then key = 'fomg' end
         if key == 'pause' or key == 'break' then key = 'tera' end
         TASK.removeTask_code(Task_MusicEnd)
