@@ -45,6 +45,29 @@ local songList = {
 
     fomg = "Ronezkj15 - Floor Omega",
 }
+local bgmColors = {
+    f1 = { COLOR.HEX 'E46A24' },
+    f2 = { COLOR.HEX 'F1CC80' },
+    f3 = { COLOR.HEX '804200' },
+    f4 = { COLOR.HEX '8E1D1D' },
+    f5 = { COLOR.HEX 'B8C1C1' },
+    f6 = { COLOR.HEX 'EAA380' },
+    f7 = { COLOR.HEX '70B5E1' },
+    f8 = { COLOR.HEX 'F16A77' },
+    f9 = { COLOR.HEX '3DA878' },
+    f10 = { COLOR.HEX 'AD80F5' },
+    f1r = { COLOR.HEX 'E46A24' },
+    f2r = { COLOR.HEX 'F1CC80' },
+    f3r = { COLOR.HEX '804200' },
+    f4r = { COLOR.HEX '8E1D1D' },
+    f5r = { COLOR.HEX 'B8C1C1' },
+    f6r = { COLOR.HEX 'EAA380' },
+    f7r = { COLOR.HEX '70B5E1' },
+    f8r = { COLOR.HEX 'F16A77' },
+    f9r = { COLOR.HEX '3DA878' },
+    f10r = { COLOR.HEX 'AD80F5' },
+    fomg = { COLOR.HEX '00437A' },
+}
 
 local function refreshWidgets()
     scene.widgetList.mp_prev5s:setVisible(MusicPlayer)
@@ -262,7 +285,7 @@ function scene.draw()
         if BgmPlaying == 'tera' or BgmPlaying == 'terar' then
             gc_setColor(COLOR.rainbow_light(2.6 * t))
         else
-            gc_setColor(clr.LT)
+            gc_setColor(bgmColors[BgmPlaying] or clr.LT)
         end
         gc_rectangle('fill', sx, 246, len * BGM.tell() / playingBgmLength, 4)
 
