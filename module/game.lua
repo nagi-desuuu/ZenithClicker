@@ -2430,22 +2430,25 @@ function GAME.finish(reason)
             SubmitAchv('zenith_explorer', GAME.roundHeight)
             SubmitAchv('supercharged', GAME.achv_maxChain)
             SubmitAchv('the_spike_of_all_time_minus', GAME.maxSpikeWeak)
-        elseif GAME.comboMP >= 8 and STRING.count(GAME.comboStr, 'r') >= 2 then
-            for mp = GAME.comboMP, 8, -1 do
-                local name = RevSwampName[min(mp, #RevSwampName)]:sub(2, -2):lower()
-                SubmitAchv(name, GAME.roundHeight, mp < GAME.comboMP)
+        else
+            local revCount = STRING.count(GAME.comboStr, 'r')
+            if #hand == 9 or #hand >= 7 and not GAME.comboStr:find('DP') then
+                local sw = {
+                    'swamp_water_lite',
+                    'swamp_water',
+                    'swamp_water_pro',
+                    'swamp_water_x',
+                }
+                local swFin
+                for i = #hand, 7, -1 do
+                    if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight, swFin) or swFin end
+                    swFin = SubmitAchv(sw[i - 6], GAME.roundHeight, swFin) or swFin
+                end
             end
-        elseif #hand == 9 or #hand >= 7 and not TABLE.find(hand, 'DP') then
-            local sw = {
-                'swamp_water_lite',
-                'swamp_water',
-                'swamp_water_pro',
-                'swamp_water_x',
-            }
-            local swFin
-            for i = #hand, 7, -1 do
-                if GAME.anyRev then swFin = SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight, swFin) or swFin end
-                swFin = SubmitAchv(sw[i - 6], GAME.roundHeight, swFin) or swFin
+            if revCount >= 2 and GAME.comboMP >= 8 then
+                for m = GAME.comboMP, 8, -1 do
+                    SubmitAchv(RevSwampName[min(m, #RevSwampName)]:sub(2, -2):lower(), GAME.roundHeight, m < GAME.comboMP)
+                end
             end
         end
         SubmitAchv('zenith_explorer_plus', GAME.roundHeight)
