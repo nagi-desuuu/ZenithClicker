@@ -1171,7 +1171,7 @@ function GAME.refreshModIcon()
                     GAME.modIB:add(
                         quad,
                         modIconPos[i][1] * r, modIconPos[i][2] * r,
-                        0,URM and  x == 3 and .35 or .28, nil, w * .5, w * .5
+                        0, URM and x == 3 and .35 or .28, nil, w * .5, w * .5
                     )
                 end
             end
@@ -1811,6 +1811,8 @@ function GAME.commit(auto)
             GAME.addHeight(attack * GAME.attackMul)
         end
         GAME.addXP(attack + xp)
+
+        if UsingTouch then FloatOnCard = false end
 
         -- rMS little shuffle
         if M.MS == 2 then

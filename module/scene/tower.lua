@@ -17,7 +17,8 @@ local HoldingButtons = HoldingButtons
 
 ForceOldHitbox = false
 RevUnlocked = false
-local usingTouch = MOBILE
+UsingTouch = MOBILE
+local usingTouch = UsingTouch
 local revHold = {}
 
 ---@type Zenitha.Scene
@@ -312,7 +313,10 @@ end
 function scene.touchMove(x, y, dx, dy) scene.mouseMove(x, y, dx, dy) end
 
 function scene.touchDown(x, y, id)
-    usingTouch = true
+    if not usingTouch then
+        usingTouch = true
+        UsingTouch = true
+    end
     local x1, y1 = SCR.xOy_dl:inverseTransformPoint(SCR.xOy:transformPoint(x, y))
     if not GAME.playing then
         if x1 <= 200 and MATH.between(y1, -600, -40) then
