@@ -691,7 +691,7 @@ function scene.draw()
             if GAME.anyRev then
                 local r = (M.AS + 1) * .026
                 gc_setColorMask(false, false, true, true)
-                gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.5), y + .5 * 2.6 * sin(t * 2.5), r * sin(t * 0.5), 1)
+                gc_draw(GAME.modIB, 1490 + 2.0 * sin(t * 1.5), y + .5 * 2.0 * sin(t * 2.5), r * sin(t * 0.5), 1)
                 gc_setColorMask(false, true, false, true)
                 gc_draw(GAME.modIB, 1490 + 2.6 * sin(t * 1.6), y + .5 * 2.6 * sin(t * 2.6), r * sin(t * 0.6), 1)
                 gc_setColorMask(true, false, false, true)

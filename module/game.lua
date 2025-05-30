@@ -1143,26 +1143,23 @@ function GAME.refreshModIcon()
     local quad, k, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
-        k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.872 or #hand[1] == 3 and .7023 or .62
         _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 0, 0,
-            0, k, nil, w * .5, w * .5
+            0, .62, nil, w * .5, w * .5
         )
     elseif #hand == 2 then
         quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig[hand[2]]
-        k = quad == TEXTURE.modQuad_ultra[hand[2]] and 0.7023 or #hand[1] == 3 and .626 or .5
         _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 35, 0,
-            0, k, nil, w * .5, w * .5
+            0, .5, nil, w * .5, w * .5
         )
         quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
-        k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.7023 or #hand[1] == 3 and .626 or .5
         _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, -35, 0,
-            0, k, nil, w * .5, w * .5
+            0, .5, nil, w * .5, w * .5
         )
     else
         local r = 35
@@ -1174,7 +1171,7 @@ function GAME.refreshModIcon()
                     GAME.modIB:add(
                         quad,
                         modIconPos[i][1] * r, modIconPos[i][2] * r,
-                        0, x == 3 and (URM and .26 or .4) or .28, nil, w * .5, w * .5
+                        0,URM and  x == 3 and .35 or .28, nil, w * .5, w * .5
                     )
                 end
             end
