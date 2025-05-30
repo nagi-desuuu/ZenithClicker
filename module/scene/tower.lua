@@ -225,11 +225,13 @@ function scene.load()
 
     GAME.refreshDailyChallengeText()
     TASK.unlock('sure_quit')
+    ZENITHA.setShowVersionText(false)
 end
 
 function scene.unload()
     MSG.clear()
     TEXT:clear()
+    ZENITHA.setShowVersionText(true)
 end
 
 function scene.mouseMove(x, y, _, dy)
