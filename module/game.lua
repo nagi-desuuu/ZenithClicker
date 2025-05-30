@@ -2527,7 +2527,10 @@ function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
     if GAME.playing then
         if TestMode then
-            if KBisDown('[') then GAME.xp = GAME.xp - dt * GAME.rank * 8 end
+            if KBisDown('[') then
+                GAME.xp = GAME.xp - dt * GAME.rank * 8
+                if GAME.xp < 0 then GAME.xpLockTimer = 0 end
+            end
             if KBisDown(']') then GAME.addXP(dt * GAME.rank * 8) end
             if KBisDown('-') then GAME.addHeight(-dt * 260) end
             if KBisDown('=') then GAME.addHeight(dt * 260) end
