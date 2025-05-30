@@ -65,7 +65,7 @@ local function refreshAchvList(canShuffle)
             table.insert(achvList, { title = A.hide() and "???" or A.title and A.title:upper() })
         else
             local rank, score, progress, wreath, overDev
-            if not ACHV[A.id] then
+            if TestMode or not ACHV[A.id] then
                 score = "---"
             elseif not A.scoreFull then
                 score = { COLOR.LL, A.scoreSimp(ACHV[A.id]) }
@@ -73,10 +73,10 @@ local function refreshAchvList(canShuffle)
                 score = { COLOR.LL, A.scoreSimp(ACHV[A.id]), COLOR.DL, "   " .. A.scoreFull(ACHV[A.id]) }
             end
             if A.type == 'issued' then
-                rank = ACHV[A.id] and 6 or 0
+                rank = not TestMode and ACHV[A.id] and 6 or 0
                 progress = 0
             else
-                local selfScore = ACHV[A.id] or A.noScore or 0
+                local selfScore = (not TestMode and ACHV[A.id]) or A.noScore or 0
                 local r = A.rank(selfScore)
                 rank = floor(r)
                 progress = r < 5 and r % 1 or r % 1 / .9999
@@ -180,19 +180,21 @@ local function refreshAchvList(canShuffle)
         end
     end
 
-    overallProgress.ptText = overallProgress.ptGet .. "/" .. overallProgress.ptAll .. " Pts"
-    if overallProgress.ptGet < overallProgress.ptAll then
-        for i = 0, 5 do
-            if overallProgress.rank[i] > 0 and not (i == 0 and overallProgress.rank[i] > 99) then
-                overallProgress.countStart = i
-                break
+    if not TestMode then
+        overallProgress.ptText = overallProgress.ptGet .. "/" .. overallProgress.ptAll .. " Pts"
+        if overallProgress.ptGet < overallProgress.ptAll then
+            for i = 0, 5 do
+                if overallProgress.rank[i] > 0 and not (i == 0 and overallProgress.rank[i] > 99) then
+                    overallProgress.countStart = i
+                    break
+                end
             end
-        end
-    else
-        for i = 0, 6 do
-            if overallProgress.wreath[i] > 0 then
-                overallProgress.countStart = i
-                break
+        else
+            for i = 0, 6 do
+                if overallProgress.wreath[i] > 0 then
+                    overallProgress.countStart = i
+                    break
+                end
             end
         end
     end
@@ -580,7 +582,7 @@ function scene.draw()
     end
 
     -- Badge (wreath) count
-    if STAT.maxFloor >= 10 and not whenItsReady then
+    if STAT.maxFloor >= 10 and not whenItsReady and not TestMode then
         gc_replaceTransform(SCR.xOy_ur)
         if overallProgress.ptGet < overallProgress.ptAll then
             for i = overallProgress.countStart, 5 do gc_print(overallProgress.rank[i], -1100 + 40 + 140 * i) end
