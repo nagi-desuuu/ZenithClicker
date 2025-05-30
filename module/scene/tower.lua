@@ -1,3 +1,4 @@
+local next = next
 local max, min = math.max, math.min
 local sin, cos = math.sin, math.cos
 local abs = math.abs
@@ -267,7 +268,10 @@ end
 
 function scene.mouseDown(x, y, k)
     HoldingButtons['mouse' .. k] = true
-    if GAME.zenithTraveler then return switchVisitor(false) end
+    if GAME.zenithTraveler then
+        switchVisitor(false)
+        return true
+    end
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return true end
 
@@ -310,19 +314,35 @@ function scene.touchMove(x, y, dx, dy) scene.mouseMove(x, y, dx, dy) end
 function scene.touchDown(x, y, id)
     usingTouch = true
     local x1, y1 = SCR.xOy_dl:inverseTransformPoint(SCR.xOy:transformPoint(x, y))
-    if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
-        revHold[id] = true
-        return
+    if not GAME.playing then
+        if x1 <= 200 and MATH.between(y1, -600, -40) then
+            revHold[id] = true
+            return
+        elseif next(revHold) then
+            scene.mouseDown(x, y, 2)
+            return
+        end
     end
-    scene.mouseDown(x, y, next(revHold) and 2 or 1)
+
+    HoldingButtons['touch' .. tostring(id)] = true
+    if M.EX == 0 then
+        SFX.play('move')
+        mouseTrigger(x, y, next(revHold) and 2 or 1)
+    else
+        SFX.play('rotate')
+    end
 end
 
 function scene.touchUp(x, y, id)
     if revHold[id] then
-        revHold[id] = false
+        revHold[id] = nil
         return
     end
-    scene.mouseUp(x, y, next(revHold) and 2 or 1)
+    if not HoldingButtons['touch' .. tostring(id)] then return end
+    HoldingButtons['touch' .. tostring(id)] = nil
+    if M.EX > 0 then
+        mouseTrigger(x, y, next(revHold) and 2 or 1)
+    end
 end
 
 local KBisDown = love.keyboard.isDown
@@ -1329,11 +1349,22 @@ function scene.overDraw()
         end
     end
 
-    -- Test mode
+    -- Test
     if TestMode then
+        -- Watermark
         gc_replaceTransform(SCR.xOy_u)
         gc_setColor(1, 1, 1, .26)
         gc_mDraw(TEXTS.test, -260, 260, -.16 + sin(t * 2.6) * .0626, 8.72)
+
+        -- Show Touch
+        gc_replaceTransform(SCR.xOy)
+        gc_setColor(1, 1, 1, .5)
+        gc_setLineWidth(4)
+        for _, id in next, love.touch.getTouches() do
+            local x, y = love.touch.getPosition(id)
+            x, y = SCR.xOy:inverseTransformPoint(x, y)
+            gc_circle('line', x, y, 80)
+        end
     end
 
     -- Ultra cover
