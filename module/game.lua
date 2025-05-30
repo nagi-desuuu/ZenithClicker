@@ -2127,7 +2127,7 @@ function GAME.finish(reason)
         C.burn = false
         C.charge = 0
     end
-    FloatOnCard = false
+    FloatOnCard = nil
     GAME.refreshLayout()
 
     GAME.playing = false

@@ -83,7 +83,7 @@ local function mouseMove(x, y)
     end
 end
 
-local function mousePress(x, y, k)
+local function mouseTrigger(x, y, k)
     SetMouseVisible(true)
     mouseMove(x, y)
     local C = Cards[FloatOnCard]
@@ -97,7 +97,7 @@ local function mousePress(x, y, k)
     end
 end
 
-local function keyPress(key)
+local function keyTrigger(key)
     local bindID = TABLE.find(STAT.keybind, key)
     if bindID and bindID <= 18 and (M.AS > 0 or (not GAME.playing and (bindID == 8 or bindID == 17))) then
         if bindID > 9 then bindID = bindID - 9 end
@@ -143,7 +143,7 @@ local function keyPress(key)
             if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
         elseif bindID == 21 or bindID == 22 then
             GAME.nixPrompt('keep_no_keyboard')
-            scene[M.EX == 0 and 'mouseDown' or 'mouseClick'](MX, MY, bindID == 21 and 1 or 2)
+            scene[M.EX == 0 and 'mouseDown' or 'mouseUp'](MX, MY, bindID == 21 and 1 or 2)
             if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
         elseif bindID == 19 then
             GAME.nixPrompt('keep_no_keyboard')
@@ -266,20 +266,19 @@ end
 function scene.mouseDown(x, y, k)
     HoldingButtons['mouse' .. k] = true
     if GAME.zenithTraveler then return switchVisitor(false) end
-    mouseMove(x, y)
     GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return true end
 
     if getBtnPressed() > 1 + (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return true end
     if M.EX == 0 then
         SFX.play('move')
-        mousePress(x, y, k)
+        mouseTrigger(x, y, k)
     else
         SFX.play('rotate')
     end
 end
 
-function scene.mouseClick(x, y, k)
+function scene.mouseUp(x, y, k)
     if not HoldingButtons['mouse' .. k] then return end
     HoldingButtons['mouse' .. k] = nil
     if GAME.zenithTraveler then return end
@@ -288,7 +287,7 @@ function scene.mouseClick(x, y, k)
 
     if getBtnPressed() > (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return end
     if M.EX > 0 then
-        mousePress(x, y, k)
+        mouseTrigger(x, y, k)
     end
 end
 
@@ -316,11 +315,13 @@ function scene.touchDown(x, y, id)
     scene.mouseDown(x, y, next(revHold) and 2 or 1)
 end
 
-function scene.touchUp(_, _, id)
-    revHold[id] = nil
+function scene.touchUp(x, y, id)
+    if revHold[id] then
+        revHold[id] = false
+        return
+    end
+    scene.mouseUp(x, y, next(revHold) and 2 or 1)
 end
-
-function scene.touchClick(x, y) scene.mouseClick(x, y, next(revHold) and 2 or 1) end
 
 local KBisDown = love.keyboard.isDown
 function scene.keyDown(key)
@@ -335,7 +336,7 @@ function scene.keyDown(key)
         end
     else
         if M.EX == 0 then
-            keyPress(key)
+            keyTrigger(key)
         end
         ZENITHA.setCursorVis(true)
     end
@@ -347,7 +348,7 @@ function scene.keyUp(key)
     HoldingButtons[key] = nil
     if GAME.zenithTraveler then return end
     if M.EX > 0 then
-        keyPress(key)
+        keyTrigger(key)
     end
 end
 
