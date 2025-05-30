@@ -1122,7 +1122,7 @@ Achievements = {
         quote = [[Supercharged B75%]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.2f quests/s", 40 / time) end,
+        scoreFull = function(time) return string.format("%.2f quests/s", 75 / time) end,
         rank = numberRankRev(150, 115, 90, 70, 60, 50, 42),
     },
     { -- the_perfectionist
