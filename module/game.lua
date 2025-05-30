@@ -1140,18 +1140,19 @@ function GAME.refreshModIcon()
     GAME.modIB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    local quad, k, w, _
     if #hand == 1 then
-        local quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
-        local k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.872 or #hand[1] == 3 and .7023 or .62
-        local _, _, w = quad:getViewport()
+        quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
+        k = quad == TEXTURE.modQuad_ultra[hand[1]] and 0.872 or #hand[1] == 3 and .7023 or .62
+        _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 0, 0,
             0, k, nil, w * .5, w * .5
         )
     elseif #hand == 2 then
-        local quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig[hand[2]]
-        local k = quad == TEXTURE.modQuad_ultra[hand[2]] and 0.7023 or #hand[1] == 3 and .626 or .5
-        local _, _, w = quad:getViewport()
+        quad = URM and TEXTURE.modQuad_ultra[hand[2]] or TEXTURE.modQuad_ig[hand[2]]
+        k = quad == TEXTURE.modQuad_ultra[hand[2]] and 0.7023 or #hand[1] == 3 and .626 or .5
+        _, _, w = quad:getViewport()
         GAME.modIB:add(
             quad, 35, 0,
             0, k, nil, w * .5, w * .5
@@ -1168,8 +1169,8 @@ function GAME.refreshModIcon()
         for x = 3, 2, -1 do
             for i = #hand, 1, -1 do
                 if #hand[i] == x then
-                    local quad = x == 3 and URM and TEXTURE.modQuad_ultra[hand[i]] or TEXTURE.modQuad_ig[hand[i]]
-                    local _, _, w = quad:getViewport()
+                    quad = x == 3 and URM and TEXTURE.modQuad_ultra[hand[i]] or TEXTURE.modQuad_ig[hand[i]]
+                    _, _, w = quad:getViewport()
                     GAME.modIB:add(
                         quad,
                         modIconPos[i][1] * r, modIconPos[i][2] * r,
@@ -1185,29 +1186,37 @@ function GAME.refreshResultModIcon()
     GAME.resIB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    local quad, k, w, _
     if #hand == 1 then
+        quad = URM and TEXTURE.modQuad_ultra_res[hand[1]] or TEXTURE.modQuad_res[hand[1]]
+        _, _, w = quad:getViewport()
         GAME.resIB:add(
-            TEXTURE.modQuad_res[hand[1]], 0, 0,
-            0, #hand[1] == 3 and .626 or .5, nil, 183 * .5, 183 * .5
+            quad, 0, 0,
+            0, #hand[1] == 3 and .626 or .5, nil, w * .5, w * .5
         )
     elseif #hand == 2 then
+        quad = URM and TEXTURE.modQuad_ultra_res[hand[2]] or TEXTURE.modQuad_res[hand[2]]
+        _, _, w = quad:getViewport()
         GAME.resIB:add(
-            TEXTURE.modQuad_res[hand[2]], 35, 0,
-            0, #hand[2] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
+            quad, 35, 0,
+            0, #hand[2] == 3 and .567 or .432, nil, w * .5, w * .5
         )
+        quad = URM and TEXTURE.modQuad_ultra_res[hand[1]] or TEXTURE.modQuad_res[hand[1]]
+        _, _, w = quad:getViewport()
         GAME.resIB:add(
-            TEXTURE.modQuad_res[hand[1]], -35, 0,
-            0, #hand[1] == 3 and .567 or .432, nil, 183 * .5, 183 * .5
+            quad, -35, 0,
+            0, #hand[1] == 3 and .567 or .432, nil, w * .5, w * .5
         )
     else
         local r = 35
         for x = 3, 2, -1 do
             for i = #hand, 1, -1 do
                 if #hand[i] == x then
+                    quad = URM and TEXTURE.modQuad_ultra_res[hand[i]] or TEXTURE.modQuad_res[hand[i]]
+                    _, _, w = quad:getViewport()
                     GAME.resIB:add(
-                        TEXTURE.modQuad_res[hand[i]],
-                        modIconPos[i][1] * r, modIconPos[i][2] * r,
-                        0, x == 3 and .36 or .3, nil, 183 * .5, 183 * .5
+                        quad, modIconPos[i][1] * r, modIconPos[i][2] * r,
+                        0, x == 3 and .36 or .3, nil, w * .5, w * .5
                     )
                 end
             end
