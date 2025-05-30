@@ -543,6 +543,8 @@ scene.widgetList = {
                         refreshWidgets()
                     end
                     refreshSongInfo()
+                elseif data == 'alt' then
+                    UseAltName()
                 else
                     local msg = "Invalid code '" .. data .. "' in clipboard."
                     if MATH.roll(.26) then

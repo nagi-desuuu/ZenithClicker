@@ -1539,11 +1539,52 @@ function Initialize(save)
     end
 end
 
+function UseAltName()
+    -- Shhhhhh! Let's keep this a secret before 2026.4.1 ...
+    -- I know it's a long time, can we do it? We'll see!
+    TABLE.update(ModData, {
+        fullName = {
+            EX = "< MASTER >",
+            NH = "< UNCANCELLATION >",
+            MS = "< CHAOS >",
+            GV = "< DECLINE >",
+            VL = "< UNSTABILITY >",
+            DH = "< DOUBLE HOLE >",
+            IN = "< HIDING >",
+            AS = "< ROLLING >",
+            DP = "< ROMANCE >",
+        },
+        adj = {
+            EX = "MASTER",
+            NH = "UNCANCEL",
+            MS = "CHAOTIC",
+            GV = "DECLINED",
+            VL = "UNSTABLE",
+            DH = "DOUBLE HOLE",
+            IN = "HIDDEN",
+            AS = "ROLLING",
+            DP = "ROMANTIC",
+        },
+        noun = {
+            EX = "MASTER",
+            NH = "UNCANCELLATION",
+            MS = "CHAOS",
+            GV = "DECLINE",
+            VL = "UNSTABILITY",
+            DH = "DOUBLE HOLE",
+            IN = "HIDING",
+            AS = "ROLLING",
+            DP = "ROMANCE",
+        },
+    })
+end
+
 Initialize()
 RefreshDaily()
 TABLE.update(TextColor, BaseTextColor)
 TABLE.update(ShadeColor, BaseShadeColor)
 GAME.refreshCurrentCombo()
+if os.date("%m%d") == "0401" then UseAltName() end
 
 if SYSTEM == 'Web' then
     _G[('DiscordRPC')] = { update = NULL, setEnable = NULL }
