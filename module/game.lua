@@ -2382,12 +2382,12 @@ function GAME.finish(reason)
             end
         end
 
-        SubmitAchv('contender', STAT.totalGame, true)
-        SubmitAchv('clicker', STAT.totalFlip, true)
-        SubmitAchv('elegance', STAT.totalPerfect, true)
-        SubmitAchv('garbage_offensive', STAT.totalAttack, true)
-        SubmitAchv('tower_climber', STAT.totalHeight, true)
-        SubmitAchv('speed_player', STAT.totalGiga, true)
+        SubmitAchv('contender', STAT.totalGame, true, true)
+        SubmitAchv('clicker', STAT.totalFlip, true, true)
+        SubmitAchv('elegance', STAT.totalPerfect, true, true)
+        SubmitAchv('garbage_offensive', STAT.totalAttack, true, true)
+        SubmitAchv('tower_climber', STAT.totalHeight, true, true)
+        SubmitAchv('speed_player', STAT.totalGiga, true, true)
         _t = 0
         for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
         SubmitAchv('zenith_speedrunner', _t, true)

@@ -542,6 +542,7 @@ for i = 0, 6 do MSG.addCategory(AchvData[i].id, AchvData[i].bg, COLOR.L, TEXTURE
 local msgTime = 0
 local bufferedMsg = {}
 
+local saveAchvTimer = false ---@type number | false
 function IssueAchv(id, silent)
     if TestMode then return end
     local A = Achievements[id]
@@ -560,13 +561,13 @@ function IssueAchv(id, silent)
 
     ACHV[id] = 0
     AchvNotice[id] = true
-    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
+    saveAchvTimer = .26
 
     return true
 end
 
 ---@return true? success
-function SubmitAchv(id, score, silent)
+function SubmitAchv(id, score, silent, realSilent)
     if TestMode then return end
     local A = Achievements[id]
     if not A then return end
@@ -590,8 +591,10 @@ function SubmitAchv(id, score, silent)
     end
 
     ACHV[id] = score
-    AchvNotice[id] = true
-    TWEEN.new():setOnFinish(SaveAchv):setDuration(.26):setUnique('achv_saver'):run()
+    if not realSilent then
+        AchvNotice[id] = true
+    end
+    saveAchvTimer = .26
 
     return true
 end
@@ -1366,6 +1369,14 @@ function Daemon_Fast()
 
         if not STAT.syscursor then
             pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
+        end
+
+        if saveAchvTimer then
+            saveAchvTimer = saveAchvTimer - dt
+            if saveAchvTimer <= 0 then
+                saveAchvTimer = false
+                SaveAchv()
+            end
         end
 
         for k, v in next, uVLpool do
