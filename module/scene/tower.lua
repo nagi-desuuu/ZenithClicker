@@ -145,7 +145,8 @@ local function keyTrigger(key)
             if not GAME.achv_noKeyboardH then GAME.achv_noKeyboardH = GAME.roundHeight end
         elseif bindID == 21 or bindID == 22 then
             GAME.nixPrompt('keep_no_keyboard')
-            scene[M.EX == 0 and 'mouseDown' or 'mouseUp'](MX, MY, bindID == 21 and 1 or 2)
+            scene.mouseDown(MX, MY, bindID == 21 and 1 or 2)
+            scene.mouseUp(MX, MY, bindID == 21 and 1 or 2)
             if not GAME.achv_noKeyboardH then GAME.achv_noKeyboardH = GAME.roundHeight end
         elseif bindID == 19 then
             GAME.nixPrompt('keep_no_keyboard')
