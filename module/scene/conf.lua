@@ -27,6 +27,7 @@ local songList = {
     f8 = "Dr Ocelot - Chrono Flux",
     f9 = "Dr Ocelot - Broken Record",
     f10 = "Dr Ocelot - Divine Confirmation",
+    -- f10 = "petrtech - Deified Validation",
     tera = "Dr Ocelot - Schnellfeuer BULLET",
     f1ex = "Dr Ocelot - Infernal Registration",
 
@@ -40,7 +41,7 @@ local songList = {
     f7r = "Dr Ocelot - Cryptic Heresy",
     f8r = "Dr Ocelot - Futile Ambition",
     f9r = "Dr Ocelot - Mere Sacrifices",
-    f10r = "Dr Ocelot - False God",
+    f10r = "petrtech - Deified Validation",
     terar = "Dr Ocelot - Kugelhagel OVERDRIVE",
 
     fomg = "Ronezkj15 - Floor Omega",
