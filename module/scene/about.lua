@@ -52,7 +52,7 @@ end
 addMajorCredit(0000, 060, { COLOR.HEX '80CCFF' }, "MRZ", "FOUNDER & LEAD PRODUCER", "Programming, Game Design, General Development")
 addMajorCredit(-480, 160, { COLOR.HEX 'DDFF80' }, "DJ  ASRIEL", "ASSISTING GRAPHICS DESIGN", "Background Reconstruction & Game Icon")
 addMajorCredit(-160, 160, { COLOR.HEX '77DD66' }, "CREEPERCRAFTYT", "ASSISTING GRAPHICS DESIGN", "Mod Icons Remake")
-addMajorCredit(0160, 160, { COLOR.HEX 'B966E3' }, "PETRTECH", "MUSIC", "F10-R Music")
+addMajorCredit(0160, 160, { COLOR.HEX 'B966E3' }, "PETRTECH", "MUSIC", "F10 Music")
 addMajorCredit(0480, 160, { COLOR.HEX '9DBCFF' }, "RONEZKJ15", "MUSIC", "Extra Music")
 addMajorCredit(-320, 260, { COLOR.HEX 'DD99FF' }, "OSK", "FOUNDER & LEAD PRODUCER", "of the Original Game: TETR.IO")
 addMajorCredit(0000, 260, { COLOR.HEX 'FF99CC' }, "DOKTOROCELOT", "AUDIO & MUSIC", "of both TETR.IO and Zenith Clicker")

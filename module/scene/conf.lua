@@ -26,8 +26,7 @@ local songList = {
     f7 = "Dr Ocelot - Cryptic Chemistry",
     f8 = "Dr Ocelot - Chrono Flux",
     f9 = "Dr Ocelot - Broken Record",
-    f10 = "Dr Ocelot - Divine Confirmation",
-    -- f10 = "petrtech - Deified Validation",
+    f10 = "petrtech - Deified Validation",
     tera = "Dr Ocelot - Schnellfeuer BULLET",
     f1ex = "Dr Ocelot - Infernal Registration",
 
