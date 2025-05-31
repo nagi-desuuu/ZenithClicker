@@ -268,6 +268,10 @@ local function getBtnPressed()
 end
 
 function scene.mouseDown(x, y, k)
+    if usingTouch then
+        usingTouch = false
+        UsingTouch = false
+    end
     HoldingButtons['mouse' .. k] = true
     if GAME.zenithTraveler then
         switchVisitor(false)
