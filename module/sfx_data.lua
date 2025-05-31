@@ -203,7 +203,7 @@ return {
     -- social_close_minor=          {54,  0.2},
     -- social_offline=              {420, 1},
     -- social_online=               {58,  0.96},
-    -- social_dm=                   {699, 0.19},
+    social_dm = { 699, 0.19 },
     social_invite = { 367, 2.12 },
 
     -- boardappear=                 {0,   1.6},

@@ -489,6 +489,11 @@ scene.widgetList = {
         sound_release = 'menuclick',
         onClick = function()
             -- MSG.clear()
+            if TestMode then
+                SFX.play('staffwarning')
+                MSG('dark', "You are not a good person.")
+                return
+            end
             if TASK.lock('export', 2.6) then
                 SFX.play('notify')
                 MSG('dark', "Export your progress to clipboard?\nPress again to confirm", 2.6)
@@ -544,6 +549,7 @@ scene.widgetList = {
                     end
                     refreshSongInfo()
                 elseif data == 'alt' then
+                    SFX.play('social_dm')
                     UseAltName()
                 else
                     local msg = "Invalid code '" .. data .. "' in clipboard."
@@ -690,7 +696,7 @@ scene.widgetList = {
 
     -- KEYBIND
     WIDGET.new {
-        name = 'export', type = 'button',
+        name = 'keybind', type = 'button',
         x = baseX + 740, y = baseY + 790, w = 260, h = 50,
         color = clr.L,
         fontSize = 30, textColor = clr.LT, text = "REBIND  KEY",
