@@ -1329,9 +1329,9 @@ end
 function GAME.refreshSectionTime()
     local secTimeStr = ""
     for i = 1, #GAME.secTime do
-        secTimeStr = secTimeStr .. ("%sF%d%s%s %s %.3f″"):format(
+        secTimeStr = secTimeStr .. ("%sF%s%s%s %s %.3f″"):format(
             (i > 1 and "\n" or ""),
-            i == 11 and "Ω" or i,
+            i == 11 and "Ω" or tostring(i),
             i == GAME.gigaspeedFloor and "g" or "",
             i == GAME.teraspeedFloor and "t" or "",
             not GAME.playing and i == #GAME.secTime and "x" or "-",

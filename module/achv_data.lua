@@ -16,11 +16,13 @@ end
 local function numberRank(...)
     local l = { ... }
     assert(#l == 7)
+    for i = 1, 6 do assert(l[i] <= l[i + 1], "Ranks must be in ascending order") end
     return function(s) return min(6 * ilLerp(l, s), 5.9999) end
 end
 local function numberRankRev(...)
     local l = TABLE.reverse { ... }
     assert(#l == 7)
+    for i = 1, 6 do assert(l[i] <= l[i + 1], "Ranks must be in descending order") end
     return function(s) return min(6 * (1 - ilLerp(l, s)), 5.9999) end
 end
 local function heightFloor(h)
@@ -87,10 +89,10 @@ Achievements = {
     { -- garbage_offensive
         id = 'garbage_offensive',
         name = "Garbage Offensive",
-        desc = [[attacks sent]],
+        desc = [[attack sent]],
         quote = [[The act of violence and communication of spirit.]],
-        scoreSimp = function(n) return string.format("%.2fk Quests", n / 1000) end,
-        rank = numberRank(0, 12600, 26e3, 62e3, 126e3, 26e3, 620e3),
+        scoreSimp = function(n) return string.format("%.2fk Attack", n / 1000) end,
+        rank = numberRank(0, 12600, 26e3, 62e3, 126e3, 260e3, 620e3),
         type = 'unranked',
     },
     { -- tower_climber
