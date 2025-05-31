@@ -524,12 +524,6 @@ function scene.draw()
                 gc_print(A.quote, 130, a.descWidth <= 1050 and 98 or 103, 0, .42)
                 gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
 
-                -- Dev
-                if a.overDev then
-                    gc_setColor(1, 1, 1, .626)
-                    gc_mDraw(texture.overDev, 600 - 12, 130 - 18, 0, .1)
-                end
-
                 -- Tags
                 local x = 600 - 15
                 if A.ex then
@@ -552,6 +546,11 @@ function scene.draw()
                     x = x - 30
                 end
 
+                -- Dev
+                if a.overDev then
+                    gc_setColor(1, 1, 1, .626)
+                    gc_mDraw(texture.overDev, 600 - 12, 130 - 18, 0, .1)
+                end
                 -- Texts
                 gc_setColor(AchvData[a.rank].fg2)
                 gc_print(a.score, 130, 35, 0)
