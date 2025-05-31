@@ -83,11 +83,13 @@ local function refreshAchvList(canShuffle)
                 if r >= 5 then
                     wreath = floor(MATH.clampInterpolate(0, 0, .9999, 6, r % 1))
                 end
-                if A.type == 'competitive' then
+                if A.type ~= 'issued' then
                     overallProgress.rank[rank] = overallProgress.rank[rank] + 1
                     if wreath then overallProgress.wreath[wreath] = overallProgress.wreath[wreath] + 1 end
-                    overallProgress.ptGet = overallProgress.ptGet + floor(rank)
-                    overallProgress.ptAll = overallProgress.ptAll + 5
+                    if A.type == 'competitive' then
+                        overallProgress.ptGet = overallProgress.ptGet + floor(rank)
+                        overallProgress.ptAll = overallProgress.ptAll + 5
+                    end
                 end
                 local devScore = DevScore[A.id] or A.noScore or 0
                 overDev = selfScore == devScore or A.comp(selfScore, devScore)
@@ -242,9 +244,11 @@ local function refreshAchivement()
     submit('multitasker', maxMMP)
     submit('effective', maxZP)
     submit('zenith_explorer', BEST.highScore[''] or 0)
+    submit('zenith_explorer', BEST.highScore[''] or 0)
     submit('zenith_speedrun', BEST.speedrun[''] or 2600)
     submit('zenith_explorer_plus', TABLE.maxAll(BEST.highScore) or 0)
     submit('zenith_speedrun_plus', TABLE.minAll(BEST.speedrun) or 2600)
+    submit('tower_climber', STAT.totalHeight, true)
     if STAT.maxHeight >= 6200 then issue('skys_the_limit') end
     if STAT.minTime <= 76.2 then issue('superluminal') end
     local _t
@@ -536,10 +540,16 @@ function scene.draw()
                     gc_mDraw(texture.hidden, x, 15, 0, .2)
                     x = x - 30
                 end
+                if A.type == 'event' then
+                    gc_mDraw(texture.event, x, 15, 0, .2)
+                    x = x - 30
+                end
                 if A.type == 'competitive' then
                     gc_mDraw(texture.competitive, x, 15, 0, .2)
-                elseif A.type == 'event' then
-                    gc_mDraw(texture.event, x, 15, 0, .2)
+                    x = x - 30
+                else
+                    gc_mDraw(texture.unranked, x, 15, 0, .2)
+                    x = x - 30
                 end
 
                 -- Texts

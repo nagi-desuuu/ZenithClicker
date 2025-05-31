@@ -2371,6 +2371,7 @@ function GAME.finish(reason)
             end
         end
 
+        SubmitAchv('tower_climber', STAT.totalHeight, true)
         _t = 0
         for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
         SubmitAchv('zenith_speedrunner', _t, true)

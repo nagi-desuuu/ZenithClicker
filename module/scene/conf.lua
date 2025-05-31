@@ -41,7 +41,7 @@ local songList = {
     f7r = "Dr Ocelot - Cryptic Heresy",
     f8r = "Dr Ocelot - Futile Ambition",
     f9r = "Dr Ocelot - Mere Sacrifices",
-    f10r = "petrtech - Deified Validation",
+    f10r = "petrtech - Pseudo-Apotheosis",
     terar = "Dr Ocelot - Kugelhagel OVERDRIVE",
 
     fomg = "Ronezkj15 - Floor Omega",

@@ -50,7 +50,7 @@ end
 ---@field scoreSimp? fun(score):string
 ---@field scoreFull? fun(score):string
 ---@field rank? 'floor' | fun(score):number
----@field type? 'competitive' | 'issued' | 'event'
+---@field type? 'competitive' | 'unranked' | 'issued' | 'event'
 ---@field hide? fun():boolean
 ---@field notUsed? true
 
@@ -215,13 +215,23 @@ Achievements = {
         scoreSimp = function(spike) return floor(spike) .. " Spike" end,
         rank = numberRank(0, 12, 20, 26, 32, 38, 42),
     },
+    { -- tower_climber
+        id = 'tower_climber',
+        name = "Tower Climber",
+        desc = [[Meters climbed]],
+        quote = [["Have I been here before..?"]],
+        scoreSimp = function(h) return string.format("%.2fkm", h / 1000) end,
+        rank = numberRank(2600, 6200, 12000, 26000, 62000, 120000, 260000),
+        type = 'unranked',
+    },
     { -- vip_list
         id = 'vip_list',
         name = "VIP List",
         desc = [[Number of daily combos mastered containing any reversed mod]],
         quote = [[Unparalleled luxury for a select few.]],
         scoreSimp = function(day) return day == 1 and "1 Day" or day .. " Days" end,
-        rank = numberRank(0, 0, 0, 1, 2, 4, 6),
+        rank = numberRank(0, 0, 1, 2, 4, 7, 10),
+        type = 'unranked',
         hide = TRUE,
     },
 
@@ -613,7 +623,7 @@ Achievements = {
         id = 'INMSrDHrDP',
         name = "Uneasy Alliance",
         desc = [[HFD with MS rDH IN rDP mods]],
-        quote = [[Held together by a single string of lies and sins]],
+        quote = [[Held together by a single string of lies and sins.]],
         credit = "@Tizago",
         rank = floorRank(1, 3, 4, 5, 6, 7, 8),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.DP == 0 end,

@@ -177,8 +177,8 @@ TEXTURE = {
             divine_speedrunner = aq2(5, 1),
             the_spike_of_all_time = aq(4, 2),
             the_spike_of_all_time_minus = aq(4, 2),
+            tower_climber = aq(8, 2),
             vip_list = aq(6, 6),
-            clock_out = aq2(7, 9),
 
             EX = aq(3, 3),
             NH = aq(7, 3),
@@ -309,6 +309,7 @@ TEXTURE = {
             subjugation = aq2(2, 7),
             omnipotence = aq2(2, 7),
             clicking_champion = aq2(8, 6),
+            clock_out = aq2(7, 9),
 
             identity = aq(6, 6),
             respectful = aq(2, 1),
@@ -342,6 +343,7 @@ TEXTURE = {
         competitive = assets 'achievements/competitive.png',
         hidden = assets 'achievements/hidden.png',
         event = assets 'achievements/event.png',
+        unranked = assets 'achievements/unranked.png',
         extra = assets 'achievements/extra.png',
         overDev = assets 'achievements/verified-halfmod.png',
     },
