@@ -1284,6 +1284,14 @@ Achievements = {
         hide = function() return STAT.totalGiga == 0 end,
         type = 'issued',
     },
+    { -- the_harbinger
+        id = 'the_harbinger',
+        name = "The Harbinger",
+        desc = [[Reach floor 5 in all nine reversed mods]],
+        quote = [[Weathering the storm of an unfavorable future.]],
+        hide = TRUE,
+        type = 'issued',
+    },
     { -- final_defiance
         ex = true,
         id = 'final_defiance',
@@ -1291,14 +1299,6 @@ Achievements = {
         desc = [[Meet the final fatigue effect]],
         quote = [["This is not the end!"]],
         credit = "@Flowerling",
-        type = 'issued',
-    },
-    { -- the_harbinger
-        id = 'the_harbinger',
-        name = "The Harbinger",
-        desc = [[Reach floor 5 in all nine reversed mods]],
-        quote = [[Weathering the storm of an unfavorable future.]],
-        hide = TRUE,
         type = 'issued',
     },
     { -- speedrun_speedrunning

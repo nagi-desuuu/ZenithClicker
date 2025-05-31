@@ -202,8 +202,8 @@ local function refreshAchvList(canShuffle)
     end
 end
 
-local function submit(id, score, silent)
-    if SubmitAchv(id, score, silent) then TASK.yieldT(0.1) end
+local function submit(id, score, silent, realSilent)
+    if SubmitAchv(id, score, silent, realSilent) then TASK.yieldT(0.1) end
 end
 local function issue(id, silent)
     if IssueAchv(id, silent) then TASK.yieldT(0.1) end
