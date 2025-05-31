@@ -34,7 +34,8 @@ local ins, rem = table.insert, table.remove
 ---@field totalAttack number
 ---@field heightBonus number
 ---@field peakRank number
----@field rankTimer integer[]
+---@field rankTimer number[]
+---@field achv_doublePass number
 ---
 ---@field time number
 ---@field gigaTime false | number
@@ -166,16 +167,16 @@ local GAME = {
     invisCard = false,
     invisUI = false,
 
-    achv_perfectionistH = nil,
+    achv_perfectH = nil,
     achv_demoteH = nil,
     achv_carriedH = nil,
-    achv_arroganceH = nil,
-    achv_powerlessH = nil,
-    achv_patienceH = nil,
-    achv_spotlessH = nil,
-    achv_talentlessH = nil,
-    achv_honeymoonH = nil,
-    achv_breakupH = nil,
+    achv_noPerfectH = nil,
+    achv_noChargeH = nil,
+    achv_noManualCommitH = nil,
+    achv_noDamageH = nil,
+    achv_noKeyboardH = nil,
+    achv_shareModH = nil,
+    achv_noShareModH = nil,
     achv_protectH = nil,
     achv_maxChain = nil,
     achv_maxReviveH = nil,
@@ -186,6 +187,7 @@ local GAME = {
     achv_felMagicBurnt = nil,
     achv_felMagicQuest = nil,
     achv_resetCount = nil,
+    achv_noResetH = nil,
     achv_obliviousQuest = nil,
 }
 
@@ -728,12 +730,12 @@ function GAME.takeDamage(dmg, reason, toAlly)
     )
 
     GAME.achv_totalDmg = GAME.achv_totalDmg + dmg
-    if not GAME.achv_perfectionistH then
-        GAME.achv_perfectionistH = GAME.roundHeight
+    if not GAME.achv_perfectH then
+        GAME.achv_perfectH = GAME.roundHeight
         if GAME.totalQuest >= 26 then SFX.play('btb_break') end
     end
-    if not GAME.achv_spotlessH then
-        GAME.achv_spotlessH = GAME.roundHeight
+    if not GAME.achv_noDamageH then
+        GAME.achv_noDamageH = GAME.roundHeight
         if GAME.totalQuest >= 26 then SFX.play('btb_break') end
     end
     if not GAME.achv_protectH and GAME.comboStr == 'rDP' and min(GAME.life, GAME.life2) < 10 then
@@ -1457,7 +1459,12 @@ function GAME.cancelAll(instant)
 end
 
 function GAME.task_cancelAll(instant)
-    if GAME.playing then GAME.achv_resetCount = GAME.achv_resetCount + 1 end
+    if GAME.playing then
+        if GAME.achv_resetCount == 0 then
+            GAME.achv_noResetH = GAME.roundHeight
+        end
+        GAME.achv_resetCount = GAME.achv_resetCount + 1
+    end
     local spinMode = not instant and M.AS > 0
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
@@ -1486,16 +1493,16 @@ function GAME.commit(auto)
 
     if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
 
-    if M.DP > 0 and not (GAME.achv_honeymoonH and GAME.achv_breakupH) and GAME.totalQuest >= 1 then
+    if M.DP > 0 and not (GAME.achv_shareModH and GAME.achv_noShareModH) and GAME.totalQuest >= 1 then
         local noRep = #TABLE.subtract(TABLE.copy(hand), GAME.lastCommit) == #hand
         if noRep then
-            if not GAME.achv_honeymoonH then
-                GAME.achv_honeymoonH = GAME.roundHeight
+            if not GAME.achv_shareModH then
+                GAME.achv_shareModH = GAME.roundHeight
                 if GAME.totalQuest >= 10 then SFX.play('btb_break') end
             end
         else
-            if not GAME.achv_breakupH then
-                GAME.achv_breakupH = GAME.roundHeight
+            if not GAME.achv_noShareModH then
+                GAME.achv_noShareModH = GAME.roundHeight
                 if GAME.totalQuest >= 10 then SFX.play('btb_break') end
             end
         end
@@ -1639,8 +1646,8 @@ function GAME.commit(auto)
             end
             GAME.chain = 0
 
-            if not GAME.achv_perfectionistH then
-                GAME.achv_perfectionistH = GAME.roundHeight
+            if not GAME.achv_perfectH then
+                GAME.achv_perfectH = GAME.roundHeight
                 if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
         else
@@ -1683,12 +1690,12 @@ function GAME.commit(auto)
             end
 
             GAME.totalPerfect = GAME.totalPerfect + (dblCorrect and 2 or 1)
-            if not GAME.achv_arroganceH and GAME.comboStr == 'rAS' then
-                GAME.achv_arroganceH = GAME.roundHeight
+            if not GAME.achv_noPerfectH then
+                GAME.achv_noPerfectH = GAME.roundHeight
                 if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
-            if not GAME.achv_powerlessH and GAME.chain >= 4 then
-                GAME.achv_powerlessH = GAME.roundHeight
+            if not GAME.achv_noChargeH and GAME.chain >= 4 then
+                GAME.achv_noChargeH = GAME.roundHeight
                 if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
         end
@@ -1696,6 +1703,7 @@ function GAME.commit(auto)
             attack = attack * 3
             xp = xp * 3
             GAME.chain = GAME.chain + 1
+            GAME.achv_doublePass = GAME.achv_doublePass + 1
         end
         if GAME.chain >= 4 then
             if GAME.chain == 4 then
@@ -2076,18 +2084,18 @@ function GAME.start()
 
     TWEEN.new(GAME.anim_setMenuHide):setOnFinish(GAME.anim_setMenuHide_finish):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
 
-    GAME.achv_perfectionistH = nil
+    GAME.achv_perfectH = nil
     GAME.achv_demoteH = nil
     GAME.achv_carriedH = nil
-    GAME.achv_arroganceH = nil
-    GAME.achv_powerlessH = nil
-    GAME.achv_patienceH = nil
-    GAME.achv_spotlessH = nil
-    GAME.achv_talentlessH = nil
-    GAME.achv_honeymoonH = nil
-    GAME.achv_breakupH = nil
+    GAME.achv_noPerfectH = nil
+    GAME.achv_noChargeH = nil
+    GAME.achv_noManualCommitH = nil
+    GAME.achv_noDamageH = nil
+    GAME.achv_noKeyboardH = nil
+    GAME.achv_shareModH = nil
+    GAME.achv_noShareModH = nil
     GAME.achv_protectH = nil
-    GAME.achv_psychokinesisH = nil
+    GAME.achv_noManualFlipH = nil
     GAME.achv_maxChain = 0
     GAME.achv_maxReviveH = nil
     GAME.achv_totalDmg = 0
@@ -2098,7 +2106,8 @@ function GAME.start()
     GAME.achv_felMagicQuest = 0
     GAME.achv_resetCount = 0
     GAME.achv_obliviousQuest = 0
-    if M.DP == 1 then IssueAchv('intended_glitch') end
+    GAME.achv_doublePass = 0
+    if M.DP > 0 then IssueAchv('intended_glitch') end
 end
 
 ---@param reason 'forfeit' | 'wrong' | 'time'
@@ -2201,7 +2210,7 @@ function GAME.finish(reason)
             STAT.totalF10 = STAT.totalF10 + 1
             if GAME.floorTime <= 6.26 then
                 STAT.clockOutCount = STAT.clockOutCount + 1
-                IssueAchv('clock_out')
+                SubmitAchv('clock_out', STAT.clockOutCount, true)
             end
         end
 
@@ -2371,7 +2380,12 @@ function GAME.finish(reason)
             end
         end
 
+        SubmitAchv('contender', STAT.totalGame, true)
+        SubmitAchv('clicker', STAT.totalFlip, true)
+        SubmitAchv('elegance', STAT.totalPerfect, true)
+        SubmitAchv('garbage_offensive', STAT.totalAttack, true)
         SubmitAchv('tower_climber', STAT.totalHeight, true)
+        SubmitAchv('speed_player', STAT.totalGiga, true)
         _t = 0
         for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
         SubmitAchv('zenith_speedrunner', _t, true)
@@ -2395,16 +2409,17 @@ function GAME.finish(reason)
                 break
             end
         end
-        SubmitAchv('the_perfectionist', GAME.achv_perfectionistH or GAME.roundHeight)
+        SubmitAchv('empty_box', GAME.achv_noResetH or GAME.roundHeight)
+        SubmitAchv('the_perfectionist', GAME.achv_perfectH or GAME.roundHeight)
         SubmitAchv('sunk_cost', GAME.achv_demoteH or GAME.roundHeight)
-        SubmitAchv('patience_is_a_virtue', GAME.achv_patienceH or GAME.roundHeight)
+        SubmitAchv('patience_is_a_virtue', GAME.achv_noManualCommitH or GAME.roundHeight)
         SubmitAchv(GAME.comboStr, GAME.roundHeight)
-        SubmitAchv('powerless', GAME.achv_powerlessH or GAME.roundHeight)
+        SubmitAchv('powerless', GAME.achv_noChargeH or GAME.roundHeight)
         local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1)) end
         if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
-        SubmitAchv('psychokinesis', GAME.achv_psychokinesisH or GAME.roundHeight)
+        SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
         if Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
             SubmitAchv('divine_rejection', GAME.roundHeight)
         end
@@ -2412,7 +2427,7 @@ function GAME.finish(reason)
         if GAME.comboStr == 'DP' then
             if VALENTINE then SubmitAchv('lovers_promise', GAME.roundHeight) end
         elseif GAME.comboStr == 'AS' then
-            SubmitAchv('talentless', GAME.achv_talentlessH or GAME.roundHeight)
+            SubmitAchv('talentless', GAME.achv_noKeyboardH or GAME.roundHeight)
         elseif GAME.comboStr == 'EXMS' then
             if GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
         elseif GAME.comboStr == 'EXVL' then
@@ -2424,9 +2439,9 @@ function GAME.finish(reason)
         elseif GAME.comboStr == 'ASDHrIN' then
             SubmitAchv('the_oblivious_artist', GAME.achv_obliviousQuest)
         elseif GAME.comboStr == 'rGV' then
-            SubmitAchv('spotless', GAME.achv_spotlessH or GAME.roundHeight)
+            SubmitAchv('spotless', GAME.achv_noDamageH or GAME.roundHeight)
         elseif GAME.comboStr == 'rAS' then
-            SubmitAchv('arrogance', GAME.achv_arroganceH or GAME.roundHeight)
+            SubmitAchv('arrogance', GAME.achv_noPerfectH or GAME.roundHeight)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
         elseif GAME.comboStr == 'rDP' then
             SubmitAchv('overprotection', GAME.achv_protectH or GAME.roundHeight)
@@ -2435,8 +2450,8 @@ function GAME.finish(reason)
             SubmitAchv('the_responsible_one', GAME.reviveCount)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
-            SubmitAchv('honeymoon', GAME.achv_honeymoonH or GAME.roundHeight)
-            SubmitAchv('break_up', GAME.achv_breakupH or GAME.roundHeight)
+            SubmitAchv('honeymoon', GAME.achv_shareModH or GAME.roundHeight)
+            SubmitAchv('break_up', GAME.achv_noShareModH or GAME.roundHeight)
             if M.DP == 2 then
                 SubmitAchv('the_unreliable_one', GAME.killCount)
             end

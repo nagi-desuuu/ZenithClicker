@@ -161,6 +161,13 @@ TEXTURE = {
         },
         iconQuad = {
             _undef = aq(8, 8),
+
+            contender = aq(2, 2),
+            clicker = aq(1, 1),
+            elegance = aq(4, 1),
+            garbage_offensive = aq(3, 1),
+            tower_climber = aq(8, 2),
+            speed_player = aq(5, 2),
             zenith_explorer = aq(2, 3),
             zenith_explorer_plus = aq(2, 3),
             clicker_speedrun = aq(5, 1),
@@ -177,7 +184,7 @@ TEXTURE = {
             divine_speedrunner = aq2(5, 1),
             the_spike_of_all_time = aq(4, 2),
             the_spike_of_all_time_minus = aq(4, 2),
-            tower_climber = aq(8, 2),
+            clock_out = aq2(7, 9),
             vip_list = aq(6, 6),
 
             EX = aq(3, 3),
@@ -309,7 +316,6 @@ TEXTURE = {
             subjugation = aq2(2, 7),
             omnipotence = aq2(2, 7),
             clicking_champion = aq2(8, 6),
-            clock_out = aq2(7, 9),
 
             identity = aq(6, 6),
             respectful = aq(2, 1),

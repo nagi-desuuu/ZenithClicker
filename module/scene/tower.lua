@@ -116,7 +116,7 @@ local function keyTrigger(key)
                 C:flick()
                 SFX.play('no')
             end
-            if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
+            if not GAME.achv_noKeyboardH then GAME.achv_noKeyboardH = GAME.roundHeight end
         end
     else
         if key == 'escape' then
@@ -142,11 +142,11 @@ local function keyTrigger(key)
             SFX.play('menuclick')
             if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
             GAME.cancelAll()
-            if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
+            if not GAME.achv_noKeyboardH then GAME.achv_noKeyboardH = GAME.roundHeight end
         elseif bindID == 21 or bindID == 22 then
             GAME.nixPrompt('keep_no_keyboard')
             scene[M.EX == 0 and 'mouseDown' or 'mouseUp'](MX, MY, bindID == 21 and 1 or 2)
-            if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
+            if not GAME.achv_noKeyboardH then GAME.achv_noKeyboardH = GAME.roundHeight end
         elseif bindID == 19 then
             GAME.nixPrompt('keep_no_keyboard')
             local W = scene.widgetList.start
@@ -154,8 +154,8 @@ local function keyTrigger(key)
             W._hoverTime = W._hoverTimeMax
             if GAME.playing then
                 GAME.commit()
-                if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
-                if not GAME.achv_talentlessH then GAME.achv_talentlessH = GAME.roundHeight end
+                if not GAME.achv_noManualCommitH then GAME.achv_noManualCommitH = GAME.roundHeight end
+                if not GAME.achv_noKeyboardH then GAME.achv_noKeyboardH = GAME.roundHeight end
             else
                 GAME.start()
             end
@@ -902,11 +902,11 @@ function scene.overDraw()
                     gc_mRect('fill', 800 + 1540 / 2 * 10 / GAME.fullHealth, 442, 4, 20)
                     gc_mRect('fill', 800 - 1540 / 2 * 10 / GAME.fullHealth, 442, 4, 20)
                 end
-                if not GAME.achv_honeymoonH then
+                if not GAME.achv_shareModH then
                     gc_setColor(COLOR.M)
                     gc_mRect('fill', 800, 435, 10, 10)
                 end
-                if not GAME.achv_breakupH then
+                if not GAME.achv_noShareModH then
                     gc_setColor(COLOR.dR)
                     gc_mRect('fill', 800, 445, 10, 10)
                 end
@@ -1389,7 +1389,7 @@ end
 local function button_start()
     if GAME.playing then
         GAME.commit()
-        if not GAME.achv_patienceH then GAME.achv_patienceH = GAME.roundHeight end
+        if not GAME.achv_noManualCommitH then GAME.achv_noManualCommitH = GAME.roundHeight end
     else
         GAME.start()
     end

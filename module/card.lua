@@ -125,8 +125,8 @@ function Card:setActive(auto, key)
         if not auto then
             self.touchCount = self.touchCount + 1
             GAME.totalFlip = GAME.totalFlip + 1
-            if not GAME.achv_psychokinesisH then
-                GAME.achv_psychokinesisH = GAME.roundHeight
+            if not GAME.achv_noManualFlipH then
+                GAME.achv_noManualFlipH = GAME.roundHeight
                 if GAME.totalQuest >= 3 then SFX.play('btb_break') end
             end
             if self.touchCount == 1 then
