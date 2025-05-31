@@ -248,7 +248,12 @@ local function refreshAchivement()
     submit('zenith_speedrun', BEST.speedrun[''] or 2600)
     submit('zenith_explorer_plus', TABLE.maxAll(BEST.highScore) or 0)
     submit('zenith_speedrun_plus', TABLE.minAll(BEST.speedrun) or 2600)
-    submit('tower_climber', STAT.totalHeight, true)
+    submit('contender', STAT.totalGame, true, true)
+    submit('clicker', STAT.totalFlip, true, true)
+    submit('elegance', STAT.totalPerfect, true, true)
+    submit('garbage_offensive', STAT.totalAttack, true, true)
+    submit('tower_climber', STAT.totalHeight, true, true)
+    submit('speed_player', STAT.totalGiga, true, true)
     if STAT.maxHeight >= 6200 then issue('skys_the_limit') end
     if STAT.minTime <= 76.2 then issue('superluminal') end
     local _t
