@@ -2709,6 +2709,7 @@ function GAME.update(dt)
                 PlayBGM('fomg')
                 ins(GAME.secTime, GAME.floorTime)
                 GAME.refreshSectionTime()
+                GAME.floorTime = 0
             end
 
             -- KM line text
