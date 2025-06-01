@@ -217,7 +217,7 @@ function RefreshProfile()
         local rating, cap = calculateRating()
         local clickerLV = 0
         if STAT.totalTime >= 3600 * 26 then clickerLV = clickerLV + 1 end
-        if STAT.maxHeight >= 10000 and STAT.minTime <= 40 then clickerLV = clickerLV + 1 end
+        if STAT.maxHeight >= 10000 and STAT.minTime <= 42 then clickerLV = clickerLV + 1 end
         if MATH.sumAll(GAME.completion) == 18 then clickerLV = clickerLV + 1 end
         if rating >= 25000 then clickerLV = clickerLV + 1 end
         if rating == cap then clickerLV = clickerLV + 1 end
