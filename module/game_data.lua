@@ -886,6 +886,7 @@ NegEvents = {
             GAME.heightBonus = 0
             GAME.height = -1800
             FloatOnCard = nil
+            GAME.refreshLayout()
             STAT.clicker = true
             SFX.play('warp')
             SCN.go('ending', "warp")

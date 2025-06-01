@@ -269,7 +269,7 @@ local function getBtnPressed()
 end
 
 function scene.mouseDown(x, y, k)
-    if usingTouch then
+    if usingTouch and k == 1 then
         usingTouch = false
         UsingTouch = false
     end
@@ -1394,6 +1394,10 @@ end
 local function button_start()
     if GAME.playing then
         GAME.commit()
+        if UsingTouch then
+            FloatOnCard = nil
+            GAME.refreshLayout()
+        end
         if not GAME.achv_noManualCommitH then GAME.achv_noManualCommitH = GAME.roundHeight end
     else
         GAME.start()
@@ -1402,6 +1406,10 @@ end
 local function button_reset()
     if M.AS == 0 then GAME.nixPrompt('keep_no_reset') end
     GAME.cancelAll()
+    if UsingTouch then
+        FloatOnCard = nil
+        GAME.refreshLayout()
+    end
     SFX.play('menuclick')
 end
 

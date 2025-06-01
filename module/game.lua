@@ -1820,8 +1820,6 @@ function GAME.commit(auto)
         end
         GAME.addXP(attack + xp)
 
-        if UsingTouch then FloatOnCard = nil end
-
         -- rMS little shuffle
         if M.MS == 2 then
             if URM then
@@ -2078,8 +2076,6 @@ function GAME.start()
     TABLE.clear(GAME.quests)
     for _ = 1, GAME.maxQuestCount do GAME.genQuest() end
     GAME.questReady()
-
-    if UsingTouch then FloatOnCard = nil end
 
     TASK.removeTask_code(task_startSpin)
     TASK.new(task_startSpin)
