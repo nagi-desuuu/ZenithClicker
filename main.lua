@@ -1321,6 +1321,7 @@ function Daemon_Fast()
     local yield = coroutine.yield
     local msIsDown = love.mouse.isDown
     local expApproach = MATH.expApproach
+    local deckSize = #ModData.deck
 
     local t1 = -.1
     local t = 0
@@ -1344,11 +1345,11 @@ function Daemon_Fast()
             if T > t1 + step1 then
                 t1 = t1 + step1
                 if M.MS == 0 then
-                    for i = 1, 9 do Cards[i].visY = 0 end
+                    for i = 1, deckSize do Cards[i].visY = 0 end
                 elseif URM and M.MS == 2 then
-                    for i = 1, 9 do Cards[i].visY = math.random(-42, 42) end
+                    for i = 1, deckSize do Cards[i].visY = math.random(-42, 42) end
                 else
-                    for i = 1, 9 do Cards[i].visY = M.MS * math.random(-4, 4) end
+                    for i = 1, deckSize do Cards[i].visY = M.MS * math.random(-4, 4) end
                 end
                 GAME.refreshLayout()
             end

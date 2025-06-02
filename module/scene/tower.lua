@@ -10,7 +10,7 @@ local lerp, iLerp, cLerp, icLerp, lLerp = MATH.lerp, MATH.iLerp, MATH.cLerp, MAT
 local M = GAME.mod
 local MD = ModData
 ShortCut = {}
-for i = 1, 9 do ShortCut[i] = GC.newText(FONT.get(50)) end
+for i = 1, #MD.deck do ShortCut[i] = GC.newText(FONT.get(50)) end
 
 HoldingButtons = {}
 local HoldingButtons = HoldingButtons
@@ -215,7 +215,7 @@ function scene.load()
     end
     RevUnlocked = TABLE.countAll(GAME.completion, 0) < 9
 
-    for i = 1, 9 do ShortCut[i]:set(STAT.keybind[i]:upper()) end
+    for i = 1, #MD.deck do ShortCut[i]:set(STAT.keybind[i]:upper()) end
 
     scene.widgetList.help.floatText = (STRING.trimIndent [[
         Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.

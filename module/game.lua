@@ -224,7 +224,7 @@ function GAME.getHand(real)
         if M.IN > 0 then ins(list, M.IN == 1 and 'IN' or 'rIN') end
         if M.AS > 0 then ins(list, M.AS == 1 and 'AS' or 'rAS') end
         if M.DP > 0 then ins(list, M.DP == 1 and 'DP' or 'rDP') end
-        -- for i = 1, 9 do
+        -- for i = 1, #MD.deck do
         --     local D = MD.deck[i]
         --     local level = M[D.id]
         --     if level == 1 then
@@ -235,7 +235,7 @@ function GAME.getHand(real)
         -- end
     else
         -- FASTER
-        for i = 1, 9 do
+        for i = 1, #MD.deck do
             if CD[i].active then
                 ins(list, CD[i].id)
             end
@@ -1518,7 +1518,7 @@ function GAME.commit(auto)
     if GAME.currentTask then
         GAME.incrementPrompt('commit')
         GAME.nixPrompt('keep_no_commit')
-        for i = 1, 9 do
+        for i = 1, #MD.deck do
             local id = MD.deck[i].id
             if TABLE.find(hand, id) then
                 GAME.incrementPrompt('commit_' .. id)

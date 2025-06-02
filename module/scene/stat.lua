@@ -22,7 +22,7 @@ local crProgress = {
 
 local function getF10Completion()
     local s = 0
-    for i = 1, 9 do
+    for i = 1, #ModData.deck do
         local id = ModData.deck[i].id
         if BEST.highScore[id] >= Floors[9].top then s = s + 1 end
         if BEST.highScore['r' .. id] >= Floors[9].top then s = s + 1 end
@@ -31,7 +31,7 @@ local function getF10Completion()
 end
 local function getSpeedrunCompletion()
     local s = 0
-    for i = 1, 9 do
+    for i = 1, #ModData.deck do
         local id = ModData.deck[i].id
         if BEST.speedrun[id] < 1e26 then s = s + 1 end
         if BEST.speedrun['r' .. id] < 1e26 then s = s + 1 end
@@ -64,10 +64,10 @@ local function calculateRating()
     cr = cr + 5000 * norm(MATH.icLerp(420, 76.2, STAT.minTime), -.5)
 
     -- Mod Completion (3K)
-    cr = cr + 3000 * norm(MATH.icLerp(0, 18, crProgress.f10), .62)
+    cr = cr + 3000 * norm(MATH.icLerp(0, #ModData.deck * 2, crProgress.f10), .62)
 
     -- Mod Speedrun (2K)
-    cr = cr + 2000 * norm(MATH.icLerp(0, 18, crProgress.sr), .62)
+    cr = cr + 2000 * norm(MATH.icLerp(0, #ModData.deck * 2, crProgress.sr), .62)
 
     -- Zenith Point (3K)
     cr = cr + 3000 * norm(MATH.icLerp(0, 26e4, STAT.zp), 4.2)
