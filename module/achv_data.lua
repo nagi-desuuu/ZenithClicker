@@ -273,6 +273,7 @@ Achievements = {
         rank = numberRank(0, 12, 20, 26, 32, 38, 42),
     },
     { -- clock_out
+        ex = true,
         id = 'clock_out',
         name = "Clock Out",
         desc = [[Finish the run just after reaching F10]],
@@ -530,6 +531,7 @@ Achievements = {
         hide = function() return GAME.completion.GV == 0 or GAME.completion.AS == 0 end,
     },
     { -- rGVrIN
+        ex = true,
         id = 'rGVrIN',
         name = "The Grandmaster+",
         desc = [[HFD with rGV rIN mods]],
