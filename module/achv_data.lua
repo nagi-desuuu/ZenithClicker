@@ -112,6 +112,7 @@ Achievements = {
         scoreSimp = function(n) return n .. " GIGAs" end,
         rank = numberRank(0, 26, 62, 120, 260, 620, 1260),
         type = 'unranked',
+        hide = function() return STAT.totalGiga == 0 end,
     },
     { -- zenith_explorer
         id = 'zenith_explorer',
