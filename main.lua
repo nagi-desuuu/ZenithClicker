@@ -921,7 +921,7 @@ function RefreshBGM(mode)
     elseif BgmPlaying == 'f1' then
         local revMode = mode == 'f1r' or RevMusicMode()
         BGM.set('f1', 'volume', 1)
-        BGM.set('f1ex', 'volume', (mode == 'f1ex' or mode == 'f1r' or M.EX > 0) and 1 or 0, 0)
+        BGM.set('f1ex', 'volume', M.EX > 0 and 1 or 0, 0)
         BGM.set('f1rev', 'volume', revMode and 1 or 0, 0)
     end
     BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55)
