@@ -389,7 +389,7 @@ BG.add('black', { draw = function() GC.clear(0, 0, 0) end })
 BG.set('black')
 
 TEXTS = { -- Font size can only be 30 and 50 here !!!
-    version    = GC.newText(FONT.get(30), SYSTEM .. " " .. (require 'version'.appVer)),
+    version    = GC.newText(FONT.get(30)),
     mod        = GC.newText(FONT.get(30)),
     mpPreview  = GC.newText(FONT.get(30)),
     zpPreview  = GC.newText(FONT.get(30)),
@@ -511,6 +511,9 @@ STAT = {
     bg = true,
     sfx = 60,
     bgm = 100,
+
+    showFPS = false,
+    startCD = true,
 }
 
 ACHV = {}
@@ -1604,6 +1607,8 @@ TABLE.update(TextColor, BaseTextColor)
 TABLE.update(ShadeColor, BaseShadeColor)
 GAME.refreshCurrentCombo()
 if os.date("%m%d") == "0401" then UseAltName() end
+ZENITHA.setShowFPS(STAT.showFPS)
+TEXTS.version:set(SYSTEM .. (STAT.oldHitbox and " T" or " V") .. (require 'version'.verStr))
 
 if SYSTEM == 'Web' then
     _G[('DiscordRPC')] = { update = NULL, setEnable = NULL }

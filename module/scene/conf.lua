@@ -522,13 +522,20 @@ scene.widgetList = {
                 elseif data == 'cmd' then
                     SFX.play('cutin_superlobby', 1, 0, Tone(-2))
                     SCN.go('_console')
+                elseif data == 'cooldown' then
+                    STAT.startCD = not STAT.startCD
+                    MSG('dark', "Start CoolDown: " .. (STAT.startCD and "ON" or "OFF"))
+                    SFX.play(STAT.startCD and 'social_online' or 'social_offline')
                 elseif data == 'fps' then
-                    SFX.play('map_change', .626, 0, Tone(-3.5))
-                    ZENITHA.setShowFPS(true)
-                elseif data == 'tapper' then
-                    SFX.play('social_invite')
-                    TEXTS.version:set(SYSTEM .. " T" .. (require 'version'.verStr))
-                    ForceOldHitbox = true
+                    STAT.showFPS = not STAT.showFPS
+                    MSG('dark', "Show FPS: " .. (STAT.showFPS and "ON" or "OFF"))
+                    SFX.play(STAT.showFPS and 'social_online' or 'social_offline')
+                    ZENITHA.setShowFPS(STAT.showFPS)
+                elseif data == 'old_hitbox' then
+                    STAT.oldHitbox = not STAT.oldHitbox
+                    MSG('dark', "Force old hitbox: " .. (STAT.oldHitbox and "ON" or "OFF"))
+                    SFX.play(STAT.oldHitbox and 'social_online' or 'social_offline')
+                    TEXTS.version:set(SYSTEM .. (STAT.oldHitbox and " T" or " V") .. (require 'version'.verStr))
                 elseif data == 'true_ending' then
                     SFX.play('warp')
                     SCN.go('ending', 'warp')
@@ -549,8 +556,8 @@ scene.widgetList = {
                     end
                     refreshSongInfo()
                 elseif data == 'alt' then
-                    SFX.play('social_dm')
                     UseAltName()
+                    SFX.play('social_dm')
                 else
                     local msg = "Invalid code '" .. data .. "' in clipboard."
                     if MATH.roll(.26) then
