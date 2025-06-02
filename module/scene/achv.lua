@@ -260,22 +260,22 @@ local function refreshAchivement()
     if not ACHV.terminal_velocity then
         _t = 0
         for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
-        if _t >= 9 then issue('terminal_velocity') end
+        if _t >= #MD.deck then issue('terminal_velocity') end
     end
     if not ACHV.omnipotence then
         _t = 0
         for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
-        if _t >= 9 then issue('omnipotence') end
+        if _t >= #MD.deck then issue('omnipotence') end
     end
     if not ACHV.mastery then
         _t = 0
         for id in next, MD.name do if BEST.highScore[id] >= Floors[9].top then _t = _t + 1 end end
-        if _t >= 9 then issue('mastery') end
+        if _t >= #MD.deck then issue('mastery') end
     end
     if not ACHV.subjugation then
         _t = 0
         for id in next, MD.name do if BEST.highScore['r' .. id] >= Floors[9].top then _t = _t + 1 end end
-        if _t >= 9 then issue('subjugation') end
+        if _t >= #MD.deck then issue('subjugation') end
     end
     _t = 0
     for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
@@ -290,7 +290,7 @@ local function refreshAchivement()
     for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
     submit('divine_challenger', _t, true)
 
-    if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then issue('false_god', ACHV.subjugation) end
+    if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 2 * #MD.deck then issue('false_god', ACHV.subjugation) end
 
     if not ACHV.the_harbinger then
         local allRevF5 = true

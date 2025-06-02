@@ -962,12 +962,12 @@ function GAME.upFloor()
             if not ACHV.terminal_velocity then
                 _t = 0
                 for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
-                if _t >= 9 then IssueAchv('terminal_velocity') end
+                if _t >= #MD.deck then IssueAchv('terminal_velocity') end
             end
             if not ACHV.omnipotence then
                 _t = 0
                 for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
-                if _t >= 9 then IssueAchv('omnipotence') end
+                if _t >= #MD.deck then IssueAchv('omnipotence') end
             end
             if GAME.time <= 76.2 then IssueAchv('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
@@ -2356,14 +2356,14 @@ function GAME.finish(reason)
         if not ACHV.mastery then
             _t = 0
             for id in next, MD.name do if BEST.highScore[id] >= Floors[9].top then _t = _t + 1 end end
-            if _t >= 9 then IssueAchv('mastery') end
+            if _t >= #MD.deck then IssueAchv('mastery') end
         end
         if not ACHV.subjugation then
             _t = 0
             for id in next, MD.name do if BEST.highScore['r' .. id] >= Floors[9].top then _t = _t + 1 end end
-            if _t >= 9 then IssueAchv('subjugation') end
+            if _t >= #MD.deck then IssueAchv('subjugation') end
         end
-        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 18 then IssueAchv('false_god', ACHV.subjugation) end
+        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 2 * #MD.deck then IssueAchv('false_god', ACHV.subjugation) end
 
         if not ACHV.the_harbinger then
             local allRevF5 = true
