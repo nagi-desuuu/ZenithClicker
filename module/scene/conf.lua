@@ -524,7 +524,7 @@ scene.widgetList = {
                     SCN.go('_console')
                 elseif data == 'cooldown' then
                     STAT.startCD = not STAT.startCD
-                    MSG('dark', "Start CoolDown: " .. (STAT.startCD and "ON" or "OFF"))
+                    MSG('dark', "Restart cooldown: " .. (STAT.startCD and "ON" or "OFF"))
                     SFX.play(STAT.startCD and 'social_online' or 'social_offline')
                 elseif data == 'fps' then
                     STAT.showFPS = not STAT.showFPS
