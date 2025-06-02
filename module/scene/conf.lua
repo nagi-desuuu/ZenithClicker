@@ -563,8 +563,10 @@ scene.widgetList = {
                     if MATH.roll(.26) then
                         msg = msg .. "\n" .. TABLE.getRandom {
                             "Try 'cmd'",
+                            "Try 'cooldown'",
                             "Try 'fps'",
-                            "Try 'tapper'",
+                            "Try 'old_hitbox'",
+                            "Try 'test'",
                             MATH.coin("Try 'mp'", "Try 'music'"),
                             "Try 'f" .. STAT.maxFloor .. "'",
                             STAT.clicker and "Try 'true_ending'" or nil,
