@@ -434,7 +434,7 @@ Achievements = {
         name = "Swamp Water Pro",
         desc = [[HFD WU all mods at the same time]],
         quote = [[How did you find someone as insane as you to do it together?]],
-        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
 
     { title = "Reversed Mods", hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end },
@@ -744,7 +744,7 @@ Achievements = {
         desc = [[HFD WU 1 reverse mod + 7 mods ("Duo" not allowed)]],
         quote = [[Potent, intoxicating wine, coming in 8 electrifying flavors.]],
         credit = "@flomikel",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return TABLE.countAll(GAME.completion, 0) == 9 end,
     },
     { -- swamp_water_pro_plus
