@@ -366,7 +366,10 @@ function scene.keyDown(key)
         end
     else
         if M.EX == 0 then
+            SFX.play('move')
             keyTrigger(key)
+        else
+            SFX.play('rotate')
         end
         ZENITHA.setCursorVis(true)
     end
@@ -1480,7 +1483,12 @@ scene.widgetList = {
         onPress = function(k)
             if k == 3 then return end
             HoldingButtons.startBtn = true
-            if M.EX == 0 then button_start() end
+            if M.EX == 0 then
+                SFX.play('move')
+                button_start()
+            else
+                SFX.play('rotate')
+            end
         end,
         onClick = function(k)
             if k == 3 then return end
@@ -1498,7 +1506,12 @@ scene.widgetList = {
         onPress = function(k)
             if k == 3 then return end
             HoldingButtons.resetBtn = true
-            if M.EX == 0 then button_reset() end
+            if M.EX == 0 then
+                SFX.play('move')
+                button_reset()
+            else
+                SFX.play('rotate')
+            end
         end,
         onClick = function(k)
             if k == 3 then return end
