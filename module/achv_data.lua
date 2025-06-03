@@ -1100,7 +1100,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[2].top - Floors[1].top) / time) end,
-        rank = numberRankRev(26, 20, 16, 12, 9.4, 6.2, 4.2),
+        rank = numberRankRev(26, 22, 18, 15, 12, 9.4, 6.2),
     },
     { -- financially_responsible
         ex = true,
@@ -1112,7 +1112,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[3].top - Floors[2].top) / time) end,
-        rank = numberRankRev(26, 22, 18, 15, 12, 9.4, 6.2),
+        rank = numberRankRev(32, 26, 22, 19.4, 16.2, 12.6, 9.42),
     },
     { -- unfair_battle
         ex = true,
@@ -1124,7 +1124,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[4].top - Floors[3].top) / time) end,
-        rank = numberRankRev(26, 22, 18, 15, 12, 9.4, 6.2),
+        rank = numberRankRev(32, 26, 22, 19.4, 16.2, 12.6, 9.42),
     },
     { -- museum_heist
         ex = true,
@@ -1136,7 +1136,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[5].top - Floors[4].top) / time) end,
-        rank = numberRankRev(42, 26, 16, 12, 6.2, 4.2, 2.6),
+        rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 3.5),
     },
     { -- workaholic
         ex = true,
@@ -1148,7 +1148,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[6].top - Floors[5].top) / time) end,
-        rank = numberRankRev(42, 26, 16, 12, 9.4, 6.2, 4.2),
+        rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 4.2),
     },
     { -- human_experiment
         ex = true,
@@ -1159,7 +1159,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[7].top - Floors[6].top) / time) end,
-        rank = numberRankRev(42, 26, 16, 12, 9.4, 6.2, 4.2),
+        rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 4.2),
     },
     { -- core_meltdown
         ex = true,
