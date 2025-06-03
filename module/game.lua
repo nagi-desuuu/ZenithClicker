@@ -775,7 +775,7 @@ end
 
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
-    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank and not (URM and M.NH == 2) then GAME.xpLockLevel = GAME.xpLockLevelMax end
+    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
 
     local oldRank = GAME.rank
     local oldLockTimer = GAME.xpLockTimer
@@ -1949,7 +1949,7 @@ function GAME.start()
     GAME.timerMul = 1
     GAME.isUltraRun = GAME.anyUltra
     GAME.attackMul = GAME.isUltraRun and .62 or 1
-    GAME.xpLockLevelMax = 5
+    GAME.xpLockLevelMax = URM and M.NH == 2 and 1 or 5
     GAME.invincible = false
 
     TASK.unlock('sure_quit')
