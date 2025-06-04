@@ -546,7 +546,16 @@ function GAME.genQuest()
     local pool = TABLE.copyAll(MD.weight)
 
     local lastQ = GAME.quests[#GAME.quests]
-    if lastQ then pool[lastQ.combo[1]] = 0 end
+    if lastQ then
+        if M.NH == 2 then
+            for i = 1, #lastQ.combo do
+                pool[lastQ.combo[i]] = pool[lastQ.combo[i]] * 6.26
+            end
+            pool[TABLE.getRandom(lastQ.combo)] = 0
+        else
+            pool[lastQ.combo[1]] = 0
+        end
+    end
     local questCount = MATH.clamp(MATH.roundRnd(r), 1, GAME.maxQuestSize)
     if questCount == 1 then
         pool.DP = 0
@@ -1258,7 +1267,6 @@ function GAME.refreshLayout()
     local baseDist = (M.EX > 0 and (URM and M.EX == 2 and 80 or 100) or 110) + M.VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
     local baseY = 726 + (URM and M.GV == 2 and 50 or 15 * M.GV)
-    local float = M.NH < 2
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
         local dodge = M.VL == 0 and 250 or 230
@@ -1274,12 +1282,12 @@ function GAME.refreshLayout()
             else
                 C.tx = selX
             end
-            C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
+            C.ty = baseY - ((C.active and 45 or 0) + (i == FloatOnCard and 55 or 0))
         end
     else
         for i, C in ipairs(CD) do
             C.tx = 800 + (i - 5) * baseDist
-            C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
+            C.ty = baseY - ((C.active and 45 or 0) + (i == FloatOnCard and 55 or 0))
         end
     end
 end
@@ -2002,7 +2010,7 @@ function GAME.start()
     -- Params
     GAME.maxQuestCount = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
     GAME.maxQuestSize = M.DH == 2 and 3 or 4
-    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0) - .15
+    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) - .15
     GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
     GAME.questFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
