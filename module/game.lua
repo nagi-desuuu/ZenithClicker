@@ -362,14 +362,7 @@ function GAME.getComboName(list, mode)
         end
         ins(fstr, MD.textColor[list[len]])
         ins(fstr, MD.noun[list[len]])
-        if M.NH == 2 then
-            for i = 1, #fstr, 2 do
-                fstr[i] = TABLE.copy(fstr[i])
-                for j = 1, 3 do
-                    fstr[i][j] = fstr[i][j] * .7 + .26
-                end
-            end
-        elseif M.IN > 0 then
+        if M.IN > 0 then
             local r = rnd(0, 3)
             for i = 1, #fstr, 2 do
                 r =
@@ -377,6 +370,13 @@ function GAME.getComboName(list, mode)
                     r == 1 and 3 or
                     r == 2 and 0 or rnd(0, 1)
                 fstr[i] = { 1, 1, 1, .6 + .13 * r }
+            end
+        elseif URM and M.NH == 2 then
+            for i = 1, #fstr, 2 do
+                fstr[i] = TABLE.copy(fstr[i])
+                for j = 1, 3 do
+                    fstr[i][j] = fstr[i][j] * .62 + .26
+                end
             end
         end
 
@@ -529,7 +529,7 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + icLerp(6200, 10000, GAME.height)
+    local base = .72 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + icLerp(6200, 10000, GAME.height)
     local var = GAME.floor * .26 * GAME.extraQuestVar
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxQuestSize)
 
@@ -549,7 +549,7 @@ function GAME.genQuest()
     if lastQ then
         if M.NH == 2 then
             for i = 1, #lastQ.combo do
-                pool[lastQ.combo[i]] = pool[lastQ.combo[i]] * 6.26
+                pool[lastQ.combo[i]] = pool[lastQ.combo[i]] * 3.5
             end
             pool[TABLE.getRandom(lastQ.combo)] = 0
         else
@@ -2009,7 +2009,7 @@ function GAME.start()
     -- Params
     GAME.maxQuestCount = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
     GAME.maxQuestSize = M.DH == 2 and 3 or 4
-    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) - .15
+    GAME.extraQuestBase = (M.NH == 2 and 1.26 or M.DH > 0 and .626 or 0)
     GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
     GAME.questFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
