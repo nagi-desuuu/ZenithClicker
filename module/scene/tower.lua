@@ -133,7 +133,6 @@ local function keyTrigger(key)
                 end
             end
         elseif bindID == 20 then
-            if M.NH == 2 then return SFX.play('no') end
             GAME.nixPrompt('keep_no_keyboard')
             local W = scene.widgetList.reset
             W._pressTime = W._pressTimeMax * 2

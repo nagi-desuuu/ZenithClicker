@@ -1458,7 +1458,6 @@ function GAME.swapControl()
 end
 
 function GAME.cancelAll(instant)
-    if M.NH == 2 then return end
     if URM and M.VL == 2 and not UltraVlCheck('reset', instant) then return end
 
     TASK.removeTask_code(GAME.task_cancelAll)
@@ -1846,7 +1845,7 @@ function GAME.commit(auto)
             end
         end
 
-        GAME.cancelAll(true)
+        if M.NH < 2 then GAME.cancelAll(true) end
         GAME.cancelBurn()
         GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
@@ -1913,7 +1912,7 @@ function GAME.commit(auto)
 
         if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
         if M.EX > 0 then
-            GAME.cancelAll(true)
+            if M.NH < 2 then GAME.cancelAll(true) end
         elseif M.AS == 1 then
             GAME.cancelBurn()
         end

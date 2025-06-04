@@ -205,7 +205,7 @@ function Card:setActive(auto, key)
             RefreshButtonText()
         elseif self.id == 'DP' then
         end
-        SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler and M.NH < 2)
+        SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler)
         GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
         GAME.refreshPBText()
         GAME.refreshRPC()
