@@ -29,8 +29,7 @@ local function q2(ox, oy, w, h)
         2178, 1663
     )
 end
-local function aq(x, y) return { 1, GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 2048, 2304) } end
-local function aq2(x, y) return { 2, GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 2048, 2304) } end
+local function aq(x, y) return GC.newQuad((x - 1) % 16 * 256, (y - 1) % 16 * 256, 256, 256, 4096, 2048) end
 TEXTURE = {
     star0 = assets 'crystal-dark.png',
     star1 = assets 'crystal.png',
@@ -155,10 +154,7 @@ TEXTURE = {
         },
     },
     achievement = {
-        icons = {
-            assets 'achievements/icons1.png',
-            assets 'achievements/icons2.png',
-        },
+        icons = assets 'achievements/achv_icons.png',
         iconQuad = {
             _undef = aq(8, 8),
 
@@ -179,12 +175,12 @@ TEXTURE = {
             zenith_speedrun = aq(2, 6),
             zenith_speedrun_plus = aq(2, 6),
             zenith_challenger = aq(8, 2),
-            divine_challenger = aq2(4, 1),
+            divine_challenger = aq(12, 2),
             zenith_speedrunner = aq(2, 6),
-            divine_speedrunner = aq2(5, 1),
+            divine_speedrunner = aq(13, 2),
             the_spike_of_all_time = aq(4, 2),
             the_spike_of_all_time_minus = aq(4, 2),
-            clock_out = aq2(7, 9),
+            clock_out = aq(13, 5),
             vip_list = aq(6, 6),
 
             EX = aq(3, 3),
@@ -206,42 +202,37 @@ TEXTURE = {
             ASEXVL = aq(1, 7),
             swamp_water_lite = aq(5, 7),
             swamp_water = aq(2, 5),
-            swamp_water_pro = aq2(8, 1),
+            swamp_water_pro = aq(16, 2),
 
-            rEX = aq(7, 9),
-            rNH = aq(3, 9),
-            rMS = aq(4, 9),
-            rGV = aq(2, 9),
-            rVL = aq(1, 9),
-            rDH = aq(8, 9),
-            rIN = aq(5, 9),
-            rAS = aq(6, 9),
+            rEX = aq(15, 1),
+            rNH = aq(11, 1),
+            rMS = aq(12, 1),
+            rGV = aq(10, 1),
+            rVL = aq(9, 1),
+            rDH = aq(16, 1),
+            rIN = aq(13, 1),
+            rAS = aq(14, 1),
             rDP = aq(7, 7),
-            DHEXrGV = aq2(5, 2),      -- Demonic Speed
-            rASrGV = aq2(3, 2),       -- Whizzing Wizard
-            rGVrIN = aq2(1, 2),       -- The Grandmaster+
+            DHEXrGV = aq(13, 3),      -- Demonic Speed
+            rASrGV = aq(11, 3),       -- Whizzing Wizard
+            rGVrIN = aq(9, 3),        -- The Grandmaster+
             NHrAS = aq(1, 2),         -- Pristine
-            GVrASrDH = aq2(1, 3),     -- Storage Overload
-            DHNHrASrIN = aq2(7, 7),   -- Steganography
-            DHrMSrNH = aq2(6, 7),     -- Deadbeat
-            DHGVNHrMS = aq2(3, 7),    -- Trench Warfare
-            rGVrNHrVL = aq2(8, 5),    -- Sweatshop
-            rINrNH = aq2(6, 5),       -- Fleeting Memory
-            EXGVNHrMS = aq2(4, 5),    -- Bnuuy
-            DPGVMSrNH = aq2(2, 2),    -- Grand-Master!
-            ASDPGVrMSrNH = aq2(2, 2), -- Grand-Master! Rounds
-            ASEXrDHrMS = aq2(5, 7),   -- Endless Gluttony
-            DHrEXrVL = aq2(4, 7),     -- Sweat and Ruin
-            ASGVrDPrMS = aq2(4, 3),   -- Cupid's Gamble
-            NHVLrDPrGV = aq2(3, 5),   -- Despairful Longing
-            INMSrDHrDP = aq2(1, 5),   -- Uneasy Alliance
-            VLrEXrIN = aq2(8, 8),     -- Authoritarian Delusion
-            rDPrEX = aq2(4, 2),       -- Tyrannical Dyarchy
-            INMSrDHrEX = aq2(7, 5),   -- Sisyphean Monarchy
-            rDHrIN = aq2(5, 5),       -- Brain Capacity
-            swamp_water_lite_plus = aq2(6, 2),
-            swamp_water_plus = aq2(7, 2),
-            swamp_water_pro_plus = aq2(8, 2),
+            GVrASrDH = aq(11, 2),     -- Storage Overload
+            DHrMSrNH = aq(11, 7),     -- Deadbeat
+            rGVrNHrVL = aq(10, 3),    -- Sweatshop
+            rINrNH = aq(14, 6),       -- Fleeting Memory
+            EXGVNHrMS = aq(12, 6),    -- Bnuuy
+            ASDPGVrMSrNH = aq(10, 3), -- Grand-Master! Rounds
+            DHrEXrVL = aq(9, 6),      -- Sweat and Ruin
+            ASGVrDPrMS = aq(9, 4),    -- Cupid's Gamble
+            NHVLrDPrGV = aq(11, 6),   -- Despairful Longing
+            VLrEXrIN = aq(16, 6),     -- Authoritarian Delusion
+            rDPrEX = aq(12, 3),       -- Tyrannical Dyarchy
+            INMSrDHrEX = aq(15, 6),   -- Sisyphean Monarchy
+            rDHrIN = aq(13, 6),       -- Brain Capacity
+            swamp_water_lite_plus = aq(14, 3),
+            swamp_water_plus = aq(15, 3),
+            swamp_water_pro_plus = aq(16, 3),
 
             -- Special, no texture needed
             blight = aq(0, 0),
@@ -256,31 +247,33 @@ TEXTURE = {
             armageddon = aq(0, 0),
             abyss = aq(0, 0),
 
-            the_escape_artist = aq(1, 5),
             talentless = aq(3, 7),
             block_rationing = aq(2, 7),
             the_responsible_one = aq(1, 6),
-            guardian_angel = aq(3, 6),
-            lovers_promise = aq(8, 7),
-            -- moon_struck = aq(),
-            clutch_main = aq2(8, 3),
-            the_oblivious_artist = aq2(6, 9),
-            powerless = aq(7, 5),
-            the_pacifist = aq(4, 1),
-            divine_rejection = aq(7, 6),
-            sunk_cost = aq2(6, 8),
-            wax_wings = aq2(7, 8),
+            the_unreliable_one = aq(15, 2),
             carried = aq(3, 8),
-            patience_is_a_virtue = aq2(2, 5),
-            spotless = aq2(5, 3),
-            fel_magic = aq2(1, 7),
+            guardian_angel = aq(3, 6),
+            the_escape_artist = aq(1, 5),
+            fel_magic = aq(9, 7),
+            powerless = aq(7, 5),
+            empurple = aq(13, 7),
+            patience_is_a_virtue = aq(10, 6),
+            spotless = aq(16, 4),
+            clutch_main = aq(10, 4),
+            honeymoon = aq(13, 4),
+            break_up = aq(12, 4),
+            overprotection = aq(12, 7),
+            sunk_cost = aq(11, 5),
+            wax_wings = aq(12, 5),
+            the_masterful_juggler = aq(15, 7),
+            the_oblivious_artist = aq(14, 7),
             arrogance = aq(3, 5),
-            honeymoon = aq2(3, 4),
-            break_up = aq2(1, 4),
-            overprotection = aq2(1, 9),
-            the_unreliable_one = aq2(7, 1),
+            the_pacifist = aq(4, 1),
             detail_oriented = aq(8, 6),
             psychokinesis = aq(8, 6),
+            divine_rejection = aq(7, 6),
+            -- moon_struck = aq(),
+            lovers_promise = aq(8, 7),
 
             love_hotel = aq(5, 6),
             financially_responsible = aq(5, 6),
@@ -296,31 +289,32 @@ TEXTURE = {
             cruise_control = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
-            skys_the_limit = aq2(2, 3),
-            superluminal = aq2(6, 1),
+            skys_the_limit = aq(9, 2),
+            superluminal = aq(14, 2),
             cut_off = aq(6, 2),
             worn_out = aq(6, 2),
-            mastery = aq2(2, 6),
-            terminal_velocity = aq2(2, 6),
+            mastery = aq(9, 5),
+            terminal_velocity = aq(9, 5),
             the_harbinger = aq(5, 8),
             final_defiance = aq(3, 2),
             speedrun_speedrunning = aq(5, 2),
             abyss_weaver = aq(5, 2),
-            royal_resistance = aq2(2, 1),
-            lovers_stand = aq2(2, 1),
+            royal_resistance = aq(10, 2),
+            lovers_stand = aq(10, 2),
             romantic_homicide = aq(4, 8),
-            its_kinda_rare = aq2(6, 3),
-            benevolent_ambition = aq2(7, 3),
+            its_kinda_rare = aq(14, 4),
+            benevolent_ambition = aq(15, 4),
             fruitless_effort = aq(6, 7),
             false_god = aq(2, 8),
-            subjugation = aq2(2, 7),
-            omnipotence = aq2(2, 7),
-            clicking_champion = aq2(8, 6),
+            subjugation = aq(10, 7),
+            omnipotence = aq(10, 7),
+            clicking_champion = aq(10, 5),
 
             identity = aq(6, 6),
             respectful = aq(2, 1),
             zenith_relocation = aq(4, 7),
-            intended_glitch = aq2(3, 3),
+            intended_glitch = aq(11, 4),
+            lucky_coincidence = aq(14, 5),
             dark_force = aq(3, 1),
             zenith_traveler = aq(1, 8),
             smooth_dismount = aq(4, 1),

@@ -373,9 +373,9 @@ function scene.update(dt)
         if TASK.lock('revswamp_icon_' .. mp, 1.26 / (mp - 4)) then
             local name = RevSwampName[mp]:sub(2, -2):lower()
             local r = math.random(94, 126)
-            TEXTURE.achievement.iconQuad[name][2]:setViewport(
-                math.random(.5 * 256, 7.5 * 256) - r, math.random(.5 * 256, 7.5 * 256) - r,
-                2 * r, 2 * r, 2048, 2304
+            TEXTURE.achievement.iconQuad[name]:setViewport(
+                MATH.rand(.5, 15.5) * 256 - r, MATH.rand(.5, 5.5) * 256 - r,
+                2 * r, 2 * r, 4096, 2048
             )
         end
     end
@@ -514,7 +514,7 @@ function scene.draw()
                     local slice = texture.iconQuad[a.id]
                     if slice then
                         gc_setColor(0, 0, 0, .872)
-                        gc_mDrawQ(texture.icons[slice[1]], slice[2] or texture.iconQuad._undef, 65, 65, 0, .24)
+                        gc_mDrawQ(texture.icons, slice or texture.iconQuad._undef, 65, 65, 0, .24)
                     end
                 end
 
@@ -524,9 +524,8 @@ function scene.draw()
                     gc_mDraw(texture.wreath[a.wreath], 65, 65, 0, .42)
                 end
 
-                -- Credits
+                -- Credit
                 gc_setColor(colorRev and COLOR.dR or COLOR.LD)
-                gc_print(A.quote, 130, a.descWidth <= 1050 and 98 or 103, 0, .42)
                 gc_printf(A.credit, 65, 113, 130 / .37, 'center', 0, .37, .37, 65 / .37)
 
                 -- Tags
@@ -556,6 +555,7 @@ function scene.draw()
                     gc_setColor(1, 1, 1, .626)
                     gc_mDraw(texture.overDev, 600 - 12, 130 - 18, 0, .1)
                 end
+
                 -- Texts
                 gc_setColor(AchvData[a.rank].fg2)
                 gc_print(a.score, 130, 35, 0)
@@ -564,8 +564,10 @@ function scene.draw()
                 if a.descWidth < 1050 then
                     gc_print(a.desc, 130, 77, 0, min(400 / a.descWidth, .4), .4)
                 else
-                    gc_printf(a.desc, 130, 73, 1100, 'left', 0, .4)
+                    gc_printf(a.desc, 130, 73, 1050, 'left', 0, .4)
                 end
+                gc_setColor(colorRev and COLOR.dR or COLOR.LD)
+                gc_print(A.quote, 130, a.descWidth <= 1050 and 98 or 103, 0, .42)
 
                 -- Hidden covering
                 if M.IN > 0 then

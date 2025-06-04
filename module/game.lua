@@ -1711,6 +1711,7 @@ function GAME.commit(auto)
             xp = xp * 3
             GAME.chain = GAME.chain + 1
             GAME.achv_doublePass = GAME.achv_doublePass + 1
+            if not ACHV.lucky_coincidence then IssueAchv('lucky_coincidence') end
         end
         if GAME.chain >= 4 then
             if GAME.chain == 4 then
@@ -2450,6 +2451,10 @@ function GAME.finish(reason)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
         elseif GAME.comboStr == 'rDP' then
             SubmitAchv('overprotection', GAME.achv_protectH or GAME.roundHeight)
+        elseif GAME.comboStr == 'rGVrINrMS' then
+            SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
+        elseif GAME.comboStr == 'DHVLrIN' then
+            SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
