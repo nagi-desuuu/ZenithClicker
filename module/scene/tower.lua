@@ -259,10 +259,8 @@ local function getBtnPressed()
     if msIsDown(4) then btnPressed = btnPressed + 1 end
     if msIsDown(5) then btnPressed = btnPressed + 1 end
     if msIsDown(6) then btnPressed = btnPressed + 1 end
-    if not (M.NH == 2 and M.AS == 0) then
-        if kbIsDown('x') then btnPressed = btnPressed + 1 end
-        if kbIsDown('c') then btnPressed = btnPressed + 1 end
-    end
+    if kbIsDown(STAT.keybind[21]) then btnPressed = btnPressed + 1 end
+    if kbIsDown(STAT.keybind[22]) then btnPressed = btnPressed + 1 end
     return btnPressed
 end
 
