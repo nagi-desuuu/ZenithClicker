@@ -893,6 +893,7 @@ Achievements = {
         desc = [[HFD without building up a surge, with VL DH rIN]],
         quote = [[Iteration after iteration after iteration, searching for the perfect shade...]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
+        hide = function() return GAME.completion.IN == 0 end,
     },
     { -- patience_is_a_virtue
         ex = true,
@@ -975,6 +976,7 @@ Achievements = {
         credit = "@flomikel",
         scoreSimp = function(b2b) return "B2B x" .. b2b end,
         rank = numberRank(0, 10, 18, 26, 42, 62, 94),
+        hide = function() return GAME.completion.MS == 0 or GAME.completion.GV == 0 or GAME.completion.IN == 0 end,
     },
     { -- the_oblivious_artist
         ex = true,
