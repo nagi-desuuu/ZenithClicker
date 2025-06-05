@@ -824,7 +824,7 @@ BgmData = {
     f5 = { meta = '4|4 6|8  130 BPM  E Minor', bar = 4, bpm = 130, toneFix = -1, loop = { 96, 169.846 } },
     f5r = { meta = '4|4 6|8  130 BPM  E Minor', bar = 4, bpm = 130, toneFix = -1, loop = { 96, 169.846 } },
     f6 = { meta = '4|4  65 BPM  A Minor', bar = 4, bpm = 65, toneFix = 2, loop = { 29.538, 103.384 } },
-    f6r = { meta = '4|4  65 BPM  A Minor', bar = 4, bpm = 65, toneFix = 2, loop = { 29.538, 103.384 } },
+    f6r = { meta = '4|4  65 BPM  G Minor', bar = 4, bpm = 65, toneFix = 0, loop = { 29.538, 103.384 } },
     f7 = { meta = '4|4  120 BPM  A+50c Minor', bar = 4, bpm = 120, toneFix = 2.5, loop = { 128, 192 } },
     f7r = { meta = '4|4  120 BPM  A+50c Minor', bar = 4, bpm = 120, toneFix = 2.5, loop = { 128, 192 }, teleport = { 8, 32 } },
     f8 = { meta = '4|4  150 BPM  E Minor', bar = 4, bpm = 150, toneFix = -1, loop = { 38.4, 134.4 } },
