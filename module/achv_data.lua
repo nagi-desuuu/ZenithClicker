@@ -892,6 +892,7 @@ Achievements = {
         name = "Empurple",
         desc = [[HFD without building up a surge, with VL DH rIN]],
         quote = [[Iteration after iteration after iteration, searching for the perfect shade...]],
+        credit = "@obsidian",
         rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
         hide = function() return GAME.completion.IN == 0 end,
     },
