@@ -1051,7 +1051,7 @@ Achievements = {
     { -- lovers_promise
         id = 'lovers_promise',
         name = "Lover's Promise",
-        desc = [[HAR with DP on the 14th day of any month (No CR)]],
+        desc = [[HAR with DP on the 14th day of any month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
