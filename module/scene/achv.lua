@@ -96,11 +96,12 @@ local function refreshAchvList(canShuffle)
             end
             tempText:set(A.desc)
             local hidden = A.hide() and not ACHV[A.id]
+            local descWidth = hidden and 26 or tempText:getWidth()
             table.insert(achvList, {
                 id = A.id,
                 name = hidden and "???" or A.name:upper(),
                 desc = hidden and "???" or A.desc,
-                descWidth = hidden and 26 or tempText:getWidth(),
+                descWidth = descWidth,
                 rank = floor(rank),
                 wreath = wreath,
                 progress = progress,
@@ -552,8 +553,8 @@ function scene.draw()
 
                 -- Dev
                 if a.overDev then
-                    gc_setColor(1, 1, 1, .626)
-                    gc_mDraw(texture.overDev, 600 - 12, 130 - 18, 0, .1)
+                    gc_setColor(1, 1, 1, .1)
+                    gc_mDraw(texture.overDev, 565, 75, 0, .26)
                 end
 
                 -- Texts
