@@ -1023,7 +1023,7 @@ function scene.overDraw()
                 gc_circle('line', 0, 0, 40)
                 if GAME.gravTimer and GAME.gravTimer < 4.2 then
                     setFont(30)
-                    gvTimerColor1[4] = clampInterpolate(4.2, 0, 2.6, 1, GAME.gravTimer)
+                    gvTimerColor1[4] = clampInterpolate(clamp(GAME.gravDelay, 2.6, 4.2), 0, min(GAME.gravDelay - .626, 2.6), 1, GAME.gravTimer)
                     gvTimerColor2[4] = gvTimerColor1[4]
                     gc_strokePrint('full', 1, gvTimerColor1, gvTimerColor2, ("%.1f"):format(GAME.gravTimer + .05), 0, -21, nil, 'center')
                 end
