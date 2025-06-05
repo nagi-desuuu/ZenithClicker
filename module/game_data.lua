@@ -237,7 +237,7 @@ ComboData = {
         { set = "DH DP",            name = "Museum Heist" },
         { set = "EX rGV VL",        name = "Workaholic" },
         { set = "MS VL AS",         name = "Human Experiment" },
-        { set = "EX GV DH",         name = "Core Meltdown" },
+        { set = "EX GV DH",         name = "Thermal Anomaly" },
         { set = "rMS rGV rIN",      name = "The Masterful Juggler" },
     },
 

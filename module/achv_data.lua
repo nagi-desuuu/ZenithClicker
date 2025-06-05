@@ -1130,13 +1130,13 @@ Achievements = {
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[7].top - Floors[6].top) / time) end,
         rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 4.2),
     },
-    { -- core_meltdown
+    { -- thermal_anomaly
         ex = true,
-        id = 'core_meltdown',
-        name = "Core Meltdown",
+        id = 'thermal_anomaly',
+        name = "Thermal Anomaly",
         desc = [[Shortest time spent in F8 with EX GV DH]],
-        quote = [[Absolute destruction overdrive]],
-        credit = "@Tizago",
+        quote = [["This can't be real." As the overloaded core melts down before my eyes.]],
+        credit = "@obsidian",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1fm/s", (Floors[8].top - Floors[7].top) / time) end,

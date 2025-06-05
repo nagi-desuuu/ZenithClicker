@@ -900,7 +900,7 @@ function GAME.upFloor()
     elseif GAME.floor == 7 then
         if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
     elseif GAME.floor == 8 then
-        if GAME.comboStr == 'DHEXGV' then SubmitAchv('core_meltdown', GAME.floorTime) end
+        if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', GAME.floorTime) end
     elseif GAME.floor == 9 then
         SubmitAchv('ultra_dash', GAME.floorTime)
     end
