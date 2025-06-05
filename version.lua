@@ -1,8 +1,8 @@
 return {
     ["appName"] = "Zenith Clicker",
-    ["apkCode"] = 010906,
-    ["verCode"] = 010906,
+    ["apkCode"] = 010907,
+    ["verCode"] = 010907,
 
-    ["appVer"] = "V1.9.6",
-    ["verStr"] = "1.9.6",
+    ["appVer"] = "V1.9.7",
+    ["verStr"] = "1.9.7",
 }
