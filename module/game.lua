@@ -4,6 +4,7 @@ local abs, rnd = math.abs, math.random
 local roundUnit = MATH.roundUnit
 local expApproach = MATH.expApproach
 local lerp, cLerp, icLerp = MATH.lerp, MATH.cLerp, MATH.icLerp
+local clamp = MATH.clamp
 local lLerp = MATH.lLerp
 local clampInterpolate = MATH.clampInterpolate
 
@@ -362,14 +363,7 @@ function GAME.getComboName(list, mode)
         end
         ins(fstr, MD.textColor[list[len]])
         ins(fstr, MD.noun[list[len]])
-        if M.NH == 2 then
-            for i = 1, #fstr, 2 do
-                fstr[i] = TABLE.copy(fstr[i])
-                for j = 1, 3 do
-                    fstr[i][j] = fstr[i][j] * .7 + .26
-                end
-            end
-        elseif M.IN > 0 then
+        if M.IN > 0 then
             local r = rnd(0, 3)
             for i = 1, #fstr, 2 do
                 r =
@@ -377,6 +371,13 @@ function GAME.getComboName(list, mode)
                     r == 1 and 3 or
                     r == 2 and 0 or rnd(0, 1)
                 fstr[i] = { 1, 1, 1, .6 + .13 * r }
+            end
+        elseif URM and M.NH == 2 then
+            for i = 1, #fstr, 2 do
+                fstr[i] = TABLE.copy(fstr[i])
+                for j = 1, 3 do
+                    fstr[i][j] = fstr[i][j] * .62 + .26
+                end
             end
         end
 
@@ -529,7 +530,7 @@ end
 
 function GAME.genQuest()
     local combo = {}
-    local base = .872 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + icLerp(6200, 10000, GAME.height)
+    local base = .72 + GAME.floor ^ .5 / 6 + GAME.extraQuestBase + icLerp(6200, 10000, GAME.height)
     local var = GAME.floor * .26 * GAME.extraQuestVar
     local r = MATH.clamp(base + var * abs(MATH.randNorm()), 1, GAME.maxQuestSize)
 
@@ -538,15 +539,22 @@ function GAME.genQuest()
         r = r - (GAME.atkBuffer - GAME.atkBufferCap)
         GAME.atkBuffer = GAME.atkBufferCap
     end
-    GAME.atkBuffer = max(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4)), 0)
-    if M.DP > 0 then
-        r = r * (GAME[GAME.getLifeKey(true)] == 0 and 1.26 or 1.1)
-    end
+    GAME.atkBuffer = clamp(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4) + MATH.rand(-.62, .62)), 0, GAME.atkBufferCap)
+    if M.DP > 0 then r = r * (GAME[GAME.getLifeKey(true)] == 0 and 1.26 or 1.1) end
 
     local pool = TABLE.copyAll(MD.weight)
 
     local lastQ = GAME.quests[#GAME.quests]
-    if lastQ then pool[lastQ.combo[1]] = 0 end
+    if lastQ then
+        if M.NH == 2 then
+            for i = 1, #lastQ.combo do
+                pool[lastQ.combo[i]] = pool[lastQ.combo[i]] * 3.5
+            end
+            pool[TABLE.getRandom(lastQ.combo)] = 0
+        else
+            pool[lastQ.combo[1]] = 0
+        end
+    end
     local questCount = MATH.clamp(MATH.roundRnd(r), 1, GAME.maxQuestSize)
     if questCount == 1 then
         pool.DP = 0
@@ -775,6 +783,8 @@ end
 
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
+    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
+
     local oldRank = GAME.rank
     local oldLockTimer = GAME.xpLockTimer
     while GAME.xp >= 4 * GAME.rank do
@@ -790,16 +800,15 @@ function GAME.addXP(xp)
                 GAME.rank = GAME.rank + 1
                 GAME.xp = GAME.xp - 4 * GAME.rank
             end
-            GAME.xpLockLevel = GAME.xpLockLevelMax
-            if GAME.xp < 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevel - 1 end
+            GAME.xpLockLevel = GAME.xpLockLevelMax + (GAME.xp < 2 * GAME.rank and 1 or 0)
         end
-        GAME.xpLockTimer = GAME.xpLockLevel
     end
     if GAME.rank > GAME.rankLimit then
         GAME.rank = GAME.rankLimit
         GAME.xp = 4 * GAME.rank
     end
     if GAME.rank ~= oldRank then
+        GAME.xpLockTimer = GAME.xpLockLevel
         GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
@@ -821,7 +830,6 @@ function GAME.addXP(xp)
     else
         GAME.xpLockTimer = oldLockTimer
     end
-    if GAME.rankupLast and GAME.xp >= 2 * GAME.rank and not (URM and M.NH == 2) then GAME.xpLockLevel = GAME.xpLockLevelMax end
 end
 
 function GAME.setGigaspeedAnim(on)
@@ -892,7 +900,7 @@ function GAME.upFloor()
     elseif GAME.floor == 7 then
         if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
     elseif GAME.floor == 8 then
-        if GAME.comboStr == 'DHEXGV' then SubmitAchv('core_meltdown', GAME.floorTime) end
+        if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', GAME.floorTime) end
     elseif GAME.floor == 9 then
         SubmitAchv('ultra_dash', GAME.floorTime)
     end
@@ -1258,7 +1266,6 @@ function GAME.refreshLayout()
     local baseDist = (M.EX > 0 and (URM and M.EX == 2 and 80 or 100) or 110) + M.VL * 20
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
     local baseY = 726 + (URM and M.GV == 2 and 50 or 15 * M.GV)
-    local float = M.NH < 2
     if FloatOnCard then
         local selX = 800 + (FloatOnCard - 5) * baseDist
         local dodge = M.VL == 0 and 250 or 230
@@ -1274,12 +1281,12 @@ function GAME.refreshLayout()
             else
                 C.tx = selX
             end
-            C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
+            C.ty = baseY - ((C.active and 45 or 0) + (i == FloatOnCard and 55 or 0))
         end
     else
         for i, C in ipairs(CD) do
             C.tx = 800 + (i - 5) * baseDist
-            C.ty = baseY - (float and (C.active and 45 or 0) + (i == FloatOnCard and 55 or 0) or 0)
+            C.ty = baseY - ((C.active and 45 or 0) + (i == FloatOnCard and 55 or 0))
         end
     end
 end
@@ -1450,7 +1457,6 @@ function GAME.swapControl()
 end
 
 function GAME.cancelAll(instant)
-    if M.NH == 2 then return end
     if URM and M.VL == 2 and not UltraVlCheck('reset', instant) then return end
 
     TASK.removeTask_code(GAME.task_cancelAll)
@@ -1704,6 +1710,7 @@ function GAME.commit(auto)
             xp = xp * 3
             GAME.chain = GAME.chain + 1
             GAME.achv_doublePass = GAME.achv_doublePass + 1
+            if not ACHV.lucky_coincidence then IssueAchv('lucky_coincidence') end
         end
         if GAME.chain >= 4 then
             if GAME.chain == 4 then
@@ -1838,7 +1845,7 @@ function GAME.commit(auto)
             end
         end
 
-        GAME.cancelAll(true)
+        if M.NH < 2 then GAME.cancelAll(true) end
         GAME.cancelBurn()
         GAME.dmgTimer = min(GAME.dmgTimer + max(2.6, GAME.dmgDelay / 2), GAME.dmgDelay)
 
@@ -1905,7 +1912,7 @@ function GAME.commit(auto)
 
         if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
         if M.EX > 0 then
-            GAME.cancelAll(true)
+            if M.NH < 2 then GAME.cancelAll(true) end
         elseif M.AS == 1 then
             GAME.cancelBurn()
         end
@@ -1949,7 +1956,7 @@ function GAME.start()
     GAME.timerMul = 1
     GAME.isUltraRun = GAME.anyUltra
     GAME.attackMul = GAME.isUltraRun and .62 or 1
-    GAME.xpLockLevelMax = 5
+    GAME.xpLockLevelMax = URM and M.NH == 2 and 1 or 5
     GAME.invincible = false
 
     TASK.unlock('sure_quit')
@@ -2001,9 +2008,9 @@ function GAME.start()
 
     -- Params
     GAME.maxQuestCount = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
-    GAME.maxQuestSize = M.DH == 2 and 3 or 4
-    GAME.extraQuestBase = (M.DH > 0 and .626 or 0) + (M.NH == 2 and M.DH < 2 and -.42 or 0) - .15
-    GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
+    GAME.maxQuestSize = (M.NH < 2 and M.DH == 2) and 3 or 4
+    GAME.extraQuestBase = M.NH == 2 and 1.26 or M.DH == 1 and 0.26 or 0
+    GAME.extraQuestVar = (M.NH < 2 and M.DH == 1) and .626 or 1
     GAME.questFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
@@ -2443,6 +2450,10 @@ function GAME.finish(reason)
             SubmitAchv('fel_magic', GAME.achv_felMagicQuest)
         elseif GAME.comboStr == 'rDP' then
             SubmitAchv('overprotection', GAME.achv_protectH or GAME.roundHeight)
+        elseif GAME.comboStr == 'rGVrINrMS' then
+            SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
+        elseif GAME.comboStr == 'DHVLrIN' then
+            SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)

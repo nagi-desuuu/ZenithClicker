@@ -205,7 +205,7 @@ function Card:setActive(auto, key)
             RefreshButtonText()
         elseif self.id == 'DP' then
         end
-        SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler and M.NH < 2)
+        SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler)
         GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
         GAME.refreshPBText()
         GAME.refreshRPC()
@@ -322,9 +322,13 @@ function Card:revJump()
                     for _, C in ipairs(CD) do
                         if C ~= self then
                             local r = rnd()
-                            if self.id == 'EX' then r = r * (URM and 12.6 or 2.6) end
-                            if self.id == 'MS' then r = max(sign((r - .5)) * abs(r - .5) ^ .3333 / 1.5874 + .5, 0) end
-                            if self.id == 'GV' then r = (URM and .0626 or .26) end
+                            if self.id == 'EX' then
+                                r = r * (URM and 12.6 or 2.6)
+                            elseif self.id == 'MS' then
+                                r = max(sign((r - .5)) * abs(r - .5) ^ .3333 / 1.5874 + .5, 0)
+                            elseif self.id == 'GV' then
+                                r = (URM and .0626 or .26)
+                            end
                             C:bounce(lerp(62, 420, r), lerp(.42, .62, r))
                         end
                     end

@@ -133,7 +133,6 @@ local function keyTrigger(key)
                 end
             end
         elseif bindID == 20 then
-            if M.NH == 2 then return SFX.play('no') end
             GAME.nixPrompt('keep_no_keyboard')
             local W = scene.widgetList.reset
             W._pressTime = W._pressTimeMax * 2
@@ -260,10 +259,8 @@ local function getBtnPressed()
     if msIsDown(4) then btnPressed = btnPressed + 1 end
     if msIsDown(5) then btnPressed = btnPressed + 1 end
     if msIsDown(6) then btnPressed = btnPressed + 1 end
-    if not (M.NH == 2 and M.AS == 0) then
-        if kbIsDown('x') then btnPressed = btnPressed + 1 end
-        if kbIsDown('c') then btnPressed = btnPressed + 1 end
-    end
+    if kbIsDown(STAT.keybind[21]) then btnPressed = btnPressed + 1 end
+    if kbIsDown(STAT.keybind[22]) then btnPressed = btnPressed + 1 end
     return btnPressed
 end
 
@@ -806,6 +803,8 @@ function scene.draw()
     end
 end
 
+local gvTimerColor1 = { 1, .942, .872, 0 }
+local gvTimerColor2 = { 0, 0, 0, 0 }
 function scene.overDraw()
     local t = love.timer.getTime()
     if GAME.zenithTraveler then return end
@@ -1020,6 +1019,12 @@ function scene.overDraw()
                 end
                 gc_setColor(COLOR.LD)
                 gc_circle('line', 0, 0, 40)
+                if GAME.gravTimer and GAME.gravTimer < 4.2 then
+                    setFont(30)
+                    gvTimerColor1[4] = clampInterpolate(clamp(GAME.gravDelay, 2.6, 4.2), 0, min(GAME.gravDelay - .626, 2.6), 1, GAME.gravTimer)
+                    gvTimerColor2[4] = gvTimerColor1[4]
+                    gc_strokePrint('full', 1, gvTimerColor1, gvTimerColor2, ("%.1f"):format(GAME.gravTimer + .05), 0, -21, nil, 'center')
+                end
                 gc_pop()
             end
         end
