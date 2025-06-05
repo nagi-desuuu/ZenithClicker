@@ -4,6 +4,7 @@ local abs, rnd = math.abs, math.random
 local roundUnit = MATH.roundUnit
 local expApproach = MATH.expApproach
 local lerp, cLerp, icLerp = MATH.lerp, MATH.cLerp, MATH.icLerp
+local clamp = MATH.clamp
 local lLerp = MATH.lLerp
 local clampInterpolate = MATH.clampInterpolate
 
@@ -538,10 +539,8 @@ function GAME.genQuest()
         r = r - (GAME.atkBuffer - GAME.atkBufferCap)
         GAME.atkBuffer = GAME.atkBufferCap
     end
-    GAME.atkBuffer = max(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4)), 0)
-    if M.DP > 0 then
-        r = r * (GAME[GAME.getLifeKey(true)] == 0 and 1.26 or 1.1)
-    end
+    GAME.atkBuffer = clamp(GAME.atkBuffer - (max(GAME.floor / 3, GAME.atkBufferCap / 4) + MATH.rand(-.62, .62)), 0, GAME.atkBufferCap)
+    if M.DP > 0 then r = r * (GAME[GAME.getLifeKey(true)] == 0 and 1.26 or 1.1) end
 
     local pool = TABLE.copyAll(MD.weight)
 
@@ -2009,9 +2008,9 @@ function GAME.start()
 
     -- Params
     GAME.maxQuestCount = M.NH == 2 and (M.DP == 0 and 1 or 2) or 3
-    GAME.maxQuestSize = M.DH == 2 and 3 or 4
-    GAME.extraQuestBase = (M.NH == 2 and 1.26 or M.DH > 0 and .626 or 0)
-    GAME.extraQuestVar = (M.DH > 0 and .626 or 1)
+    GAME.maxQuestSize = (M.NH < 2 and M.DH == 2) and 3 or 4
+    GAME.extraQuestBase = (M.NH == 2 or M.DH > 0) and 1.26 or 0
+    GAME.extraQuestVar = (M.NH < 2 and M.DH > 0) and .626 or 1
     GAME.questFavor = 0 -- Initialized in GAME.upFloor()
     GAME.dmgHeal = 2
     GAME.dmgWrong = 1
