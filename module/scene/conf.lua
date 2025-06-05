@@ -70,6 +70,8 @@ local bgmColors = {
 }
 
 local function refreshWidgets()
+    scene.widgetList.account:setVisible(not MusicPlayer)
+    scene.widgetList.album:setVisible(MusicPlayer)
     scene.widgetList.mp_prev5s:setVisible(MusicPlayer)
     scene.widgetList.mp_next5s:setVisible(MusicPlayer)
     scene.widgetList.mp_noLoop:setVisible(MusicPlayer)
@@ -346,10 +348,11 @@ function scene.draw()
 end
 
 scene.widgetList = {
-    -- ACCOUNT
+    -- ALBUM
     WIDGET.new {
+        name = 'album',
         type = 'text', alignX = 'left',
-        text = "ACCOUNT",
+        text = "ALBUM",
         color = clr.T,
         fontSize = 50,
         x = baseX + 30, y = baseY + 50,
@@ -386,6 +389,16 @@ scene.widgetList = {
             BgmLooping, BgmNeedSkip = false, false
         end,
         visibleFunc = FALSE,
+    },
+
+    -- ACCOUNT
+    WIDGET.new {
+        name = 'account',
+        type = 'text', alignX = 'left',
+        text = "ACCOUNT",
+        color = clr.T,
+        fontSize = 50,
+        x = baseX + 30, y = baseY + 50,
     },
     WIDGET.new {
         name = 'changeName', type = 'button',
