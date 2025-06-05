@@ -224,7 +224,7 @@ ComboData = {
         { set = "rEX VL rIN",       name = "Authoritarian Delusion" },
         { set = "rEX rDP",          name = "Tyrannical Dyarchy" },
         { set = "rEX MS rDH IN",    name = "Sisyphean Monarchy" },
-        { set = "rDH rIN",          name = "Brain Capacity" },
+        { set = "MS rDH rIN AS",    name = "Kitsune Trickery" },
 
         { set = "NH rGV",           name = "Clutch Main" },
         { set = "EX VL",            name = "Wax Wings" },

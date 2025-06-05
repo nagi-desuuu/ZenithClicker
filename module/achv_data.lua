@@ -667,14 +667,14 @@ Achievements = {
         rank = floorRank(1, 2, 3, 4, 5, 6, 7),
         hide = function() return GAME.completion.EX == 0 or GAME.completion.DH == 0 end,
     },
-    { -- rDHrIN
+    { -- ASMSrDHrIN
         ex = true,
-        id = 'rDHrIN',
-        name = "Brain Capacity",
-        desc = [[HFD with rDH rIN mods]],
-        quote = [[How long can you keep up in this forsaken memory game?]],
-        credit = "@GameTilDead",
-        rank = floorRank(1, 26, 42, 2, 3, 4, 5),
+        id = 'ASMSrDHrIN',
+        name = "Kitsune Trickery",
+        desc = [[HFD with MS rDH rIN AS mods]],
+        quote = [[Charmed at first glance, with many dark secrets hidden beneath the magic and fur.]],
+        credit = "@Tizago",
+        rank = floorRank(1, 26, 42, 2, 3, 4, 6),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
     },
     { -- swamp_water_lite_plus
