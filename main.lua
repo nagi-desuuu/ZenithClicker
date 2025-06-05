@@ -1352,12 +1352,12 @@ function Daemon_Fast()
             local data = BgmData[BgmPlaying]
             if BgmLooping then
                 if BGM.tell() > BgmLooping[2] then
-                    BGM.set('all', 'seek', BgmLooping[1])
+                    BGM.set('all', 'seek', BgmLooping[1] + (BGM.tell() - BgmLooping[2]))
                 end
             end
             if BgmNeedSkip then
                 if BGM.tell() > data.teleport[1] then
-                    BGM.set('all', 'seek', data.teleport[2])
+                    BGM.set('all', 'seek', data.teleport[2] + (BGM.tell() - data.teleport[1]))
                     BgmNeedSkip = false
                 end
             end
