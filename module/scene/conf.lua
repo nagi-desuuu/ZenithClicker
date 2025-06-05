@@ -187,9 +187,16 @@ function scene.keyDown(key, isRep)
         end
     elseif MusicPlayer then
         if key == 'left' then
+            TASK.removeTask_code(Task_MusicEnd)
             BGM.set('all', 'seek', math.max(BGM.tell() - (KBisDown('lctrl', 'rctrl') and 26 or 5), 0))
         elseif key == 'right' then
+            TASK.removeTask_code(Task_MusicEnd)
             BGM.set('all', 'seek', math.min(BGM.tell() + (KBisDown('lctrl', 'rctrl') and 26 or 5), BGM.getDuration()))
+        elseif key == 'home' then
+            TASK.removeTask_code(Task_MusicEnd)
+            BGM.set('all', 'seek', 0)
+        elseif key == 'end' then
+            TASK.new(Task_MusicEnd, true)
         elseif key == 'space' then
             BgmLooping, BgmNeedSkip = false, false
         end
@@ -364,6 +371,7 @@ scene.widgetList = {
         fontSize = 30, textColor = clr.LT, text = "BACK  5S",
         sound_hover = 'menutap',
         onClick = function()
+            TASK.removeTask_code(Task_MusicEnd)
             BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
         end,
         visibleFunc = FALSE,
@@ -375,6 +383,7 @@ scene.widgetList = {
         fontSize = 30, textColor = clr.LT, text = "FORWARD  5S",
         sound_hover = 'menutap',
         onClick = function()
+            TASK.removeTask_code(Task_MusicEnd)
             BGM.set('all', 'seek', math.min(BGM.tell() + 5, BGM.getDuration()))
         end,
         visibleFunc = FALSE,
