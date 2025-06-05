@@ -185,9 +185,9 @@ function scene.keyDown(key, isRep)
         end
     elseif MusicPlayer then
         if key == 'left' then
-            BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
+            BGM.set('all', 'seek', math.max(BGM.tell() - (KBisDown('lctrl', 'rctrl') and 26 or 5), 0))
         elseif key == 'right' then
-            BGM.set('all', 'seek', math.min(BGM.tell() + 5, BGM.getDuration()))
+            BGM.set('all', 'seek', math.min(BGM.tell() + (KBisDown('lctrl', 'rctrl') and 26 or 5), BGM.getDuration()))
         elseif key == 'space' then
             BgmLooping, BgmNeedSkip = false, false
         end
