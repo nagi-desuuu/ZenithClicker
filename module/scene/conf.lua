@@ -623,6 +623,11 @@ scene.widgetList = {
                 SFX.play('staffwarning')
                 return
             end
+            if res1.mod ~= 'vanilla' then
+                MSG('dark', "Cannot import data from modded version")
+                SFX.play('staffwarning')
+                return
+            end
             TABLE.update(STAT, res1)
             BEST, ACHV = res2, res3
             setmetatable(BEST.highScore, Metatable.best_highscore)

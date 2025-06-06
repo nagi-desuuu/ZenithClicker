@@ -461,6 +461,7 @@ BEST = {
 }
 
 STAT = {
+    mod = 'vanilla',
     system = SYSTEM,
     joinDate = os.date("%b %Y"),
     hid = os.date("%d%S%m%M%y%H") .. math.random(2600000000, 6200000000),
