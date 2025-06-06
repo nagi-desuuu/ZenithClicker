@@ -6,7 +6,7 @@
 
 > All Arts & Sounds from [TETR.IO](https://tetr.io) by osk, an online stacker game with Awesome Graphics and Musics!
 
-**WARNING**: This game requires you know tetr.io QP2's systems and mods, or you won't get much fun.  
+**WARNING**: This game requires you to know tetr.io QP2's systems and mods, or you won't get much fun.  
 If you like QP2 but don't know much about it, check another repo of mine: [QP2 Documentation](https://github.com/MrZ626/io_qp2_rule) (Chinese, but there are some translated forks). It's a full explanation (almost) of QP2, including many technical details behind the scene, helping you play QP2 with better strats!
 
 **Zenith Clicker** is a game inspired by mod selection screen of tetr.io QP2.  
@@ -30,12 +30,11 @@ Credits:
 
 ## How to Play
 
-After you starting the game, you can see three mod combos, which are called "quest", shown at the top of the screen.  
-Select the mods which contained by the first (largest) one, then press `Start` button to commit.
+After you start the game, you will see three mod combos, which are called "quests", shown at the top of the screen. Select the mods which are contained by the first (largest) one, then press the `Start` button to commit.
 
-Pass quests with one click at most on each card to get "perfect pass", with extra attack and charging b2b.
+Pass quests with one click at most on each card to get "perfect pass", which gives extra attack and chages Back-to-Back
 
-Each mod creates unique experience with twisting the rules but also increases the difficulty **a bit**.
+Each mod creates a unique experience by twisting the rules, but also increases the difficulty.
 
 ## Mod Effects (may not be exactly correct & complete)
 
@@ -187,7 +186,7 @@ but CR is calculated from:
 1. Daily Challenge (2k)
 2. Achievement (5k)
 
-For the exactly formula, see function `calculateRating()` in this [file](/module/scene/stat.lua)
+For the exact formula, see function `calculateRating()` in this [file](/module/scene/stat.lua)
 
 ### Zenith Point (ZP)
 

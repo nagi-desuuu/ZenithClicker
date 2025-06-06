@@ -70,6 +70,8 @@ local bgmColors = {
 }
 
 local function refreshWidgets()
+    scene.widgetList.account:setVisible(not MusicPlayer)
+    scene.widgetList.album:setVisible(MusicPlayer)
     scene.widgetList.mp_prev5s:setVisible(MusicPlayer)
     scene.widgetList.mp_next5s:setVisible(MusicPlayer)
     scene.widgetList.mp_noLoop:setVisible(MusicPlayer)
@@ -185,9 +187,16 @@ function scene.keyDown(key, isRep)
         end
     elseif MusicPlayer then
         if key == 'left' then
-            BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
+            TASK.removeTask_code(Task_MusicEnd)
+            BGM.set('all', 'seek', math.max(BGM.tell() - (KBisDown('lctrl', 'rctrl') and 26 or 5), 0))
         elseif key == 'right' then
-            BGM.set('all', 'seek', math.min(BGM.tell() + 5, BGM.getDuration()))
+            TASK.removeTask_code(Task_MusicEnd)
+            BGM.set('all', 'seek', math.min(BGM.tell() + (KBisDown('lctrl', 'rctrl') and 26 or 5), BGM.getDuration()))
+        elseif key == 'home' then
+            TASK.removeTask_code(Task_MusicEnd)
+            BGM.set('all', 'seek', 0)
+        elseif key == 'end' then
+            TASK.new(Task_MusicEnd, true)
         elseif key == 'space' then
             BgmLooping, BgmNeedSkip = false, false
         end
@@ -346,10 +355,11 @@ function scene.draw()
 end
 
 scene.widgetList = {
-    -- ACCOUNT
+    -- ALBUM
     WIDGET.new {
+        name = 'album',
         type = 'text', alignX = 'left',
-        text = "ACCOUNT",
+        text = "ALBUM",
         color = clr.T,
         fontSize = 50,
         x = baseX + 30, y = baseY + 50,
@@ -361,6 +371,7 @@ scene.widgetList = {
         fontSize = 30, textColor = clr.LT, text = "BACK  5S",
         sound_hover = 'menutap',
         onClick = function()
+            TASK.removeTask_code(Task_MusicEnd)
             BGM.set('all', 'seek', math.max(BGM.tell() - 5, 0))
         end,
         visibleFunc = FALSE,
@@ -372,6 +383,7 @@ scene.widgetList = {
         fontSize = 30, textColor = clr.LT, text = "FORWARD  5S",
         sound_hover = 'menutap',
         onClick = function()
+            TASK.removeTask_code(Task_MusicEnd)
             BGM.set('all', 'seek', math.min(BGM.tell() + 5, BGM.getDuration()))
         end,
         visibleFunc = FALSE,
@@ -386,6 +398,16 @@ scene.widgetList = {
             BgmLooping, BgmNeedSkip = false, false
         end,
         visibleFunc = FALSE,
+    },
+
+    -- ACCOUNT
+    WIDGET.new {
+        name = 'account',
+        type = 'text', alignX = 'left',
+        text = "ACCOUNT",
+        color = clr.T,
+        fontSize = 50,
+        x = baseX + 30, y = baseY + 50,
     },
     WIDGET.new {
         name = 'changeName', type = 'button',

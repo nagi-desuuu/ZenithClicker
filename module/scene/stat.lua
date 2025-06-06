@@ -309,7 +309,7 @@ function RefreshProfile()
     GC.setColor(textColor)
     t30:set(STAT.maxHeight <= 0 and "" or "M")
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
-    if ACHV.zenith_explorer_plus >= DevScore.zenith_explorer_plus then
+    if (ACHV.zenith_explorer_plus or 0) >= DevScore.zenith_explorer_plus then
         GC.setColor(1, 1, 1)
         GC.mDraw(TEXTURE.achievement.overDev, 358, 20, 0, .1)
     end
@@ -332,7 +332,7 @@ function RefreshProfile()
     GC.setColor(textColor)
     t30:set(STAT.minTime >= 1560 and "" or "S")
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
-    if ACHV.zenith_speedrun_plus <= DevScore.zenith_speedrun_plus then
+    if (ACHV.zenith_speedrun_plus or 2600) <= DevScore.zenith_speedrun_plus then
         GC.setColor(1, 1, 1)
         GC.mDraw(TEXTURE.achievement.overDev, 358, 20, 0, .1)
     end
