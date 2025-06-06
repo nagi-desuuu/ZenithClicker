@@ -1101,9 +1101,9 @@ function GAME.refreshRPC()
     local stateStr
     if GAME.playing then
         if DailyActived then
-            stateStr = GAME.teramusic and "Daily SPEEDRUN:" or GAME.gigaspeed and "Daily speedrun: " or "Daily game: "
+            stateStr = GAME.teramusic and "Daily SPEEDRUN: " or GAME.gigaspeed and "Daily speedrun: " or "Daily game: "
         else
-            stateStr = GAME.teramusic and "SPEEDRUN:" or GAME.gigaspeed and "Speedrun: " or "In game: "
+            stateStr = GAME.teramusic and "SPEEDRUN: " or GAME.gigaspeed and "Speedrun: " or "In game: "
         end
         if GAME.negFloor > 1 then
             stateStr = stateStr .. "B" .. GAME.negFloor
