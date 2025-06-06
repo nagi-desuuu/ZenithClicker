@@ -970,6 +970,7 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 8, 9, 10),
     },
     { -- the_masterful_juggler
+        ex = true,
         id = 'the_masterful_juggler',
         name = "The Masterful Juggler",
         desc = [[Highest Back-to-Back chain reached, with rMS rGV rIN]],
