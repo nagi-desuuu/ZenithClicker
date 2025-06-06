@@ -870,6 +870,7 @@ function PlayBGM(name, force)
     if not BgmData[BgmPlaying] then return end
     BgmLooping = BgmData[BgmPlaying].loop
     BgmNeedSkip = BgmData[BgmPlaying].teleport
+    BgmNeedStop = false
 
     if BgmPlaying == 'f0' then
         BgmLooping = false
