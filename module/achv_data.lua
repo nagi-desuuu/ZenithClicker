@@ -672,7 +672,7 @@ Achievements = {
         id = 'ASMSrDHrIN',
         name = "Kitsune Trickery",
         desc = [[HFD with MS rDH rIN AS mods]],
-        quote = [[Charmed at first glance, with many dark secrets hidden beneath the magic and fur.]],
+        quote = [[Charmed at first glance, with many dark secrets beneath their magic and fur.]],
         credit = "@Tizago",
         rank = floorRank(1, 26, 42, 2, 3, 4, 6),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
@@ -1051,7 +1051,7 @@ Achievements = {
     { -- lovers_promise
         id = 'lovers_promise',
         name = "Lover's Promise",
-        desc = [[HAR with DP on the 14th day of any month (No CR)]],
+        desc = [[HAR with DP on the 14th day of any month]],
         quote = [[The impossible promise of an eternity just like this moment.]],
         scoreSimp = heightNumber,
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
