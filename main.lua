@@ -959,11 +959,13 @@ function Task_MusicEnd(manual)
     elseif BgmPlaying == 'f10' then
         if BGM.tell() < 28 * 4 * 60 / D.bpm then
             BGM.stop(4.2)
+            TASK.yieldT(4.2)
         elseif BGM.tell() < 59 * 4 * 60 / D.bpm then
             BGM.set('all', 'seek', 59 * 4 * 60 / D.bpm)
             BgmNeedStop = BGM.tell() + 5 * 60 / D.bpm
         elseif BGM.tell() < 77.25 * 4 * 60 / D.bpm then
             BGM.stop(4.2)
+            TASK.yieldT(4.2)
         else
             outroStart = D.loop[2]
             BgmNeedStop = outroStart + 8 * 60 / D.bpm
@@ -1006,11 +1008,13 @@ function Task_MusicEnd(manual)
     elseif BgmPlaying == 'f10r' then
         if BGM.tell() < 28 * 4 * 60 / D.bpm then
             BGM.stop(6.2)
+            TASK.yieldT(6.2)
         elseif BGM.tell() < 59 * 4 * 60 / D.bpm then
             BGM.set('all', 'seek', 59 * 4 * 60 / D.bpm)
             BgmNeedStop = BGM.tell() + 5 * 60 / D.bpm
         elseif BGM.tell() < 77.25 * 4 * 60 / D.bpm then
             BGM.stop(6.2)
+            TASK.yieldT(6.2)
         else
             outroStart = D.loop[2]
             BgmNeedStop = outroStart + 8 * 60 / D.bpm
