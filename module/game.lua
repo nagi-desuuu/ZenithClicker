@@ -1800,7 +1800,8 @@ function GAME.commit(auto)
 
         attack = attack + surge
 
-        local allyAlive = GAME[GAME.getLifeKey(true)] > 0
+        local oldAllyLife = GAME[GAME.getLifeKey(true)]
+        ---@cast oldAllyLife number
         if M.DP > 0 then
             if GAME[GAME.getLifeKey(true)] == 0 then
                 xp = xp / 2
@@ -1810,7 +1811,7 @@ function GAME.commit(auto)
                 if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
             if M.DP == 2 then
-                GAME.takeDamage(URM and attack / 2.6 or attack / 4, 'wrong', allyAlive)
+                GAME.takeDamage(URM and attack / 2.6 or attack / 4, 'wrong', oldAllyLife > 0)
                 if not GAME.playing then return end
                 if check_achv_romantic_homicide then IssueAchv('romantic_homicide') end
             end
@@ -1820,9 +1821,9 @@ function GAME.commit(auto)
 
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
-        if not GAME.DPlock or allyAlive and GAME[GAME.getLifeKey(true)] == 0 then
-            GAME.addHeight(attack * GAME.attackMul)
-        end
+
+        if GAME.DPlock then attack = min(attack, URM and oldAllyLife * 2.6 or oldAllyLife * 4) end
+        if attack > 0 then GAME.addHeight(attack * GAME.attackMul) end
         GAME.addXP(attack + xp)
 
         -- rMS little shuffle
