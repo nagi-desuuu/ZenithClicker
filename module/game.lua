@@ -2324,7 +2324,7 @@ function GAME.finish(reason)
             COLOR.L, ("Attack  %d"):format(g.totalAttack),
             COLOR.LD, ("  (%.1fapm  %.2feff)\n"):format(g.totalAttack / g.time * 60, g.totalAttack / g.totalQuest),
             COLOR.L, ("Bonus  " .. (g.heightBonus >= 2600 and "%.0fm" or "%.1fm")):format(g.heightBonus),
-            COLOR.LD, ("  (%.1f%%  %.1fm/quest)"):format(g.heightBonus / g.height * 100, g.heightBonus / g.totalQuest),
+            COLOR.LD, abs(g.height) <= 2.6 and "" or ("  (%.1f%%  %.1fm/quest)"):format(g.heightBonus / g.height * 100, g.heightBonus / g.totalQuest),
         })
 
         local maxCSP = {}
