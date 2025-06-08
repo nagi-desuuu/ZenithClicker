@@ -2560,13 +2560,17 @@ function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
     if not GAME.playing then return end
     if TestMode then
-        if KBisDown('[') then
+        if KBisDown(']') then
+            GAME.addXP(dt * GAME.rank * 8)
+        elseif KBisDown('[') then
             GAME.xp = GAME.xp - dt * GAME.rank * 8
             if GAME.xp < 0 then GAME.xpLockTimer = 0 end
         end
-        if KBisDown(']') then GAME.addXP(dt * GAME.rank * 8) end
-        if KBisDown('-') then GAME.addHeight(-dt * 260) end
-        if KBisDown('=') then GAME.addHeight(dt * 260) end
+        if KBisDown('=') then
+            GAME.addHeight(dt * 260)
+        elseif KBisDown('-') then
+            GAME.addHeight(-dt * 260)
+        end
         if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
         if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
             GAME.chain = GAME.chain + 1
@@ -2575,6 +2579,9 @@ function GAME.update(dt)
         if KBisDown('return') and TASK.lock("test_eliminate", .26) then
             GAME.addHeight(15)
             SFX.play('elim')
+        end
+        if KBisDown('rshift') then
+            GAME.time = GAME.time + dt * 26
         end
     end
 
