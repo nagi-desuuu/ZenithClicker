@@ -424,6 +424,20 @@ local gc_setShader, gc_setLineWidth = GC.setShader, gc.setLineWidth
 local gc_mDraw, gc_mRect = GC.mDraw, GC.mRect
 local gc_blurCircle = GC.blurCircle
 
+local iconFrame
+do
+    local x, y = 156.5, -245.5
+    local r = 65
+    iconFrame = {
+        x - r, y - r,
+        x + 5, y - r,
+        x + r, y - 5,
+        x + r, y + r,
+        x - 9, y + r,
+        x - r, y + 9,
+    }
+end
+
 function Card:draw()
     local texture = TEXTURE[self.id]
     local playing = GAME.playing
@@ -674,16 +688,16 @@ function Card:draw()
         if M.EX == 0 then
             if active then
                 gc_setLineWidth(6)
-                gc_circle('line', 156.5, -246, 68, 4)
+                gc.polygon('line', iconFrame)
                 gc_setAlpha(.62)
-                gc_circle('fill', 156.5, -246, 72, 4)
+                gc.polygon('fill', iconFrame)
             else
                 gc_setLineWidth(4)
-                gc_circle('line', 156.5, -246, 72, 4)
+                gc.polygon('line', iconFrame)
             end
         elseif active then
             gc_setAlpha(.62)
-            gc_circle('fill', 156.5, -246, 72, 4)
+            gc.polygon('fill', iconFrame)
         end
     end
 
