@@ -2547,12 +2547,12 @@ end
 local questStyle = {
     { k = 1.4, y = 175, a = 1 },
     { k = 1.1, y = 95,  a = .8 },
-    { k = 0.9, y = 30,  a = .6 },
+    { k = 0.9, y = 30,  a = .5 },
 }
 local questStyleDP = {
-    { k = 1.4, y = 175, a = 1 },
-    { k = 1.4, y = 90,  a = 1 },
-    { k = 0.7, y = 25,  a = .7 },
+    { k = 1.4,  y = 175, a = 1 },
+    { k = 1.3,  y = 95,  a = 1 },
+    { k = 0.85, y = 30,  a = .7 },
 }
 
 local KBisDown = love.keyboard.isDown
