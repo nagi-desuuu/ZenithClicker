@@ -197,7 +197,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1f m/s", Floors[9].top / time) end,
-        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 62.6),
+        rank = numberRankRev(260, 126, 100, 90, 82.6, 76.2, 62.6),
         hide = function() return STAT.totalGiga == 0 end,
     },
     { -- zenith_speedrun_plus
@@ -209,7 +209,7 @@ Achievements = {
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
         scoreFull = function(time) return string.format("%.1f m/s", Floors[9].top / time) end,
-        rank = numberRankRev(180, 120, 100, 90, 82.6, 76.2, 56.7),
+        rank = numberRankRev(260, 126, 100, 90, 82.6, 76.2, 56.7),
         hide = function() return STAT.totalGiga == 0 end,
     },
     { -- zenith_challenger
