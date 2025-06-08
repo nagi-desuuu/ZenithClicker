@@ -777,7 +777,6 @@ function GAME.takeDamage(dmg, reason, toAlly)
 end
 
 function GAME.addHeight(h)
-    print("+" .. h, rnd())
     h = h * GAME.rank / 4
     GAME.heightBonus = GAME.heightBonus + h
     GAME.heightBuffer = GAME.heightBuffer + h
