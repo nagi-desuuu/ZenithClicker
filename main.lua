@@ -675,7 +675,15 @@ BgScale = 1
 require 'module.game_data'
 require 'module.achv_data'
 
-Shader_Coloring = GC.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
+Shader_Coloring = GC.newShader [[
+vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
+    return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);
+}]]
+Shader_Throb = GC.newShader [[
+vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
+    vec4 t = texture2D(tex, texCoord);
+    return vec4(1., 0., 0., (1.-step(t.a, .999)) * color.a * (1. - t.r));
+}]]
 
 GAME = require 'module/game'
 local M = GAME.mod

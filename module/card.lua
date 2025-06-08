@@ -414,13 +414,13 @@ function Card:update(dt)
     end
 end
 
-local GAME = GAME
 local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_draw, gc_circle = gc.draw, gc.circle
-local gc_setColor, gc_setAlpha, gc_setLineWidth = gc.setColor, GC.setAlpha, gc.setLineWidth
+local gc_setColor, gc_setAlpha = gc.setColor, GC.setAlpha
+local gc_setShader, gc_setLineWidth = GC.setShader, gc.setLineWidth
 local gc_mDraw, gc_mRect = GC.mDraw, GC.mRect
 local gc_blurCircle = GC.blurCircle
 
@@ -611,7 +611,9 @@ function Card:draw()
             gc_push('transform')
             if not self.upright and GAME.revDeckSkin and faceUp then
                 gc_setColor(1, 1, 1, ThrobAlpha.card)
-                gc_draw(texture.throb, -texture.throb:getWidth() / 2, -texture.throb:getHeight() / 2)
+                gc_setShader(Shader_Throb)
+                gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
+                gc_setShader()
             end
             if completion[self.id] > 0 then
                 img = self.active and TEXTURE.star1 or TEXTURE.star0
