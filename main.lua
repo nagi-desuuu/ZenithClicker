@@ -499,6 +499,7 @@ STAT = {
     totalAttack = 0,
     totalGiga = 0,
     totalF10 = 0,
+    badge = {},
 
     fullscreen = true,
     syscursor = false,
@@ -1596,6 +1597,16 @@ function Initialize(save)
     if STAT.version == 175 then
         ACHV.petaspeed, ACHV.teraspeed = ACHV.teraspeed, nil
         STAT.version = 176
+    end
+    if STAT.version == 176 then
+        local banned
+        if ACHV.love_hotel < 2.6 then ACHV.love_hotel, banned = 6.2, true end
+        if ACHV.unfair_battle < 4.2 then ACHV.unfair_battle, banned = 9.42, true end
+        if ACHV.supercharged_plus >= 620 and MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 100) then ACHV.the_spike_of_all_time_plus, banned = 620, true end
+        if ACHV.supercharged > 420 then ACHV.supercharged, banned = 420, true end
+        if ACHV.supercharged_plus > 620 then ACHV.supercharged_plus, banned = 620, true end
+        if banned then table.insert(STAT.badge, "rDP_meta") end
+        STAT.version = 177
     end
 
     -- Some Initialization
