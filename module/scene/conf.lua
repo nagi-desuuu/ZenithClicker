@@ -43,7 +43,7 @@ local songList = {
     f10r = "petrtech - Pseudo-Apotheosis",
     terar = "Dr Ocelot - Kugelhagel OVERDRIVE",
 
-    fomg = "Ronezkj15 - Floor Omega",
+    fomg = "Ronezkj15 - Strained Endurance",
 }
 local bgmColors = {
     f1 = { COLOR.HEX 'E46A24' },
