@@ -685,6 +685,7 @@ function GAME.incrementPrompt(prompt, value)
                 GAME[GAME.getLifeKey(true)] = GAME.fullHealth
                 SFX.play('boardlock_revive')
                 GAME.DPlock = false
+                GAME.reviveTime = false
                 GAME.achv_maxReviveH = max(GAME.achv_maxReviveH or 0, GAME.roundHeight)
                 if GAME.fatigueSet == Fatigue.rDP and GAME.fatigue > 19 then IssueAchv('benevolent_ambition') end
             end
