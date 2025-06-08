@@ -42,6 +42,7 @@ local ins, rem = table.insert, table.remove
 ---@field gigaTime false | number
 ---@field questTime number
 ---@field floorTime number
+---@field reviveTime false | number
 ---@field secTime number[]
 ---
 ---@field rank number
@@ -200,7 +201,8 @@ GAME.life2 = 0
 GAME.time = 0
 GAME.spikeCounter = 0
 GAME.spikeTimer = 0
-GAME.floorTime = 2.6
+GAME.floorTime = 0
+GAME.reviveTime = false
 GAME.floor = 1
 GAME.rank = 1
 GAME.xp = 0
@@ -660,6 +662,7 @@ function GAME.startRevive()
     end
     GAME.currentTask = GAME.reviveTasks[1] or false
     GAME.DPlock = M.DP == 2
+    GAME.reviveTime = 0
 end
 
 function GAME.incrementPrompt(prompt, value)
@@ -1987,6 +1990,7 @@ function GAME.start()
     GAME.gigaTime = false
     GAME.questTime = 0
     GAME.floorTime = 0
+    GAME.reviveTime = false
     GAME.secTime = {}
 
     -- Rank
@@ -2606,6 +2610,12 @@ function GAME.update(dt)
     end
     if M.EX == 2 and GAME.floorTime > 30 then
         GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
+    end
+    if GAME.reviveTime then
+        GAME.reviveTime = GAME.reviveTime + dt
+        if M.DP == 2 and GAME.reviveTime > 60 then
+            GAME.dmgHeal = GAME.dmgHeal - 0.05 * dt
+        end
     end
     if GAME.time >= GAME.fatigueSet[GAME.fatigue].time then
         GAME.nextFatigue()
