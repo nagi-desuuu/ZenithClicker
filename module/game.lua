@@ -719,7 +719,6 @@ end
 ---@param dmg number
 ---@param reason 'wrong' | 'time'
 ---@param toAlly? boolean
----@return boolean? killed
 function GAME.takeDamage(dmg, reason, toAlly)
     if GAME.currentTask then
         GAME.incrementPrompt('dmg_time')
@@ -766,7 +765,6 @@ function GAME.takeDamage(dmg, reason, toAlly)
                 GAME[k] = 0.26
             else
                 GAME.finish(reason)
-                return true
             end
         end
     else
@@ -775,6 +773,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
 end
 
 function GAME.addHeight(h)
+    print("+" .. h, rnd())
     h = h * GAME.rank / 4
     GAME.heightBonus = GAME.heightBonus + h
     GAME.heightBuffer = GAME.heightBuffer + h
@@ -1801,13 +1800,12 @@ function GAME.commit(auto)
 
         attack = attack + surge
 
+        local allyAlive = GAME[GAME.getLifeKey(true)] > 0
         if M.DP > 0 then
             if M.DP == 2 then
-                if GAME.takeDamage(URM and attack / 2.6 or attack / 4, 'wrong', GAME[GAME.getLifeKey(true)] > 0) then
-                    return
-                elseif check_achv_romantic_homicide then
-                    IssueAchv('romantic_homicide')
-                end
+                GAME.takeDamage(URM and attack / 2.6 or attack / 4, 'wrong', allyAlive)
+                if not GAME.playing then return end
+                if check_achv_romantic_homicide then IssueAchv('romantic_homicide') end
             end
             if GAME[GAME.getLifeKey(true)] == 0 then
                 xp = xp / 2
@@ -1822,7 +1820,7 @@ function GAME.commit(auto)
 
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
-        if not GAME.DPlock then
+        if not GAME.DPlock or allyAlive and GAME[GAME.getLifeKey(true)] == 0 then
             GAME.addHeight(attack * GAME.attackMul)
         end
         GAME.addXP(attack + xp)
@@ -1907,7 +1905,8 @@ function GAME.commit(auto)
         GAME.fault = true
         GAME.faultWrong = true
 
-        if GAME.takeDamage(max(GAME.dmgWrong + GAME.dmgWrongExtra, 1), 'wrong') then return end
+        GAME.takeDamage(max(GAME.dmgWrong + GAME.dmgWrongExtra, 1), 'wrong')
+        if not GAME.playing then return end
         GAME.dmgWrongExtra = GAME.dmgWrongExtra + .5
 
         if M.GV > 0 then GAME.gravTimer = GAME.gravDelay end
@@ -2558,176 +2557,176 @@ local questStyleDP = {
 local KBisDown = love.keyboard.isDown
 function GAME.update(dt)
     GAME.spikeTimer = GAME.spikeTimer - dt
-    if GAME.playing then
-        if TestMode then
-            if KBisDown('[') then
-                GAME.xp = GAME.xp - dt * GAME.rank * 8
-                if GAME.xp < 0 then GAME.xpLockTimer = 0 end
-            end
-            if KBisDown(']') then GAME.addXP(dt * GAME.rank * 8) end
-            if KBisDown('-') then GAME.addHeight(-dt * 260) end
-            if KBisDown('=') then GAME.addHeight(dt * 260) end
-            if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
-            if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
-                GAME.chain = GAME.chain + 1
-                TEXTS.chain:set(tostring(GAME.chain))
-            end
-            if KBisDown('return') and TASK.lock("test_eliminate", .26) then
-                GAME.addHeight(15)
-                SFX.play('elim')
-            end
+    if not GAME.playing then return end
+    if TestMode then
+        if KBisDown('[') then
+            GAME.xp = GAME.xp - dt * GAME.rank * 8
+            if GAME.xp < 0 then GAME.xpLockTimer = 0 end
         end
+        if KBisDown(']') then GAME.addXP(dt * GAME.rank * 8) end
+        if KBisDown('-') then GAME.addHeight(-dt * 260) end
+        if KBisDown('=') then GAME.addHeight(dt * 260) end
+        if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
+        if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
+            GAME.chain = GAME.chain + 1
+            TEXTS.chain:set(tostring(GAME.chain))
+        end
+        if KBisDown('return') and TASK.lock("test_eliminate", .26) then
+            GAME.addHeight(15)
+            SFX.play('elim')
+        end
+    end
 
-        -- Quest animattion
-        local style = M.DP == 0 and questStyle or questStyleDP
-        for i = 1, #GAME.quests do
-            local Q = GAME.quests[i]
-            local k = dt / GAME.animDuration
-            Q.y = expApproach(Q.y, style[i].y, k * 35)
-            Q.k = expApproach(Q.k, style[i].k, k * 26)
-            Q.a = expApproach(Q.a, style[i].a, k * 26)
-        end
+    -- Quest animattion
+    local style = M.DP == 0 and questStyle or questStyleDP
+    for i = 1, #GAME.quests do
+        local Q = GAME.quests[i]
+        local k = dt / GAME.animDuration
+        Q.y = expApproach(Q.y, style[i].y, k * 35)
+        Q.k = expApproach(Q.k, style[i].k, k * 26)
+        Q.a = expApproach(Q.a, style[i].a, k * 26)
+    end
 
-        -- Timers
-        GAME.time = GAME.time + dt * GAME.timerMul
-        local r = min(GAME.rank, 26)
-        GAME.rankTimer[r] = GAME.rankTimer[r] + dt
-        GAME.questTime = GAME.questTime + dt
-        GAME.floorTime = GAME.floorTime + dt
-        if M.GV > 0 and not GAME.gravTimer and (URM and M.GV == 2 or GAME.questTime >= 2.6) and GAME.questTime - dt < 2.6 then
-            GAME.gravTimer = GAME.gravDelay
-        end
-        if M.EX == 2 and GAME.floorTime > 30 then
-            GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
-        end
-        if GAME.time >= GAME.fatigueSet[GAME.fatigue].time then
-            GAME.nextFatigue()
-        end
+    -- Timers
+    GAME.time = GAME.time + dt * GAME.timerMul
+    local r = min(GAME.rank, 26)
+    GAME.rankTimer[r] = GAME.rankTimer[r] + dt
+    GAME.questTime = GAME.questTime + dt
+    GAME.floorTime = GAME.floorTime + dt
+    if M.GV > 0 and not GAME.gravTimer and (URM and M.GV == 2 or GAME.questTime >= 2.6) and GAME.questTime - dt < 2.6 then
+        GAME.gravTimer = GAME.gravDelay
+    end
+    if M.EX == 2 and GAME.floorTime > 30 then
+        GAME.dmgWrong = GAME.dmgWrong + 0.05 * dt
+    end
+    if GAME.time >= GAME.fatigueSet[GAME.fatigue].time then
+        GAME.nextFatigue()
+    end
 
-        -- Gigaspeed timer text
-        if GAME.gigaspeed then
-            TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
-                floor(GAME.time / 60),
-                floor(GAME.time % 60),
-                GAME.time % 1 * 1000)
-            )
-        end
+    -- Gigaspeed timer text
+    if GAME.gigaspeed then
+        TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
+            floor(GAME.time / 60),
+            floor(GAME.time % 60),
+            GAME.time % 1 * 1000)
+        )
+    end
 
-        -- Time-based revive prompt
-        local t = GAME.currentTask
-        if t and t.prompt:sub(1, 5) == 'keep_' then
-            if t.prompt:sub(6, 12) == 'health_' then
-                if t.prompt:sub(13) == GAME.lifeState then
-                    GAME.incrementPrompt(t.prompt, dt)
-                else
-                    GAME.nixPrompt(t.prompt)
-                end
-            else
+    -- Time-based revive prompt
+    local t = GAME.currentTask
+    if t and t.prompt:sub(1, 5) == 'keep_' then
+        if t.prompt:sub(6, 12) == 'health_' then
+            if t.prompt:sub(13) == GAME.lifeState then
                 GAME.incrementPrompt(t.prompt, dt)
-            end
-        end
-
-        -- Height
-        if not GAME.DPlock then
-            local releaseHeight = GAME.heightBuffer
-            GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
-            releaseHeight = releaseHeight - GAME.heightBuffer
-
-            local oldHeight = GAME.height
-
-            GAME.height = GAME.height + releaseHeight
-            if M.EX == 2 then
-                if not URM then
-                    GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
-                    GAME.height = max(GAME.height, Floors[GAME.floor - 1].top)
-                else
-                    if GAME.negFloor > 0 then
-                        if GAME.negFloor >= 2 then
-                            GAME.height = min(GAME.height, NegFloors[GAME.negFloor - 1].bottom)
-                        end
-                        local f = max(GAME.floor, GAME.negFloor)
-                        local fallSpeed = (f * (f + 1) + 10) / 20
-                        GAME.height = GAME.height - dt * fallSpeed
-                    end
-                    if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
-                    if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end
-                end
             else
-                GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
+                GAME.nixPrompt(t.prompt)
             end
-            GAME.roundHeight = ceil(GAME.height * 100) / 100
-
-            if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
-
-            if floor(GAME.height * 2) > floor(oldHeight * 2) and TASK.lock('speed_tick', .026) then
-                SFX.play('speed_tick_' .. rnd(4), clampInterpolate(4, 1, 12, .8, GAME.rank))
-            end
-        end
-
-        -- XP Leak & Demote
-        if GAME.xpLockTimer > 0 then
-            GAME.xpLockTimer = GAME.xpLockTimer - dt
         else
-            GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
-            if GAME.xp <= 0 then
-                GAME.xp = 0
-                if GAME.rank > 1 then
-                    GAME.rank = GAME.rank - 1
-                    GAME.xp = 4 * GAME.rank
-                    GAME.rankupLast = false
-                    if GAME.gigaspeed then
-                        if GAME.rank < GigaSpeedReq[0] then
-                            GAME.setGigaspeedAnim(false)
-                            SFX.play('zenith_speedrun_end')
-                            SFX.play('zenith_speedrun_end')
-                            if MATH.between(GAME.height, Floors[9].top - 50, Floors[9].top) then IssueAchv('cut_off') end
-                        elseif GAME.teramusic and GAME.rank < TeraMusicReq[0] then
-                            GAME.stopTeraspeed('drop')
-                        end
+            GAME.incrementPrompt(t.prompt, dt)
+        end
+    end
+
+    -- Height
+    local releaseHeight = GAME.heightBuffer
+    GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
+    releaseHeight = releaseHeight - GAME.heightBuffer
+
+    local oldHeight = GAME.height
+
+    GAME.height = GAME.height + releaseHeight
+
+    if not GAME.DPlock then
+        if M.EX == 2 then
+            if not URM then
+                GAME.height = GAME.height - dt * (GAME.floor * (GAME.floor + 1) + 10) / 20
+                GAME.height = max(GAME.height, Floors[GAME.floor - 1].top)
+            else
+                if GAME.negFloor > 0 then
+                    if GAME.negFloor >= 2 then
+                        GAME.height = min(GAME.height, NegFloors[GAME.negFloor - 1].bottom)
                     end
-                    TEXTS.rank:set("R-" .. GAME.rank)
-                    SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
-                    if not GAME.achv_demoteH then
-                        GAME.achv_demoteH = GAME.roundHeight
-                        if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break') end
+                    local f = max(GAME.floor, GAME.negFloor)
+                    local fallSpeed = (f * (f + 1) + 10) / 20
+                    GAME.height = GAME.height - dt * fallSpeed
+                end
+                if GAME.height < NegFloors[GAME.negFloor].bottom then GAME.downFloor() end
+                if GAME.height < NegEvents[GAME.negEvent].h then GAME.nextNegEvent() end
+            end
+        else
+            GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
+        end
+        GAME.roundHeight = ceil(GAME.height * 100) / 100
+
+        if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
+
+        if floor(GAME.height * 2) > floor(oldHeight * 2) and TASK.lock('speed_tick', .026) then
+            SFX.play('speed_tick_' .. rnd(4), clampInterpolate(4, 1, 12, .8, GAME.rank))
+        end
+    end
+
+    -- XP Leak & Demote
+    if GAME.xpLockTimer > 0 then
+        GAME.xpLockTimer = GAME.xpLockTimer - dt
+    else
+        GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+        if GAME.xp <= 0 then
+            GAME.xp = 0
+            if GAME.rank > 1 then
+                GAME.rank = GAME.rank - 1
+                GAME.xp = 4 * GAME.rank
+                GAME.rankupLast = false
+                if GAME.gigaspeed then
+                    if GAME.rank < GigaSpeedReq[0] then
+                        GAME.setGigaspeedAnim(false)
+                        SFX.play('zenith_speedrun_end')
+                        SFX.play('zenith_speedrun_end')
+                        if MATH.between(GAME.height, Floors[9].top - 50, Floors[9].top) then IssueAchv('cut_off') end
+                    elseif GAME.teramusic and GAME.rank < TeraMusicReq[0] then
+                        GAME.stopTeraspeed('drop')
                     end
+                end
+                TEXTS.rank:set("R-" .. GAME.rank)
+                SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
+                if not GAME.achv_demoteH then
+                    GAME.achv_demoteH = GAME.roundHeight
+                    if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break') end
                 end
             end
         end
+    end
 
-        -- Gravity
-        if M.GV > 0 and GAME.gravTimer then
-            GAME.gravTimer = GAME.gravTimer - dt
-            if GAME.gravTimer <= 0 then
-                GAME.faultWrong = false
-                GAME.commit(true)
-            end
+    -- Gravity
+    if M.GV > 0 and GAME.gravTimer then
+        GAME.gravTimer = GAME.gravTimer - dt
+        if GAME.gravTimer <= 0 then
+            GAME.faultWrong = false
+            GAME.commit(true)
+        end
+    end
+
+    if GAME.floor >= 10 then
+        -- Omega floor
+        if not GAME.omega and GAME.height >= 6200 then
+            GAME.omega = true
+            GAME.showFloorText("Ω", Floors[11].name, 6.2)
+            SFX.play('zenith_levelup_a', 1, 0, Tone(1))
+            PlayBGM('fomg')
+            ins(GAME.secTime, GAME.floorTime)
+            GAME.refreshSectionTime()
+            GAME.floorTime = 0
         end
 
-        -- Damage
-        GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimerMul
-        if GAME.dmgTimer <= 0 then
-            GAME.dmgTimer = GAME.dmgCycle
-            if GAME.takeDamage(GAME.dmgTime, 'time') then return end
+        -- KM line text
+        if TASK.lock('kmTimer', 1) then
+            TEXTS.lineKM:set(tostring(MATH.roundUnit(GAME.bgH, 1000)))
         end
+    end
 
-        if GAME.floor >= 10 then
-            -- Omega floor
-            if not GAME.omega and GAME.height >= 6200 then
-                GAME.omega = true
-                GAME.showFloorText("Ω", Floors[11].name, 6.2)
-                SFX.play('zenith_levelup_a', 1, 0, Tone(1))
-                PlayBGM('fomg')
-                ins(GAME.secTime, GAME.floorTime)
-                GAME.refreshSectionTime()
-                GAME.floorTime = 0
-            end
-
-            -- KM line text
-            if TASK.lock('kmTimer', 1) then
-                TEXTS.lineKM:set(tostring(MATH.roundUnit(GAME.bgH, 1000)))
-            end
-        end
+    -- Damage
+    GAME.dmgTimer = GAME.dmgTimer - dt / GAME.dmgTimerMul
+    if GAME.dmgTimer <= 0 then
+        GAME.dmgTimer = GAME.dmgCycle
+        GAME.takeDamage(GAME.dmgTime, 'time')
     end
 end
 
