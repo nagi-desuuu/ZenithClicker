@@ -35,7 +35,7 @@ addText("BG Reconstruction", -26, h, .42, 'right')
 addText("DJ Asriel", 26, h, .42, 'left')
 
 h = h + 95
-addText("Extended Mod Icons", -26, h, .42, 'right')
+addText("Mod Icons & Card Art", -26, h, .42, 'right')
 addText("CreepercraftYT", 26, h, .42, 'left')
 
 h = h + 95

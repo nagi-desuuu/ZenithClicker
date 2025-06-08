@@ -51,7 +51,7 @@ end
 
 addMajorCredit(0000, 060, { COLOR.HEX '80CCFF' }, "MRZ", "FOUNDER & LEAD PRODUCER", "Programming, Game Design, General Development")
 addMajorCredit(-480, 160, { COLOR.HEX 'DDFF80' }, "DJ  ASRIEL", "ASSISTING GRAPHICS DESIGN", "Background Reconstruction & Game Icon")
-addMajorCredit(-160, 160, { COLOR.HEX '77DD66' }, "CREEPERCRAFTYT", "ASSISTING GRAPHICS DESIGN", "Mod Icons Remake")
+addMajorCredit(-160, 160, { COLOR.HEX '77DD66' }, "CREEPERCRAFTYT", "ASSISTING GRAPHICS DESIGN", "Mod Icons & Card Art")
 addMajorCredit(0160, 160, { COLOR.HEX 'B966E3' }, "PETRTECH", "MUSIC", "F10 Music")
 addMajorCredit(0480, 160, { COLOR.HEX '9DBCFF' }, "RONEZKJ15", "MUSIC", "Extra Music")
 addMajorCredit(-320, 260, { COLOR.HEX 'DD99FF' }, "OSK", "FOUNDER & LEAD PRODUCER", "of the Original Game: TETR.IO")
@@ -71,7 +71,7 @@ addText({ COLOR.O, "ART BY" }, 0, 20, .3)
 addMajorCredit(-390, 62, COLOR.L, "LARGEONIONS", "FLOORS 1-5")
 addMajorCredit(-130, 62, COLOR.L, "S. ZHANG", "FLOORS 6-8")
 addMajorCredit(0130, 62, COLOR.L, "LAUREN SHENG", "FLOORS 9-10")
-addMajorCredit(0390, 62, COLOR.L, "RICMAN", "CARD ART")
+addMajorCredit(0390, 62, COLOR.L, "RICMAN", "ORIGINAL CARD ART")
 
 addSection(1060)
 
