@@ -1802,17 +1802,17 @@ function GAME.commit(auto)
 
         local allyAlive = GAME[GAME.getLifeKey(true)] > 0
         if M.DP > 0 then
-            if M.DP == 2 then
-                GAME.takeDamage(URM and attack / 2.6 or attack / 4, 'wrong', allyAlive)
-                if not GAME.playing then return end
-                if check_achv_romantic_homicide then IssueAchv('romantic_homicide') end
-            end
             if GAME[GAME.getLifeKey(true)] == 0 then
                 xp = xp / 2
                 attack = attack / 2
             elseif not GAME.achv_carriedH then
                 GAME.achv_carriedH = GAME.roundHeight
                 if GAME.totalQuest >= 26 then SFX.play('btb_break') end
+            end
+            if M.DP == 2 then
+                GAME.takeDamage(URM and attack / 2.6 or attack / 4, 'wrong', allyAlive)
+                if not GAME.playing then return end
+                if check_achv_romantic_homicide then IssueAchv('romantic_homicide') end
             end
         end
 
