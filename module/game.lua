@@ -1715,6 +1715,7 @@ function GAME.commit(auto)
             if not ACHV.lucky_coincidence then IssueAchv('lucky_coincidence') end
         end
         if GAME.chain >= 4 then
+            GAME.chain = min(GAME.chain, 6 * (max(GAME.floor, GAME.negFloor) + 2) ^ 2)
             if GAME.chain == 4 then
                 for i = 1, 3 do
                     SparkPS[i]:reset()
