@@ -102,15 +102,15 @@ TEXTURE = {
         rEX = q2(0945, 1331, 315, 332),
         rDP = q2(1260, 1016, 419, 378),
     },
-    EX = { lock = assets 'card/lockover-9.png', front = assets 'card/expert.png', back = assets 'card/expert-back.png', throb = assets 'card/expert-throb.png', },
-    NH = { lock = assets 'card/lockfull-2.png', front = assets 'card/nohold.png', back = assets 'card/nohold-back.png', throb = assets 'card/nohold-throb.png', },
-    MS = { lock = assets 'card/lockfull-3.png', front = assets 'card/messy.png', back = assets 'card/messy-back.png', throb = assets 'card/messy-throb.png', },
-    GV = { lock = assets 'card/lockfull-4.png', front = assets 'card/gravity.png', back = assets 'card/gravity-back.png', throb = assets 'card/gravity-throb.png', },
-    VL = { lock = assets 'card/lockfull-5.png', front = assets 'card/volatile.png', back = assets 'card/volatile-back.png', throb = assets 'card/volatile-throb.png', },
-    DH = { lock = assets 'card/lockfull-6.png', front = assets 'card/doublehole.png', back = assets 'card/doublehole-back.png', throb = assets 'card/doublehole-throb.png', },
-    IN = { lock = assets 'card/lockfull-7.png', front = assets 'card/invisible.png', back = assets 'card/invisible-back.png', throb = assets 'card/invisible-throb.png', },
-    AS = { lock = assets 'card/lockfull-8.png', front = assets 'card/allspin.png', back = assets 'card/allspin-back.png', throb = assets 'card/allspin-throb.png', },
-    DP = { lock = assets 'card/lockover-supporter.png', front = assets 'card/duo.png', back = assets 'card/duo-back.png', throb = assets 'card/duo-throb.png', },
+    EX = { lock = assets 'card/lockover-9.png', front = assets 'card/expert.png', back = assets 'card/expert-back.png' },
+    NH = { lock = assets 'card/lockfull-2.png', front = assets 'card/nohold.png', back = assets 'card/nohold-back.png' },
+    MS = { lock = assets 'card/lockfull-3.png', front = assets 'card/messy.png', back = assets 'card/messy-back.png' },
+    GV = { lock = assets 'card/lockfull-4.png', front = assets 'card/gravity.png', back = assets 'card/gravity-back.png' },
+    VL = { lock = assets 'card/lockfull-5.png', front = assets 'card/volatile.png', back = assets 'card/volatile-back.png' },
+    DH = { lock = assets 'card/lockfull-6.png', front = assets 'card/doublehole.png', back = assets 'card/doublehole-back.png' },
+    IN = { lock = assets 'card/lockfull-7.png', front = assets 'card/invisible.png', back = assets 'card/invisible-back.png' },
+    AS = { lock = assets 'card/lockfull-8.png', front = assets 'card/allspin.png', back = assets 'card/allspin-back.png' },
+    DP = { lock = assets 'card/lockover-supporter.png', front = assets 'card/duo.png', back = assets 'card/duo-back.png' },
     towerBG = { assets 'tower/f1.jpg', assets 'tower/f2.jpg', assets 'tower/f3.jpg', assets 'tower/f4.jpg', assets 'tower/f5.jpg', assets 'tower/f6.jpg', assets 'tower/f7.jpg', assets 'tower/f8.jpg', assets 'tower/f9.jpg', assets 'tower/f10.png' },
     moon = assets 'tower/moon.png',
     stars = assets 'tower/stars.png',
@@ -461,6 +461,8 @@ BEST = {
 }
 
 STAT = {
+    mod = 'vanilla',
+    version = nil, -- will be set after loading
     system = SYSTEM,
     joinDate = os.date("%b %Y"),
     hid = os.date("%d%S%m%M%y%H") .. math.random(2600000000, 6200000000),
@@ -497,6 +499,7 @@ STAT = {
     totalAttack = 0,
     totalGiga = 0,
     totalF10 = 0,
+    badge = {},
 
     fullscreen = true,
     syscursor = false,
@@ -673,7 +676,15 @@ BgScale = 1
 require 'module.game_data'
 require 'module.achv_data'
 
-Shader_Coloring = GC.newShader [[vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);}]]
+Shader_Coloring = GC.newShader [[
+vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
+    return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);
+}]]
+Shader_Throb = GC.newShader [[
+vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
+    vec4 t = texture2D(tex, texCoord);
+    return vec4(1., 0., 0., (1.-step(t.a, .999)) * color.a * (1. - t.r));
+}]]
 
 GAME = require 'module/game'
 local M = GAME.mod
@@ -870,6 +881,7 @@ function PlayBGM(name, force)
     if not BgmData[BgmPlaying] then return end
     BgmLooping = BgmData[BgmPlaying].loop
     BgmNeedSkip = BgmData[BgmPlaying].teleport
+    BgmNeedStop = false
 
     if BgmPlaying == 'f0' then
         BgmLooping = false
@@ -956,11 +968,13 @@ function Task_MusicEnd(manual)
     elseif BgmPlaying == 'f10' then
         if BGM.tell() < 28 * 4 * 60 / D.bpm then
             BGM.stop(4.2)
+            TASK.yieldT(4.2)
         elseif BGM.tell() < 59 * 4 * 60 / D.bpm then
             BGM.set('all', 'seek', 59 * 4 * 60 / D.bpm)
             BgmNeedStop = BGM.tell() + 5 * 60 / D.bpm
         elseif BGM.tell() < 77.25 * 4 * 60 / D.bpm then
             BGM.stop(4.2)
+            TASK.yieldT(4.2)
         else
             outroStart = D.loop[2]
             BgmNeedStop = outroStart + 8 * 60 / D.bpm
@@ -1003,11 +1017,13 @@ function Task_MusicEnd(manual)
     elseif BgmPlaying == 'f10r' then
         if BGM.tell() < 28 * 4 * 60 / D.bpm then
             BGM.stop(6.2)
+            TASK.yieldT(6.2)
         elseif BGM.tell() < 59 * 4 * 60 / D.bpm then
             BGM.set('all', 'seek', 59 * 4 * 60 / D.bpm)
             BgmNeedStop = BGM.tell() + 5 * 60 / D.bpm
         elseif BGM.tell() < 77.25 * 4 * 60 / D.bpm then
             BGM.stop(6.2)
+            TASK.yieldT(6.2)
         else
             outroStart = D.loop[2]
             BgmNeedStop = outroStart + 8 * 60 / D.bpm
@@ -1582,6 +1598,16 @@ function Initialize(save)
         ACHV.petaspeed, ACHV.teraspeed = ACHV.teraspeed, nil
         STAT.version = 176
     end
+    if STAT.version == 176 then
+        local banned
+        if ACHV.love_hotel and ACHV.love_hotel < 2.6 then ACHV.love_hotel, banned = 6.2, true end
+        if ACHV.unfair_battle and ACHV.unfair_battle < 4.2 then ACHV.unfair_battle, banned = 9.42, true end
+        if ACHV.supercharged_plus and ACHV.supercharged_plus >= 620 and MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 100) then ACHV.the_spike_of_all_time_plus, banned = 620, true end
+        if ACHV.supercharged and ACHV.supercharged > 420 then ACHV.supercharged, banned = 420, true end
+        if ACHV.supercharged_plus and ACHV.supercharged_plus > 620 then ACHV.supercharged_plus, banned = 620, true end
+        if banned then table.insert(STAT.badge, "rDP_meta") end
+        STAT.version = 177
+    end
 
     -- Some Initialization
     for i = 1, #Cards do
@@ -1679,8 +1705,8 @@ function UseAltName()
             DP = "< ROMANCE >",
         },
         adj = {
-            EX = "MASTER",
-            NH = "UNCANCEL",
+            EX = "MASTERFUL",
+            NH = "UNCANCELLED",
             MS = "CHAOTIC",
             GV = "DECLINED",
             VL = "UNSTABLE",
@@ -1694,7 +1720,7 @@ function UseAltName()
             NH = "UNCANCELLATION",
             MS = "CHAOS",
             GV = "DECLINE",
-            VL = "UNSTABILITY",
+            VL = "INSTABILITY",
             DH = "DOUBLE HOLE",
             IN = "HIDING",
             AS = "ROLLING",
