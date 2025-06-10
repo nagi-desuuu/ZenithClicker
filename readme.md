@@ -103,10 +103,7 @@ Make sure you've discovered most contents before reading this section!
 
 ### Asceticism (`rNH`)
 
-- The keyboard is disabled if (r)AS is not enabled. 
-- The RESET/SPIN button is removed.
 - The **next queue** is removed. If (r)DP is enabled, it will show only one next quest.
-- Quest **colours** are faded.
 - Cards are **not deselected** after committing.
 
 ### Loaded Dice (`rMS`)
@@ -131,7 +128,7 @@ Make sure you've discovered most contents before reading this section!
 
 ### The Exile (`rIN`)
 
-- **Has ALL the effects of Invisible with some differences below:**
+- **Has ALL the effects of Invisible, plus...**
 - Quest hints are **not shown** at all!
 - Quests **fade away** after a short time, but reappear if you make a wrong commit. They disappear faster as you reach higher floors.
 
@@ -150,7 +147,7 @@ Make sure you've discovered most contents before reading this section!
 
 ### The Warlock (`rAS`)
 
-- **Has ALL the effects of All-Spin with some differences below:**
+- **Has ALL the effects of All-Spin, plus...**
 - SPINs are faster than normal.
 - Wounds flip **four cards** instead of two.
 - SPINs and wrong commits will **not remove Burns**, and they aren't removed over time!
@@ -158,14 +155,15 @@ Make sure you've discovered most contents before reading this section!
 
 ### Bleeding Hearts (`rDP`)
 
-- **Has ALL the effects of Duo with some differences below:**
-- A special fatigue system is used.
+- **Has ALL the effects of Duo, plus...**
+- Special fatigue
 - **Half the amount of attack you send** goes to the inactive player.
 - If one player is incapacitated, **you won't be able to climb** and half the amount of attack sent goes to the **active player**!
 
 ### Hard Mode
 
-- **Expert and ALL reversed modifiers activate Hard Mode with the following effects.**
+**Expert and ALL reversed modifiers activate Hard Mode with the following effects:**
+
 - Activating a correct card for the first time no longer gives +1 Climb Speed XP.
 - Quest hints take longer to appear (**1.5s longer**, or on IN, **38% longer** between flashes)
 
