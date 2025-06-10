@@ -19,7 +19,7 @@ Credits:
 *DJ Asriel*: Background reconstruction  
 *Flowerling*: Text Revision  
 *flomikel & Spritzy Sheep*: Additional text writing  
-*Dr Ocelot*: Audio & music
+*Dr Ocelot*: Audio & music  
 *osk*: Founder & lead producer of TETR.IO  
 *Garbo*: Game & world designer of TETR.IO  
 *Frutigеr*: Font designer (D-Din-Pro)  
