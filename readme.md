@@ -15,7 +15,7 @@ Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
 Credits:  
 *MrZ*: Programming, game design, general development  
-*CreepercraftYT*: Detailed mod icons  
+*CreepercraftYT*: Detailed mod icons & card art  
 *DJ Asriel*: Background reconstruction  
 *Flowerling*: Text Revision  
 *flomikel & Spritzy Sheep*: Additional text writing  
