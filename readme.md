@@ -14,18 +14,18 @@ If you like the Quick Play 2 mode but don't know much about it, check another re
 Powered by LÖVE & Zenitha & Lua ~~instead of slow web engine~~
 
 Credits:  
-*MrZ*: Programming, game design, general development  
-*CreepercraftYT*: Mod Icons & Card Art  
-*DJ Asriel*: Background reconstruction  
-*Flowerling & MattMayuga*: Text Revision  
-*flomikel & Spritzy Sheep & Obsidian*: Additional text writing  
-*Dr Ocelot*: Audio & music  
-*petrtech & Ronezkj15*: Extra music  
-*osk*: Founder & lead producer of TETR.IO  
-*Garbo*: Game & world designer of TETR.IO  
-*Frutigеr*: Font designer (D-Din-Pro)  
-*Mooniak*: Font designer (AbhayaLibre)  
-*Lorc & Delapouite & Quoting*: Some achievement icons (on https://game-icons.net, CC BY 3.0)
+**MrZ**: Programming, game design, general development  
+**CreepercraftYT**: Mod Icons & Card Art  
+**DJ Asriel**: Background reconstruction  
+**Flowerling & MattMayuga**: Text Revision  
+**flomikel, Spritzy Sheep & Obsidian**: Additional text writing  
+**Dr Ocelot**: Audio & music  
+**petrtech & Ronezkj15**: Extra music  
+**osk**: Founder & lead producer of TETR.IO  
+**Garbo**: Game & world designer of TETR.IO  
+**Frutigеr**: Font designer (D-Din-Pro)  
+**Mooniak**: Font designer (AbhayaLibre)  
+**Lorc, Delapouite & Quoting**: Some achievement icons (on https://game-icons.net, CC BY 3.0)
 
 ## How to Play
 
