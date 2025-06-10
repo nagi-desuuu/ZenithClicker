@@ -1438,7 +1438,6 @@ function Daemon_Fast()
     while true do
         if BgmPlaying then
             local bar = 2 * 60 / BgmData[BgmPlaying].bpm * 4
-            local step1 = 2 * 60 / BgmData[BgmPlaying].bpm
             local T = BGM.tell()
             ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
             ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
@@ -1452,8 +1451,8 @@ function Daemon_Fast()
 
             -- MS shaking
             if T < t1 then t1 = -.1 end
-            if T > t1 + step1 then
-                t1 = t1 + step1
+            if T > t1 + 2 * 60 / BgmData[BgmPlaying].bpm then
+                t1 = T
                 if M.MS == 0 then
                     for i = 1, deckSize do Cards[i].visY = 0 end
                 elseif URM and M.MS == 2 then
