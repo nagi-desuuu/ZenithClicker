@@ -418,10 +418,9 @@ local gc = love.graphics
 local gc_push, gc_pop = gc.push, gc.pop
 local gc_translate, gc_scale = gc.translate, gc.scale
 local gc_rotate, gc_shear = gc.rotate, gc.shear
-local gc_draw, gc_circle = gc.draw, gc.circle
 local gc_setColor, gc_setAlpha = gc.setColor, GC.setAlpha
 local gc_setShader, gc_setLineWidth = GC.setShader, gc.setLineWidth
-local gc_mDraw, gc_mRect = GC.mDraw, GC.mRect
+local gc_draw, gc_mDraw, gc_mRect = gc.draw, GC.mDraw, GC.mRect
 local gc_blurCircle = GC.blurCircle
 
 local iconFrame

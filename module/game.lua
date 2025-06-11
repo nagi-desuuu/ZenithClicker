@@ -848,8 +848,7 @@ function GAME.setGigaspeedAnim(on)
         if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
         if GAME.comboMP >= 15 then IssueAchv('abyss_weaver') end
     else
-        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(mode == 'f10' and 6.26 or 3.55)
-            :setUnique('giga'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(GAME.floor == 10 and 6.26 or 3.55):setUnique('giga'):run()
     end
 end
 
@@ -1152,7 +1151,7 @@ function GAME.refreshModIcon()
     GAME.modIB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
-    local quad, k, w, _
+    local quad, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
         _, _, w = quad:getViewport()
@@ -1195,7 +1194,7 @@ function GAME.refreshResultModIcon()
     GAME.resIB:clear()
     local hand = GAME.getHand(true)
     table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
-    local quad, k, w, _
+    local quad, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra_res[hand[1]] or TEXTURE.modQuad_res[hand[1]]
         _, _, w = quad:getViewport()
