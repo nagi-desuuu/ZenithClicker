@@ -157,7 +157,7 @@ function RefreshProfile()
     GC.rectangle('fill', 0, 720, 1200, -560)
     -- deco
     GC.draw(saw, sawQuad, 0, 720 - 560, 0, 7.2, 7.2, 0, 3)
-    -- top ribbon
+    -- top ribbon (badges)
     GC.setColor(boxColor)
     GC.rectangle('fill', 0, 210, 1200, 60)
     -- bottom ribbon
@@ -210,7 +210,7 @@ function RefreshProfile()
         55, 0)
     GC.ucs_back()
 
-    -- Clicker
+    -- Clicker Badge
     if STAT.clicker then
         GC.setColor(1, 1, 1)
         GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
@@ -224,6 +224,11 @@ function RefreshProfile()
         for i = 0, clickerLV - 1 do
             GC.mDraw(TEXTURE.stat.clicker_star, 879 - i * 34, 182, 0, .626)
         end
+    end
+
+    -- Other badges
+    for i, v in next, STAT.badge do
+        GC.mDraw(TEXTURE.stat.badges[v], 6 + 52 * i, 242, 0, 50 / math.max(TEXTURE.stat.badges[v]:getDimensions()))
     end
 
     -- Introduction

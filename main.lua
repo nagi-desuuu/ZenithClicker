@@ -152,6 +152,9 @@ TEXTURE = {
             assets 'rank/x.png',
             assets 'rank/x+.png',
         },
+        badges = {
+            rDP_meta = assets 'badges/rDP_meta.png',
+        },
     },
     achievement = {
         icons = assets 'achievements/achv_icons.png',
@@ -1604,7 +1607,7 @@ function Initialize(save)
         if ACHV.supercharged_plus and ACHV.supercharged_plus >= 620 and MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 100) then ACHV.the_spike_of_all_time_plus, banned = 620, true end
         if ACHV.supercharged and ACHV.supercharged > 420 then ACHV.supercharged, banned = 420, true end
         if ACHV.supercharged_plus and ACHV.supercharged_plus > 620 then ACHV.supercharged_plus, banned = 620, true end
-        if banned then table.insert(STAT.badge, "rDP_meta") end
+        if banned then table.insert(STAT.badge, 'rDP_meta') end
         STAT.version = 177
     end
 
