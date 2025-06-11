@@ -90,7 +90,7 @@ local function calculateRating()
         end
     end
 
-    if cr >= 25000 then IssueAchv('clicking_champion') end
+    if cr >= 25000 then IssueSecret('champion', true) end
 
     return MATH.round(cr), cap
 end
@@ -227,8 +227,12 @@ function RefreshProfile()
     end
 
     -- Other badges
-    for i, v in next, STAT.badge do
-        GC.mDraw(TEXTURE.stat.badges[v], 6 + 52 * i, 242, 0, 50 / math.max(TEXTURE.stat.badges[v]:getDimensions()))
+    local x = 58
+    for _, id in next, TABLE.sort(TABLE.getKeys(STAT.badge)) do
+        if TEXTURE.stat.badges[id] then
+            GC.mDraw(TEXTURE.stat.badges[id], x, 242, 0, 50 / math.max(TEXTURE.stat.badges[id]:getDimensions()))
+            x = x + 52
+        end
     end
 
     -- Introduction

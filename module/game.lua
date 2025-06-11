@@ -968,17 +968,17 @@ function GAME.upFloor()
             end
 
             local _t
-            if not ACHV.terminal_velocity then
+            if not STAT.badge.speedrun_1 then
                 _t = 0
                 for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
-                if _t >= #MD.deck then IssueAchv('terminal_velocity') end
+                if _t >= #MD.deck then IssueSecret('speedrun_1') end
             end
-            if not ACHV.omnipotence then
+            if not STAT.badge.speedrun_2 then
                 _t = 0
                 for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
-                if _t >= #MD.deck then IssueAchv('omnipotence') end
+                if _t >= #MD.deck then IssueSecret('speedrun_2') end
             end
-            if GAME.time <= 76.2 then IssueAchv('superluminal') end
+            if GAME.time <= 76.2 then IssueSecret('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
         end
 
@@ -1714,7 +1714,11 @@ function GAME.commit(auto)
             if not ACHV.lucky_coincidence then IssueAchv('lucky_coincidence') end
         end
         if GAME.chain >= 4 then
-            GAME.chain = min(GAME.chain, 6 * (max(GAME.floor, GAME.negFloor) + 2) ^ 2)
+            local chainCap = 6 * (max(GAME.floor, GAME.negFloor) + 2) ^ 2
+            if GAME.chain > chainCap then
+                GAME.chain = chainCap
+                IssueSecret('sc_cap')
+            end
             if GAME.chain == 4 then
                 for i = 1, 3 do
                     SparkPS[i]:reset()
@@ -2364,17 +2368,17 @@ function GAME.finish(reason)
 
         -- Achievements
         local _t
-        if not ACHV.mastery then
+        if not STAT.badge.mastery_1 then
             _t = 0
             for id in next, MD.name do if BEST.highScore[id] >= Floors[9].top then _t = _t + 1 end end
-            if _t >= #MD.deck then IssueAchv('mastery') end
+            if _t >= #MD.deck then IssueSecret('mastery_1') end
         end
-        if not ACHV.subjugation then
+        if not STAT.badge.mastery_2 then
             _t = 0
             for id in next, MD.name do if BEST.highScore['r' .. id] >= Floors[9].top then _t = _t + 1 end end
-            if _t >= #MD.deck then IssueAchv('subjugation') end
+            if _t >= #MD.deck then IssueSecret('mastery_2') end
         end
-        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 2 * #MD.deck then IssueAchv('false_god', ACHV.subjugation) end
+        if not ACHV.false_god and MATH.sumAll(GAME.completion) >= 2 * #MD.deck then IssueAchv('false_god', STAT.badge.mastery_2) end
 
         if not ACHV.the_harbinger then
             local allRevF5 = true
@@ -2427,7 +2431,7 @@ function GAME.finish(reason)
         local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1)) end
-        if GAME.height >= 6200 then IssueAchv('skys_the_limit') end
+        if GAME.height >= 6200 then IssueSecret('fomg') end
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
         if Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
             SubmitAchv('divine_rejection', GAME.roundHeight)
@@ -2467,6 +2471,9 @@ function GAME.finish(reason)
             SubmitAchv('break_up', GAME.achv_noShareModH or GAME.roundHeight)
             if M.DP == 2 then
                 SubmitAchv('the_unreliable_one', GAME.killCount)
+                if GAME.floor < 10 and GAME.time >= 600 and GAME.fatigueSet == Fatigue.rDP then
+                    IssueSecret('rDP_meta')
+                end
             end
         end
         if GAME.comboStr == '' then
