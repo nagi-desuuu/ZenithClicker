@@ -59,6 +59,7 @@ local function refreshAchvList(canShuffle)
     overallProgress.ptGet = 0
     overallProgress.ptAll = 0
     TABLE.clear(achvList)
+    local odCount, odCap = 0, 0
     for i = 1, #Achievements do
         local A = Achievements[i]
         if not A.id then
@@ -93,6 +94,7 @@ local function refreshAchvList(canShuffle)
                 end
                 local devScore = DevScore[A.id] or A.noScore or 0
                 overDev = selfScore == devScore or A.comp(selfScore, devScore)
+                odCap = odCap + 1
             end
             tempText:set(A.desc)
             local hidden = A.hide() and not ACHV[A.id]
@@ -110,8 +112,13 @@ local function refreshAchvList(canShuffle)
                 hidden = A.hide ~= FALSE,
                 overDev = overDev,
             })
+            if overDev then
+                odCount = odCount + 1
+            end
         end
     end
+    if odCount >= odCap then IssueSecret('exceed_dev', true) end
+    if odCount >= odCap / 2 then IssueSecret('exceed_dev_half', true) end
     if canShuffle then
         if M.NH == 2 then
             TABLE.foreach(achvList, function(v) return not v.id end, true)
@@ -255,29 +262,9 @@ local function refreshAchivement()
     submit('garbage_offensive', STAT.totalAttack, true, true)
     submit('tower_climber', STAT.totalHeight, true, true)
     submit('speed_player', STAT.totalGiga, true, true)
-    if STAT.maxHeight >= 6200 then issue('skys_the_limit') end
+    if STAT.maxHeight >= 6200 then issue('fomg') end
     if STAT.minTime <= 76.2 then issue('superluminal') end
     local _t
-    if not ACHV.terminal_velocity then
-        _t = 0
-        for id in next, MD.name do if rawget(BEST.speedrun, id) then _t = _t + 1 end end
-        if _t >= #MD.deck then issue('terminal_velocity') end
-    end
-    if not ACHV.omnipotence then
-        _t = 0
-        for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
-        if _t >= #MD.deck then issue('omnipotence') end
-    end
-    if not ACHV.mastery then
-        _t = 0
-        for id in next, MD.name do if BEST.highScore[id] >= Floors[9].top then _t = _t + 1 end end
-        if _t >= #MD.deck then issue('mastery') end
-    end
-    if not ACHV.subjugation then
-        _t = 0
-        for id in next, MD.name do if BEST.highScore['r' .. id] >= Floors[9].top then _t = _t + 1 end end
-        if _t >= #MD.deck then issue('subjugation') end
-    end
     _t = 0
     for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
     submit('zenith_speedrunner', _t, true)

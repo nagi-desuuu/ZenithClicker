@@ -90,7 +90,7 @@ local function calculateRating()
         end
     end
 
-    if cr >= 25000 then IssueAchv('clicking_champion') end
+    if cr >= 25000 then IssueSecret('champion', true) end
 
     return MATH.round(cr), cap
 end
@@ -157,7 +157,7 @@ function RefreshProfile()
     GC.rectangle('fill', 0, 720, 1200, -560)
     -- deco
     GC.draw(saw, sawQuad, 0, 720 - 560, 0, 7.2, 7.2, 0, 3)
-    -- top ribbon
+    -- top ribbon (badges)
     GC.setColor(boxColor)
     GC.rectangle('fill', 0, 210, 1200, 60)
     -- bottom ribbon
@@ -210,7 +210,7 @@ function RefreshProfile()
         55, 0)
     GC.ucs_back()
 
-    -- Clicker
+    -- Clicker Badge
     if STAT.clicker then
         GC.setColor(1, 1, 1)
         GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
@@ -223,6 +223,15 @@ function RefreshProfile()
         if rating == cap then clickerLV = clickerLV + 1 end
         for i = 0, clickerLV - 1 do
             GC.mDraw(TEXTURE.stat.clicker_star, 879 - i * 34, 182, 0, .626)
+        end
+    end
+
+    -- Other badges
+    local x = 58
+    for _, id in next, TABLE.sort(TABLE.getKeys(STAT.badge)) do
+        if TEXTURE.stat.badges[id] then
+            GC.mDraw(TEXTURE.stat.badges[id], x, 242, 0, 50 / math.max(TEXTURE.stat.badges[id]:getDimensions()))
+            x = x + 52
         end
     end
 
@@ -274,7 +283,7 @@ function RefreshProfile()
         MATH.clamp(math.ceil(rating / 1400), 1, 18)
     local rankIcon = TEXTURE.stat.rank[rank]
     GC.setColor(1, 1, 1)
-    GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
+    GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 26, bh / 2, 0, 62 / rankIcon:getWidth())
     if rank > 0 then
         -- Progress Bar
         GC.setColor(rating <= 25000 and textColor or scoreColor)

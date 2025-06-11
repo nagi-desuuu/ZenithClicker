@@ -13,8 +13,23 @@ STRING.install()
 
 SCR.setSize(1600, 1000)
 
+for _, v in next, {
+    'customAssets',
+    'customAssets/achievements',
+    'customAssets/badges',
+    'customAssets/card',
+    'customAssets/music',
+    'customAssets/panel',
+    'customAssets/particle',
+    'customAssets/rank',
+    'customAssets/revive',
+    'customAssets/stat',
+    'customAssets/tower',
+} do love.filesystem.createDirectory(v) end
+
+
 ---@return love.Texture
-local function assets(path) return 'assets/' .. path end
+local function assets(path) return FILE.exist('customAssets/' .. path) and 'customAssets/' .. path or 'assets/' .. path end
 local function q(oy, n, size)
     return GC.newQuad(
         n * size, oy,
@@ -152,6 +167,14 @@ TEXTURE = {
             assets 'rank/x.png',
             assets 'rank/x+.png',
         },
+        badges = (function()
+            local list = love.filesystem.getDirectoryItems('assets/badges')
+            local l = {}
+            for _, v in next, list do
+                l[v:match('^(.*)%.png$')] = assets('badges/' .. v)
+            end
+            return l
+        end)()
     },
     achievement = {
         icons = assets 'achievements/achv_icons.png',
@@ -289,12 +312,8 @@ TEXTURE = {
             cruise_control = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
-            skys_the_limit = aq(9, 2),
-            superluminal = aq(14, 2),
             cut_off = aq(6, 2),
             worn_out = aq(6, 2),
-            mastery = aq(9, 5),
-            terminal_velocity = aq(9, 5),
             the_harbinger = aq(5, 8),
             final_defiance = aq(3, 2),
             speedrun_speedrunning = aq(5, 2),
@@ -306,9 +325,6 @@ TEXTURE = {
             benevolent_ambition = aq(15, 4),
             fruitless_effort = aq(6, 7),
             false_god = aq(2, 8),
-            subjugation = aq(10, 7),
-            omnipotence = aq(10, 7),
-            clicking_champion = aq(10, 5),
 
             identity = aq(6, 6),
             respectful = aq(2, 1),
@@ -376,7 +392,7 @@ FONT.load {
     sans = "assets/DINPro-Medium.otf",
     led = "assets/UniDreamLED.ttf",
 }
-local fontNotLoaded = SYSTEM ~= 'Web' and MATH.roll(.62)
+local fontNotLoaded = SYSTEM ~= 'Web' and MATH.roll(.42)
 FONT.setDefaultFont(fontNotLoaded and 'serif' or 'sans')
 
 BG.add('black', { draw = function() GC.clear(0, 0, 0) end })
@@ -527,6 +543,7 @@ function SaveAchv() if not TestMode then love.filesystem.write('achv.luaon', 're
 
 MSG.setSafeY(75)
 MSG.addCategory('dark', COLOR.D, COLOR.L)
+MSG.addCategory('bright', COLOR.L, COLOR.D)
 
 AchvData = {
     [0] = { id = 'achv_none', bg = COLOR.D, fg = COLOR.LD, fg2 = COLOR.LD },
@@ -599,13 +616,27 @@ function SubmitAchv(id, score, silent, realSilent)
     return true
 end
 
+function IssueSecret(id, silent)
+    if not STAT.badge[id] then
+        STAT.badge[id] = true
+        if not silent then
+            table.insert(bufferedMsg, { 'bright', "YOU DID A THING!\n", 0 })
+            if not GAME.playing then
+                ReleaseAchvBuffer()
+            end
+        end
+    end
+end
+
 function ReleaseAchvBuffer()
     if TestMode then return end
     for i = 1, #bufferedMsg do
         local msg = bufferedMsg[i]
         msgTime = TASK.lock('achv_bulk', 1) and 6.2 or msgTime + 2.6
         MSG { msg[1], msg[2], time = msgTime, last = true, alpha = .75 }
-        if TASK.lock('achv_sfx_' .. msg[3], .08) then
+        if msg[3] == 0 and TASK.lock('achv_sfx_allclear', .08) then
+            SFX.play('allclear')
+        elseif TASK.lock('achv_sfx_' .. msg[3], .08) then
             SFX.play('achievement_' .. msg[3], .7)
         end
     end
@@ -1438,7 +1469,6 @@ function Daemon_Fast()
     while true do
         if BgmPlaying then
             local bar = 2 * 60 / BgmData[BgmPlaying].bpm * 4
-            local step1 = 2 * 60 / BgmData[BgmPlaying].bpm
             local T = BGM.tell()
             ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
             ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
@@ -1452,8 +1482,8 @@ function Daemon_Fast()
 
             -- MS shaking
             if T < t1 then t1 = -.1 end
-            if T > t1 + step1 then
-                t1 = t1 + step1
+            if T > t1 + 2 * 60 / BgmData[BgmPlaying].bpm then
+                t1 = T
                 if M.MS == 0 then
                     for i = 1, deckSize do Cards[i].visY = 0 end
                 elseif URM and M.MS == 2 then
@@ -1605,8 +1635,22 @@ function Initialize(save)
         if ACHV.supercharged_plus and ACHV.supercharged_plus >= 620 and MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 100) then ACHV.the_spike_of_all_time_plus, banned = 620, true end
         if ACHV.supercharged and ACHV.supercharged > 420 then ACHV.supercharged, banned = 420, true end
         if ACHV.supercharged_plus and ACHV.supercharged_plus > 620 then ACHV.supercharged_plus, banned = 620, true end
-        if banned then table.insert(STAT.badge, "rDP_meta") end
+        if banned then STAT.badge.rDP_meta = true end
         STAT.version = 177
+    end
+    if STAT.version == 177 then
+        if ACHV.skys_the_limit then IssueSecret('fomg', true) end
+        if ACHV.superluminal then IssueSecret('superluminal', true) end
+        if ACHV.clicking_champion then IssueSecret('champion', true) end
+        if ACHV.mastery then IssueSecret('mastery_1', true) end
+        if ACHV.terminal_velocity then IssueSecret('speedrun_1', true) end
+        if ACHV.subjugation then IssueSecret('mastery_2', true) end
+        if ACHV.omnipotence then IssueSecret('speedrun_2', true) end
+        STAT.version = 178
+    end
+    for i = #STAT.badge, 1, -1 do
+        STAT.badge[STAT.badge[i]] = true
+        STAT.badge[i] = nil
     end
 
     -- Some Initialization
