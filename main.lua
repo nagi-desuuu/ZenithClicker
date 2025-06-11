@@ -13,8 +13,23 @@ STRING.install()
 
 SCR.setSize(1600, 1000)
 
+for _, v in next, {
+    'customAssets',
+    'customAssets/achievements',
+    'customAssets/badges',
+    'customAssets/card',
+    'customAssets/music',
+    'customAssets/panel',
+    'customAssets/particle',
+    'customAssets/rank',
+    'customAssets/revive',
+    'customAssets/stat',
+    'customAssets/tower',
+} do love.filesystem.createDirectory(v) end
+
+
 ---@return love.Texture
-local function assets(path) return 'assets/' .. path end
+local function assets(path) return FILE.exist('customAssets/' .. path) and 'customAssets/' .. path or 'assets/' .. path end
 local function q(oy, n, size)
     return GC.newQuad(
         n * size, oy,
