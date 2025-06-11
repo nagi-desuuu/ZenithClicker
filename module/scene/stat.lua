@@ -274,7 +274,7 @@ function RefreshProfile()
         MATH.clamp(math.ceil(rating / 1400), 1, 18)
     local rankIcon = TEXTURE.stat.rank[rank]
     GC.setColor(1, 1, 1)
-    GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 21, bh / 2, 0, 42 / rankIcon:getWidth())
+    GC.mDraw(rankIcon, bw / 2 - t50:getWidth() / 2 - 26, bh / 2, 0, 62 / rankIcon:getWidth())
     if rank > 0 then
         -- Progress Bar
         GC.setColor(rating <= 25000 and textColor or scoreColor)
