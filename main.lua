@@ -1632,9 +1632,6 @@ function Initialize(save)
         local banned
         if ACHV.love_hotel and ACHV.love_hotel < 2.6 then ACHV.love_hotel, banned = 6.2, true end
         if ACHV.unfair_battle and ACHV.unfair_battle < 4.2 then ACHV.unfair_battle, banned = 9.42, true end
-        if ACHV.supercharged_plus and ACHV.supercharged_plus >= 620 and MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 100) then ACHV.the_spike_of_all_time_plus, banned = 620, true end
-        if ACHV.supercharged and ACHV.supercharged > 420 then ACHV.supercharged, banned = 420, true end
-        if ACHV.supercharged_plus and ACHV.supercharged_plus > 620 then ACHV.supercharged_plus, banned = 620, true end
         if banned then STAT.badge.rDP_meta = true end
         STAT.version = 177
     end
@@ -1648,9 +1645,21 @@ function Initialize(save)
         if ACHV.omnipotence then IssueSecret('speedrun_2', true) end
         STAT.version = 178
     end
-    for i = #STAT.badge, 1, -1 do
-        STAT.badge[STAT.badge[i]] = true
-        STAT.badge[i] = nil
+    if STAT.version == 178 then
+        for i = #STAT.badge, 1, -1 do
+            STAT.badge[STAT.badge[i]] = true
+            STAT.badge[i] = nil
+        end
+        local banned
+        if ACHV.supercharged and ACHV.supercharged > 355 then ACHV.supercharged, banned = 420, true end
+        if ACHV.supercharged_plus and ACHV.supercharged_plus > 420 then
+            if MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 260) then
+                ACHV.the_spike_of_all_time_plus, banned = 420, true
+            end
+            ACHV.supercharged_plus, banned = 420, true
+        end
+        if banned then STAT.badge.rDP_meta = true end
+        STAT.version = 179
     end
 
     -- Some Initialization
