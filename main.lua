@@ -1633,6 +1633,10 @@ function Initialize(save)
         if ACHV.omnipotence then IssueSecret('speedrun_2', true) end
         STAT.version = 178
     end
+    for i = #STAT.badge, 1, -1 do
+        STAT.badge[STAT.badge[i]] = true
+        STAT.badge[i] = nil
+    end
 
     -- Some Initialization
     for i = 1, #Cards do
