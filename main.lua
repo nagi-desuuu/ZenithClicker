@@ -714,7 +714,7 @@ vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
 Shader_Throb = GC.newShader [[
 vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
     vec4 t = texture2D(tex, texCoord);
-    return vec4(1., 0., 0., (1.-step(t.a, .999)) * color.a * (1. - t.r));
+    return vec4(1., 0., 0., (1.-step(t.a, .999)) * color.a * (1. - t.r) * (1. - length(texCoord.xy - .5)));
 }]]
 
 GAME = require 'module/game'
