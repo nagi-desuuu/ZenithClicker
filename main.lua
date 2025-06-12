@@ -1651,7 +1651,7 @@ function Initialize(save)
             STAT.badge[i] = nil
         end
         local banned
-        if ACHV.supercharged and ACHV.supercharged > 355 then ACHV.supercharged, banned = 420, true end
+        if ACHV.supercharged and ACHV.supercharged > 355 then ACHV.supercharged, banned = 355, true end
         if ACHV.supercharged_plus and ACHV.supercharged_plus > 420 then
             if MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 260) then
                 ACHV.the_spike_of_all_time_plus, banned = 420, true
