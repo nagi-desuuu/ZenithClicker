@@ -1112,12 +1112,12 @@ BadgeData = {
     {
         id = 'fomg',
         name = "Interstellar",
-        desc = "Reached 6200m",
+        desc = "Reached 6200m (max CR from Best Altitude)",
     },
     {
         id = 'superluminal',
         name = "Superluminal",
-        desc = "Reached F10 in under 76.2 seconds",
+        desc = "Reached F10 in under 76.2s (max CR from Best Speedrun)",
     },
     {
         id = 'mastery_1',
