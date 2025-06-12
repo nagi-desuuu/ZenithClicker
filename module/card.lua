@@ -442,11 +442,11 @@ end, function(msg)
     local r = 65
     iconFrame = {
         x - r, y - r,
-        x + 5, y - r,
-        x + r, y - 5,
+        x + 7, y - r,
+        x + r, y - 7,
         x + r, y + r,
-        x - 9, y + r,
-        x - r, y + 9,
+        x - 12, y + r,
+        x - r, y + 12,
     }
 end)
 
