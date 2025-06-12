@@ -239,6 +239,7 @@ function RefreshProfile()
             local bd = BadgeData[id] or BadgeData[0]
             scene.widgetList[badgeCount].floatText = bd.name .. "\n" .. bd.desc
             scene.widgetList[badgeCount]:reset()
+            scene.widgetList[i]:setVisible(true)
         end
     end
     for i = badgeCount + 1, 22 do
