@@ -395,7 +395,9 @@ function Card:flick()
 end
 
 local activeFrame = GC.newImage('assets/card/outline1.png')
+local frame1W, frame1H = activeFrame:getWidth() / 2, activeFrame:getHeight() / 2
 local activeFrame2 = GC.newImage('assets/card/outline2.png')
+local frame2W, frame2H = activeFrame2:getWidth() / 2, activeFrame2:getHeight() / 2
 
 function Card:update(dt)
     self.x = expApproach(self.x, self.tx, dt * 16)
@@ -612,11 +614,11 @@ function Card:draw()
         -- Outline (draw)
         if a1 then
             gc_setColor(r1, g1, b1, a1)
-            gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+            gc_draw(activeFrame, 0, 0, 0, sign(self.kx), 1, frame1W, frame1H)
         end
         if a2 then
             gc_setColor(r2, g2, b2, a2)
-            gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
+            gc_draw(activeFrame2, 0, 0, 0, sign(self.kx), 1, frame2W, frame2H)
         end
 
         -- Menu UI
