@@ -227,12 +227,22 @@ function RefreshProfile()
     end
 
     -- Other badges
-    local x = 58
-    for _, id in next, TABLE.sort(TABLE.getKeys(STAT.badge)) do
+    local badgeCount = 0
+    local badges = TABLE.sort(TABLE.getKeys(STAT.badge), function(a, b)
+        return (BadgeData[a] or BadgeData[0]).prio < (BadgeData[b] or BadgeData[0]).prio
+    end)
+    for i = 1, #badges do
+        local id = badges[i]
         if TEXTURE.stat.badges[id] then
-            GC.mDraw(TEXTURE.stat.badges[id], x, 242, 0, 50 / math.max(TEXTURE.stat.badges[id]:getDimensions()))
-            x = x + 52
+            badgeCount = badgeCount + 1
+            GC.mDraw(TEXTURE.stat.badges[id], 6 + 52 * badgeCount, 242, 0, 50 / math.max(TEXTURE.stat.badges[id]:getDimensions()))
+            local bd = BadgeData[id] or BadgeData[0]
+            scene.widgetList[badgeCount].floatText = bd.name .. "\n" .. bd.desc
+            scene.widgetList[badgeCount]:reset()
         end
+    end
+    for i = badgeCount + 1, 22 do
+        scene.widgetList[i]:setVisible(false)
     end
 
     -- Introduction
@@ -295,10 +305,6 @@ function RefreshProfile()
             bh - 30
         )
     end
-    if rating >= cap then
-        GC.setColor(1, 1, 1)
-        GC.mDraw(TEXTURE.achievement.overDev, 358, 20, 0, .1)
-    end
     GC.ucs_back()
 
     -- Height
@@ -318,10 +324,6 @@ function RefreshProfile()
     GC.setColor(textColor)
     t30:set(STAT.maxHeight <= 0 and "" or "M")
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
-    if (ACHV.zenith_explorer_plus or 0) >= DevScore.zenith_explorer_plus then
-        GC.setColor(1, 1, 1)
-        GC.mDraw(TEXTURE.achievement.overDev, 358, 20, 0, .1)
-    end
     GC.ucs_back()
 
     -- Speedrun
@@ -341,10 +343,6 @@ function RefreshProfile()
     GC.setColor(textColor)
     t30:set(STAT.minTime >= 1560 and "" or "S")
     dblMidDraw(t30, bw / 2 + t50:getWidth() / 2 + t30:getWidth() / 2, bh / 2 + 4)
-    if (ACHV.zenith_speedrun_plus or 2600) <= DevScore.zenith_speedrun_plus then
-        GC.setColor(1, 1, 1)
-        GC.mDraw(TEXTURE.achievement.overDev, 358, 20, 0, .1)
-    end
     GC.ucs_back()
 
     -- Career
@@ -475,7 +473,7 @@ scene.widgetList = {
         pos = { .5, .5 }, x = 0, y = 210, w = 800, h = 60,
         color = COLOR.X,
         labelPos = 'top',
-        floatFontSize = 20,
+        floatFontSize = 30,
         floatText = "Open github repo with browser",
         onPress = function()
             SFX.play('menuconfirm')
@@ -503,7 +501,18 @@ scene.widgetList = {
         type = 'button_invis',
         pos = { .5, .5 }, w = 3500, h = 2600,
         onClick = function() love.keypressed('escape') end,
-    }
+    },
 }
+for i = 1, 22 do
+    table.insert(scene.widgetList, i, WIDGET.new {
+        name = 'link', type = 'hint',
+        text = "",
+        pos = { .5, .5 }, x = -363 + 35 * (i - 1), y = -80, w = 35,
+        color = COLOR.X,
+        labelPos = 'topRight',
+        floatFontSize = 30,
+        floatText = "",
+    })
+end
 
 return scene
