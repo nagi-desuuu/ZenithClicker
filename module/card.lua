@@ -426,7 +426,18 @@ local gc_draw, gc_mDraw, gc_mRect = gc.draw, GC.mDraw, GC.mRect
 local gc_blurCircle = GC.blurCircle
 
 local iconFrame
-do
+xpcall(function()
+    local suc, res = pcall(FILE.load, 'customAssets/mod_polygon.luaon', '-luaon')
+    if not suc then error("!" .. res) end
+    iconFrame = res
+    assert(iconFrame, "")
+    assert(type(iconFrame) == 'table', "!Invalid mod_polygon data")
+    assert(#iconFrame % 2 == 0, "!mod_polygon must have an even number of points")
+    assert(#iconFrame <= 52, "!mod_polygon must have at most 26 points")
+    for i = 1, #iconFrame do assert(type(iconFrame[i]) == 'number', "!mod_polygon must be a list of numbers") end
+    assert(next(iconFrame, #iconFrame) == nil, "!mod_polygon must be a pure array")
+end, function(msg)
+    if msg:find("!") then LOG('warn', msg:match("!(.*)")) end
     local x, y = 156.5, -245.5
     local r = 65
     iconFrame = {
@@ -437,7 +448,7 @@ do
         x - 9, y + r,
         x - r, y + 9,
     }
-end
+end)
 
 function Card:draw()
     local texture = TEXTURE[self.id]
