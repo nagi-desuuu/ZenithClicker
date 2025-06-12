@@ -1096,12 +1096,12 @@ BadgeData = {
     },
     {
         id = 'exceed_dev',
-        name = "Better than Dev!",
+        name = "Successor",
         desc = "Have a better score than Dev in 62% of ranked achievements",
     },
     {
         id = 'exceed_dev_half',
-        name = "Better than Dev?",
+        name = "Apprentice",
         desc = "Have a better score than Dev in 26% of ranked achievements",
     },
     {
@@ -1112,7 +1112,7 @@ BadgeData = {
     {
         id = 'fomg',
         name = "Interstellar",
-        desc = "Reached 6200m once",
+        desc = "Reached 6200m",
     },
     {
         id = 'superluminal',
@@ -1146,7 +1146,7 @@ BadgeData = {
     },
     {
         id = 'sc_cap',
-        name = "Overcharged",
+        name = "Surge Protector",
         desc = "Reached the B2B cap",
     },
 }
