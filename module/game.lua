@@ -2651,7 +2651,7 @@ function GAME.update(dt)
         end
     end
 
-    -- Height
+    -- Height change
     local releaseHeight = GAME.heightBuffer
     GAME.heightBuffer = max(MATH.expApproach(GAME.heightBuffer, 0, dt * 6.3216), GAME.heightBuffer - 600 * dt)
     releaseHeight = releaseHeight - GAME.heightBuffer
@@ -2681,12 +2681,12 @@ function GAME.update(dt)
             GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
         end
         GAME.roundHeight = ceil(GAME.height * 100) / 100
+    end
 
-        if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
+    if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
 
-        if floor(GAME.height * 2) > floor(oldHeight * 2) and TASK.lock('speed_tick', .026) then
-            SFX.play('speed_tick_' .. rnd(4), clampInterpolate(4, 1, 12, .8, GAME.rank))
-        end
+    if floor(GAME.height * 2) > floor(oldHeight * 2) and TASK.lock('speed_tick', .026) then
+        SFX.play('speed_tick_' .. rnd(4), clampInterpolate(4, 1, 12, .8, GAME.rank))
     end
 
     -- XP Leak & Demote
