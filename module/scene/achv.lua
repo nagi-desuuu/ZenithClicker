@@ -117,8 +117,8 @@ local function refreshAchvList(canShuffle)
             end
         end
     end
-    if odCount >= odCap then IssueSecret('exceed_dev', true) end
-    if odCount >= odCap / 2 then IssueSecret('exceed_dev_half', true) end
+    if odCount >= odCap * .62 then IssueSecret('exceed_dev', true) end
+    if odCount >= odCap * .26 then IssueSecret('exceed_dev_half', true) end
     if canShuffle then
         if M.NH == 2 then
             TABLE.foreach(achvList, function(v) return not v.id end, true)
@@ -262,8 +262,6 @@ local function refreshAchivement()
     submit('garbage_offensive', STAT.totalAttack, true, true)
     submit('tower_climber', STAT.totalHeight, true, true)
     submit('speed_player', STAT.totalGiga, true, true)
-    if STAT.maxHeight >= 6200 then issue('fomg') end
-    if STAT.minTime <= 76.2 then issue('superluminal') end
     local _t
     _t = 0
     for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end

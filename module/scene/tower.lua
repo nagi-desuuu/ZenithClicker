@@ -686,7 +686,7 @@ function scene.draw()
     -- PB Line
     drawPBline(GAME.prevPB, true)
 
-    -- 500m Line
+    -- KM Line
     if GAME.floor >= 10 then
         gc_setColor(1, 1, 1, GAME.uiHide)
         drawPBline(MATH.roundUnit(GAME.bgH, 1000), false, 6, TEXTS.lineKM)

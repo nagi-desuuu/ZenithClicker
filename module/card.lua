@@ -395,7 +395,9 @@ function Card:flick()
 end
 
 local activeFrame = GC.newImage('assets/card/outline1.png')
+local frame1W, frame1H = activeFrame:getWidth() / 2, activeFrame:getHeight() / 2
 local activeFrame2 = GC.newImage('assets/card/outline2.png')
+local frame2W, frame2H = activeFrame2:getWidth() / 2, activeFrame2:getHeight() / 2
 
 function Card:update(dt)
     self.x = expApproach(self.x, self.tx, dt * 16)
@@ -424,18 +426,29 @@ local gc_draw, gc_mDraw, gc_mRect = gc.draw, GC.mDraw, GC.mRect
 local gc_blurCircle = GC.blurCircle
 
 local iconFrame
-do
+xpcall(function()
+    local suc, res = pcall(FILE.load, 'customAssets/mod_polygon.luaon', '-luaon')
+    if not suc then error("!" .. res) end
+    iconFrame = res
+    assert(iconFrame, "")
+    assert(type(iconFrame) == 'table', "!Invalid mod_polygon data")
+    assert(#iconFrame % 2 == 0, "!mod_polygon must have an even number of points")
+    assert(#iconFrame <= 52, "!mod_polygon must have at most 26 points")
+    for i = 1, #iconFrame do assert(type(iconFrame[i]) == 'number', "!mod_polygon must be a list of numbers") end
+    assert(next(iconFrame, #iconFrame) == nil, "!mod_polygon must be a pure array")
+end, function(msg)
+    if msg:find("!") then LOG('warn', msg:match("!(.*)")) end
     local x, y = 156.5, -245.5
     local r = 65
     iconFrame = {
         x - r, y - r,
-        x + 5, y - r,
-        x + r, y - 5,
+        x + 7, y - r,
+        x + r, y - 7,
         x + r, y + r,
-        x - 9, y + r,
-        x - r, y + 9,
+        x - 12, y + r,
+        x - r, y + 12,
     }
-end
+end)
 
 function Card:draw()
     local texture = TEXTURE[self.id]
@@ -612,11 +625,11 @@ function Card:draw()
         -- Outline (draw)
         if a1 then
             gc_setColor(r1, g1, b1, a1)
-            gc_draw(activeFrame, -activeFrame:getWidth() / 2, -activeFrame:getHeight() / 2)
+            gc_draw(activeFrame, 0, 0, 0, sign(self.kx), 1, frame1W, frame1H)
         end
         if a2 then
             gc_setColor(r2, g2, b2, a2)
-            gc_draw(activeFrame2, -activeFrame2:getWidth() / 2, -activeFrame2:getHeight() / 2)
+            gc_draw(activeFrame2, 0, 0, 0, sign(self.kx), 1, frame2W, frame2H)
         end
 
         -- Menu UI
