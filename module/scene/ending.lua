@@ -26,79 +26,79 @@ local h = 520
 addText("Design", -26, h, .42, 'right')
 addText("MrZ", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Programming", -26, h, .42, 'right')
 addText("MrZ", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Mod Icons & Card Art", -26, h, .42, 'right')
 addText("CreepercraftYT", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("BG Reconstruction", -26, h, .42, 'right')
 addText("DJ Asriel", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Rank Icons", -26, h, .42, 'right')
 addText("Zyrixia", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Achievement Icons", -26, h, .42, 'right')
 addText("MrZ & DJ Asriel", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Textworks (Ultra Mods)", -26, h, .42, 'right')
 addText("flomikel & Obsidian", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Textworks (Design)", -26, h, .42, 'right')
 addText("flomikel & Spritzy Sheep", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Textworks (Neg. Alt.)", -26, h, .42, 'right')
 addText("FCSplayz", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Text Revision", -26, h, .42, 'right')
 addText("MattMayuga & Flowerling", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Musics", -26, h, .42, 'right')
 addText("Dr Ocelot", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Extra Music", -26, h, .42, 'right')
 addText("petrtech & Ronezkj15", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("World Design", -26, h, .42, 'right')
 addText("Garbo", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Font (D-Din-Pro)", -26, h, .42, 'right')
 addText("Adrian Frutiger", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Font (Abhayalibre)", -26, h, .42, 'right')
 addText("Mooniak", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("SFX", -26, h, .42, 'right')
 addText("[from TETR.IO]", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Floor Art 1-5", -26, h, .42, 'right')
 addText("Largeonions", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Floor Art 6-8", -26, h, .42, 'right')
 addText("S. Zhang", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Floor Art 9-10", -26, h, .42, 'right')
 addText("Lauren Sheng", 26, h, .42, 'left')
 
-h = h + 95
+h = h + 90
 addText("Card Art", -26, h, .42, 'right')
 addText("Ricman", 26, h, .42, 'left')
 
