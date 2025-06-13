@@ -1097,12 +1097,12 @@ BadgeData = {
     {
         id = 'exceed_dev',
         name = "Successor",
-        desc = "Have a better score than Dev in 62% of ranked achievements",
+        desc = "Have a better score than Dev on 62% achievements",
     },
     {
         id = 'exceed_dev_half',
         name = "Apprentice",
-        desc = "Have a better score than Dev in 26% of ranked achievements",
+        desc = "Have a better score than Dev on 26% achievements",
     },
     {
         id = 'champion',
