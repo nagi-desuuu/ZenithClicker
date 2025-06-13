@@ -1140,6 +1140,16 @@ BadgeData = {
         desc = "Finished a speedrun with all single reversed mods",
     },
     {
+        id = 'true_invis',
+        name = "True Invisible",
+        desc = "Finished a speedrun with rIN & Invisible Card",
+    },
+    {
+        id = 'true_master',
+        name = "True Master",
+        desc = "Finished a speedrun with rGV & Nightcore",
+    },
+    {
         id = 'rDP_meta',
         name = "Mechanical Heartbreaker",
         desc = "Abused the rDP mod to stay alive over 10 minutes",
