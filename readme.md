@@ -104,6 +104,7 @@ Make sure you've discovered most contents before reading this section!
 
 ### Asceticism (`rNH`)
 
+- Disable +1 attack on perfect pass.
 - The **next queue** is removed. If (r)DP is enabled, it will show only one next quest.
 - Cards are **not deselected** after committing.
 
