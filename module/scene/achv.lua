@@ -14,6 +14,8 @@ local colorRev = false
 local Achievements = Achievements
 local M = GAME.mod
 
+OverDevProgressText = "Open ACHV page to refresh the over-dev progress."
+
 ---@class EmptyAchv
 ---@field title string
 
@@ -119,6 +121,7 @@ local function refreshAchvList(canShuffle)
     end
     if odCount >= odCap * .62 then IssueSecret('exceed_dev', true) end
     if odCount >= odCap * .26 then IssueSecret('exceed_dev_half', true) end
+    OverDevProgressText = "ACHV scores better than Dev: " .. odCount .. "/" .. odCap
     if canShuffle then
         if M.NH == 2 then
             TABLE.foreach(achvList, function(v) return not v.id end, true)

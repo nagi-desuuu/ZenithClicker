@@ -569,6 +569,8 @@ scene.widgetList = {
                     MusicPlayer = true
                     refreshWidgets()
                     refreshSongInfo()
+                elseif data == 'dev' then
+                    MSG('dark', OverDevProgressText)
                 elseif songList[data] then
                     TASK.removeTask_code(Task_MusicEnd)
                     PlayBGM(data, true)
