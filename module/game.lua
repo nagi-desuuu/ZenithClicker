@@ -888,20 +888,21 @@ function GAME.showFloorText(f, name, duration)
 end
 
 function GAME.upFloor()
+    local roundFloorTime = roundUnit(GAME.floorTime, .001)
     if GAME.floor == 2 then
-        if GAME.comboStr == 'EXVLrDPrIN' then SubmitAchv('love_hotel', GAME.floorTime) end
+        if GAME.comboStr == 'EXVLrDPrIN' then SubmitAchv('love_hotel', roundFloorTime) end
     elseif GAME.floor == 3 then
-        if GAME.comboStr == 'ASEXMS' then SubmitAchv('financially_responsible', GAME.floorTime) end
+        if GAME.comboStr == 'ASEXMS' then SubmitAchv('financially_responsible', roundFloorTime) end
     elseif GAME.floor == 4 then
-        if GAME.comboStr == 'EXrDPrVL' then SubmitAchv('unfair_battle', GAME.floorTime) end
+        if GAME.comboStr == 'EXrDPrVL' then SubmitAchv('unfair_battle', roundFloorTime) end
     elseif GAME.floor == 5 then
-        if GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
+        if GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', roundFloorTime) end
     elseif GAME.floor == 6 then
-        if GAME.comboStr == 'EXVLrGV' then SubmitAchv('workaholic', GAME.floorTime) end
+        if GAME.comboStr == 'EXVLrGV' then SubmitAchv('workaholic', roundFloorTime) end
     elseif GAME.floor == 7 then
-        if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
+        if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', roundFloorTime) end
     elseif GAME.floor == 8 then
-        if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', GAME.floorTime) end
+        if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', roundFloorTime) end
     elseif GAME.floor == 9 then
         SubmitAchv('ultra_dash', GAME.floorTime)
     end
