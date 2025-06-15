@@ -564,13 +564,13 @@ scene.widgetList = {
                 elseif data == 'test' then
                     TestMode = true
                     SFX.play('maintenance')
+                elseif data == 'dev' then
+                    MSG('dark', OverDevProgressText)
                 elseif data == 'mp' or data == 'music' then
                     if not BGM.isPlaying() or MusicPlayer then return end
                     MusicPlayer = true
                     refreshWidgets()
                     refreshSongInfo()
-                elseif data == 'dev' then
-                    MSG('dark', OverDevProgressText)
                 elseif songList[data] then
                     TASK.removeTask_code(Task_MusicEnd)
                     PlayBGM(data, true)
@@ -591,6 +591,7 @@ scene.widgetList = {
                             "Try 'fps'",
                             "Try 'old_hitbox'",
                             "Try 'test'",
+                            "Try 'dev'",
                             MATH.coin("Try 'mp'", "Try 'music'"),
                             "Try 'f" .. STAT.maxFloor .. "'",
                             STAT.clicker and "Try 'true_ending'" or nil,

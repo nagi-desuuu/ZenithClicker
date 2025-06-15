@@ -1743,8 +1743,6 @@ end
 UAN = 'UseAltName'
 function UseAltName()
     UAN = false
-    -- Shhhhhh! Let's keep this a secret before 2026.4.1 ...
-    -- I know it's a long time, can we manage it? We'll see!
     TABLE.update(ModData, {
         fullName = {
             EX = "< MASTER >",
