@@ -55,7 +55,7 @@ local ins, rem = table.insert, table.remove
 ---@field height number
 ---@field roundHeight number for statistics and achievement
 ---@field heightBuffer number
----@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string, duration?:number}[]
+---@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string, duration?:number, final?:true}[]
 ---@field fatigue number
 ---@field animDuration number
 ---
@@ -1008,29 +1008,24 @@ function GAME.nextFatigue()
             inPoint = .1, outPoint = .26,
             color = stage.color or 'lM',
         }
-        TEXT:add {
-            text = stage.desc,
-            x = 800, y = 300, fontSize = 30,
-            style = 'score', duration = stage.duration or 5,
-            inPoint = .26, outPoint = .1,
-            color = stage.color or 'lM',
-        }
-        TASK.new(GAME.task_fatigueWarn)
-        local allTextSeen = true
-        for i = GAME.fatigue, #GAME.fatigueSet do
-            if GAME.fatigueSet[i].text then
-                allTextSeen = false
-                break
-            end
+        if stage.desc then
+            TEXT:add {
+                text = stage.desc,
+                x = 800, y = 300, fontSize = 30,
+                style = 'score', duration = stage.duration or 5,
+                inPoint = .26, outPoint = .1,
+                color = stage.color or 'lM',
+            }
         end
-        if allTextSeen then
-            if GAME.fatigueSet == Fatigue.normal then
-                IssueAchv('final_defiance')
-            elseif GAME.fatigueSet == Fatigue.rEX then
-                IssueAchv('royal_resistance')
-            elseif GAME.fatigueSet == Fatigue.rDP then
-                IssueAchv('lovers_stand')
-            end
+        TASK.new(GAME.task_fatigueWarn)
+    end
+    if stage.final then
+        if GAME.fatigueSet == Fatigue.normal then
+            IssueAchv('final_defiance')
+        elseif GAME.fatigueSet == Fatigue.rEX then
+            IssueAchv('royal_resistance')
+        elseif GAME.fatigueSet == Fatigue.rDP then
+            IssueAchv('lovers_stand')
         end
     end
 
