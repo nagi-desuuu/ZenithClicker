@@ -2230,7 +2230,11 @@ function GAME.finish(reason)
             end
         end
 
-        local oldZP, zpGain = STAT.zp, GAME.roundHeight * GAME.comboZP
+        -- ZP of current run
+        local zpGain = GAME.roundHeight * GAME.comboZP
+        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpGain, 0, DailyActived and ", 260%" or ""))
+
+        -- Daily
         if DailyActived then
             STAT.dzp = max(STAT.dzp, zpGain)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
@@ -2246,14 +2250,18 @@ function GAME.finish(reason)
             end
             -- TODO: send to online leaderboard
         end
-        STAT.zp = max(
-            STAT.zp,
-            STAT.zp < zpGain * 16 and min(STAT.zp + zpGain, zpGain * 16) or
-            zpGain * 16 + (STAT.zp - zpGain * 16) * (9 / 10) + (zpGain * 10) * (1 / 10)
+
+        -- Update ZP
+        local oldZP = STAT.zp
+        local thres1 = zpGain * 16
+        local thres2 = zpGain * 26
+        local newZP = max(
+            oldZP, -- won't drop
+            oldZP < thres1 and oldZP + zpGain or
+            thres1 + (oldZP - thres1) * (9 / 10) + (thres2 - thres1) * (1 / 10)
         )
-        if DailyActived then STAT.zp = MATH.clamp(STAT.zp + (STAT.zp - oldZP) * 1.6, STAT.zp, 50 * zpGain) end
-        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpGain, 0, DailyActived and ", 260%" or ""))
-        local zpEarn = STAT.zp - oldZP
+        if DailyActived then newZP = MATH.clamp(newZP + (newZP - oldZP) * 1.6, newZP, 50 * zpGain) end
+        local zpEarn = newZP - oldZP
         if zpEarn > 0 then
             TASK.new(function()
                 TASK.yieldT(0.626)
@@ -2263,6 +2271,8 @@ function GAME.finish(reason)
                 SFX.play('ratingraise', zpEarn ^ .5 / 60)
             end)
         end
+
+        STAT.zp = newZP
         SaveStat()
 
         -- Best
