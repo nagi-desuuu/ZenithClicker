@@ -2605,7 +2605,7 @@ function GAME.update(dt)
             SFX.play('elim')
         end
         if KBisDown('rshift') then
-            GAME.time = GAME.time + dt * 26
+            GAME.time = GAME.time + dt * 62
         end
     end
 
