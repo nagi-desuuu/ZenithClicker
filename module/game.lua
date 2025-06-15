@@ -2238,8 +2238,8 @@ function GAME.finish(reason)
         if DailyActived then
             STAT.dzp = max(STAT.dzp, zpGain)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
-            if GAME.floor >= 10 then
-                if GAME.comboStr:find('r') and not STAT.dailyMastered then
+            if GAME.floor >= 10 and GAME.comboStr:find('r') then
+                if not STAT.dailyMastered then
                     STAT.dailyMastered = true
                     STAT.vipListCount = STAT.vipListCount + 1
                     SubmitAchv('vip_list', STAT.vipListCount)
