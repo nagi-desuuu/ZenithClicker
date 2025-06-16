@@ -1661,6 +1661,10 @@ function Initialize(save)
         if banned then STAT.badge.rDP_meta = true end
         STAT.version = 179
     end
+    if STAT.version == 179 then
+        ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70
+        STAT.version = 180
+    end
 
     -- Some Initialization
     for i = 1, #Cards do

@@ -1762,7 +1762,7 @@ function GAME.commit(auto)
             end
 
             GAME.achv_maxChain = max(GAME.achv_maxChain, GAME.chain)
-            if GAME.chain >= 70 and GAME.chain - (dblCorrect and 2 or 1) < 70 then
+            if GAME.chain >= 75 and GAME.chain - (dblCorrect and 2 or 1) < 75 then
                 SubmitAchv('perfect_speedrun', GAME.time)
             end
         end
