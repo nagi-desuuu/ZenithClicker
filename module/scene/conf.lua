@@ -644,7 +644,11 @@ scene.widgetList = {
                 IssueAchv('zenith_relocation')
             end
             Initialize(true)
-            MSG('dark', "Progress imported!")
+            if TestMode then
+                MSG('dark', "Progress imported, but won't be saved.")
+            else
+                MSG('dark', "Progress imported!")
+            end
             SFX.play('social_notify_major')
         end,
     },
