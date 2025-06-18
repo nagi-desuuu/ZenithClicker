@@ -807,7 +807,7 @@ function GAME.addXP(xp)
         if GAME.xp > 2 * GAME.rank then
             GAME.xpLockLevel = GAME.xpLockLevelMax
         else
-            GAME.xpLockLevel = GAME.xpLockLevel - 1
+            GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
         end
     end
     if GAME.rank > GAME.rankLimit then
