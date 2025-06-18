@@ -33,6 +33,7 @@ local ins, rem = table.insert, table.remove
 ---@field totalQuest number
 ---@field totalPerfect number
 ---@field totalAttack number
+---@field totalSurge number
 ---@field heightBonus number
 ---@field peakRank number
 ---@field rankTimer number[]
@@ -1832,6 +1833,7 @@ function GAME.commit(auto)
 
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
+        GAME.totalSurge = GAME.totalSurge + surge
 
         if GAME.DPlock then attack = min(attack, URM and oldAllyLife * 2.6 or oldAllyLife * 4) end
         if attack > 0 then GAME.addHeight(attack * GAME.attackMul) end
@@ -1989,6 +1991,7 @@ function GAME.start()
     GAME.totalQuest = 0
     GAME.totalPerfect = 0
     GAME.totalAttack = 0
+    GAME.totalSurge = 0
     GAME.heightBonus = 0
     GAME.peakRank = 1
     GAME.rankTimer = TABLE.new(0, 26)
@@ -2345,7 +2348,7 @@ function GAME.finish(reason)
             COLOR.L, ("Speed  %.1fm/s"):format(roundUnit(g.height / g.time, .1)),
             COLOR.LD, ("  (max rank %d)\n"):format(g.peakRank),
             COLOR.L, ("Attack  %d"):format(g.totalAttack),
-            COLOR.LD, ("  (%.1fapm  %.2feff)\n"):format(g.totalAttack / g.time * 60, g.totalAttack / g.totalQuest),
+            COLOR.LD, ("  (%.1fapm  %dsurge)\n"):format(g.totalAttack / g.time * 60, g.totalSurge),
             COLOR.L, ("Bonus  " .. (g.heightBonus >= 2600 and "%.0fm" or "%.1fm")):format(g.heightBonus),
             COLOR.LD, abs(g.height) <= 2.6 and "" or ("  (%.1f%%  %.1fm/quest)"):format(g.heightBonus / g.height * 100, g.heightBonus / g.totalQuest),
         })
