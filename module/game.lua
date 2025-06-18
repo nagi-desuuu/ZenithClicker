@@ -792,7 +792,6 @@ function GAME.addXP(xp)
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
-        GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
 
         -- Rank skip
         if GAME.xp >= 4 * GAME.rank then
@@ -802,7 +801,12 @@ function GAME.addXP(xp)
                 GAME.rank = GAME.rank + 1
                 GAME.xp = GAME.xp - 4 * GAME.rank
             end
-            GAME.xpLockLevel = GAME.xpLockLevelMax + (GAME.xp < 2 * GAME.rank and 1 or 0)
+            GAME.xpLockLevel = GAME.xpLockLevelMax
+        end
+        if GAME.xp > 2 * GAME.rank then
+            GAME.xpLockLevel = GAME.xpLockLevelMax
+        else
+            GAME.xpLockLevel = GAME.xpLockLevel - 1
         end
     end
     if GAME.rank > GAME.rankLimit then
