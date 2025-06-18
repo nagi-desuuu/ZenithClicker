@@ -401,9 +401,11 @@ function RefreshProfile()
     GC.ucs_back()
 
     -- Watermark
-    GC.ucs_move('m', 600, 360)
-    GC.setColor(1, 1, 1, .26)
-    GC.mDraw(TEXTS.test, 0, 0, -.26, 10)
+    if TestMode then
+        GC.ucs_move('m', 600, 360)
+        GC.setColor(1, 1, 1, .26)
+        GC.mDraw(TEXTS.test, 0, 0, -.26, 10)
+    end
 
     GC.setCanvas()
 end

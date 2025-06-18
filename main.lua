@@ -1662,7 +1662,7 @@ function Initialize(save)
         STAT.version = 179
     end
     if STAT.version == 179 then
-        ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70
+        if ACHV.perfect_speedrun then ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70 end
         STAT.version = 180
     end
 
