@@ -1093,8 +1093,10 @@ local revLetter = setmetatable({
     P = "Ь", R = "ᖉ", T = "ꓕ", Q = "О́", U = "Ո", A = "Ɐ", L = "Γ",
 }, { __index = function(_, k) return k end })
 function GAME.refreshRPC()
-    local detailStr = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK"
+    local detailStr = "QUICK PICK"
+    if M.EX > 0 then detailStr = "EXPERT " .. detailStr end
     if M.DP > 0 then detailStr = detailStr:gsub("QUICK", "DUAL") end
+    if TestMode then detailStr = detailStr:gsub("PICK", "TEST") end
     if GAME.anyRev then detailStr = detailStr:gsub(".", revLetter) end
 
     local stateStr
