@@ -2320,10 +2320,11 @@ function GAME.finish(reason)
         end
         if GAME.gigaspeedEntered then
             if GAME.gigaTime then
+                local t = GAME.gigaTime < 60 and roundUnit(GAME.gigaTime, .001) .. "s" or STRING.time_simp(GAME.gigaTime)
                 if endFloorStr:find("F10") then
-                    endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime)
+                    endFloorStr = endFloorStr .. "   in " .. t
                 else
-                    endFloorStr = endFloorStr .. "    F10 in " .. STRING.time_simp(GAME.gigaTime)
+                    endFloorStr = endFloorStr .. "    F10 in " .. t
                 end
             end
             local l = {}
