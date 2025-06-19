@@ -784,6 +784,7 @@ function GAME.addHeight(h)
     if h >= 6 and TASK.lock('speed_tick_whirl', 2.6) then SFX.play('speed_tick_whirl') end
 end
 
+local speedupSFX = { 1, 1, 1, 1, 2, 2, 2, 3, 3 }
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
     if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
@@ -819,7 +820,7 @@ function GAME.addXP(xp)
         GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
-        SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
+        SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
         if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.setGigaspeedAnim(true)
