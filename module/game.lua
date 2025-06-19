@@ -2651,11 +2651,7 @@ function GAME.update(dt)
 
     -- Gigaspeed timer text
     if GAME.gigaspeed then
-        TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
-            floor(GAME.time / 60),
-            floor(GAME.time % 60),
-            GAME.time % 1 * 1000)
-        )
+        TEXTS.gigatime:set(("%02d:%06.3f"):format(floor(GAME.time / 60), GAME.time % 60))
     end
 
     -- Time-based revive prompt
