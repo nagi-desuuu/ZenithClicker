@@ -615,17 +615,13 @@ function GAME.startRevive()
         local maxOut = power == 17
         local powerList = TABLE.new(floor(power / 3), 3)
         if power % 3 == 1 then
-            if power == maxOut then
-                powerList[2] = powerList[2] + 1
-            else
-                local r = rnd(3)
-                powerList[r] = powerList[r] + 1
-            end
+            local r = rnd(3)
+            powerList[r] = powerList[r] + 1
         elseif power % 3 == 2 then
             powerList[1] = powerList[1] + 1
             powerList[2] = powerList[2] + 1
             powerList[3] = powerList[3] + 1
-            local r = rnd(3)
+            local r = power == maxOut and 2 or rnd(3)
             powerList[r] = powerList[r] - 1
         end
         TABLE.delete(powerList, 0)
