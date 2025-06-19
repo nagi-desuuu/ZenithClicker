@@ -690,7 +690,7 @@ Achievements = {
         id = 'ASMSrDHrIN',
         name = "Kitsune Trickery",
         desc = [[HFD with MS rDH rIN AS mods]],
-        quote = [[Charmed at first glance, with many dark secrets beneath their magic and fur.]],
+        quote = [[Charming at first glance, with many dark secrets beneath their magic and fur.]],
         credit = "@Tizago",
         rank = floorRank(1, 26, 42, 2, 3, 4, 6),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.IN == 0 end,
