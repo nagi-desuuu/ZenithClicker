@@ -104,9 +104,9 @@ Achievements = {
         rank = numberRank(0, 2600, 6200, 12600, 26e3, 62e3, 260e3),
         type = 'unranked',
     },
-    { -- tower_climber_ii
-        id = 'tower_climber_ii',
-        name = "Tower Climber II",
+    { -- tower_regular
+        id = 'tower_regular',
+        name = "Tower Regular",
         desc = [[floors climbed]],
         quote = [["I have been here before!"]],
         scoreSimp = function(n) return string.format("%d Floors", n) end,

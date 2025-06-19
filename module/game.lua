@@ -2417,7 +2417,7 @@ function GAME.finish(reason)
         SubmitAchv('elegance', STAT.totalPerfect, true, true)
         SubmitAchv('garbage_offensive', STAT.totalAttack, true, true)
         SubmitAchv('tower_climber', STAT.totalHeight, true, true)
-        SubmitAchv('tower_climber_ii', STAT.totalFloor, true, true)
+        SubmitAchv('tower_regular', STAT.totalFloor, true, true)
         SubmitAchv('speed_player', STAT.totalGiga, true, true)
         SubmitAchv('plonk', roundUnit(GAME.height / GAME.totalQuest, .01))
         _t = 0
