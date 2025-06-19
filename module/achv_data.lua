@@ -104,6 +104,15 @@ Achievements = {
         rank = numberRank(0, 2600, 6200, 12600, 26e3, 62e3, 260e3),
         type = 'unranked',
     },
+    { -- tower_climber_ii
+        id = 'tower_climber_ii',
+        name = "Tower Climber II",
+        desc = [[floors climbed]],
+        quote = [["I have been here before!"]],
+        scoreSimp = function(n) return string.format("%d Floors", n) end,
+        rank = numberRank(0, 126, 260, 620, 1260, 2600, 12600),
+        type = 'unranked',
+    },
     { -- speed_player
         id = 'speed_player',
         name = "Speed Player",
@@ -113,6 +122,14 @@ Achievements = {
         rank = numberRank(0, 26, 62, 120, 260, 620, 1260),
         type = 'unranked',
         hide = function() return STAT.totalGiga == 0 end,
+    },
+    { -- plonk
+        id = 'plonk',
+        name = "Plonk",
+        desc = [[Highest (average) m/quest in a single game.]],
+        quote = [[Pour intention into each flip, and even a single quest can shake the world.]],
+        credit = "@Ponies",
+        rank = numberRank(10, 12, 14, 16, 18, 19, 20),
     },
     { -- zenith_explorer
         id = 'zenith_explorer',
