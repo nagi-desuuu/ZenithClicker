@@ -1071,6 +1071,7 @@ function Task_MusicEnd(manual)
         BgmNeedStop = BGM.tell() + 4 * 60 / D.bpm
     end
     if outroStart then BGM.set('all', 'seek', outroStart) end
+    BgmLooping, BgmNeedSkip = false, false
     if BgmNeedStop then
         repeat TASK.yieldT(.0626) until not BgmNeedStop
     else
