@@ -2146,6 +2146,8 @@ function GAME.finish(reason)
         'shatter', .8
     )
 
+    TASK.removeTask_code(GAME.task_cancelAll)
+
     GAME.sortCards()
     for _, C in ipairs(CD) do
         if (M[C.id] > 0) ~= C.active then
