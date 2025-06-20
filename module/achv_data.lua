@@ -129,7 +129,7 @@ Achievements = {
         desc = [[Highest (average) m/quest in a single game.]],
         quote = [[Pour intention into each flip, and even a single quest can shake the world.]],
         credit = "@Ponies",
-        scoreSimp = function(v) return string.format("%.1f m/s", v) end,
+        scoreSimp = function(v) return string.format("%.1f m/quest", v) end,
         rank = numberRank(10, 12, 14, 16, 18, 19, 20),
     },
     { -- zenith_explorer
