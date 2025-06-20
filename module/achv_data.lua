@@ -1044,7 +1044,7 @@ Achievements = {
         name = "Psychokinesis",
         desc = [[HAR without manually flipping]],
         quote = [[Real magic exists!]],
-        rank = floorRank(1, 11, 26, 42, 2, 3, 5),
+        rank = floorRank(26, 42, 62, 126, 3, 4, 5),
     },
     { -- divine_rejection
         ex = true,
