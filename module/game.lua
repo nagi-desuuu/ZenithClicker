@@ -1474,24 +1474,22 @@ function GAME.task_cancelAll(instant)
         end
         GAME.achv_resetCount = GAME.achv_resetCount + 1
     end
-    local spinMode = not instant and M.AS > 0
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
+    local spinMode = not instant and M.AS > 0
     for i = 1, #CD do
         needFlip[i] = spinMode or CD[i].active
     end
+    local interval = not instant and .042 * (M.AS == 2 and .62 or 1) * (M.NH > 0 and (1.6 + .62 * M.NH) or 1)
     for i = 1, #list do
         if needFlip[i] then
             list[i]:setActive(true)
             if M.AS == 1 then
                 list[i].burn = false
             end
-            if not instant then
+            if interval then
                 SFX.play('card_slide_' .. rnd(4), .62)
-                local t = .042
-                if M.AS == 2 then t = t * .62 end
-                if M.NH > 0 then t = t * (1.6 + .62 * M.NH) end
-                TASK.yieldT(t)
+                TASK.yieldT(interval)
             end
         end
     end
