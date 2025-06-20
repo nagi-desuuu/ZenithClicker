@@ -1487,6 +1487,7 @@ function GAME.task_cancelAll(instant)
                 list[i].burn = false
             end
             if not instant then
+                SFX.play('card_slide_' .. rnd(4), .62)
                 local t = .042
                 if M.AS == 2 then t = t * .62 end
                 if M.NH > 0 then t = t * (1.6 + .62 * M.NH) end
