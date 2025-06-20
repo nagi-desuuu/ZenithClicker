@@ -1092,7 +1092,7 @@ function GAME.nextNegEvent()
 end
 
 local revLetter = setmetatable({
-    P = "Ь", R = "ᖉ", T = "ꓕ", Q = "О́", U = "Ո", A = "Ɐ", L = "Γ",
+    P = "Ь", R = "ᖉ", T = "ꓕ", Q = "Ơ", U = "Ո", A = "Ɐ", L = "Γ", S = "Ƨ"
 }, { __index = function(_, k) return k end })
 function GAME.refreshRPC()
     local detailStr = "QUICK PICK"
