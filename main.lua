@@ -227,7 +227,6 @@ TEXTURE = {
             ASEXVL = aq(1, 7),
             swamp_water_lite = aq(5, 7),
             swamp_water = aq(2, 5),
-            swamp_water_pro = aq(16, 2),
 
             rEX = aq(15, 1),
             rNH = aq(11, 1),
