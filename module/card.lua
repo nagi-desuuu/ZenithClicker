@@ -203,7 +203,6 @@ function Card:setActive(auto, key)
             noSpin = M.IN == 1
         elseif self.id == 'AS' then
             RefreshButtonText()
-        elseif self.id == 'DP' then
         end
         SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler)
         GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
