@@ -2503,7 +2503,7 @@ function GAME.finish(reason)
             SubmitAchv('the_spike_of_all_time_minus', GAME.maxSpikeWeak)
         else
             local revCount = STRING.count(GAME.comboStr, 'r')
-            if #hand == 9 or #hand >= 7 and not GAME.comboStr:find('DP') then
+            if #hand == 9 or #hand >= 7 and not M.DP ~= 1 then
                 local sw = {
                     'swamp_water_lite',
                     'swamp_water',
