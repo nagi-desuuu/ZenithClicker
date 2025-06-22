@@ -377,7 +377,7 @@ end
 
 local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
-local gc_setColor, gc_rectangle, gc_print, gc_printf = gc.setColor, gc.rectangle, gc.print, gc.printf
+local gc_setColor, gc_rectangle, gc_polygon, gc_print, gc_printf = gc.setColor, gc.rectangle, gc.polygon, gc.print, gc.printf
 local gc_ucs_move, gc_ucs_back = GC.ucs_move, GC.ucs_back
 local gc_setAlpha, gc_mRect, gc_mDraw, gc_mDrawQ = GC.setAlpha, GC.mRect, GC.mDraw, GC.mDrawQ
 local gc_stc_setComp, gc_stc_arc, gc_stc_stop = GC.stc_setComp, GC.stc_arc, GC.stc_stop
@@ -395,15 +395,22 @@ function scene.draw()
         gc_setColor(COLOR.DL)
         gc_print("Zenith Clicker Achievement System When?", 420, 380)
         gc_setColor(COLOR.D)
-        gc_rectangle('fill', 420, 435, 626, 50)
+        gc_rectangle('fill', 480, 435, 560, 50)
         gc_setColor(COLOR.lS)
-        gc_rectangle('fill', 430, 435, 75, 50)
+        gc_polygon('fill',
+            25 + 420, 435,
+            420, 435 + 25,
+            25 + 420, 435 + 50,
+            -25 + 420 + 102, 435 + 50,
+            420 + 102, 435 + 25,
+            -25 + 420 + 102, 435
+        )
         gc_setColor(COLOR.D)
-        gc_print("MrZ", 440, 440)
+        gc_print("MrZ", 444, 440)
         gc_setColor(COLOR.lD)
-        gc_print("at 2025/3/18 (Tue)", 520, 440)
+        gc_print("at 2025/3/18 (Tue)", 535, 440)
         gc_setColor(COLOR.lS)
-        gc_print("When it's ready.", 462, 520)
+        gc_print("When it's ready.", 482, 515)
     else
         -- Board
         gc_replaceTransform(SCR.xOy_m)
