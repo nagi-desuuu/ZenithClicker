@@ -1879,7 +1879,7 @@ function GAME.commit(auto)
                 if GAME.comboStr == '' then noTSR = SubmitAchv('clicker_speedrun', GAME.time) end
                 SubmitAchv('typer_speedrun', GAME.time, noTSR)
             elseif GAME.totalQuest == 41 then
-                if GAME.comboStr == 'EXMS' then SubmitAchv('block_rationing', GAME.roundHeight) end
+                if GAME.comboStr == 'EXMS' then SubmitAchv('quest_rationing', GAME.roundHeight) end
             end
         end
 
@@ -2463,7 +2463,7 @@ function GAME.finish(reason)
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_noKeyboardH or GAME.roundHeight)
         elseif GAME.comboStr == 'EXMS' then
-            if GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
+            if GAME.totalQuest <= 40 then SubmitAchv('quest_rationing', GAME.roundHeight) end
         elseif GAME.comboStr == 'EXVL' then
             SubmitAchv('wax_wings', GAME.achv_demoteH or GAME.roundHeight)
         elseif GAME.comboStr == 'NHrGV' then

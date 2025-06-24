@@ -827,9 +827,9 @@ Achievements = {
         quote = [[Reaching deep down but coming back empty every time.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
-    { -- block_rationing
-        id = 'block_rationing',
-        name = "Block Rationing",
+    { -- quest_rationing
+        id = 'quest_rationing',
+        name = "Quest Rationing",
         desc = [[Highest altitude on 40 quests WUT "Expert Mode" and "Messiness" mods]],
         quote = [[Adversity favors the resourceful.]],
         scoreSimp = heightNumber,

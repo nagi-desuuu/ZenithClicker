@@ -272,7 +272,7 @@ TEXTURE = {
             abyss = aq(0, 0),
 
             talentless = aq(3, 7),
-            block_rationing = aq(2, 7),
+            quest_rationing = aq(2, 7),
             the_responsible_one = aq(1, 6),
             the_unreliable_one = aq(15, 2),
             carried = aq(3, 8),
@@ -1604,7 +1604,7 @@ function Initialize(save)
         STAT.version = 170
     end
     if STAT.version == 170 then
-        ACHV.block_rationing = nil
+        ACHV.quest_rationing = nil
         STAT.version = 171
     end
     if STAT.version == 171 then
@@ -1666,6 +1666,11 @@ function Initialize(save)
     if STAT.version == 179 then
         if ACHV.perfect_speedrun then ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70 end
         STAT.version = 180
+    end
+    if STAT.version == 180 then
+        ACHV.quest_rationing = ACHV.block_rationing
+        ACHV.block_rationing = nil
+        STAT.version = 181
     end
 
     -- Some Initialization
