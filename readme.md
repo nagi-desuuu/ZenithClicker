@@ -104,6 +104,7 @@ Make sure you've discovered most contents before reading this section!
 
 ### Asceticism (`rNH`)
 
+- Disable +1 attack on perfect pass.
 - The **next queue** is removed. If (r)DP is enabled, it will show only one next quest.
 - Cards are **not deselected** after committing.
 
@@ -203,10 +204,13 @@ And `Hard Mode Decay` = 0.99, this applies `number_of_EX_or_Rev - 1` times.
 Total ZP is soft-capped by your skill:
 
 ```lua
-STAT.zp = max(
-    STAT.zp, -- Won't drop
-    STAT.zp < zpEarn * 16 and min(STAT.zp + zpEarn, zpEarn * 16) or -- Gain full before 16*zpGain
-    zpEarn * 16 + (STAT.zp - zpEarn * 16) * (9 / 10) + (zpEarn * 10) * (1 / 10) -- Slower from 16*zpGain, slower and slower when getting close to the hard-cap (26*zpGain)
+local oldZP = STAT.zp
+local thres1 = zpGain * 16
+local thres2 = zpGain * 26
+local newZP = max(
+    oldZP, -- Won't drop
+    oldZP < thres1 and oldZP + zpGain or -- Gain full before 1st threshold
+    thres1 + (oldZP - thres1) * (9 / 10) + (thres2 - thres1) * (1 / 10) -- Slower from 1st threshold, slower and slower when getting close to the hard-cap (2nd threshold)
 )
 ```
 

@@ -564,6 +564,8 @@ scene.widgetList = {
                 elseif data == 'test' then
                     TestMode = true
                     SFX.play('maintenance')
+                elseif data == 'dev' then
+                    MSG('dark', OverDevProgressText)
                 elseif data == 'mp' or data == 'music' then
                     if not BGM.isPlaying() or MusicPlayer then return end
                     MusicPlayer = true
@@ -589,6 +591,7 @@ scene.widgetList = {
                             "Try 'fps'",
                             "Try 'old_hitbox'",
                             "Try 'test'",
+                            "Try 'dev'",
                             MATH.coin("Try 'mp'", "Try 'music'"),
                             "Try 'f" .. STAT.maxFloor .. "'",
                             STAT.clicker and "Try 'true_ending'" or nil,
@@ -641,7 +644,11 @@ scene.widgetList = {
                 IssueAchv('zenith_relocation')
             end
             Initialize(true)
-            MSG('dark', "Progress imported!")
+            if TestMode then
+                MSG('dark', "Progress imported, but won't be saved.")
+            else
+                MSG('dark', "Progress imported!")
+            end
             SFX.play('social_notify_major')
         end,
     },

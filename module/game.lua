@@ -33,6 +33,7 @@ local ins, rem = table.insert, table.remove
 ---@field totalQuest number
 ---@field totalPerfect number
 ---@field totalAttack number
+---@field totalSurge number
 ---@field heightBonus number
 ---@field peakRank number
 ---@field rankTimer number[]
@@ -55,7 +56,7 @@ local ins, rem = table.insert, table.remove
 ---@field height number
 ---@field roundHeight number for statistics and achievement
 ---@field heightBuffer number
----@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string, duration?:number}[]
+---@field fatigueSet {time:number, event:table, text:string, desc:string, color?:string, duration?:number, final?:true}[]
 ---@field fatigue number
 ---@field animDuration number
 ---
@@ -614,17 +615,13 @@ function GAME.startRevive()
         local maxOut = power == 17
         local powerList = TABLE.new(floor(power / 3), 3)
         if power % 3 == 1 then
-            if power == maxOut then
-                powerList[2] = powerList[2] + 1
-            else
-                local r = rnd(3)
-                powerList[r] = powerList[r] + 1
-            end
+            local r = rnd(3)
+            powerList[r] = powerList[r] + 1
         elseif power % 3 == 2 then
             powerList[1] = powerList[1] + 1
             powerList[2] = powerList[2] + 1
             powerList[3] = powerList[3] + 1
-            local r = rnd(3)
+            local r = power == maxOut and 2 or rnd(3)
             powerList[r] = powerList[r] - 1
         end
         TABLE.delete(powerList, 0)
@@ -783,6 +780,7 @@ function GAME.addHeight(h)
     if h >= 6 and TASK.lock('speed_tick_whirl', 2.6) then SFX.play('speed_tick_whirl') end
 end
 
+local speedupSFX = { 1, 1, 1, 1, 2, 2, 2, 3, 3 }
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
     if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
@@ -792,7 +790,6 @@ function GAME.addXP(xp)
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
-        GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
 
         -- Rank skip
         if GAME.xp >= 4 * GAME.rank then
@@ -802,7 +799,12 @@ function GAME.addXP(xp)
                 GAME.rank = GAME.rank + 1
                 GAME.xp = GAME.xp - 4 * GAME.rank
             end
-            GAME.xpLockLevel = GAME.xpLockLevelMax + (GAME.xp < 2 * GAME.rank and 1 or 0)
+            GAME.xpLockLevel = GAME.xpLockLevelMax
+        end
+        if GAME.xp > 2 * GAME.rank then
+            GAME.xpLockLevel = GAME.xpLockLevelMax
+        else
+            GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
         end
     end
     if GAME.rank > GAME.rankLimit then
@@ -814,7 +816,7 @@ function GAME.addXP(xp)
         GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
-        SFX.play('speed_up_' .. MATH.clamp(floor((GAME.rank + .5) / 1.5), 1, 4),
+        SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
         if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.setGigaspeedAnim(true)
@@ -888,20 +890,21 @@ function GAME.showFloorText(f, name, duration)
 end
 
 function GAME.upFloor()
+    local roundFloorTime = roundUnit(GAME.floorTime, .001)
     if GAME.floor == 2 then
-        if GAME.comboStr == 'EXVLrDPrIN' then SubmitAchv('love_hotel', GAME.floorTime) end
+        if GAME.comboStr == 'EXVLrDPrIN' then SubmitAchv('love_hotel', roundFloorTime) end
     elseif GAME.floor == 3 then
-        if GAME.comboStr == 'ASEXMS' then SubmitAchv('financially_responsible', GAME.floorTime) end
+        if GAME.comboStr == 'ASEXMS' then SubmitAchv('financially_responsible', roundFloorTime) end
     elseif GAME.floor == 4 then
-        if GAME.comboStr == 'EXrDPrVL' then SubmitAchv('unfair_battle', GAME.floorTime) end
+        if GAME.comboStr == 'EXrDPrVL' then SubmitAchv('unfair_battle', roundFloorTime) end
     elseif GAME.floor == 5 then
-        if GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', GAME.floorTime) end
+        if GAME.comboStr == 'DHDP' then SubmitAchv('museum_heist', roundFloorTime) end
     elseif GAME.floor == 6 then
-        if GAME.comboStr == 'EXVLrGV' then SubmitAchv('workaholic', GAME.floorTime) end
+        if GAME.comboStr == 'EXVLrGV' then SubmitAchv('workaholic', roundFloorTime) end
     elseif GAME.floor == 7 then
-        if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', GAME.floorTime) end
+        if GAME.comboStr == 'ASMSVL' then SubmitAchv('human_experiment', roundFloorTime) end
     elseif GAME.floor == 8 then
-        if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', GAME.floorTime) end
+        if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', roundFloorTime) end
     elseif GAME.floor == 9 then
         SubmitAchv('ultra_dash', GAME.floorTime)
     end
@@ -1007,29 +1010,24 @@ function GAME.nextFatigue()
             inPoint = .1, outPoint = .26,
             color = stage.color or 'lM',
         }
-        TEXT:add {
-            text = stage.desc,
-            x = 800, y = 300, fontSize = 30,
-            style = 'score', duration = stage.duration or 5,
-            inPoint = .26, outPoint = .1,
-            color = stage.color or 'lM',
-        }
-        TASK.new(GAME.task_fatigueWarn)
-        local allTextSeen = true
-        for i = GAME.fatigue, #GAME.fatigueSet do
-            if GAME.fatigueSet[i].text then
-                allTextSeen = false
-                break
-            end
+        if stage.desc then
+            TEXT:add {
+                text = stage.desc,
+                x = 800, y = 300, fontSize = 30,
+                style = 'score', duration = stage.duration or 5,
+                inPoint = .26, outPoint = .1,
+                color = stage.color or 'lM',
+            }
         end
-        if allTextSeen then
-            if GAME.fatigueSet == Fatigue.normal then
-                IssueAchv('final_defiance')
-            elseif GAME.fatigueSet == Fatigue.rEX then
-                IssueAchv('royal_resistance')
-            elseif GAME.fatigueSet == Fatigue.rDP then
-                IssueAchv('lovers_stand')
-            end
+        TASK.new(GAME.task_fatigueWarn)
+    end
+    if stage.final then
+        if GAME.fatigueSet == Fatigue.normal then
+            IssueAchv('final_defiance')
+        elseif GAME.fatigueSet == Fatigue.rEX then
+            IssueAchv('royal_resistance')
+        elseif GAME.fatigueSet == Fatigue.rDP then
+            IssueAchv('lovers_stand')
         end
     end
 
@@ -1094,11 +1092,13 @@ function GAME.nextNegEvent()
 end
 
 local revLetter = setmetatable({
-    P = "Ь", R = "ᖉ", T = "ꓕ", Q = "О́", U = "Ո", A = "Ɐ", L = "Γ",
+    P = "Ь", R = "ᖉ", T = "ꓕ", Q = "Ơ", U = "Ո", A = "Ɐ", L = "Γ", S = "Ƨ"
 }, { __index = function(_, k) return k end })
 function GAME.refreshRPC()
-    local detailStr = M.EX > 0 and "EXPERT QUICK PICK" or "QUICK PICK"
+    local detailStr = "QUICK PICK"
+    if M.EX > 0 then detailStr = "EXPERT " .. detailStr end
     if M.DP > 0 then detailStr = detailStr:gsub("QUICK", "DUAL") end
+    if TestMode then detailStr = detailStr:gsub("PICK", "TEST") end
     if GAME.anyRev then detailStr = detailStr:gsub(".", revLetter) end
 
     local stateStr
@@ -1474,20 +1474,22 @@ function GAME.task_cancelAll(instant)
         end
         GAME.achv_resetCount = GAME.achv_resetCount + 1
     end
-    local spinMode = not instant and M.AS > 0
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
+    local spinMode = not instant and M.AS > 0
     for i = 1, #CD do
         needFlip[i] = spinMode or CD[i].active
     end
+    local interval = not instant and .042 * (M.AS == 2 and .62 or 1) * (M.NH > 0 and (1.6 + .62 * M.NH) or 1)
     for i = 1, #list do
         if needFlip[i] then
             list[i]:setActive(true)
             if M.AS == 1 then
                 list[i].burn = false
             end
-            if not instant then
-                TASK.yieldT(M.AS == 2 and .026 or .042)
+            if interval then
+                SFX.play('card_slide_' .. rnd(4), .62)
+                TASK.yieldT(interval)
             end
         end
     end
@@ -1766,7 +1768,7 @@ function GAME.commit(auto)
             end
 
             GAME.achv_maxChain = max(GAME.achv_maxChain, GAME.chain)
-            if GAME.chain >= 70 and GAME.chain - (dblCorrect and 2 or 1) < 70 then
+            if GAME.chain >= 75 and GAME.chain - (dblCorrect and 2 or 1) < 75 then
                 SubmitAchv('perfect_speedrun', GAME.time)
             end
         end
@@ -1830,6 +1832,7 @@ function GAME.commit(auto)
 
         GAME.incrementPrompt('send', attack)
         GAME.totalAttack = GAME.totalAttack + attack
+        GAME.totalSurge = GAME.totalSurge + surge
 
         if GAME.DPlock then attack = min(attack, URM and oldAllyLife * 2.6 or oldAllyLife * 4) end
         if attack > 0 then GAME.addHeight(attack * GAME.attackMul) end
@@ -1876,7 +1879,7 @@ function GAME.commit(auto)
                 if GAME.comboStr == '' then noTSR = SubmitAchv('clicker_speedrun', GAME.time) end
                 SubmitAchv('typer_speedrun', GAME.time, noTSR)
             elseif GAME.totalQuest == 41 then
-                if GAME.comboStr == 'EXMS' then SubmitAchv('block_rationing', GAME.roundHeight) end
+                if GAME.comboStr == 'EXMS' then SubmitAchv('quest_rationing', GAME.roundHeight) end
             end
         end
 
@@ -1987,6 +1990,7 @@ function GAME.start()
     GAME.totalQuest = 0
     GAME.totalPerfect = 0
     GAME.totalAttack = 0
+    GAME.totalSurge = 0
     GAME.heightBonus = 0
     GAME.peakRank = 1
     GAME.rankTimer = TABLE.new(0, 26)
@@ -2140,6 +2144,8 @@ function GAME.finish(reason)
         'shatter', .8
     )
 
+    TASK.removeTask_code(GAME.task_cancelAll)
+
     GAME.sortCards()
     for _, C in ipairs(CD) do
         if (M[C.id] > 0) ~= C.active then
@@ -2229,12 +2235,16 @@ function GAME.finish(reason)
             end
         end
 
-        local oldZP, zpGain = STAT.zp, GAME.roundHeight * GAME.comboZP
+        -- ZP of current run
+        local zpGain = GAME.roundHeight * GAME.comboZP
+        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpGain, 0, DailyActived and ", 260%" or ""))
+
+        -- Daily
         if DailyActived then
             STAT.dzp = max(STAT.dzp, zpGain)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
-            if GAME.floor >= 10 then
-                if GAME.comboStr:find('r') and not STAT.dailyMastered then
+            if GAME.floor >= 10 and GAME.comboStr:find('r') then
+                if not STAT.dailyMastered then
                     STAT.dailyMastered = true
                     STAT.vipListCount = STAT.vipListCount + 1
                     SubmitAchv('vip_list', STAT.vipListCount)
@@ -2245,14 +2255,18 @@ function GAME.finish(reason)
             end
             -- TODO: send to online leaderboard
         end
-        STAT.zp = max(
-            STAT.zp,
-            STAT.zp < zpGain * 16 and min(STAT.zp + zpGain, zpGain * 16) or
-            zpGain * 16 + (STAT.zp - zpGain * 16) * (9 / 10) + (zpGain * 10) * (1 / 10)
+
+        -- Update ZP
+        local oldZP = STAT.zp
+        local thres1 = zpGain * 16
+        local thres2 = zpGain * 26
+        local newZP = max(
+            oldZP, -- won't drop
+            oldZP < thres1 and oldZP + zpGain or
+            thres1 + (oldZP - thres1) * (9 / 10) + (thres2 - thres1) * (1 / 10)
         )
-        if DailyActived then STAT.zp = MATH.clamp(STAT.zp + (STAT.zp - oldZP) * 1.6, STAT.zp, 50 * zpGain) end
-        TEXTS.zpChange:set(("%.0f ZP  (+%.0f%s)"):format(zpGain, 0, DailyActived and ", 260%" or ""))
-        local zpEarn = STAT.zp - oldZP
+        if DailyActived then newZP = MATH.clamp(newZP + (newZP - oldZP) * 1.6, newZP, 50 * zpGain) end
+        local zpEarn = newZP - oldZP
         if zpEarn > 0 then
             TASK.new(function()
                 TASK.yieldT(0.626)
@@ -2262,6 +2276,8 @@ function GAME.finish(reason)
                 SFX.play('ratingraise', zpEarn ^ .5 / 60)
             end)
         end
+
+        STAT.zp = newZP
         SaveStat()
 
         -- Best
@@ -2305,10 +2321,11 @@ function GAME.finish(reason)
         end
         if GAME.gigaspeedEntered then
             if GAME.gigaTime then
+                local t = GAME.gigaTime < 60 and roundUnit(GAME.gigaTime, .001) .. "s" or STRING.time_simp(GAME.gigaTime)
                 if endFloorStr:find("F10") then
-                    endFloorStr = endFloorStr .. "   in " .. STRING.time_simp(GAME.gigaTime)
+                    endFloorStr = endFloorStr .. "   in " .. t
                 else
-                    endFloorStr = endFloorStr .. "    F10 in " .. STRING.time_simp(GAME.gigaTime)
+                    endFloorStr = endFloorStr .. "    F10 in " .. t
                 end
             end
             local l = {}
@@ -2333,7 +2350,7 @@ function GAME.finish(reason)
             COLOR.L, ("Speed  %.1fm/s"):format(roundUnit(g.height / g.time, .1)),
             COLOR.LD, ("  (max rank %d)\n"):format(g.peakRank),
             COLOR.L, ("Attack  %d"):format(g.totalAttack),
-            COLOR.LD, ("  (%.1fapm  %.2feff)\n"):format(g.totalAttack / g.time * 60, g.totalAttack / g.totalQuest),
+            COLOR.LD, ("  (%.1fapm  %dsurge)\n"):format(g.totalAttack / g.time * 60, g.totalSurge),
             COLOR.L, ("Bonus  " .. (g.heightBonus >= 2600 and "%.0fm" or "%.1fm")):format(g.heightBonus),
             COLOR.LD, abs(g.height) <= 2.6 and "" or ("  (%.1f%%  %.1fm/quest)"):format(g.heightBonus / g.height * 100, g.heightBonus / g.totalQuest),
         })
@@ -2400,7 +2417,9 @@ function GAME.finish(reason)
         SubmitAchv('elegance', STAT.totalPerfect, true, true)
         SubmitAchv('garbage_offensive', STAT.totalAttack, true, true)
         SubmitAchv('tower_climber', STAT.totalHeight, true, true)
+        SubmitAchv('tower_regular', STAT.totalFloor, true, true)
         SubmitAchv('speed_player', STAT.totalGiga, true, true)
+        SubmitAchv('plonk', roundUnit(GAME.height / GAME.totalQuest, .01))
         _t = 0
         for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
         SubmitAchv('zenith_speedrunner', _t, true)
@@ -2444,7 +2463,7 @@ function GAME.finish(reason)
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_noKeyboardH or GAME.roundHeight)
         elseif GAME.comboStr == 'EXMS' then
-            if GAME.totalQuest <= 40 then SubmitAchv('block_rationing', GAME.roundHeight) end
+            if GAME.totalQuest <= 40 then SubmitAchv('quest_rationing', GAME.roundHeight) end
         elseif GAME.comboStr == 'EXVL' then
             SubmitAchv('wax_wings', GAME.achv_demoteH or GAME.roundHeight)
         elseif GAME.comboStr == 'NHrGV' then
@@ -2484,7 +2503,7 @@ function GAME.finish(reason)
             SubmitAchv('the_spike_of_all_time_minus', GAME.maxSpikeWeak)
         else
             local revCount = STRING.count(GAME.comboStr, 'r')
-            if #hand == 9 or #hand >= 7 and not GAME.comboStr:find('DP') then
+            if #hand == 9 or #hand >= 7 and not M.DP ~= 1 then
                 local sw = {
                     'swamp_water_lite',
                     'swamp_water',
@@ -2594,7 +2613,7 @@ function GAME.update(dt)
             SFX.play('elim')
         end
         if KBisDown('rshift') then
-            GAME.time = GAME.time + dt * 26
+            GAME.time = GAME.time + dt * 62
         end
     end
 
@@ -2632,11 +2651,7 @@ function GAME.update(dt)
 
     -- Gigaspeed timer text
     if GAME.gigaspeed then
-        TEXTS.gigatime:set(("%02d:%02d.%03d"):format(
-            floor(GAME.time / 60),
-            floor(GAME.time % 60),
-            GAME.time % 1 * 1000)
-        )
+        TEXTS.gigatime:set(("%02d:%06.3f"):format(floor(GAME.time / 60), GAME.time % 60))
     end
 
     -- Time-based revive prompt

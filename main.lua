@@ -186,7 +186,9 @@ TEXTURE = {
             elegance = aq(4, 1),
             garbage_offensive = aq(3, 1),
             tower_climber = aq(8, 2),
+            tower_regular = aq(8, 2),
             speed_player = aq(5, 2),
+            plonk = aq(6, 2),
             zenith_explorer = aq(2, 3),
             zenith_explorer_plus = aq(2, 3),
             clicker_speedrun = aq(5, 1),
@@ -225,7 +227,6 @@ TEXTURE = {
             ASEXVL = aq(1, 7),
             swamp_water_lite = aq(5, 7),
             swamp_water = aq(2, 5),
-            swamp_water_pro = aq(16, 2),
 
             rEX = aq(15, 1),
             rNH = aq(11, 1),
@@ -271,7 +272,7 @@ TEXTURE = {
             abyss = aq(0, 0),
 
             talentless = aq(3, 7),
-            block_rationing = aq(2, 7),
+            quest_rationing = aq(2, 7),
             the_responsible_one = aq(1, 6),
             the_unreliable_one = aq(15, 2),
             carried = aq(3, 8),
@@ -1069,6 +1070,7 @@ function Task_MusicEnd(manual)
         BgmNeedStop = BGM.tell() + 4 * 60 / D.bpm
     end
     if outroStart then BGM.set('all', 'seek', outroStart) end
+    BgmLooping, BgmNeedSkip = false, false
     if BgmNeedStop then
         repeat TASK.yieldT(.0626) until not BgmNeedStop
     else
@@ -1602,7 +1604,7 @@ function Initialize(save)
         STAT.version = 170
     end
     if STAT.version == 170 then
-        ACHV.block_rationing = nil
+        ACHV.quest_rationing = nil
         STAT.version = 171
     end
     if STAT.version == 171 then
@@ -1660,6 +1662,15 @@ function Initialize(save)
         end
         if banned then STAT.badge.rDP_meta = true end
         STAT.version = 179
+    end
+    if STAT.version == 179 then
+        if ACHV.perfect_speedrun then ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70 end
+        STAT.version = 180
+    end
+    if STAT.version == 180 then
+        ACHV.quest_rationing = ACHV.block_rationing
+        ACHV.block_rationing = nil
+        STAT.version = 181
     end
 
     -- Some Initialization
@@ -1743,8 +1754,6 @@ end
 UAN = 'UseAltName'
 function UseAltName()
     UAN = false
-    -- Shhhhhh! Let's keep this a secret before 2026.4.1 ...
-    -- I know it's a long time, can we manage it? We'll see!
     TABLE.update(ModData, {
         fullName = {
             EX = "< MASTER >",

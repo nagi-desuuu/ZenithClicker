@@ -117,6 +117,7 @@ addText({
         "OBSIDIAN",
         "OSK",
         "PETRTECH",
+        "PONIES",
         "QUOTING",
         "RICMAN",
         "RONEZKJ15",
