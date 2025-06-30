@@ -1480,7 +1480,7 @@ function GAME.task_cancelAll(instant)
     for i = 1, #CD do
         needFlip[i] = spinMode or CD[i].active
     end
-    local interval = not instant and .042 * (M.AS == 2 and .62 or 1) * (M.NH > 0 and (1.6 + .62 * M.NH) or 1)
+    local interval = not instant and .042 * (M.AS == 2 and .62 or 1) * (M.NH > 0 and 1 + 2 * M.NH or 1)
     for i = 1, #list do
         if needFlip[i] then
             list[i]:setActive(true)
