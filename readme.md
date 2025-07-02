@@ -94,6 +94,13 @@ Each mod creates a unique experience by twisting the rules, but also increases t
 Make sure you've discovered most contents before reading this section!
 </summary>
 
+### Hard Mode
+
+**Expert and ALL reversed modifiers activate Hard Mode with the following effects:**
+
+- Activating a correct card for the first time no longer gives +1 XP.
+- Quest hints take longer to appear (**1.5s longer**, or on IN, **38% longer** between flashes)
+
 ### The Tyrant (`rEX`)
 
 - **Has ALL the effects of Expert.**
@@ -162,12 +169,60 @@ Make sure you've discovered most contents before reading this section!
 - **Half the amount of attack you send** goes to the inactive player.
 - If one player is incapacitated, **you won't be able to climb** and half the amount of attack sent goes to the **active player**!
 
-### Hard Mode
+<details>
+<summary>
+For pro players who desire all details only.  
+Get X+ rank before reading this section!
+</summary>
 
-**Expert and ALL reversed modifiers activate Hard Mode with the following effects:**
+You can somehow enable "Ultra Mode" and all reversed mods become Ultra Mods.
 
-- Activating a correct card for the first time no longer gives +1 Climb Speed XP.
-- Quest hints take longer to appear (**1.5s longer**, or on IN, **38% longer** between flashes)
+Except uEX, ultra mods no longer enable Hard Mode.
+
+But any of them will set the attack-altitude multiplier to 62%.
+
+Ultra mods are considered as reversed mods on score, achievements, etc.
+
+#### PSYCHOTIC SOVEREIGN （`uEX`）
+
+- Cards are 30px (27%) closer together!
+- You can fall past floor boundaries!
+
+#### ASCENDED VIRTUE （`uNH`）
+
+- Breaking Surge does not send attack! (still gives +1 XP per B2B)
+- Promotion fatigue won't recover on reaching 50% of the XP bar!
+
+#### ENTROPY （`uMS`）
+
+- The cards are shuffled every single quest!
+
+#### COLLAPSING GALAXY （`uGV`）
+
+- The auto-commit timer won't refresh on RESET and starts instantly!
+
+#### DIMINISHING VOLITION （`uVL`）
+
+- Every button now takes four presses!
+
+#### BLASPHEMY （`uDH`）
+
+- Combo names are heavily jumbled! (only first and last letter are safe)
+
+#### PARADOXICAL NIHILITY （`uIN`）
+
+- Quests will fade out forever!
+
+#### DEPRAVED GRIMOIRE （`uAS`）
+
+- Flipping a burned card now causes an instant defeat!
+
+#### SEVERED EDEN （`uDP`）
+
+- Activating the Duo card no longer swaps players.
+- Deal ~54% more damage to the inactive player from attacks!
+
+</details>
 
 ## Behind the Scenes
 
