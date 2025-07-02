@@ -99,7 +99,7 @@ addText("Floor Art 9-10", -26, h, .42, 'right')
 addText("Lauren Sheng", 26, h, .42, 'left')
 
 h = h + 90
-addText("Card Art", -26, h, .42, 'right')
+addText("Original Card Art", -26, h, .42, 'right')
 addText("Ricman", 26, h, .42, 'left')
 
 h = h + 160
