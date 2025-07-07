@@ -227,7 +227,6 @@ local function refreshAchivement()
         'swamp_water_lite',
         'swamp_water',
         'swamp_water_pro',
-        'swamp_water_x',
     }
     local swFin
     local maxMMP, maxZP = 0, 0
@@ -235,8 +234,9 @@ local function refreshAchivement()
         submit(k, v)
         local revCount = STRING.count(k, 'r')
         local count = (#k - revCount) / 2
-        if count == 9 or count >= 7 and (k:find('rDP') or not k:find('DP')) then
-            for i = count, 7, -1 do
+        local len_noDP = count - ((k:find('rDP') or not k:find('DP')) and 1 or 0)
+        if len_noDP >= 7 then
+            for i = len_noDP, 7, -1 do
                 if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', v, swFin) or swFin end
                 swFin = SubmitAchv(sw[i - 6], v, swFin) or swFin
             end

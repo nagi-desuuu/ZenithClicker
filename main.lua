@@ -256,7 +256,6 @@ TEXTURE = {
             ASMSrDHrIN = aq(13, 6),   -- Kitsune Trickery
             swamp_water_lite_plus = aq(14, 3),
             swamp_water_plus = aq(15, 3),
-            swamp_water_pro_plus = aq(16, 3),
 
             -- Special, no texture needed
             blight = aq(0, 0),
@@ -1770,7 +1769,7 @@ function UseAltName()
         adj = {
             EX = "MASTERFUL",
             NH = "UNCANCELLED",
-            MS = "CHAOTIC",
+            MS = "CHEESY",
             GV = "DECLINED",
             VL = "UNSTABLE",
             DH = "DOUBLE HOLE",
@@ -1781,7 +1780,7 @@ function UseAltName()
         noun = {
             EX = "MASTER",
             NH = "UNCANCELLATION",
-            MS = "CHAOS",
+            MS = "CHEESE",
             GV = "DECLINE",
             VL = "INSTABILITY",
             DH = "DOUBLE HOLE",

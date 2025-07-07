@@ -405,22 +405,26 @@ function GAME.getComboName(list, mode)
             if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
                 local mp = GAME.getComboMP(list)
                 if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
-            elseif len == 9 or len >= 7 and not TABLE.find(list, 'DP') then
-                return
-                    GAME.anyRev and (
-                        len == 7 and [["AMBROSIA SODA"]] or
-                        len == 8 and [["AMBROSIA WINE"]] or
-                        len == 9 and [["AMBROSIA MOONSHINE"]] or
-                        [["AMBROSIA ICHOR"]]
-                    ) or (
-                        len == 7 and [["SWAMP WATER LITE"]] or
-                        len == 8 and [["SWAMP WATER"]] or
-                        len == 9 and [["SWAMP WATER PRO"]] or
-                        [["SWAMP WATER X"]]
-                    )
+            else
+                local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
+                if len_noDP >= 7 then
+                    return
+                        GAME.anyRev and (
+                            len_noDP == 7 and [["AMBROSIA SODA"]] or
+                            len_noDP == 8 and [["AMBROSIA WINE"]] or
+                            [["AMBROSIA MOONSHINE"]]
+                        ) or (
+                            len_noDP == 7 and [["SWAMP WATER LITE"]] or
+                            len_noDP == 8 and [["SWAMP WATER"]] or
+                            [["SWAMP WATER PRO"]]
+                        )
+                end
             end
-        elseif not TABLE.find(list, 'DP') and len >= 7 then
-            return len == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
+        else
+            local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
+            if len_noDP >= 7 then
+                return len_noDP == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
+            end
         end
 
         -- Named Combo
@@ -2503,15 +2507,15 @@ function GAME.finish(reason)
             SubmitAchv('the_spike_of_all_time_minus', GAME.maxSpikeWeak)
         else
             local revCount = STRING.count(GAME.comboStr, 'r')
-            if #hand == 9 or #hand >= 7 and not M.DP ~= 1 then
+            local len_noDP = #hand - (M.DP == 1 and 1 or 0)
+            if len_noDP >= 7 then
                 local sw = {
                     'swamp_water_lite',
                     'swamp_water',
                     'swamp_water_pro',
-                    'swamp_water_x',
                 }
                 local swFin
-                for i = #hand, 7, -1 do
+                for i = len_noDP, 7, -1 do
                     if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', GAME.roundHeight, swFin) or swFin end
                     swFin = SubmitAchv(sw[i - 6], GAME.roundHeight, swFin) or swFin
                 end
