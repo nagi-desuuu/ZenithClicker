@@ -2701,8 +2701,9 @@ function GAME.update(dt)
         else
             GAME.height = GAME.height + GAME.rank / 4 * dt * icLerp(1, 6, Floors[GAME.floor].top - GAME.height)
         end
-        GAME.roundHeight = ceil(GAME.height * 100) / 100
     end
+
+    GAME.roundHeight = ceil(GAME.height * 100) / 100
 
     if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
 
