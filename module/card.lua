@@ -288,7 +288,7 @@ function Card:spin()
             end
         end
     end
-    TWEEN.new(animFunc):setUnique('spin_' .. self.id):setEase(ease):setDuration(.42):run()
+    TWEEN.new(animFunc):setUnique('spin_' .. self.id):setEase(ease):setDuration(M.IN == 2 and .62 or .42):run()
         :setOnKill(function()
             self.ky = 1
             self.r = re
