@@ -234,7 +234,7 @@ local function refreshAchivement()
         submit(k, v)
         local revCount = STRING.count(k, 'r')
         local count = (#k - revCount) / 2
-        local len_noDP = count - ((k:find('rDP') or not k:find('DP')) and 1 or 0)
+        local len_noDP = count - (k:find('DP') and not k:find('rDP') and 1 or 0)
         if len_noDP >= 7 then
             for i = len_noDP, 7, -1 do
                 if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', v, swFin) or swFin end
