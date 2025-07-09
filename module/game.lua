@@ -37,7 +37,6 @@ local ins, rem = table.insert, table.remove
 ---@field heightBonus number
 ---@field peakRank number
 ---@field rankTimer number[]
----@field achv_doublePass number
 ---
 ---@field time number
 ---@field gigaTime false | number
@@ -192,6 +191,8 @@ local GAME = {
     achv_resetCount = nil,
     achv_noResetH = nil,
     achv_obliviousQuest = nil,
+    achv_doublePass = nil,
+    achv_level19capH = nil,
 }
 
 GAME.playing = false
@@ -1024,6 +1025,9 @@ function GAME.nextFatigue()
             }
         end
         TASK.new(GAME.task_fatigueWarn)
+        if not GAME.achv_level19capH then
+            GAME.achv_level19capH = GAME.roundHeight
+        end
     end
     if stage.final then
         if GAME.fatigueSet == Fatigue.normal then
@@ -2130,6 +2134,7 @@ function GAME.start()
     GAME.achv_resetCount = 0
     GAME.achv_obliviousQuest = 0
     GAME.achv_doublePass = 0
+    GAME.achv_level19capH = false
     if M.DP > 0 then IssueAchv('intended_glitch') end
 end
 
@@ -2464,6 +2469,8 @@ function GAME.finish(reason)
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'DP' then
             if VALENTINE then SubmitAchv('lovers_promise', GAME.roundHeight) end
+        elseif GAME.comboStr == 'NH' then
+            SubmitAchv('level_19_cap', GAME.achv_level19capH or GAME.roundHeight)
         elseif GAME.comboStr == 'AS' then
             SubmitAchv('talentless', GAME.achv_noKeyboardH or GAME.roundHeight)
         elseif GAME.comboStr == 'EXMS' then
