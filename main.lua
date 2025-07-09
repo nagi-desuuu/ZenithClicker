@@ -308,7 +308,7 @@ TEXTURE = {
             ultra_dash = aq(5, 6),
             perfect_speedrun = aq(5, 6),
             the_perfectionist = aq(5, 6),
-            petaspeed = aq(5, 6),
+            drag_racing = aq(5, 6),
             cruise_control = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
@@ -1671,6 +1671,10 @@ function Initialize(save)
         ACHV.quest_rationing = ACHV.block_rationing
         ACHV.block_rationing = nil
         STAT.version = 181
+    end
+    if STAT.version == 181 then
+        ACHV.drag_racing, ACHV.petaspeed = ACHV.petaspeed, nil
+        STAT.version = 182
     end
 
     -- Some Initialization

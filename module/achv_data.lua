@@ -1173,12 +1173,13 @@ Achievements = {
         quote = [[Supercharged Perf%]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
     },
-    { -- petaspeed
+    { -- drag_racing
         ex = true,
-        id = 'petaspeed',
-        name = "Petaspeed",
+        id = 'drag_racing',
+        name = "Drag Racing",
         desc = [[Highest (climb speed) rank reached]],
-        quote = [[Chasing for the ultimate speed, with all else cast aside.]],
+        quote = [[Blaze past the competition with unreal speeds to achieve momentary greatness.]],
+        credit = "@GameTilDead",
         scoreSimp = function(rank) return "Rank " .. rank end,
         rank = numberRank(12, 14, 15, 16, 17, 18, 20),
     },

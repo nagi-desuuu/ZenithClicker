@@ -2439,7 +2439,7 @@ function GAME.finish(reason)
 
         SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .01))
         SubmitAchv('effective', zpGain)
-        SubmitAchv('petaspeed', GAME.peakRank)
+        SubmitAchv('drag_racing', GAME.peakRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
         for i = 1, #maxCSP do
             if maxCSP[i][2] >= 60 then
