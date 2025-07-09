@@ -258,7 +258,7 @@ function Card:flip()
     TWEEN.new(function(t)
         self.kx = lerp(s, e, t)
         self.r = lerp(rs, 0, t)
-    end):setUnique('spin_' .. self.id):setEase('OutQuad'):setDuration(0.26):run()
+    end):setUnique('spin_' .. self.id):setEase('OutQuad'):setDuration(.26):run()
 end
 
 function Card:spin()
@@ -384,13 +384,13 @@ function Card:shake()
     local s, e = self.r, 0
     TWEEN.new(function(t)
         self.r = lerp(s, e, t)
-    end):setTag(tag):setEase('OutBack'):setDuration(0.26):run()
+    end):setTag(tag):setEase('OutBack'):setDuration(.26):run()
 end
 
 function Card:flick()
     TWEEN.new(function(t)
         self.size = lerp(.56, .62, t)
-    end):setUnique('flick_' .. self.id):setEase('OutBack'):setDuration(0.26):run()
+    end):setUnique('flick_' .. self.id):setEase('OutBack'):setDuration(.26):run()
 end
 
 local activeFrame = GC.newImage('assets/card/outline1.png')
@@ -634,12 +634,16 @@ function Card:draw()
         -- Menu UI
         if not playing then
             gc_push('transform')
+
+            -- Rev Throb
             if not self.upright and GAME.revDeckSkin and faceUp then
                 gc_setColor(1, 1, 1, ThrobAlpha.card)
                 gc_setShader(Shader_Throb)
                 gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
                 gc_setShader()
             end
+
+            -- Star
             if completion[self.id] > 0 then
                 img = self.active and TEXTURE.star1 or TEXTURE.star0
                 local t = self.upright and self.float or 1
