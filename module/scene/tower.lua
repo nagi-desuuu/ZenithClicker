@@ -265,6 +265,7 @@ local function getBtnPressed()
 end
 
 function scene.mouseDown(x, y, k)
+    if k > 3 then return end
     if usingTouch and k == 1 then
         usingTouch = false
         UsingTouch = false
@@ -287,6 +288,7 @@ function scene.mouseDown(x, y, k)
 end
 
 function scene.mouseUp(x, y, k)
+    if k > 3 then return end
     if not HoldingButtons['mouse' .. k] then return end
     HoldingButtons['mouse' .. k] = nil
     if GAME.zenithTraveler then return end
