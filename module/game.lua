@@ -77,6 +77,8 @@ local ins, rem = table.insert, table.remove
 ---@field chain number
 ---@field gigaspeed boolean
 ---@field gigaspeedEntered false | number time when enter
+---@field gigaCount number
+---@field teraCount number
 ---@field teramusic boolean
 ---@field atkBuffer number
 ---@field atkBufferCap number
@@ -161,6 +163,8 @@ local GAME = {
     reviveTasks = {},
     currentTask = false,
     lastFlip = false,
+    gigaspeedFloor = {},
+    teraspeedFloor = {},
 
     zenithTraveler = false,
     nightcore = false,
@@ -823,14 +827,16 @@ function GAME.addXP(xp)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4),
             .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
-        if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
+        -- if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
+        if not GAME.gigaspeed and GAME.height > 0 and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.setGigaspeedAnim(true)
             SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
-        if GAME.gigaspeed and not GAME.teraspeedFloor and GAME.rank >= TeraMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
+        if GAME.gigaspeed and not GAME.teramusic and GAME.rank >= TeraMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.teramusic = true
-            GAME.teraspeedFloor = GAME.floor
+            GAME.teraspeedFloor[GAME.floor] = true
+            GAME.teraCount = GAME.teraCount + 1
             TASK.removeTask_code(GAME.task_gigaspeed)
             TASK.new(GAME.task_gigaspeed)
             PlayBGM('tera', true)
@@ -846,7 +852,8 @@ function GAME.setGigaspeedAnim(on)
     local s = GigaSpeed.alpha
     if on then
         GAME.gigaspeedEntered = GAME.time
-        GAME.gigaspeedFloor = GAME.floor
+        GAME.gigaspeedFloor[GAME.floor] = true
+        GAME.gigaCount = GAME.gigaCount + 1
         TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 1, t) end)
             :setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
@@ -996,6 +1003,7 @@ function GAME.upFloor()
         if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', roundTime) end
         SubmitAchv('zenith_speedrun_plus', roundTime)
         SubmitAchv('detail_oriented', GAME.totalFlip)
+        IssueAchv('blazing_speed')
     end
     PlayBGM('f' .. GAME.floor)
     GAME.refreshRPC()
@@ -1350,8 +1358,8 @@ function GAME.refreshSectionTime()
         secTimeStr = secTimeStr .. ("%sF%s%s%s %s %.3f″"):format(
             (i > 1 and "\n" or ""),
             i == 11 and "Ω" or tostring(i),
-            i == GAME.gigaspeedFloor and "g" or "",
-            i == GAME.teraspeedFloor and "t" or "",
+            GAME.gigaspeedFloor[i] and "g" or "",
+            GAME.teraspeedFloor[i] and "t" or "",
             not GAME.playing and i == #GAME.secTime and "x" or "-",
             GAME.secTime[i]
         )
@@ -2048,8 +2056,10 @@ function GAME.start()
     GAME.chain = 0
     GAME.gigaspeed = false
     GAME.gigaspeedEntered = false
-    GAME.gigaspeedFloor = false
-    GAME.teraspeedFloor = false
+    TABLE.clear(GAME.gigaspeedFloor)
+    TABLE.clear(GAME.teraspeedFloor)
+    GAME.gigaCount = 0
+    GAME.teraCount = 0
     GAME.teramusic = false
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
@@ -2494,6 +2504,10 @@ function GAME.finish(reason)
             SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
         elseif GAME.comboStr == 'DHVLrIN' then
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
+        end
+        if M.EX < 2 and M.DP < 2 then
+            print(GAME.gigaCount + GAME.teraCount)
+            SubmitAchv('speed_bonus', GAME.gigaCount + GAME.teraCount)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
