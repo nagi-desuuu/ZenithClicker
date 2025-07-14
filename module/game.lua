@@ -799,21 +799,14 @@ function GAME.addXP(xp)
     while GAME.xp >= 4 * GAME.rank do
         GAME.xp = GAME.xp - 4 * GAME.rank
         GAME.rank = GAME.rank + 1
+        GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
 
         -- Rank skip
-        if GAME.xp >= 4 * GAME.rank then
-            GAME.rank = GAME.rank + floor(GAME.xp / (4 * GAME.rank))
-            -- One more
+        if GAME.xp >= 2 * GAME.rank then
+            GAME.xpLockLevel = GAME.xpLockLevelMax
             if GAME.xp >= 4 * GAME.rank then
-                GAME.rank = GAME.rank + 1
-                GAME.xp = GAME.xp - 4 * GAME.rank
+                GAME.rank = GAME.rank + floor(GAME.xp / (4 * GAME.rank))
             end
-            GAME.xpLockLevel = GAME.xpLockLevelMax
-        end
-        if GAME.xp > 2 * GAME.rank then
-            GAME.xpLockLevel = GAME.xpLockLevelMax
-        else
-            GAME.xpLockLevel = max(GAME.xpLockLevel - 1, 1)
         end
     end
     if GAME.rank > GAME.rankLimit then
@@ -825,8 +818,7 @@ function GAME.addXP(xp)
         GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
-        SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4),
-            .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
+        SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4), .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
         -- if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
         if not GAME.gigaspeed and GAME.height > 0 and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.setGigaspeedAnim(true)
