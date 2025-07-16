@@ -33,7 +33,7 @@ local function heightFloor(h)
     end
 end
 local function heightNumber(score)
-    return string.format("%.1fm", score)
+    return string.format("%.2fm", score)
 end
 local function issuedScore()
     return "DONE!"
@@ -237,7 +237,7 @@ Achievements = {
         desc = [[Total best altitude with 1 mod enabled]],
         quote = [[Challenge the reality of the Zenith Tower.]],
         credit = "@5han",
-        scoreSimp = function(h) return string.format("%.0fm", h) end,
+        scoreSimp = function(h) return string.format("%.2fkm", h / 1000) end,
         rank = numberRank(0, 14000, 26000, 36000, 42000, 46000, 52600),
         hide = TRUE,
     },
@@ -247,7 +247,7 @@ Achievements = {
         name = "Divine Challenger",
         desc = [[Total best altitude with 1 rev mod enabled]],
         quote = [[Expose the darkness of the Zenith Tower.]],
-        scoreSimp = function(h) return string.format("%.0fm", h) end,
+        scoreSimp = function(h) return string.format("%.2fkm", h / 1000) end,
         rank = numberRank(0, 10000, 16000, 20000, 24000, 26000, 30000),
         hide = TRUE,
     },
@@ -1043,7 +1043,6 @@ Achievements = {
         desc = [[End a run just before F10]],
         quote = [[A blinding flash of light, a painful crash to the bottom.]],
         credit = '@Flowerling',
-        scoreSimp = function(h) return string.format("%.2fm", h) end,
         rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
     },
     { -- moon_struck
@@ -1077,7 +1076,7 @@ Achievements = {
         credit = "@obsidian",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[2].top - Floors[1].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[2].top - Floors[1].top) / time) end,
         rank = numberRankRev(26, 22, 18, 15, 12, 9.4, 6.2),
     },
     { -- financially_responsible
@@ -1089,7 +1088,7 @@ Achievements = {
         credit = "@GameTilDead",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[3].top - Floors[2].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[3].top - Floors[2].top) / time) end,
         rank = numberRankRev(32, 26, 22, 19.4, 16.2, 12.6, 9.42),
     },
     { -- unfair_battle
@@ -1101,7 +1100,7 @@ Achievements = {
         credit = "@Tizago",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/quest", (Floors[4].top - Floors[3].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/quest", (Floors[4].top - Floors[3].top) / time) end,
         rank = numberRankRev(32, 26, 22, 19.4, 16.2, 12.6, 9.42),
     },
     { -- museum_heist
@@ -1113,7 +1112,7 @@ Achievements = {
         credit = "@Baron",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[5].top - Floors[4].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[5].top - Floors[4].top) / time) end,
         rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 3.5),
     },
     { -- workaholic
@@ -1125,7 +1124,7 @@ Achievements = {
         credit = "@flomikel",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[6].top - Floors[5].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[6].top - Floors[5].top) / time) end,
         rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 4.2),
     },
     { -- human_experiment
@@ -1136,7 +1135,7 @@ Achievements = {
         quote = [["You can assure me that this is safe, right?"]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[7].top - Floors[6].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[7].top - Floors[6].top) / time) end,
         rank = numberRankRev(42, 26, 16, 12, 9.42, 6.2, 4.2),
     },
     { -- thermal_anomaly
@@ -1148,7 +1147,7 @@ Achievements = {
         credit = "@obsidian",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[8].top - Floors[7].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[8].top - Floors[7].top) / time) end,
         rank = numberRankRev(62, 30, 26, 16, 6.2, 2.6, 1.0),
     },
     { -- ultra_dash
@@ -1159,7 +1158,7 @@ Achievements = {
         quote = [[Probably a good strategy for speedrunning 1.2x faster.]],
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1fm/s", (Floors[9].top - Floors[8].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[9].top - Floors[8].top) / time) end,
         rank = numberRankRev(62, 26, 16, 12, 6.2, 2.6, 1.0),
     },
     { -- perfect_speedrun
