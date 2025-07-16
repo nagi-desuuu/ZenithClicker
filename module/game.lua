@@ -2294,7 +2294,7 @@ function GAME.finish(reason)
         -- Best
         local hand = GAME.getHand(true)
         local oldPB = BEST.highScore[GAME.comboStr]
-        if GAME.height > oldPB then
+        if GAME.roundHeight > oldPB then
             BEST.highScore[GAME.comboStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
@@ -2319,9 +2319,9 @@ function GAME.finish(reason)
             SaveBest()
         end
 
-        TEXTS.endHeight:set(("%.1fm"):format(GAME.height))
+        TEXTS.endHeight:set(("%.1fm"):format(GAME.roundHeight))
         local endFloorStr
-        if GAME.height >= 0 then
+        if GAME.roundHeight >= 0 then
             if GAME.floor >= 10 and GAME.omega then
                 endFloorStr = "FΩ: " .. Floors[11].name
             else
