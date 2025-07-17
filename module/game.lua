@@ -789,7 +789,7 @@ function GAME.addHeight(h)
     if h >= 6 and TASK.lock('speed_tick_whirl', 2.6) then SFX.play('speed_tick_whirl') end
 end
 
-local speedupSFX = { 1, 1, 1, 1, 2, 2, 2, 3, 3 }
+local speedupSFX = { 0, 1, 1, 1, 2, 2, 2, 3, 3 }
 function GAME.addXP(xp)
     GAME.xp = GAME.xp + xp
     if GAME.rankupLast and GAME.xp >= 2 * GAME.rank then GAME.xpLockLevel = GAME.xpLockLevelMax end
@@ -2623,7 +2623,12 @@ function GAME.update(dt)
         if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
         if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
             GAME.chain = GAME.chain + 1
-            TEXTS.chain:set(tostring(GAME.chain))
+            if M.AS < 2 then
+                TEXTS.chain:set(tostring(GAME.chain))
+            else
+                TEXTS.chain2:clear()
+                TEXTS.chain2:addf(tostring(GAME.chain), 260, 'center', -130, -26)
+            end
         end
         if KBisDown('return') and TASK.lock("test_eliminate", .26) then
             GAME.addHeight(15)
