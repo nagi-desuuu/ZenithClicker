@@ -818,7 +818,7 @@ function GAME.addXP(xp)
         GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
-        SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4), .4 + .1 * GAME.xpLockLevel * min(GAME.rank / 4, 1))
+        SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4), .4 + .5 * GAME.xpLockLevel / (GAME.xpLockLevelMax + 1) * min(GAME.rank / 4, 1))
         -- if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
         if not GAME.gigaspeed and GAME.height > 0 and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
             GAME.setGigaspeedAnim(true)
@@ -2751,7 +2751,7 @@ function GAME.update(dt)
                     end
                 end
                 TEXTS.rank:set("R-" .. GAME.rank)
-                SFX.play('speed_down', .4 + GAME.xpLockLevel / 10)
+                SFX.play('speed_down', .4 + .5 * GAME.xpLockLevel / (GAME.xpLockLevelMax + 1))
                 if not GAME.achv_demoteH then
                     GAME.achv_demoteH = GAME.roundHeight
                     if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break') end
