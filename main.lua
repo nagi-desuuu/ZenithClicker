@@ -1150,8 +1150,9 @@ function RefreshDaily()
         DailyActived = false
         DailyAvailable = false
 
+        local freq = { 3, 3, 2, 5, 3, 5, 4, 4, 2 }
         while #DAILY < modCount do
-            local m = ModData.deck[MATH.randFreq { 3, 3, 2, 5, 3, 5, 4, 4, 2 }].id
+            local m = ModData.deck[MATH.randFreq(freq)].id
             if not TABLE.find(DAILY, m) then table.insert(DAILY, m) end
         end
         if MATH.roll(.26 + #DAILY * .1) then
