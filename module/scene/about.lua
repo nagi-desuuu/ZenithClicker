@@ -59,7 +59,7 @@ addMajorCredit(-320, 360, { COLOR.HEX 'DD99FF' }, "OSK", "FOUNDER & LEAD PRODUCE
 addMajorCredit(0000, 360, { COLOR.HEX 'FF99CC' }, "DOKTOROCELOT", "AUDIO & MUSIC", "of both TETR.IO and Zenith Clicker")
 addMajorCredit(0320, 360, { COLOR.HEX '3A66DD' }, "GARBO", "GAME & WORLD DESIGN", "of the Original Game: TETR.IO")
 addMajorCredit(-320, 460, { COLOR.HEX 'F880F0' }, "FLOWERLING", "TEXT REVISION")
-addMajorCredit(0000, 460, { COLOR.HEX 'B7A0FF' }, "FLOMIKEL", "EXTRA TEXTS & WORLD DESIGN")
+addMajorCredit(0000, 460, { COLOR.HEX 'B7A0FF' }, "FMICHAEL", "EXTRA TEXTS & WORLD DESIGN")
 addMajorCredit(0320, 460, { COLOR.HEX 'FFE590' }, "MATTMAYUGA", "TEXT REVISION")
 addMajorCredit(-320, 560, { COLOR.HEX '8BD6C3' }, "OBSIDIAN", "EXTRA TEXTS")
 addMajorCredit(0000, 560, { COLOR.HEX 'FF82F0' }, "SPRITZY SHEEP", "WORLD DESIGN")
@@ -104,8 +104,8 @@ addText({
         "DJ ASRIEL",
         "DOKTOROCELOT",
         "FCSPLAYZ",
-        "FLOMIKEL",
         "FLOWERLING",
+        "FMICHAEL",
         "GAMETILDEAD",
         "GARBO",
         "LARGEONIONS",

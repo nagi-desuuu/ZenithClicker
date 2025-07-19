@@ -48,11 +48,11 @@ addText("MrZ & DJ Asriel", 26, h, .42, 'left')
 
 h = h + 90
 addText("Textworks (Ultra Mods)", -26, h, .42, 'right')
-addText("flomikel & Obsidian", 26, h, .42, 'left')
+addText("FMichael & Obsidian", 26, h, .42, 'left')
 
 h = h + 90
 addText("Textworks (Design)", -26, h, .42, 'right')
-addText("flomikel & Spritzy Sheep", 26, h, .42, 'left')
+addText("FMichael & Spritzy Sheep", 26, h, .42, 'left')
 
 h = h + 90
 addText("Textworks (Neg. Alt.)", -26, h, .42, 'right')
