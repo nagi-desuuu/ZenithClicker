@@ -1509,6 +1509,7 @@ function GAME.commit(auto)
     if URM and M.VL == 2 and not UltraVlCheck('start', auto) then return end
 
     local hand = TABLE.sort(GAME.getHand(false))
+    local allyWasDead = GAME[GAME.getLifeKey(true)] == 0
 
     if #hand == 0 and GAME.questTime < .1 then return SFX.play('no') end
 
@@ -1825,7 +1826,7 @@ function GAME.commit(auto)
             if GAME[GAME.getLifeKey(true)] == 0 then
                 xp = xp / 2
                 attack = attack / 2
-            elseif not GAME.achv_carriedH then
+            elseif not allyWasDead and not GAME.achv_carriedH then
                 GAME.achv_carriedH = GAME.roundHeight
                 if GAME.totalQuest >= 26 then SFX.play('btb_break') end
             end
