@@ -854,10 +854,10 @@ Achievements = {
         ex = true,
         id = 'speed_bonus',
         name = "Speed Bonus",
-        desc = [[Trigger GIGASPEED animation as many times as possible within a single run, without using rEX or rDP]],
+        desc = [[Trigger any speedrun animation as many times as possible within a single run, without using rEX or rDP]],
         quote = [[Three steps forward, two steps back. Six steps forward, five steps back.]],
         scoreSimp = function(kill) return kill .. " Entries" end,
-        rank = numberRank(0, 0, 3, 3, 4, 4, 5),
+        rank = numberRank(0, 2, 3, 3, 4, 4, 5),
     },
     { -- level_19_cap
         ex = true,
