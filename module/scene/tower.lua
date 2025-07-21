@@ -347,6 +347,10 @@ function scene.touchUp(x, y, id)
     end
 end
 
+-- Test
+-- scene.mouseDown=scene.touchDown
+-- scene.mouseUp=scene.touchUp
+
 local KBisDown = love.keyboard.isDown
 function scene.keyDown(key)
     HoldingButtons[key] = true
