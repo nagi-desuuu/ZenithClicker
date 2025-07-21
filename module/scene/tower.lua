@@ -321,14 +321,9 @@ function scene.touchDown(x, y, id)
         UsingTouch = true
     end
     local x1, y1 = SCR.xOy_dl:inverseTransformPoint(SCR.xOy:transformPoint(x, y))
-    if not GAME.playing then
-        if x1 <= 200 and MATH.between(y1, -600, -40) then
-            revHold[id] = true
-            return
-        elseif next(revHold) then
-            scene.mouseDown(x, y, 2)
-            return
-        end
+    if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
+        revHold[id] = true
+        return
     end
 
     HoldingButtons['touch' .. tostring(id)] = true
