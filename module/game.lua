@@ -761,6 +761,7 @@ function GAME.takeDamage(dmg, reason, toAlly)
     end
 
     if GAME[k] <= .01 then -- Prevent float number precision error
+        GAME[k] = 0
         if GAME[GAME.getLifeKey(not toAlly)] > 0 then
             if toAlly then
                 SFX.play('elim')
