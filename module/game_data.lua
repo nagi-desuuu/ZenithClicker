@@ -379,7 +379,7 @@ ComboData = {
         { set = "EX NH MS IN",    name = "Blind Gambler" },
         { set = "EX NH MS AS",    name = "Fair Chance" },
         { set = "EX NH GV VL",    name = "Cutting Edge" },
-        { set = "EX NH GV DH",    name = "Purgatory Elite" },
+        { set = "EX NH GV DH",    name = "Purgatory Pro" },
         { set = "EX NH GV IN",    name = "Still Water" },
         { set = "EX NH GV AS",    name = "Beyond the Afterdeath" },
         { set = "EX NH VL DH",    name = "Azathoth" },
