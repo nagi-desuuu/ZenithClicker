@@ -966,6 +966,7 @@ function GAME.upFloor()
             end
             GAME.gigaTime = GAME.time
             GAME.setGigaspeedAnim(false)
+            if GAME.teramusic then IssueAchv('blazing_speed') end
             GAME.stopTeraspeed('f10')
             local t = BEST.speedrun[GAME.comboStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
@@ -995,7 +996,6 @@ function GAME.upFloor()
         if GAME.comboStr == '' then SubmitAchv('zenith_speedrun', roundTime) end
         SubmitAchv('zenith_speedrun_plus', roundTime)
         SubmitAchv('detail_oriented', GAME.totalFlip)
-        IssueAchv('blazing_speed')
     end
     PlayBGM('f' .. GAME.floor)
     GAME.refreshRPC()
@@ -2499,7 +2499,6 @@ function GAME.finish(reason)
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
         end
         if M.EX < 2 and M.DP < 2 then
-            print(GAME.gigaCount + GAME.teraCount)
             SubmitAchv('speed_bonus', GAME.gigaCount + GAME.teraCount)
         end
         if M.DP > 0 then
