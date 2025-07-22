@@ -315,6 +315,7 @@ function GAME.getComboName(list, mode)
         if combo then
             fstr = combo.name:atomize()
             if URM and M.DH == 2 then
+                -- Shuffle letters except first and last
                 rem(fstr, #fstr)
                 local e = rem(fstr)
                 rem(fstr, 1)
@@ -325,6 +326,7 @@ function GAME.getComboName(list, mode)
                 ins(fstr, e)
                 ins(fstr, "\"")
             end
+            -- Random gray
             for i = #fstr, 1, -1 do
                 ins(fstr, i, { MATH.rand(.872, 1), MATH.rand(.872, 1), MATH.rand(.872, 1) })
             end
@@ -332,20 +334,26 @@ function GAME.getComboName(list, mode)
                 local colors = {}
                 for i = 1, #list do ins(colors, MD.color[list[i]]) end
                 if #colors == 1 then
+                    -- Single color
                     for i = 1, #fstr, 2 do
                         local org = fstr[i]
-                        org[1] = expApproach(org[1], colors[1][1], .42)
-                        org[2] = expApproach(org[2], colors[1][2], .42)
-                        org[3] = expApproach(org[3], colors[1][3], .42)
+                        org[1] = expApproach(org[1], colors[1][1], .5)
+                        org[2] = expApproach(org[2], colors[1][2], .5)
+                        org[3] = expApproach(org[3], colors[1][3], .5)
                     end
                 else
+                    -- Multiple colors
                     colors = TABLE.transposeNew(TABLE.shuffle(colors))
+                    local colorCnt = #colors[1]
+                    local keep = clamp(#fstr / colorCnt * .05, .2, .6)
                     for i = 1, #fstr, 2 do
                         local org = fstr[i]
-                        local t = (i - 2) / (#fstr - 3)
-                        org[1] = expApproach(org[1], lLerp(colors[1], t), .42)
-                        org[2] = expApproach(org[2], lLerp(colors[2], t), .42)
-                        org[3] = expApproach(org[3], lLerp(colors[3], t), .42)
+                        -- Attracted to closest color
+                        local t = (i - 2) / (#fstr - 4) * (colorCnt - 1)
+                        t = (t * keep + floor(t + .5) * (1 - keep)) / (colorCnt - 1)
+                        org[1] = expApproach(org[1], lLerp(colors[1], t), .5)
+                        org[2] = expApproach(org[2], lLerp(colors[2], t), .5)
+                        org[3] = expApproach(org[3], lLerp(colors[3], t), .5)
                     end
                 end
             end
