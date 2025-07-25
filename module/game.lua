@@ -829,18 +829,12 @@ function GAME.addXP(xp)
         TEXTS.rank:set("R-" .. GAME.rank)
         SFX.play('speed_up_' .. (speedupSFX[GAME.rank] or 4), .4 + .5 * GAME.xpLockLevel / (GAME.xpLockLevelMax + 1) * min(GAME.rank / 4, 1))
         -- if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
-        if not GAME.gigaspeed and GAME.height > 0 and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
+        if not GAME.gigaspeed and GAME.height > 0 and GAME.rank >= GigaSpeedReq[GAME.floor] then
             GAME.setGigaspeedAnim(true)
-            SFX.play('zenith_speedrun_start')
             GAME.refreshRPC()
         end
-        if GAME.gigaspeed and not GAME.teramusic and GAME.rank >= TeraMusicReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
-            GAME.teramusic = true
-            GAME.teraspeedFloor[GAME.floor] = true
-            GAME.teraCount = GAME.teraCount + 1
-            TASK.removeTask_code(GAME.task_gigaspeed)
-            TASK.new(GAME.task_gigaspeed)
-            PlayBGM('tera', true)
+        if GAME.gigaspeed and not GAME.teramusic and GAME.rank >= TeraMusicReq[GAME.floor] then
+            GAME.startTeraAnim()
             GAME.refreshRPC()
         end
     else
@@ -855,16 +849,26 @@ function GAME.setGigaspeedAnim(on)
         GAME.gigaspeedEntered = GAME.time
         GAME.gigaspeedFloor[GAME.floor] = true
         GAME.gigaCount = GAME.gigaCount + 1
-        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 1, t) end)
-            :setUnique('giga'):run()
+        TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 1, t) end):setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
+        SFX.play('zenith_speedrun_start')
 
         if GAME.floor == 1 then IssueAchv('speedrun_speedrunning') end
         if GAME.comboMP >= 15 then IssueAchv('abyss_weaver') end
     else
         TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 0, t) end):setDuration(GAME.floor == 10 and 6.26 or 3.55):setUnique('giga'):run()
     end
+end
+
+function GAME.startTeraAnim()
+    GAME.teramusic = true
+    GAME.teraspeedFloor[GAME.floor] = true
+    GAME.teraCount = GAME.teraCount + 1
+    TASK.removeTask_code(GAME.task_gigaspeed)
+    TASK.new(GAME.task_gigaspeed)
+    SFX.play('zenith_speedrun_start')
+    PlayBGM('tera', true)
 end
 
 function GAME.stopTeraspeed(mode)
@@ -2247,7 +2251,7 @@ function GAME.finish(reason)
         STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.height), .01)
         STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .01)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1) + (GAME.negFloor - 1)
-        if GAME.gigaspeedEntered then STAT.totalGiga = STAT.totalGiga + 1 end
+        STAT.totalGiga = STAT.totalGiga + GAME.gigaCount + GAME.teraCount
         if GAME.floor >= 10 then
             STAT.totalF10 = STAT.totalF10 + 1
             if GAME.floorTime <= 6.26 then
