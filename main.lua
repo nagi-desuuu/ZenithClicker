@@ -499,6 +499,8 @@ STAT = {
 
     zp = 0,
     dzp = 0,
+    peakZP = 0,
+    peakDZP = 0,
     dailyBest = 0,
     dailyMastered = false,
     lastDay = 0,
@@ -1678,6 +1680,11 @@ function Initialize(save)
     if STAT.version == 181 then
         ACHV.drag_racing, ACHV.petaspeed = ACHV.petaspeed, nil
         STAT.version = 182
+    end
+    if STAT.version == 182 then
+        STAT.peakDZP = math.max(STAT.peakDZP, STAT.dzp)
+        STAT.peakZP = math.max(STAT.peakZP, STAT.zp)
+        STAT.version = 183
     end
 
     -- Some Initialization

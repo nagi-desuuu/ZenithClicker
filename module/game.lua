@@ -2267,6 +2267,7 @@ function GAME.finish(reason)
         -- Daily
         if DailyActived then
             STAT.dzp = max(STAT.dzp, zpGain)
+            STAT.peakDZP = max(STAT.peakDZP, STAT.dzp)
             STAT.dailyBest = max(STAT.dailyBest, zpGain)
             if GAME.floor >= 10 and GAME.comboStr:find('r') then
                 if not STAT.dailyMastered then
@@ -2303,6 +2304,7 @@ function GAME.finish(reason)
         end
 
         STAT.zp = newZP
+        STAT.peakZP = max(STAT.peakZP, STAT.zp)
         SaveStat()
 
         -- Best

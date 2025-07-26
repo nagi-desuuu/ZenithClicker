@@ -3,6 +3,7 @@ local scene = {}
 
 local maskAlpha, cardShow
 local card = GC.newCanvas(1200, 720)
+local totalBadges = 22
 
 local floor = math.floor
 
@@ -210,23 +211,7 @@ function RefreshProfile()
         55, 0)
     GC.ucs_back()
 
-    -- Clicker Badge
-    if STAT.clicker then
-        GC.setColor(1, 1, 1)
-        GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
-        local rating, cap = calculateRating()
-        local clickerLV = 0
-        if STAT.totalTime >= 3600 * 26 then clickerLV = clickerLV + 1 end
-        if STAT.maxHeight >= 10000 and STAT.minTime <= 42 then clickerLV = clickerLV + 1 end
-        if MATH.sumAll(GAME.completion) == 18 then clickerLV = clickerLV + 1 end
-        if rating >= 25000 then clickerLV = clickerLV + 1 end
-        if rating == cap then clickerLV = clickerLV + 1 end
-        for i = 0, clickerLV - 1 do
-            GC.mDraw(TEXTURE.stat.clicker_star, 879 - i * 34, 182, 0, .626)
-        end
-    end
-
-    -- Other badges
+    -- Small badges
     local badgeCount = 0
     local badges = TABLE.sort(TABLE.getKeys(STAT.badge), function(a, b)
         return (BadgeData[a] or BadgeData[0]).prio < (BadgeData[b] or BadgeData[0]).prio
@@ -242,8 +227,24 @@ function RefreshProfile()
             scene.widgetList[i]:setVisible(true)
         end
     end
-    for i = badgeCount + 1, 22 do
+    for i = badgeCount + 1, totalBadges do
         scene.widgetList[i]:setVisible(false)
+    end
+
+    -- Clicker Badge
+    if STAT.clicker then
+        GC.setColor(1, 1, 1)
+        GC.mDraw(TEXTURE.stat.clicker, 970, 182, 0, .626)
+        local rating, cap = calculateRating()
+        local clickerLV = 0
+        if STAT.totalTime >= 3600 * 26 then clickerLV = clickerLV + 1 end
+        if STAT.maxHeight >= 10000 and STAT.minTime <= 42 then clickerLV = clickerLV + 1 end
+        if MATH.sumAll(GAME.completion) == 18 then clickerLV = clickerLV + 1 end
+        if rating >= 25000 then clickerLV = clickerLV + 1 end
+        if rating == cap then clickerLV = clickerLV + 1 end
+        for i = 0, clickerLV - 1 do
+            GC.mDraw(TEXTURE.stat.clicker_star, 879 - i * 34, 182, 0, .626)
+        end
     end
 
     -- Introduction
@@ -372,6 +373,8 @@ function RefreshProfile()
         { t = { scoreColor, MATH.round(STAT.dzp), textColor, " ZP" },                             x = 470, y = 83 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
+    scene.widgetList.peakZP.floatText = "Peak ZP: " .. floor(STAT.zp) .. "\nPeak Daily ZP: " .. floor(STAT.dzp)
+    scene.widgetList.peakZP:reset()
 
     -- Full stats
     GC.ucs_move('m', 605, 500)
@@ -464,7 +467,7 @@ function scene.draw()
     WIDGET.draw(SCN.scenes.tower.widgetList)
     SCN.scenes.tower.overDraw()
     GC.origin()
-    GC.setColor(0, 0, 0, maskAlpha * .7023)
+    GC.setColor(0, 0, 0, maskAlpha * .8)
     GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
 
     if cardShow > 0 then
@@ -477,10 +480,20 @@ end
 
 scene.widgetList = {
     WIDGET.new {
+        name = 'peakZP', type = 'hint',
+        pos = { .5, .5 }, x = -100, y = 150, w = 180, h = 35,
+        color = COLOR.X,
+        labelPos = 'topRight',
+        labelDist = 2,
+        floatFontSize = 30,
+        floatText = "", -- Dynamic text
+    },
+    WIDGET.new {
         name = 'link', type = 'hint',
         pos = { .5, .5 }, x = 0, y = 210, w = 800, h = 60,
         color = COLOR.X,
         labelPos = 'top',
+        labelDist = 6,
         floatFontSize = 30,
         floatText = "Open github repo with browser",
         onPress = function()
@@ -488,30 +501,25 @@ scene.widgetList = {
             love.system.openURL("https://github.com/MrZ626/ZenithClicker")
         end,
     },
-    WIDGET.new {
-        name = 'back', type = 'button',
-        pos = { 0, 0 }, x = 60, y = 140, w = 160, h = 60,
-        color = { .15, .15, .15 },
-        sound_hover = 'menutap',
-        fontSize = 30, text = "    BACK", textColor = 'DL',
-        onClick = function() love.keypressed('escape') end,
-    },
+    -- CLOSE button
     WIDGET.new {
         name = 'close', type = 'button_invis',
         pos = { .5, .5 }, x = 344, y = -196, w = 100, h = 50,
         onClick = function() love.keypressed('escape') end,
     },
+    -- Inside the profile card
     WIDGET.new {
         name = 'protect', type = 'button_invis',
         pos = { .5, .5 }, w = 820, h = 500,
     },
+    -- Outside the profile card
     WIDGET.new {
         type = 'button_invis',
         pos = { .5, .5 }, w = 3500, h = 2600,
         onClick = function() love.keypressed('escape') end,
     },
 }
-for i = 1, 22 do
+for i = 1, totalBadges do
     table.insert(scene.widgetList, i, WIDGET.new {
         name = 'link', type = 'hint',
         text = "",
@@ -519,7 +527,7 @@ for i = 1, 22 do
         color = COLOR.X,
         labelPos = 'topRight',
         floatFontSize = 30,
-        floatText = "",
+        floatText = "", -- Dynamic text
     })
 end
 
