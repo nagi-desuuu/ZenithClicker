@@ -373,7 +373,7 @@ function RefreshProfile()
         { t = { scoreColor, MATH.round(STAT.dzp), textColor, " ZP" },                             x = 470, y = 83 },
     } do GC.print(l.t, l.x, l.y, 0, .75) end
     GC.ucs_back()
-    scene.widgetList.peakZP.floatText = "Peak ZP: " .. floor(STAT.zp) .. "\nPeak Daily ZP: " .. floor(STAT.dzp)
+    scene.widgetList.peakZP.floatText = "Peak ZP: " .. floor(STAT.peakZP) .. "\nPeak Daily ZP: " .. floor(STAT.peakDZP)
     scene.widgetList.peakZP:reset()
 
     -- Full stats
