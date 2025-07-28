@@ -422,7 +422,7 @@ local gc_rotate, gc_shear = gc.rotate, gc.shear
 local gc_setColor, gc_setAlpha = gc.setColor, GC.setAlpha
 local gc_setShader, gc_setLineWidth = GC.setShader, gc.setLineWidth
 local gc_draw, gc_mDraw, gc_mRect = gc.draw, GC.mDraw, GC.mRect
-local gc_blurCircle = GC.blurCircle
+local gc_blurCircle, gc_setBlendMode = GC.blurCircle, GC.setBlendMode
 
 local iconFrame
 xpcall(function()
@@ -650,46 +650,41 @@ function Card:draw()
                 local blur = (FloatOnCard == self.initOrder or not self.upright) and 0 or -.2
                 local x = lerp(155, 0, t)
                 local y = lerp(-370, -330, t)
-                local cr = lerp(.16, .42, t)
+                local cr = lerp(60, 180, t)
                 local revMastery = completion[self.id] == 2
                 local ang = -t * 6.2832
                 gc_scale(abs(1 / self.kx * self.ky), 1)
                 -- Base star
                 if self.upright then
-                    if revMastery then
-                        gc_setColor(.5, .5, .5)
-                        gc_blurCircle(blur, -x, -y, cr * 260)
-                        gc_setColor(1, 1, 1)
-                        gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
-                    end
-                    gc_setColor(.5, .5, .5)
-                    gc_blurCircle(blur, x, y, cr * 260)
+                    gc_setColor(.26, .26, .26)
+                    gc_setBlendMode('add')
+                    gc_blurCircle(blur, x, y, cr)
+                    if revMastery then gc_blurCircle(blur, -x, -y, cr) end
+                    gc_setBlendMode('alpha')
                     gc_setColor(1, 1, 1)
                     gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
+                    if revMastery then gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t)) end
                 else
-                    if revMastery then
-                        gc_setColor(.2, .2, .2)
-                        gc_blurCircle(blur, -x, -y, cr * 260)
-                        gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
-                        gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t))
-                    end
-                    gc_setColor(.2, .2, .2)
-                    gc_blurCircle(blur, x, y, cr * 260)
-                    gc_setColor(1, .7 + .15 * sin(getTime() * 62 + self.x), .2)
+                    gc_setColor(.6, .1, .1)
+                    gc_setBlendMode('add')
+                    gc_blurCircle(blur, x, y, cr)
+                    if revMastery then gc_blurCircle(blur, -x, -y, cr) end
+                    gc_setBlendMode('alpha')
+                    gc_setColor(1, .62 + .1 * sin(getTime() * 42), .26)
                     gc_mDraw(img, x, y, ang, lerp(.16, .42, t))
+                    if revMastery then gc_mDraw(img, -x, -y, ang, lerp(.16, .42, t)) end
                 end
                 -- Float star
                 if not self.active then
                     if revMastery then
                         gc_setColor(.5, .5, .5, t)
-                        gc_blurCircle(blur, -x, -y, cr * 260)
-                        gc_setColor(1, 1, 1, t)
-                        gc_mDraw(TEXTURE.star1, -x, -y, ang, lerp(.16, .42, t))
-                        gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
-                    else
-                        gc_setColor(1, 1, 1, t)
-                        gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
+                        gc_setBlendMode('add')
+                        gc_blurCircle(blur, -x, -y, cr)
+                        gc_setBlendMode('alpha')
                     end
+                    gc_setColor(1, 1, 1, t)
+                    gc_mDraw(TEXTURE.star1, x, y, ang, lerp(.16, .42, t))
+                    if revMastery then gc_mDraw(TEXTURE.star1, -x, -y, ang, lerp(.16, .42, t)) end
                 end
             end
             gc_pop()
