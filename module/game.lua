@@ -1001,8 +1001,8 @@ function GAME.upFloor()
             end
             if GAME.time <= 76.2 then IssueSecret('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
-            if GAME.invisCard and GAME.comboStr == 'rIN' then IssueSecret('true_invis') end
             if GAME.nightcore and GAME.comboStr == 'rGV' then IssueSecret('true_master') end
+            if GAME.invisCard and GAME.comboStr == 'rIN' then IssueSecret('true_invis') end
         end
 
         SubmitAchv('the_pacifist', GAME.totalAttack)
