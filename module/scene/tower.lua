@@ -815,8 +815,7 @@ function scene.overDraw()
     if not GAME.playing or M.IN < 2 then
         gc_setColor(TextColor)
         if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
-        local k = min(1, 760 / TEXTS.mod:getWidth())
-        gc_mDraw(TEXTS.mod, 800, 396, 0, k)
+        gc_mDraw(TEXTS.mod, 800, 396, 0, min(1, 760 / TEXTS.mod:getWidth()))
     end
 
     -- Glow

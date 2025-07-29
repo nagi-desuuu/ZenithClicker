@@ -1119,6 +1119,7 @@ end
 
 VALENTINE = false
 VALENTINE_TEXT = "FLOOD THE TOWER SIDE BY SIDE WITH WHAT COULD BE"
+ZDAY = false
 function RefreshDaily()
     local dateToday = os.date("!*t", os.time())
     local dateLastDay = os.date("!*t", math.max(STAT.lastDay, 946656000)) -- at least 2000/1/1
@@ -1170,13 +1171,15 @@ function RefreshDaily()
         LOG('info', "Today's Daily Challenge: " .. table.concat(DAILY, ' '))
     end
 
-    local v = os.date('!%d') == '14'
-    if VALENTINE ~= v then
-        VALENTINE = v
+    local isV = os.date('!%d') == '14'
+    if VALENTINE ~= isV then
+        VALENTINE = isV
         ModData.desc.DP, VALENTINE_TEXT = VALENTINE_TEXT, ModData.desc.DP
         ValentineTextColor, BaseTextColor = BaseTextColor, ValentineTextColor
         ValentineShadeColor, BaseShadeColor = BaseShadeColor, ValentineShadeColor
     end
+    local isZ = os.date('!%d') == '26'
+    if ZDAY ~= isZ then ZDAY = isZ end
 end
 
 love.mouse.setVisible(false)
