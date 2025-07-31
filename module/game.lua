@@ -1424,7 +1424,7 @@ function GAME.refreshLifeState()
     local hp = GAME[GAME.getLifeKey()]
     local newState
     if hp == GAME.fullHealth then
-        newState = 'full'
+        newState = 'safe'
     else
         local dangerDmg = max(GAME.dmgWrong + GAME.dmgWrongExtra, GAME.dmgTime)
         newState = hp <= dangerDmg and 'danger' or 'safe'
