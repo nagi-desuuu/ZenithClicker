@@ -1144,6 +1144,7 @@ function RefreshDaily()
     end
 
     for x = 0, 0 do
+    -- for x = 0, 1e99 do
         math.randomseed(os.date("!%Y%m%d") + x)
         for _ = 1, 26 do math.random() end
 
@@ -1168,6 +1169,7 @@ function RefreshDaily()
                 DAILY[r2] = 'r' .. DAILY[r2]
             end
         end
+        -- assert(table.concat(DAILY, ' ')~="rEX rDP","Appears after "..x.." days later")
         LOG('info', "Today's Daily Challenge: " .. table.concat(DAILY, ' '))
     end
 
