@@ -220,7 +220,7 @@ function scene.load()
         Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
         The higher you go in the tower, the more tricky players you'll encounter!
         There's no leaderboards yet, but how high can you reach?
-        Commit: $1    Reset: $2    Forfeit/Quit: Esc
+        Commit: $1    Reset: $2    Forfeit/Quit: ESC
     ]]):repD(STAT.keybind[19]:upper(), STAT.keybind[20]:upper())
     scene.widgetList.help:reset()
 
