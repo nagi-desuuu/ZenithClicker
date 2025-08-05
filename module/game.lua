@@ -1903,6 +1903,9 @@ function GAME.commit(auto)
             elseif GAME.totalQuest == 41 then
                 if GAME.comboStr == 'EXMS' then SubmitAchv('quest_rationing', GAME.roundHeight) end
             end
+            if GAME.totalQuest > 7 and not GAME.achv_plonkH then
+                GAME.achv_plonkH = GAME.roundHeight
+            end
         end
 
         if M.DP > 0 and (correct == 2 or dblCorrect) then
@@ -2127,6 +2130,7 @@ function GAME.start()
 
     TWEEN.new(GAME.anim_setMenuHide):setOnFinish(GAME.anim_setMenuHide_finish):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
 
+    GAME.achv_plonkH = nil
     GAME.achv_perfectH = nil
     GAME.achv_demoteH = nil
     GAME.achv_carriedH = nil
@@ -2446,7 +2450,6 @@ function GAME.finish(reason)
         SubmitAchv('tower_climber', STAT.totalHeight, true, true)
         SubmitAchv('tower_regular', STAT.totalFloor, true, true)
         SubmitAchv('speed_player', STAT.totalGiga, true, true)
-        SubmitAchv('plonk', roundUnit(GAME.height / GAME.totalQuest, .01))
         _t = 0
         for id in next, MD.name do _t = _t + min(BEST.speedrun[id], 2600) end
         SubmitAchv('zenith_speedrunner', _t, true)
@@ -2480,6 +2483,7 @@ function GAME.finish(reason)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
         -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1)) end
         if GAME.height >= 6200 then IssueSecret('fomg') end
+        SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
         if Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
             SubmitAchv('divine_rejection', GAME.roundHeight)

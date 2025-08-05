@@ -126,11 +126,12 @@ Achievements = {
     { -- plonk
         id = 'plonk',
         name = "Plonk",
-        desc = [[Highest (average) m/quest in a single game.]],
+        desc = [[Highest altitude within first 7 quests]],
         quote = [[Pour intention into each flip, and even a single quest can shake the world.]],
         credit = "@Ponies",
-        scoreSimp = function(v) return string.format("%.1f m/quest", v) end,
-        rank = numberRank(10, 12, 14, 16, 18, 19, 20),
+        scoreSimp = function(h) return string.format("%.2fm", h) end,
+        scoreFull = function(h) return string.format("%.2f m/quest", h / 7) end,
+        rank = numberRank(80, 100, 110, 120, 130, 140, 148),
     },
     { -- zenith_explorer
         id = 'zenith_explorer',

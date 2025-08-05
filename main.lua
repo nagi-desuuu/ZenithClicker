@@ -1144,7 +1144,7 @@ function RefreshDaily()
     end
 
     for x = 0, 0 do
-    -- for x = 0, 1e99 do
+        -- for x = 0, 1e99 do
         math.randomseed(os.date("!%Y%m%d") + x)
         for _ = 1, 26 do math.random() end
 
@@ -1690,6 +1690,10 @@ function Initialize(save)
         STAT.peakDZP = math.max(STAT.peakDZP, STAT.dzp)
         STAT.peakZP = math.max(STAT.peakZP, STAT.zp)
         STAT.version = 183
+    end
+    if STAT.version == 183 then
+        ACHV.plonk = nil
+        STAT.version = 184
     end
 
     -- Some Initialization
