@@ -1044,6 +1044,7 @@ Achievements = {
         desc = [[End a run just before F10]],
         quote = [[A blinding flash of light, a painful crash to the bottom.]],
         credit = '@Flowerling',
+        scoreSimp = function(h) return string.format("%.2fm", h) end,
         rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
     },
     { -- moon_struck

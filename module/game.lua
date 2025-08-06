@@ -2485,7 +2485,7 @@ function GAME.finish(reason)
         if GAME.height >= 6200 then IssueSecret('fomg') end
         SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
-        if Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
+        if GAME.floor < 10 and Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
             SubmitAchv('divine_rejection', GAME.roundHeight)
         end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
