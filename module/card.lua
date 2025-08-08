@@ -339,7 +339,7 @@ function Card:revJump()
                     b = (color[3] - .26) * .8,
                     x = self.x,
                     y = self.y,
-                    t = 2.6,
+                    t = 1,
                 })
                 GAME.revDeckSkin = true
                 GAME.bgXdir = MATH.coin(-1, 1)

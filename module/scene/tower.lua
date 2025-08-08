@@ -574,7 +574,7 @@ function DrawBG(brightness, showRuler)
                 end
 
                 -- Bodies
-                gc_setBlendMode('add', 'alphamultiply')
+                gc_setBlendMode('add')
                 gc_setColor(1, 1, 1, .8)
                 gc_draw(StarPS, SCR.w / 2, SCR.h / 2 + GAME.bgH * 2 * BgScale)
                 gc_mDraw(TEXTURE.moon, SCR.w / 2, SCR.h / 2 + (GAME.bgH - 2202.84) * 2 * BgScale, 0, .2 * BgScale)
@@ -616,7 +616,7 @@ function DrawBG(brightness, showRuler)
     -- Ruler
     if showRuler and GAME.bgH < 1700 and not GAME.invisUI then
         gc_replaceTransform(SCR.xOy_m)
-        gc_setBlendMode('add', 'alphamultiply')
+        gc_setBlendMode('add')
         gc_setColor(1, 1, 1, GAME.bgH <= 1650 and .626 or .626 * (1700 - GAME.bgH) / 50 * brightness / 100)
         rulerQuad:setViewport(0, 480 - 960 / 50 * GAME.bgH, 60, 960, TEXTURE.ruler:getDimensions())
         gc_mDrawQ(TEXTURE.ruler, rulerQuad, 0, 0, 0, 2)
@@ -816,10 +816,14 @@ function scene.overDraw()
     end
 
     -- Glow
-    for i = 1, #ImpactGlow do
-        local L = ImpactGlow[i]
-        gc_setColor(L.r, L.g, L.b, L.t - 1.5)
-        gc_blurCircle(0, L.x, L.y, 120 * L.t ^ 2)
+    if ImpactGlow[1] then
+        gc_setBlendMode('add')
+        for i = 1, #ImpactGlow do
+            local L = ImpactGlow[i]
+            gc_setColor(L.r, L.g, L.b, L.t)
+            gc_blurCircle(0, L.x, L.y, 120 * (L.t + 1.6) ^ 2)
+        end
+        gc_setBlendMode('alpha')
     end
 
     -- GigaSpeed Timer
@@ -841,7 +845,7 @@ function scene.overDraw()
 
     -- GigaSpeed Anim
     if GigaSpeed.textTimer then
-        gc_setBlendMode('add', 'alphamultiply')
+        gc_setBlendMode('add')
         gc_setColor(.26, .26, .26)
         if GAME.teramusic then
             for p = -10, 10, 3 do

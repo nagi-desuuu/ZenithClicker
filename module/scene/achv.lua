@@ -495,7 +495,7 @@ function scene.draw()
 
                 -- Glint
                 if a.rank >= 1 then
-                    gc_setBlendMode('add', 'alphamultiply')
+                    gc_setBlendMode('add')
                     gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.1))
                     gc_mDraw(texture.glint_1, 65, 65, 0, .42)
                     gc_setColor(1, 1, 1, .1 + .2 * sin(i * 2.6 + t * 2.3))
