@@ -29,12 +29,9 @@ local function switchVisitor(bool)
         GAME.zenithTraveler = bool
         love.mouse.setRelativeMode(bool)
         ZENITHA.setCursorVis(not bool)
-        for _, W in next, scene.widgetList do
-            W:setVisible(not bool)
-        end
-        if bool then
-            IssueAchv('zenith_traveler')
-        end
+        for _, W in next, scene.widgetList do W:setVisible(not bool) end
+        if bool then IssueAchv('zenith_traveler') end
+        TABLE.clear(HoldingButtons)
     end
 end
 
