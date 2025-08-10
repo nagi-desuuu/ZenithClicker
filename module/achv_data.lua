@@ -131,7 +131,7 @@ Achievements = {
         credit = "@Ponies",
         scoreSimp = function(h) return string.format("%.2fm", h) end,
         scoreFull = function(h) return string.format("%.2f m/quest", h / 7) end,
-        rank = numberRank(80, 100, 110, 120, 130, 140, 148),
+        rank = numberRank(60, 75, 90, 100, 110, 120, 135),
     },
     { -- zenith_explorer
         id = 'zenith_explorer',
