@@ -506,12 +506,14 @@ function scene.draw()
                 end
 
                 -- Icon
-                if a.rank > 0 then
-                    local slice = texture.iconQuad[a.id]
-                    if slice then
+                local slice = texture.iconQuad[a.id]
+                if slice then
+                    if a.rank > 0 then
                         gc_setColor(0, 0, 0, .872)
-                        gc_mDrawQ(texture.icons, slice or texture.iconQuad._undef, 65, 65, 0, .24)
+                    else
+                        gc_setColor(1, 1, 1, .26)
                     end
+                    gc_mDrawQ(texture.icons, slice or texture.iconQuad._undef, 65, 65, 0, .24)
                 end
 
                 -- Wreath
