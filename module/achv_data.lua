@@ -126,7 +126,7 @@ Achievements = {
     { -- plonk
         id = 'plonk',
         name = "Plonk",
-        desc = [[Highest altitude within first 7 quests]],
+        desc = [[Highest altitude within the first 7 quests]],
         quote = [[Pour intention into each flip, and even a single quest can shake the world.]],
         credit = "@Ponies",
         scoreSimp = function(h) return string.format("%.2fm", h) end,
