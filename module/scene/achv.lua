@@ -510,10 +510,11 @@ function scene.draw()
                 if slice then
                     if a.rank > 0 then
                         gc_setColor(0, 0, 0, .872)
-                    else
+                        gc_mDrawQ(texture.icons, slice or texture.iconQuad._undef, 65, 65, 0, .24)
+                    elseif a.progress > 0 then
                         gc_setColor(1, 1, 1, .26)
+                        gc_mDrawQ(texture.icons, slice or texture.iconQuad._undef, 65, 65, 0, .24)
                     end
-                    gc_mDrawQ(texture.icons, slice or texture.iconQuad._undef, 65, 65, 0, .24)
                 end
 
                 -- Wreath
