@@ -2318,7 +2318,7 @@ function GAME.finish(reason)
             BEST.highScore[GAME.comboStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                if GAME.anyRev then t = t:gsub(" ", "+ ", 1) end
+                if GAME.anyRev then t = "R-"..t end
                 TEXT:add {
                     text = t,
                     x = 800, y = 226, k = 2.26, fontSize = 70,
