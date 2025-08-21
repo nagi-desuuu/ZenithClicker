@@ -849,6 +849,7 @@ function GAME.setGigaspeedAnim(on)
         GAME.gigaspeedEntered = GAME.time
         GAME.gigaspeedFloor[GAME.floor] = true
         GAME.gigaCount = GAME.gigaCount + 1
+        GigaSpeed.isTera = false
         TWEEN.new(function(t) GigaSpeed.alpha = lerp(s, 1, t) end):setUnique('giga'):run()
         TASK.removeTask_code(GAME.task_gigaspeed)
         TASK.new(GAME.task_gigaspeed)
@@ -865,6 +866,7 @@ function GAME.startTeraAnim()
     GAME.teramusic = true
     GAME.teraspeedFloor[GAME.floor] = true
     GAME.teraCount = GAME.teraCount + 1
+    GigaSpeed.isTera = true
     TASK.removeTask_code(GAME.task_gigaspeed)
     TASK.new(GAME.task_gigaspeed)
     SFX.play('zenith_speedrun_start')
@@ -2318,7 +2320,7 @@ function GAME.finish(reason)
             BEST.highScore[GAME.comboStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                if GAME.anyRev then t = "R-"..t end
+                if GAME.anyRev then t = "R-" .. t end
                 TEXT:add {
                     text = t,
                     x = 800, y = 226, k = 2.26, fontSize = 70,

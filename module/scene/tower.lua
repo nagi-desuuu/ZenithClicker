@@ -847,7 +847,7 @@ function scene.overDraw()
     if GigaSpeed.textTimer then
         gc_setBlendMode('add')
         gc_setColor(.26, .26, .26)
-        if GAME.teramusic then
+        if GigaSpeed.isTera then
             for p = -10, 10, 3 do
                 gc_mDraw(TEXTS.teraspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 5 * 2600, 355, 0, 2.6)
             end

@@ -662,6 +662,7 @@ GigaSpeed = {
     alpha = 0,
     bgAlpha = 0,
     textTimer = false,
+    isTera = false,
 }
 ImpactGlow = {}
 DeckPress = 0
