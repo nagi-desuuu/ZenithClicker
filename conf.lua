@@ -50,7 +50,7 @@ function love.conf(t)
     W.borderless = mobile
     W.resizable = not mobile
     W.fullscreentype = mobile and 'exclusive' or 'desktop' -- Fullscreen type
-    W.width, W.height = 1440, 900
+    W.width, W.height = 1280, 720
     W.minwidth, W.minheight = 288, 180
     W.title = 'Zenith Clicker'
 
