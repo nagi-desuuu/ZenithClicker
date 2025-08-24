@@ -649,7 +649,7 @@ function GAME.startRevive()
                 if opt.rank[1] <= pow and pow <= opt.rank[2] and (not opt.cond or opt.cond()) then
                     local repeated
                     for _, t in next, GAME.reviveTasks do
-                        if t.prompt == opt.prompt then
+                        if t._prompt == opt._prompt then
                             repeated = true
                             break
                         end

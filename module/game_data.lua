@@ -1035,6 +1035,7 @@ local function F9() return math.max(GAME.floor, GAME.negFloor) >= 9 end
 ---@field text string
 ---@field cond? fun():boolean
 ---@field init? fun(t:Prompt)
+---@field _prompt? string for repeating check
 
 ---@type Prompt[]
 RevivePrompts = {
@@ -1126,6 +1127,7 @@ RevivePrompts = {
     { rank = { 4, 6 }, prompt = 'keep_no_imperfect',    target = 14,  short = "No imperfect 14s",        text = "Have no imperfect\npasses for 14 seconds",    cond = F6 },
     { rank = { 3, 5 }, prompt = 'keep_no_reset',        target = 16,  short = "No reset 16s",            text = "Don't reset\nfor 16 seconds" },
 }
+for i = 1, #RevivePrompts do RevivePrompts[i]._prompt = RevivePrompts[i].prompt end
 
 BadgeData = {
     [0] = {
