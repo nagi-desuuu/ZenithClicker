@@ -491,7 +491,7 @@ local gc_line, gc_rectangle, gc_circle, gc_arc = gc.line, gc.rectangle, gc.circl
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
 local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
 local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
-local gc_setColorMask = GC.setColorMask
+local gc_setColorMask, gc_mStr = GC.setColorMask, GC.mStr
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
@@ -922,6 +922,10 @@ function scene.overDraw()
                 setFont(30)
                 gc_setColor(TextColor)
                 gc.print(GAME.totalQuest, 1210, 230)
+            end
+            -- Revive counter
+            if GAME.reviveCount > 0 then
+                gc_strokePrint('full', 1, COLOR.D, COLOR.lR, GAME.reviveCount, 800, 440, 260, 'center')
             end
             if GAME.chain >= 4 then
                 -- Chain Counter
