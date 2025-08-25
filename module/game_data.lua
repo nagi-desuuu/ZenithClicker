@@ -1018,6 +1018,12 @@ Fatigue = {
 for _, f in next, Fatigue do for _, v in next, f do if v.text then v.text = v.text:gsub("_", "…") end end end
 
 local function rndMod(t)
+    local d = MATH.randFreqAll(ModData.weight)
+    t.prompt = t.prompt:repD(d)
+    t.text = t.text:repD(ModData.adj[d])
+    t.short = t.short:repD(d)
+end
+local function rndMod2(t)
     local d = ModData.deck[math.random(9)].id
     t.prompt = t.prompt:repD(d)
     t.text = t.text:repD(ModData.adj[d])
@@ -1055,8 +1061,8 @@ RevivePrompts = {
     { rank = { 3, 4 }, prompt = 'commit_$1',            target = 4,   short = "Commit $1 4x",            text = "Commit 4 times\nwith $1",                     init = rndMod },
     { rank = { 2, 4 }, prompt = 'commit_$1_row',        target = 2,   short = "2 Chain with $1",         text = "Commit 2 times\nwith $1 in a row",            init = rndMod },
     { rank = { 3, 6 }, prompt = 'commit_$1_row',        target = 3,   short = "3 Chain with $1",         text = "Commit 3 times\nwith $1 in a row",            init = rndMod },
-    { rank = { 1, 3 }, prompt = 'commit_no_$1_row',     target = 2,   short = "2 chain without $1",      text = "Commit 2 times\nwithout $1 in a row",         init = rndMod },
-    { rank = { 3, 5 }, prompt = 'commit_no_$1_row',     target = 3,   short = "3 chain without $1",      text = "Commit 3 times\nwithout $1 in a row",         init = rndMod },
+    { rank = { 1, 3 }, prompt = 'commit_no_$1_row',     target = 2,   short = "2 chain without $1",      text = "Commit 2 times\nwithout $1 in a row",         init = rndMod2 },
+    { rank = { 3, 5 }, prompt = 'commit_no_$1_row',     target = 3,   short = "3 chain without $1",      text = "Commit 3 times\nwithout $1 in a row",         init = rndMod2 },
     { rank = { 1, 2 }, prompt = 'commit_0',             target = 2,   short = "Commit NOTHING 2x",       text = "Commit NOTHING\n2 times" },
     { rank = { 2, 4 }, prompt = 'commit_0',             target = 5,   short = "Commit NOTHING 5x",       text = "Commit NOTHING\n5 times" },
     { rank = { 4, 6 }, prompt = 'commit_0',             target = 8,   short = "Commit NOTHING 8x",       text = "Commit NOTHING\n8 times" },
