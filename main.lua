@@ -4,7 +4,7 @@ require 'Zenitha'
 
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
-ZENITHA.setAppInfo("Zenith Clicker",SYSTEM .. " " .. (require 'version'.appVer))
+ZENITHA.setAppInfo("Zenith Clicker", SYSTEM .. " " .. (require 'version'.appVer))
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -1224,19 +1224,20 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         if TASK.lock('dev') then
             MSG('check', "Zenith Clicker is powered by Love2d & Zenitha, not Web!", 6.26)
         else
-            ZENITHA.setDevMode(not ZENITHA.getDevMode() and 1 or false)
+            ZENITHA.setDevMode(not ZENITHA.getDevMode() and 3 or false)
         end
     elseif key == 'f11' then
         STAT.fullscreen = not STAT.fullscreen
         love.window.setFullscreen(STAT.fullscreen)
+        MSG('dark', "Fullscreen: " .. (STAT.fullscreen and "ON" or "OFF"), 1)
     elseif key == 'f10' then
         STAT.syscursor = not STAT.syscursor
         SetMouseVisible(true)
         ApplySettings()
+        MSG('dark', "Star Force: " .. (STAT.syscursor and "OFF" or "ON"), 1)
     elseif key == 'f9' then
-        if not GAME.zenithTraveler then
-            STAT.bg = not STAT.bg
-        end
+        if not GAME.zenithTraveler then STAT.bg = not STAT.bg end
+        MSG('dark', "BG: " .. (STAT.bg and "ON" or "OFF"), 1)
     elseif key == 'f8' then
         if STAT.bgBrightness < 80 then
             STAT.bgBrightness = MATH.clamp(STAT.bgBrightness + 10, 30, 80)
