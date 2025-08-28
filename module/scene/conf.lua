@@ -548,11 +548,6 @@ scene.widgetList = {
                     STAT.startCD = not STAT.startCD
                     MSG('dark', "Restart cooldown: " .. (STAT.startCD and "ON" or "OFF"))
                     SFX.play(STAT.startCD and 'social_online' or 'social_offline')
-                elseif data == 'fps' then
-                    STAT.showFPS = not STAT.showFPS
-                    MSG('dark', "Show FPS: " .. (STAT.showFPS and "ON" or "OFF"))
-                    SFX.play(STAT.showFPS and 'social_online' or 'social_offline')
-                    ZENITHA.setShowFPS(STAT.showFPS)
                 elseif data == 'old_hitbox' then
                     STAT.oldHitbox = not STAT.oldHitbox
                     MSG('dark', "Force old hitbox: " .. (STAT.oldHitbox and "ON" or "OFF"))
@@ -588,7 +583,6 @@ scene.widgetList = {
                         msg = msg .. "\n" .. TABLE.getRandom {
                             "Try 'cmd'",
                             "Try 'cooldown'",
-                            "Try 'fps'",
                             "Try 'old_hitbox'",
                             "Try 'test'",
                             "Try 'dev'",

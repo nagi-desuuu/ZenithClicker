@@ -4,9 +4,7 @@ require 'Zenitha'
 
 ZENITHA.setMainLoopSpeed(240)
 ZENITHA.setRenderRate(50)
-ZENITHA.setShowFPS(false)
-ZENITHA.setVersionText(SYSTEM .. " " .. (require 'version'.appVer))
-ZENITHA.setShowVersionText(false)
+ZENITHA.setAppInfo("Zenith Clicker",SYSTEM .. " " .. (require 'version'.appVer))
 ZENITHA.setClickDist(62)
 
 STRING.install()
@@ -529,7 +527,6 @@ STAT = {
     sfx = 60,
     bgm = 100,
 
-    showFPS = false,
     startCD = true,
 }
 
@@ -1821,7 +1818,6 @@ TABLE.update(TextColor, BaseTextColor)
 TABLE.update(ShadeColor, BaseShadeColor)
 GAME.refreshCurrentCombo()
 if os.date("%m%d") == "0401" then UseAltName() end
-ZENITHA.setShowFPS(STAT.showFPS)
 TEXTS.version:set(SYSTEM .. (STAT.oldHitbox and " T" or " V") .. (require 'version'.verStr))
 
 if SYSTEM == 'Web' then

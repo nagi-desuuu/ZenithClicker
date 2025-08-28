@@ -223,13 +223,13 @@ function scene.load()
 
     GAME.refreshDailyChallengeText()
     TASK.unlock('sure_quit')
-    ZENITHA.setShowVersionText(false)
+    ZENITHA.setAppInfo("Zenith Clicker")
 end
 
 function scene.unload()
     MSG.clear()
     TEXT:clear()
-    ZENITHA.setShowVersionText(true)
+    ZENITHA.setAppInfo("Zenith Clicker", SYSTEM .. " " .. (require 'version'.appVer))
 end
 
 function scene.mouseMove(x, y, _, dy)
