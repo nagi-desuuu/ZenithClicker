@@ -319,7 +319,17 @@ PLAN B - both list includes first 5 scores, 10/25/50/75%-th score, and player, 1
 All lists are sorted by `rank`.
 ```
 
-## Design draft of Clicker League (Probably won't be implemented)
+## WIP Clicker League design by a community member!
+
+**Main idea**: Sending attacks to knock out your opponent and sending mod effects to disturb them
+
+**Sending Attack**: Now your attacks will deal damage directly to the opponent's HP after some time, but the opponent is also able to cancel them.
+
+**Sending Mod**: Breaking surge will apply mod(s) on your opponent for some time.
+
+The game ends when a player's HP reaches zero.
+
+## Design draft of Clicker League by MrZ, but probably (99%) won't be implemented...
 
 **Main idea**: Sending mod effect to an opponent
 
@@ -333,4 +343,4 @@ For example, it's not possible to force EX on the opponent if you already have E
 
 **Sending**: After cancelling, any excess time in the sending buffer is sent to the opponent.
 
-The game ends when one player's HP reaches zero.
+The game ends when a player's HP reaches zero.
