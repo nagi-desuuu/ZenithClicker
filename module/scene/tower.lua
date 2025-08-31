@@ -30,6 +30,7 @@ local function switchVisitor(bool)
         love.mouse.setRelativeMode(bool)
         ZENITHA.setCursorVis(not bool)
         for _, W in next, scene.widgetList do W:setVisible(not bool) end
+        if usingTouch then scene.widgetList.help:setVisible(true) end
         if bool then IssueAchv('zenith_traveler') end
         TABLE.clear(HoldingButtons)
     end
@@ -317,6 +318,7 @@ function scene.touchDown(x, y, id)
         usingTouch = true
         UsingTouch = true
     end
+    if GAME.zenithTraveler then return end
     local x1, y1 = SCR.xOy_dl:inverseTransformPoint(SCR.xOy:transformPoint(x, y))
     if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
         revHold[id] = true
@@ -1621,7 +1623,11 @@ scene.widgetList = {
         floatFontSize = 30,
         floatText = "", -- Dynamic text
         onPress = function()
-            switchVisitor(true)
+            if usingTouch then
+                switchVisitor(not GAME.zenithTraveler)
+            else
+                switchVisitor(true)
+            end
         end,
         visibleFunc = function() return not GAME.playing end,
     },
