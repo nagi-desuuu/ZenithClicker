@@ -1102,7 +1102,7 @@ Achievements = {
         credit = "@Tizago",
         comp = '<',
         scoreSimp = function(time) return string.format("%.2fs", time) end,
-        scoreFull = function(time) return string.format("%.1f m/quest", (Floors[4].top - Floors[3].top) / time) end,
+        scoreFull = function(time) return string.format("%.1f m/s", (Floors[4].top - Floors[3].top) / time) end,
         rank = numberRankRev(32, 26, 22, 19.4, 16.2, 12.6, 9.42),
     },
     { -- museum_heist
