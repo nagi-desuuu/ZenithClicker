@@ -949,6 +949,7 @@ function RefreshBGM(mode)
     if GAME.nightcore then pitch = pitch * 2 end
     local justBegin = BGM.tell() < 1
     BGM.set('all', 'pitch', pitch, justBegin and 0 or .26)
+    BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55, justBegin and 0 or .626)
     if BgmPlaying == 'f0' then
         local revMode = mode == 'f0r' or RevMusicMode()
         BGM.set('all', 'volume', revMode and 0 or 1, 2.6)
@@ -965,7 +966,6 @@ function RefreshBGM(mode)
         BGM.set('f1ex', 'volume', M.EX > 0 and 1 or 0, 0)
         BGM.set('f1rev', 'volume', revMode and 1 or 0, 0)
     end
-    BGM.set('all', 'highgain', M.IN == 0 and 1 or M.IN == 1 and .8 or not URM and .626 or .55, justBegin and 0 or .626)
 end
 
 function Task_MusicEnd(manual)
