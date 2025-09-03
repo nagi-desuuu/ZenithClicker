@@ -323,6 +323,8 @@ function scene.touchDown(x, y, id)
     if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
         revHold[id] = true
         return
+    else
+        scene.mouseMove(x, y, 0, 0)
     end
 
     HoldingButtons['touch' .. tostring(id)] = true
