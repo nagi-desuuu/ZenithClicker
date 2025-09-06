@@ -268,13 +268,13 @@ function scene.mouseDown(x, y, k)
         usingTouch = false
         UsingTouch = false
     end
-    HoldingButtons['mouse' .. k] = true
     if GAME.zenithTraveler then
         switchVisitor(false)
         return true
     end
-    GAME.nixPrompt('keep_no_mouse')
     if k == 3 then return true end
+    HoldingButtons['mouse' .. k] = true
+    GAME.nixPrompt('keep_no_mouse')
 
     if getBtnPressed() > 1 + (URM and M.VL == 2 and 0 or math.floor(M.VL / 2)) then return true end
     if M.EX == 0 then
@@ -323,8 +323,6 @@ function scene.touchDown(x, y, id)
     if not GAME.playing and x1 <= 200 and MATH.between(y1, -600, -40) then
         revHold[id] = true
         return
-    else
-        scene.mouseMove(x, y, 0, 0)
     end
 
     HoldingButtons['touch' .. tostring(id)] = true
@@ -333,6 +331,7 @@ function scene.touchDown(x, y, id)
         mouseTrigger(x, y, next(revHold) and 2 or 1)
     else
         SFX.play('rotate')
+        scene.mouseMove(x, y, 0, 0)
     end
 end
 
