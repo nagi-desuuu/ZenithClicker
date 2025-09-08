@@ -1043,10 +1043,10 @@ function scene.overDraw()
             local kx = min(Q.k, 1550 / text:getWidth())
             local ky = max(kx, Q.k)
             local a = 1
-            if M.IN == 2 and i <= (M.DP > 0 and 2 or 1) then
+            if M.IN == 2 then
                 a = clamp(
-                    a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26),
-                    GAME.faultWrong and not URM and .355 or 0, 1
+                    a * (1 - (GAME.questTime - (M.NH == 2 and GAME.floor * .026 or 0)) * (GAME.floor + .62) * .26 / i^2),
+                    GAME.faultWrong and not URM and i * .26 or 0, 1
                 )
             end
             if a > 0 then
