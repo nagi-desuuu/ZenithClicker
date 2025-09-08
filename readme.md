@@ -139,21 +139,21 @@ Make sure you've discovered most contents before reading this section!
 
 - **Has ALL the effects of Invisible, plus...**
 - Quest hints are **not shown** at all!
-- The 1st quest **fade away** after a short time, but reappear if you make a wrong commit. They disappear faster as you reach higher floors.
-- The 2nd and 3rd quests also fade away but using more time (4x & 9x).
+- The 1st quest **fade away** after a short time, faster as you reach higher floors. (but reappear if you make a wrong commit)
+- The 2nd and 3rd quests also fade away but slower (4x & 9x without DP, 2x & 9x with DP).
 
-| Floor | rNH Protection | Fade Time (1st quest) |
-| :---: | :------------: | :-------: |
-|   1   |     0.026s     |   2.37s   |
-|   2   |     0.052s     |   1.47s   |
-|   3   |     0.078s     |   1.06s   |
-|   4   |     0.104s     |   0.83s   |
-|   5   |     0.130s     |   0.68s   |
-|   6   |     0.156s     |   0.58s   |
-|   7   |     0.182s     |   0.50s   |
-|   8   |     0.208s     |   0.45s   |
-|   9   |     0.234s     |   0.40s   |
-|  10   |     0.260s     |   0.36s   |
+| Floor |          Fade Time (1st quest)          |
+| :---: | :-------------------------------------: |
+|   1   | ( ( 1 + .62) * .26) ^ -1 + .26 = 2.63 s |
+|   2   | ( ( 2 + .62) * .26) ^ -1 + .26 = 1.73 s |
+|   3   | ( ( 3 + .62) * .26) ^ -1 + .26 = 1.32 s |
+|   4   | ( ( 4 + .62) * .26) ^ -1 + .26 = 1.09 s |
+|   5   | ( ( 5 + .62) * .26) ^ -1 + .26 = 0.94 s |
+|   6   | ( ( 6 + .62) * .26) ^ -1 + .26 = 0.84 s |
+|   7   | ( ( 7 + .62) * .26) ^ -1 + .26 = 0.76 s |
+|   8   | ( ( 8 + .62) * .26) ^ -1 + .26 = 0.71 s |
+|   9   | ( ( 9 + .62) * .26) ^ -1 + .26 = 0.66 s |
+|  10   | ( (10 + .62) * .26) ^ -1 + .26 = 0.62 s |
 
 ### The Warlock (`rAS`)
 
