@@ -331,7 +331,7 @@ function scene.touchDown(x, y, id)
         mouseTrigger(x, y, next(revHold) and 2 or 1)
     else
         SFX.play('rotate')
-        scene.mouseMove(x, y, 0, 0)
+        -- scene.mouseMove(x, y, 0, 0)
     end
 end
 
