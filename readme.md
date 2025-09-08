@@ -112,7 +112,7 @@ Make sure you've discovered most contents before reading this section!
 ### Asceticism (`rNH`)
 
 - Disable +1 attack on perfect pass.
-- The **next queue** is removed. If (r)DP is enabled, it will show only one next quest.
+- Reduce length of **next queue** to 2.
 - Cards are **not deselected** after committing.
 
 ### Loaded Dice (`rMS`)
@@ -139,9 +139,10 @@ Make sure you've discovered most contents before reading this section!
 
 - **Has ALL the effects of Invisible, plus...**
 - Quest hints are **not shown** at all!
-- Quests **fade away** after a short time, but reappear if you make a wrong commit. They disappear faster as you reach higher floors.
+- The 1st quest **fade away** after a short time, but reappear if you make a wrong commit. They disappear faster as you reach higher floors.
+- The 2nd and 3rd quests also fade away but using more time (4x & 9x).
 
-| Floor | rNH Protection | Fade Time |
+| Floor | rNH Protection | Fade Time (1st quest) |
 | :---: | :------------: | :-------: |
 |   1   |     0.026s     |   2.37s   |
 |   2   |     0.052s     |   1.47s   |
