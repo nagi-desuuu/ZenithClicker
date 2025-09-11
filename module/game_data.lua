@@ -457,7 +457,7 @@ ComboData = {
         { set = "GV VL DH IN",    name = "Nightmare" },
         { set = "GV VL DH AS",    name = "Sword Box" },
         { set = "GV VL IN AS",    name = "Immense Pressure" },
-        { set = "GV VL AS DP",    name = "The Colesseum" },
+        { set = "GV VL AS DP",    name = "The Colosseum" },
         { set = "GV DH IN AS",    name = "Horror Thriller" },
         { set = "GV DH IN DP",    name = "Timid Adoration" },
         { set = "VL DH IN AS",    name = "The Prodigy" },
