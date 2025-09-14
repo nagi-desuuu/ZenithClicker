@@ -566,19 +566,21 @@ function GAME.genQuest()
 
     local lastQ = GAME.quests[#GAME.quests]
     if lastQ then
+        -- Prevent 100% repeating
+        pool[lastQ.combo[1]] = 0
         if M.NH == 2 then
-            for i = 1, #lastQ.combo do
+            -- More probability to repeat last quest's mods on rNH
+            for i = 2, #lastQ.combo do
                 pool[lastQ.combo[i]] = pool[lastQ.combo[i]] * 3.5
             end
-            pool[TABLE.getRandom(lastQ.combo)] = 0
-        else
-            pool[lastQ.combo[1]] = 0
         end
     end
     local questCount = MATH.clamp(MATH.roundRnd(r), 1, GAME.maxQuestSize)
     if questCount == 1 then
+        -- Prevent 1-mod quest being DP
         pool.DP = 0
     elseif M.DH == 2 then
+        -- Reduce DP on rDH
         pool.DP = pool.DP * .5
     end
     for _ = 1, questCount do
