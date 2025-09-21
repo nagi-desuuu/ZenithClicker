@@ -831,6 +831,9 @@ function GAME.addXP(xp)
         TEXTS.rank:set("R-" .. GAME.rank)
         if GAME.teramusic then
             SFX.play('speed_up_csharp')
+        -- else if GAME.omega then
+            -- code to check if we're at the intro of the bgm, then play zenith_upspeed_csharp if true. We don't have zenith_upspeed_dflatsharp.ogg so this will have to make do.
+            -- otherwise when we're at the main loop, play zenith_upspeed_b. Would be great if it was zenith_upspeed_bflat.
         else
             SFX.play('speed_up_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
         end
@@ -2780,6 +2783,9 @@ function GAME.update(dt)
                 TEXTS.rank:set("R-" .. GAME.rank)
                 if GAME.teramusic then
                     SFX.play('speed_down_csharp')
+                -- else if GAME.omega then
+                    -- same code used in the speedup portion
+                    -- i don't know how to code that much so I'll leave it to mrz626 if they ever approve of this.
                 else
                     SFX.play('speed_down_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
                 end
