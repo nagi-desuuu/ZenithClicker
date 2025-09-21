@@ -829,7 +829,11 @@ function GAME.addXP(xp)
         GAME.rankupLast = true
         GAME.peakRank = max(GAME.peakRank, GAME.rank)
         TEXTS.rank:set("R-" .. GAME.rank)
-        SFX.play('speed_up_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
+        if GAME.teramusic then
+            SFX.play('speed_up_csharp')
+        else
+            SFX.play('speed_up_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
+        end
         -- if GAME.height > 0 and not GAME.gigaspeedEntered and GAME.rank >= GigaSpeedReq[max(GAME.floor, (GAME.negFloor - 1) % 10 + 1)] then
         if not GAME.gigaspeed and GAME.height > 0 and GAME.rank >= GigaSpeedReq[GAME.floor] then
             GAME.setGigaspeedAnim(true)
@@ -2774,7 +2778,11 @@ function GAME.update(dt)
                     end
                 end
                 TEXTS.rank:set("R-" .. GAME.rank)
-                SFX.play('speed_down_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
+                if GAME.teramusic then
+                    SFX.play('speed_down_csharp')
+                else
+                    SFX.play('speed_down_' .. ({ 'c', 'b', 'a', 'fsharp', 'e', GAME.anyRev and 'g' or 'a', 'ahalfsharp', 'e', 'e', 'a' })[GAME.floor])
+                end
                 if not GAME.achv_demoteH then
                     GAME.achv_demoteH = GAME.roundHeight
                     if GAME.comboStr == 'EXVL' or GAME.floor >= 8 then SFX.play('btb_break') end
