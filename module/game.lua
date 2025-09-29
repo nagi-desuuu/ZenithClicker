@@ -2644,6 +2644,7 @@ function GAME.update(dt)
             GAME.addHeight(-dt * 260)
         end
         if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
+        if KBisDown('rshift') and GAME.gravTimer then GAME.gravTimer = GAME.gravDelay end
         if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
             GAME.chain = GAME.chain + 1
             if M.AS < 2 then
