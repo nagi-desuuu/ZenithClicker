@@ -308,7 +308,6 @@ TEXTURE = {
             perfect_speedrun = aq(15, 5),
             the_perfectionist = aq(15, 5),
             cruise_control = aq(15, 5),
-            minimalism = aq(15, 5),
             drag_racing = aq(5, 6),
             dazed = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),

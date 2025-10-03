@@ -1499,12 +1499,12 @@ function GAME.task_cancelAll(instant)
             GAME.achv_noResetH = GAME.roundHeight
         end
         GAME.achv_resetCount = GAME.achv_resetCount + 1
-        if GAME.achv_totalResetCount == 0 then
-            if GAME.comboStr == 'ASDHNHVL' then
-                SubmitAchv('minimalism', GAME.achv_maxChain)
-                if GAME.totalQuest >= 26 then SFX.play('btb_break') end
-            end
-        end
+        -- if GAME.achv_totalResetCount == 0 then
+        --     if GAME.comboStr == 'ASDHNHVL' then
+        --         SubmitAchv('minimalism', GAME.achv_maxChain)
+        --         if GAME.totalQuest >= 26 then SFX.play('btb_break') end
+        --     end
+        -- end
         GAME.achv_totalResetCount = GAME.achv_totalResetCount + 1
     end
     local list = TABLE.copy(CD, 0)
@@ -2529,10 +2529,10 @@ function GAME.finish(reason)
             SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
         elseif GAME.comboStr == 'DHVLrIN' then
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
-        elseif GAME.comboStr == 'ASDHNHVL' then
-            if GAME.achv_totalResetCount == 0 then
-                SubmitAchv('minimalism', GAME.achv_maxChain)
-            end
+        -- elseif GAME.comboStr == 'ASDHNHVL' then
+        --     if GAME.achv_totalResetCount == 0 then
+        --         SubmitAchv('minimalism', GAME.achv_maxChain)
+        --     end
         elseif GAME.comboStr == 'DHrINrMS' then
             SubmitAchv('coin_in_the_cup', GAME.totalPerfect)
         elseif GAME.comboStr == 'ASGVMS' then

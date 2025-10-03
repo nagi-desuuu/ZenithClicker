@@ -1192,16 +1192,6 @@ Achievements = {
         scoreSimp = function(rank) return "Rank " .. (rank == 26 and "26 (Max)" or rank) end,
         rank = numberRank(9, 11, 13, 14, 15, 16, 18),
     },
-    { -- minimalism
-        ex = true,
-        id = 'minimalism',
-        name = "Minimalism",
-        desc = [[Highest b2b reached using NH VL DH AS and without Spin]],
-        quote = [[Abstracting everything else away to make one focus point of art]],
-        credit = "@The_111thBlitzer",
-        scoreSimp = function(b2b) return "B2B x" .. b2b end,
-        rank = numberRank(0, 20, 40, 65, 90, 120, 180),
-    },
     { -- drag_racing
         ex = true,
         id = 'drag_racing',

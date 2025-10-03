@@ -238,7 +238,6 @@ ComboData = {
         { set = "EX rGV VL",        name = "Workaholic" },
         { set = "MS VL AS",         name = "Human Experiment" },
         { set = "EX GV DH",         name = "Thermal Anomaly" },
-        { set = "NH VL DH AS",      name = "Minimalism" },
         { set = "MS GV AS",         name = "Dazed" },
     },
 
