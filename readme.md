@@ -252,13 +252,11 @@ You gain ZP after a run, with `ZP = altitude * multiplier`, which `multiplier` i
 |   Mod    |  EX   |  NH   |  MS   |    GV     |    VL     |     DH     |  IN   |  AS   |     DP     |
 | :------: | :---: | :---: | :---: | :-------: | :-------: | :--------: | :---: | :---: | :--------: |
 | Upright  |  1.4  |  1.1  |  1.2  |    1.1    |    1.1    |    1.2     |  1.1  | 0.85  |    0.95    |
-| Reversed |  2.6  |  1.6  |  2.0  | 1.2+.02*M | 1.2+.02*M | 1.6+.4*rIN |   X   |  1.1  | 2.2-.6*rEX |
+| Reversed |  2.6  |  1.8  |  2.0  | 1.2+.02*M | 1.2+.02*M | 1.6+.4*rIN |  1.6  |  1.1  | 2.1-.3*rEX |
 
-> M = (Other) Mod Count  
-> X = rNH ? (DP or rDP ? 2 : 2.2) : 1.6  
-> \*The `.02*M` is actually `.020026*M`, but who cares?
-
-And `Hard Mode Decay` = 0.99, this applies `number_of_EX_or_Rev - 1` times.
+> M = [Total Mod Count] -1  
+> `Hard Mode Decay` = 0.99, applies `number_of_EX_or_Rev - 1` times  
+> `multiplier` is capped at `100x` *(101.22x if not capped)*
 
 Total ZP is soft-capped by your skill:
 
