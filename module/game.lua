@@ -197,6 +197,7 @@ local GAME = {
     achv_obliviousQuest = nil,
     achv_doublePass = nil,
     achv_level19capH = nil,
+    achv_totalResetCount = nil,
 }
 
 GAME.playing = false
@@ -1496,11 +1497,15 @@ function GAME.task_cancelAll(instant)
     if GAME.playing and not instant then
         if GAME.achv_resetCount == 0 then
             GAME.achv_noResetH = GAME.roundHeight
-            if GAME.comboStr == 'ASDHNHVL' then
-                SubmitAchv('minimalism', GAME.achv_maxChain)
-            end
         end
         GAME.achv_resetCount = GAME.achv_resetCount + 1
+        if GAME.achv_totalResetCount == 0 then
+            if GAME.comboStr == 'ASDHNHVL' then
+                SubmitAchv('minimalism', GAME.achv_maxChain)
+                if GAME.totalQuest >= 26 then SFX.play('btb_break') end
+            end
+        end
+        GAME.achv_totalResetCount = GAME.achv_totalResetCount + 1
     end
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
@@ -2162,6 +2167,7 @@ function GAME.start()
     GAME.achv_obliviousQuest = 0
     GAME.achv_doublePass = 0
     GAME.achv_level19capH = false
+    GAME.achv_totalResetCount = 0
     if M.DP > 0 then IssueAchv('intended_glitch') end
 end
 
@@ -2524,15 +2530,20 @@ function GAME.finish(reason)
         elseif GAME.comboStr == 'DHVLrIN' then
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
         elseif GAME.comboStr == 'ASDHNHVL' then
-            if GAME.achv_resetCount == 0 then
+            if GAME.achv_totalResetCount == 0 then
                 SubmitAchv('minimalism', GAME.achv_maxChain)
             end
+        elseif GAME.comboStr == 'DHrINrMS' then
+            SubmitAchv('coin_in_the_cup', GAME.totalPerfect)
+        elseif GAME.comboStr == 'ASGVMS' then
+            SubmitAchv('dazed', GAME.peakRank)
         end
         if M.EX < 2 and M.DP < 2 then
             SubmitAchv('speed_bonus', GAME.gigaCount + GAME.teraCount)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
+            SubmitAchv('the_responsible_one_plus', GAME.reviveCount * GAME.comboMP)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
             SubmitAchv('honeymoon', GAME.achv_shareModH or GAME.roundHeight)
