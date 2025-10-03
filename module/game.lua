@@ -2494,7 +2494,7 @@ function GAME.finish(reason)
         SubmitAchv('powerless', GAME.achv_noChargeH or GAME.roundHeight)
         local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
-        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1)) end
+        SubmitAchv('moon_struck', MATH.roundUnit(GAME.height, .1))
         if GAME.height >= 6200 then IssueSecret('fomg') end
         SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
@@ -2529,12 +2529,10 @@ function GAME.finish(reason)
             SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
         elseif GAME.comboStr == 'DHVLrIN' then
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
-        -- elseif GAME.comboStr == 'ASDHNHVL' then
-        --     if GAME.achv_totalResetCount == 0 then
-        --         SubmitAchv('minimalism', GAME.achv_maxChain)
-        --     end
-        elseif GAME.comboStr == 'DHrINrMS' then
-            SubmitAchv('coin_in_the_cup', GAME.totalPerfect)
+            -- elseif GAME.comboStr == 'ASDHNHVL' then
+            --     if GAME.achv_totalResetCount == 0 then
+            --         SubmitAchv('minimalism', GAME.achv_maxChain)
+            --     end
         elseif GAME.comboStr == 'ASGVMS' then
             SubmitAchv('dazed', GAME.peakRank)
         end

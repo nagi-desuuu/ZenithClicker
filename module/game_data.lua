@@ -228,7 +228,6 @@ ComboData = {
         { set = "EX VL",            name = "Wax Wings" },
         { set = "rMS rGV rIN",      name = "The Masterful Juggler" },
         { set = "DH rIN AS",        name = "The Oblivious Artist" },
-        { set = "rMS DH rIN",       name = "Coin in the Cup" },
         { set = "VL DH rIN",        name = "Empurple" },
 
         { set = "EX VL rIN rDP",    name = "Love Hotel" },

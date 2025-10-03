@@ -35,6 +35,9 @@ end
 local function heightNumber(score)
     return string.format("%.2fm", score)
 end
+local function heightNumber1(score)
+    return string.format("%.1fm", score)
+end
 local function issuedScore()
     return "DONE!"
 end
@@ -858,17 +861,6 @@ Achievements = {
         scoreSimp = function(kill) return kill .. " Entries" end,
         rank = numberRank(0, 2, 3, 3, 4, 4, 5),
     },
-    { -- coin_in_the_cup
-        ex = true,
-        id = 'coin_in_the_cup',
-        name = "Coin in the Cup",
-        desc = [[Number of quests perfectly passed with rMS DH rIN]],
-        quote = [["Don't look away"]],
-        credit = "@FCSplayz",
-        scoreSimp = function(quest) return floor(quest) .. " Quests" end,
-        rank = numberRank(0, 20, 40, 65, 90, 120, 180),
-        hide = function() return GAME.completion.MS == 0 or GAME.completion.IN == 0 end,
-    },
     { -- the_escape_artist
         id = 'the_escape_artist',
         name = "The Escape Artist",
@@ -1037,6 +1029,15 @@ Achievements = {
         quote = [[Real magic exists!]],
         rank = floorRank(26, 42, 62, 126, 3, 4, 5),
     },
+    { -- lovers_promise
+        id = 'lovers_promise',
+        name = "Lover's Promise",
+        desc = [[HAR with DP on the 14th day of any month]],
+        quote = [[The impossible promise of an eternity just like this moment.]],
+        scoreSimp = heightNumber,
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
+        type = 'event',
+    },
     { -- divine_rejection
         ex = true,
         id = 'divine_rejection',
@@ -1051,21 +1052,16 @@ Achievements = {
         ex = true,
         id = 'moon_struck',
         name = "Moon Struck",
-        desc = [[Finish the run at exactly 2202.8m (±16/±8/±4/±2/±1/±0)]],
-        quote = [[TODO]],
-        scoreSimp = heightNumber,
-        rank = NULL,
+        desc = [[Finish the run at exactly 2202.8m]],
+        quote = [["With this moonlight as my witness, will you take my hand for eternity?"]],
+        scoreSimp = heightNumber1,
+        rank = function(h)
+            local d = math.abs(h - 2202.8)
+            local l = { 0, 1, 2, 4, 8, 16, 26 }
+            return min(6 * (1 - ilLerp(l, d)), 5.9999)
+        end,
+        comp = function(new, old) return math.abs(new - 2202.8) < math.abs(old - 2202.8) end,
         credit = "@osk",
-        notUsed = true,
-    },
-    { -- lovers_promise
-        id = 'lovers_promise',
-        name = "Lover's Promise",
-        desc = [[HAR with DP on the 14th day of any month]],
-        quote = [[The impossible promise of an eternity just like this moment.]],
-        scoreSimp = heightNumber,
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
-        type = 'event',
     },
 
     { title = "Supercharged Clone", credit = "@Garbo" },
