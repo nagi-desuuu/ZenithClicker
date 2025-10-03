@@ -1493,9 +1493,12 @@ function GAME.cancelAll(instant)
 end
 
 function GAME.task_cancelAll(instant)
-    if GAME.playing then
+    if GAME.playing and not instant then
         if GAME.achv_resetCount == 0 then
             GAME.achv_noResetH = GAME.roundHeight
+            if GAME.comboStr == 'ASDHNHVL' then
+                SubmitAchv('minimalism', GAME.achv_maxChain)
+            end
         end
         GAME.achv_resetCount = GAME.achv_resetCount + 1
     end
@@ -2520,6 +2523,10 @@ function GAME.finish(reason)
             SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
         elseif GAME.comboStr == 'DHVLrIN' then
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
+        elseif GAME.comboStr == 'ASDHNHVL' then
+            if GAME.achv_resetCount == 0 then
+                SubmitAchv('minimalism', GAME.achv_maxChain)
+            end
         end
         if M.EX < 2 and M.DP < 2 then
             SubmitAchv('speed_bonus', GAME.gigaCount + GAME.teraCount)
