@@ -852,15 +852,6 @@ Achievements = {
         credit = "@Ponies",
         rank = floorRank(1, 9, 10, 2000, 2400, 2600, 3500),
     },
-    { -- speed_bonus
-        ex = true,
-        id = 'speed_bonus',
-        name = "Speed Bonus",
-        desc = [[Trigger any speedrun animation as many times as possible within a single run, without using rEX or rDP]],
-        quote = [[Three steps forward, two steps back. Six steps forward, five steps back.]],
-        scoreSimp = function(kill) return kill .. " Entries" end,
-        rank = numberRank(0, 2, 3, 3, 4, 4, 5),
-    },
     { -- the_escape_artist
         id = 'the_escape_artist',
         name = "The Escape Artist",
@@ -991,6 +982,15 @@ Achievements = {
         scoreSimp = function(quest) return floor(quest) .. " Quests" end,
         rank = numberRank(0, 12, 26, 40, 50, 60, 80),
         hide = function() return GAME.completion.IN == 0 end,
+    },
+    { -- speed_bonus
+        ex = true,
+        id = 'speed_bonus',
+        name = "Speed Bonus",
+        desc = [[Trigger any speedrun animation as many times as possible within a single run, without using rEX or rDP]],
+        quote = [[Three steps forward, two steps back. Six steps forward, five steps back.]],
+        scoreSimp = function(kill) return kill .. " Entries" end,
+        rank = numberRank(0, 2, 3, 3, 4, 4, 5),
     },
     { -- arrogance
         ex = true,
