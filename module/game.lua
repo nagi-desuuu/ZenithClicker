@@ -2330,13 +2330,27 @@ function GAME.finish(reason)
         if GAME.roundHeight > oldPB then
             BEST.highScore[GAME.comboStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
-                local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                if GAME.anyRev then t = "R-" .. t end
+                local t
+                local size, color, duration
+                if GAME.comboMP >= 8 then
+                    if not YOU_LOST_THE_GAME then YOU_LOST_THE_GAME = love.data.decompress('string', 'deflate', love.data.decode('string', 'base64', "NY5bboMwEEW3MgvIJib2BE9lbOoHKv1DgRaUBCi0XX/HlfJ5jubeO+8w9ftwXYdxOEVYf8d96pfP+3gccJuvN7Ev8JiPYV+3TcAWmMb7cEpwbPOyiPPwvffL8bHuDyGGr5++tJ0tVyYBqBxInzRFbzGxdwCBlEWuxRpsvQIwaJNQg05T7R3nGuA1ky0n7C4UnAegt8SuyhxNOc2hwuRDB5ACuqhIoqIpaH6OaKJSoDChsl2UzphDy604dI4NP//BlkLZx1BjRVoXd/GBYkJriz93MUqa8J8ar9B2TSTgCI4kDMkQyAd/")):split(',') end
+                    t = YOU_LOST_THE_GAME[GAME.comboMP]
+                    local p = (GAME.comboMP - 8) / 10
+                    color = { COLOR.HSL(MATH.lerp(-.2, 0, p), 1, MATH.lerp(.626, .5, p)) }
+                    size = GAME.comboMP == 18 and 2.6 or 1.626
+                    duration = 12.6
+                else
+                    t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
+                    if GAME.anyRev then t = "R-" .. t end
+                    size = 2.26
+                    color = 'lC'
+                    duration = 6.2
+                end
                 TEXT:add {
                     text = t,
-                    x = 800, y = 226, k = 2.26, fontSize = 70,
+                    x = 800, y = 226, k = size, fontSize = 70,
                     style = 'beat', inPoint = .26, outPoint = .62,
-                    color = 'lC', duration = 6.2,
+                    color = color, duration = duration,
                 }
                 SFX.play('worldrecord', 1, 0, Tone(#hand == 1 and -1 or 0))
             elseif GAME.floor >= 2 then
