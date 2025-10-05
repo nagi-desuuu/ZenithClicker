@@ -561,6 +561,9 @@ scene.widgetList = {
                     SFX.play('maintenance')
                 elseif data == 'dev' then
                     MSG('dark', OverDevProgressText)
+                elseif data == 'repo' then
+                    SFX.play('menuconfirm')
+                    love.system.openURL("https://github.com/MrZ626/ZenithClicker")
                 elseif data == 'mp' or data == 'music' then
                     if not BGM.isPlaying() or MusicPlayer then return end
                     MusicPlayer = true
@@ -586,6 +589,7 @@ scene.widgetList = {
                             "Try 'old_hitbox'",
                             "Try 'test'",
                             "Try 'dev'",
+                            "Try 'repo'",
                             MATH.coin("Try 'mp'", "Try 'music'"),
                             "Try 'f" .. STAT.maxFloor .. "'",
                             STAT.clicker and "Try 'true_ending'" or nil,

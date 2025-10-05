@@ -166,7 +166,7 @@ function RefreshProfile()
     -- github link
     FONT.set(50)
     GC.setColor(scoreColor)
-    GC.printf("↗  VIEW SOURCE FILE", 0, 640, 1200, 'center')
+    GC.printf("↗  VIEW FULL RECORDS", 0, 640, 1200, 'center')
     -- bottom dark
     GC.setColor(0, 0, 0, .3)
     GC.rectangle('fill', 0, 720, 1200, -3)
@@ -489,16 +489,10 @@ scene.widgetList = {
         floatText = "", -- Dynamic text
     },
     WIDGET.new {
-        name = 'link', type = 'hint',
+        name = 'full', type = 'button_invis',
         pos = { .5, .5 }, x = 0, y = 210, w = 800, h = 60,
-        color = COLOR.X,
-        labelPos = 'top',
-        labelDist = 6,
-        floatFontSize = 30,
-        floatText = "Open github repo with browser",
         onPress = function()
             SFX.play('menuconfirm')
-            love.system.openURL("https://github.com/MrZ626/ZenithClicker")
         end,
     },
     -- CLOSE button
