@@ -1443,15 +1443,17 @@ function GAME.refreshLifeState()
     end
 end
 
+local function dailySorter(a, b)
+    return MD.prio_card[a] < MD.prio_card[b]
+end
 function GAME.refreshDailyChallengeText()
     TEXTS.dcBest:set(
         STAT.dailyBest > 0 and
         ("%.0fm  %.0fZP"):format(STAT.dailyBest / GAME.getComboZP(DAILY), STAT.dailyBest)
         or ""
     )
-    local sortedDaily = TABLE.copy(DAILY)
     DailyAvailable = true
-    for _, v in next, sortedDaily do
+    for _, v in next, DAILY do
         if v:find('r') then
             if GAME.completion[v:sub(2)] == 0 then
                 DailyAvailable = false
@@ -1466,10 +1468,19 @@ function GAME.refreshDailyChallengeText()
     end
     local str
     if DailyAvailable then
+        local sortedDaily = TABLE.copy(DAILY)
+        table.sort(sortedDaily, dailySorter)
         str = "Today's Combo: " .. table.concat(sortedDaily, " ")
-        table.sort(sortedDaily, function(a, b) return MD.prio_card[a] < MD.prio_card[b] end)
-        local rev = str:match("r%S+")
-        if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
+        local rev = str:match("r(%S+)")
+        if not rev then
+            local key = table.concat(TABLE.sort(sortedDaily), ' ')
+            local combo = ComboData.menu[key] or ComboData.gameEX[key]
+            if combo then
+                str = str .. "   " .. combo.name
+            end
+        else
+            str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")"
+        end
         str = str .. "\nTry to get more ZP in one run using this mod combo.\n(Click to select them)"
     else
         str = "Oops! Today's mod combo is not available for you...\nComplete more mods to unlock some content."
