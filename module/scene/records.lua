@@ -36,13 +36,15 @@ local set = {
 ---@field _floor number
 ---
 ---@field comboTextObj love.Text
----@field mods string
+---@field modNames string
 ---@field height string
 ---@field note string
 ---@field mp number
 
 ---@return Record?
 local function newRecord(list)
+    local modNames = #list == 0 and "" or table.concat(list, " ")
+    table.sort(list)
     local cmbID = table.concat(list)
     local height = BEST.highScore[cmbID]
     if height == 0 then return end
@@ -54,10 +56,9 @@ local function newRecord(list)
         _floor = floor,
 
         comboTextObj = GC.newText(FONT.get(50), cmbID == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'record')),
-        mods = cmbID == "" and "NO MOD" or table.concat(list, " "),
+        modNames = modNames,
         height = height .. "m",
         note = time <= 2600 and ("F10 in " .. STRING.time(time)) or ("F" .. floor .. ": " .. Floors[floor].name),
-
         mp = GAME.getComboMP(list),
     }
 end
@@ -74,7 +75,6 @@ local function query()
             table.insert(list, (set.sel[i] == 2 and 'r' or '') .. MD.deck[i].id)
         end
     end
-    table.sort(list)
     if set.match == 'exact' then
         recList[1] = newRecord(list)
     else
@@ -115,9 +115,9 @@ function scene.load()
         w.x = baseX - 60 + 100 * (M.EX < 2 and i or 11 - i)
         w:resetPos()
     end
-    if M.EX > 0 then set.match = 'exact' end
-    if M.GV > 0 then set.order = M.GV == 1 and 'first' or 'last' end
-    if BgmPlaying == 'tera' or BgmPlaying == 'terar' then set.srOnly = true end
+    -- if M.EX > 0 then set.match = 'exact' end
+    -- if M.GV > 0 then set.order = M.GV == 1 and 'first' or 'last' end
+    -- if BgmPlaying == 'tera' or BgmPlaying == 'terar' then set.srOnly = true end
 
     query()
 end
@@ -158,7 +158,7 @@ function scene.update(dt)
     GAME.height = GAME.bgH
 
     if cd then
-        cd = cd - dt
+        cd = cd - dt * 1.26
         if cd <= 0 then
             cd = false
             query()
@@ -169,7 +169,8 @@ end
 local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
 local gc_draw, gc_rectangle, gc_print, gc_printf = gc.draw, gc.rectangle, gc.print, gc.printf
-local gc_setColor, gc_setAlpha = gc.setColor, GC.setAlpha
+local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
+local gc_setAlpha = GC.setAlpha
 
 local function drawBtn(x, y, w, h)
     gc_rectangle('fill', x, y, w, h)
@@ -194,6 +195,13 @@ function scene.draw()
     gc_setColor(clr.T)
     gc_print("ME", 15, 3, 0, .85, 1)
 
+    -- Searching timer
+    if cd then
+        gc_setColor(clr.cbFill)
+        gc_setLineWidth(20)
+        GC.arc('line', 'open', pw - ph * .26, ph * .26, ph * .15, 3.1415926 * 1.5, 3.1415926 * (2 * cd ^ 2 - .5))
+    end
+
     -- Rev Glow
     gc_setColor(1, 1, 1)
     for i = 1, 9 do
@@ -214,7 +222,7 @@ function scene.draw()
         gc_printf(R.height, 0, 15, pw - 15, 'right')
         FONT.set(30)
         gc_setColor(clr.T2)
-        gc_print(R.mods, 15, 72)
+        gc_print(R.modNames, 15, 72)
         gc_printf(R.note, 0, 70, pw - 20, 'right')
 
         gc_translate(0, 120)
@@ -222,10 +230,11 @@ function scene.draw()
 end
 
 function scene.overDraw()
+    gc_replaceTransform(SCR.xOy)
+    gc_translate(baseX, baseY - scroll1)
+
     -- EXACT mode cover
     if set.match == 'exact' then
-        gc_replaceTransform(SCR.xOy)
-        gc_translate(baseX, baseY - scroll1)
         gc_setColor(clr.D)
         gc_rectangle('fill', 3, ph - 3, pw - 6, -169)
     end
@@ -272,8 +281,8 @@ for i = 1, 9 do
         x = baseX - 60 + 100 * i, y = baseY + 100,
         disp = function() return set.sel[i] > 0 end,
         code = function(k)
-            set.sel[i] = k % 2 == 1 and (set.sel[i] + 1) % 3 or set.sel[i] ~= 2 and 2 or 0
-            cd = .626
+            set.sel[i] = k % 2 == 1 and (set.sel[i] + 1) % 3 or set.sel[i] == 0 and 2 or 0
+            cd = 1
         end,
     })
 end
@@ -284,7 +293,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.match == 'include' end,
     code = function()
         set.match = 'include'
-        cd = .626
+        cd = 1
     end
 })
 table.insert(scene.widgetList, WIDGET.new {
@@ -294,7 +303,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.match == 'exact' end,
     code = function()
         set.match = 'exact'
-        cd = .626
+        cd = 1
     end
 })
 
@@ -307,7 +316,7 @@ for i = 1, 10 do
         disp = function() return set.floor == i end,
         code = function()
             set.floor = i
-            cd = .626
+            cd = 1
         end,
     })
 end
@@ -318,7 +327,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.floorComp == '>' end,
     code = function()
         set.floorComp = '>'
-        cd = .626
+        cd = 1
     end,
 })
 table.insert(scene.widgetList, WIDGET.new {
@@ -328,7 +337,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.floorComp == '<' end,
     code = function()
         set.floorComp = '<'
-        cd = .626
+        cd = 1
     end,
 })
 table.insert(scene.widgetList, WIDGET.new {
@@ -338,7 +347,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.floorComp == '=' end,
     code = function()
         set.floorComp = '='
-        cd = .626
+        cd = 1
     end,
 })
 
@@ -350,7 +359,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.order == 'first' end,
     code = function()
         set.order = 'first'
-        cd = .626
+        cd = 1
     end,
 })
 table.insert(scene.widgetList, WIDGET.new {
@@ -360,7 +369,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.order == 'last' end,
     code = function()
         set.order = 'last'
-        cd = .626
+        cd = 1
     end,
 })
 
@@ -372,7 +381,7 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.srOnly end,
     code = function()
         set.srOnly = not set.srOnly
-        cd = .626
+        cd = 1
     end,
 })
 
