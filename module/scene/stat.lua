@@ -485,7 +485,10 @@ scene.widgetList = {
         name = 'full', type = 'button_invis',
         pos = { .5, .5 }, x = 0, y = 210, w = 800, h = 60,
         onPress = function()
-            SFX.play('menuconfirm')
+            if cardShow == 1 then
+                SFX.play('menuconfirm')
+                SCN.swapTo('records', 'none')
+            end
         end,
     },
     -- CLOSE button

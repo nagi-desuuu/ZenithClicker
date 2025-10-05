@@ -5,9 +5,9 @@ local max, min = math.max, math.min
 local floor, ceil, sin = math.floor, math.ceil, math.sin
 
 local clr = {
-    D = { COLOR.HEX '19311E' },
-    L = { COLOR.HEX '4DA667' },
-    T = { COLOR.HEX '6FAC82' },
+    D = { COLOR.HEX '19311EFF' },
+    L = { COLOR.HEX '4DA667FF' },
+    T = { COLOR.HEX '6FAC82FF' },
 }
 local colorRev = false
 

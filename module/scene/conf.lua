@@ -2,12 +2,12 @@
 local scene = {}
 
 local clr = {
-    D = { COLOR.HEX '191E31' },
-    L = { COLOR.HEX '4D67A6' },
-    T = { COLOR.HEX '6F82AC' },
-    LT = { COLOR.HEX 'B0CCEB' },
-    cbFill = { COLOR.HEX '0B0E17' },
-    cbFrame = { COLOR.HEX '6A82A7' },
+    D = { COLOR.HEX '191E31FF' },
+    L = { COLOR.HEX '4D67A6FF' },
+    T = { COLOR.HEX '6F82ACFF' },
+    LT = { COLOR.HEX 'B0CCEBFF' },
+    cbFill = { COLOR.HEX '0B0E17FF' },
+    cbFrame = { COLOR.HEX '6A82A7FF' },
 }
 local colorRev = false
 local bindBuffer

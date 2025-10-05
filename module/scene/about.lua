@@ -5,8 +5,8 @@ local scroll, scroll1 = 0, 0
 local maxScroll = 620
 
 local clr = {
-    D = { COLOR.HEX '1F1F1F' },
-    L = { COLOR.HEX '656565' },
+    D = { COLOR.HEX '1F1F1FFF' },
+    L = { COLOR.HEX '656565FF' },
 }
 
 AboutText = GC.newText(FONT.get(70))

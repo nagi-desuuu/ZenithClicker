@@ -4,7 +4,7 @@ local scene = {}
 EndText = GC.newText(FONT.get(70))
 EndText2 = GC.newText(FONT.get(70), "ZENITH CLICKER!")
 
----@param align? 'left'|'center'|'right'
+---@param align? 'left' | 'center' | 'right'
 local function addText(text, x, y, scale, align, wraplimit)
     if type(text) == 'string' then text = { COLOR.L, text } end
     scale = scale or 1
