@@ -388,7 +388,7 @@ local expApproach = MATH.expApproach
 function scene.update(dt)
     if GAME.nightcore then dt = dt * 2.6 end
     if GAME.zenithTraveler and M.EX == 2 then
-        local f = GAME.getBgFloor()
+        local f = GAME.calculateFloor(GAME.bgH)
         GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
     end
     if dt > .26 then dt = .26 end
@@ -524,7 +524,7 @@ local reviveRot = { -.095, .15, -.17 }
 function DrawBG(brightness, showRuler)
     gc_replaceTransform(SCR.origin)
     if GAME.bgH > -50 then
-        local bgFloor = GAME.getBgFloor()
+        local bgFloor = GAME.calculateFloor(GAME.bgH)
         if STAT.bg then
             if bgFloor < 10 then
                 gc_setColor(1, 1, 1)

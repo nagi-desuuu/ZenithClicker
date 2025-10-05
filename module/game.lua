@@ -287,10 +287,10 @@ function GAME.getComboZP(list)
     return zp
 end
 
-local function modSortFunc(a, b) return MD.prio_name[a] < MD.prio_name[b] end
+local function modNameSorter(a, b) return MD.prio_name[a] < MD.prio_name[b] end
 
 ---@param list string[] WILL BE SORTED!!!
----@param mode? 'ingame' | 'button' | 'rpc'
+---@param mode? 'ingame' | 'button' | 'record' | 'rpc'
 function GAME.getComboName(list, mode)
     local len = #list
     if mode == 'ingame' then
@@ -366,7 +366,7 @@ function GAME.getComboName(list, mode)
         if M.DH == 2 then
             TABLE.shuffle(list)
         else
-            table.sort(list, modSortFunc)
+            table.sort(list, modNameSorter)
             if M.DH == 1 and MATH.roll((#list - 1) / 6.26) then
                 local r1, r2 = rnd(#list), rnd(#list - 1)
                 if r2 >= r1 then r2 = r2 + 1 end
@@ -417,14 +417,15 @@ function GAME.getComboName(list, mode)
 
         -- Super Set
         if not (mode == 'button' and GAME.playing) then
-            if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
+            local cmbID = table.concat(list)
+            if STRING.count(cmbID, "r") >= 2 then
                 local mp = GAME.getComboMP(list)
                 if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
             else
                 local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
                 if len_noDP >= 7 then
                     return
-                        GAME.anyRev and (
+                        cmbID:find('r') and (
                             len_noDP == 7 and [["AMBROSIA SODA"]] or
                             len_noDP == 8 and [["AMBROSIA WINE"]] or
                             [["AMBROSIA MOONSHINE"]]
@@ -451,7 +452,7 @@ function GAME.getComboName(list, mode)
         if combo then return combo.name end
 
         -- General
-        table.sort(list, modSortFunc)
+        table.sort(list, modNameSorter)
         local str = ""
         for i = 1, len - 1 do str = str .. MD.adj[list[i]] .. " " end
         return str .. MD.noun[list[len]]
@@ -483,8 +484,8 @@ end
 
 local floorHeights = {}
 for i = 0, 9 do ins(floorHeights, Floors[i].top) end
-function GAME.getBgFloor()
-    return floor(1 + 9 * MATH.ilLerp(floorHeights, GAME.bgH))
+function GAME.calculateFloor(h)
+    return floor(1 + 9 * MATH.ilLerp(floorHeights, h))
 end
 
 function GAME.task_gigaspeed()
@@ -1175,11 +1176,11 @@ local modIconPos = {
     { 0,  -1.5 }, { 0, 0.5 }, { 1, -0.5 }, { 1, 1.5 },
     { 2, -1.5 }, { 2, 0.5 }, { 3, -0.5 }, { 3, 1.5 },
 }
-
+local function modIconSorter(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end
 function GAME.refreshModIcon()
     GAME.modIB:clear()
     local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    table.sort(hand, modIconSorter)
     local quad, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
@@ -1222,7 +1223,7 @@ end
 function GAME.refreshResultModIcon()
     GAME.resIB:clear()
     local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    table.sort(hand, modIconSorter)
     local quad, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra_res[hand[1]] or TEXTURE.modQuad_res[hand[1]]
@@ -1443,9 +1444,7 @@ function GAME.refreshLifeState()
     end
 end
 
-local function dailySorter(a, b)
-    return MD.prio_card[a] < MD.prio_card[b]
-end
+local function modCardSorter(a, b) return MD.prio_card[a] < MD.prio_card[b] end
 function GAME.refreshDailyChallengeText()
     TEXTS.dcBest:set(
         STAT.dailyBest > 0 and
@@ -1469,7 +1468,7 @@ function GAME.refreshDailyChallengeText()
     local str
     if DailyAvailable then
         local sortedDaily = TABLE.copy(DAILY)
-        table.sort(sortedDaily, dailySorter)
+        table.sort(sortedDaily, modCardSorter)
         str = "Today's Combo: " .. table.concat(sortedDaily, " ")
         local rev = str:match("r(%S+)")
         if not rev then
