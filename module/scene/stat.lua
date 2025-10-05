@@ -415,16 +415,11 @@ end
 
 function scene.load()
     SetMouseVisible(true)
-    TASK.lock('no_back')
     maskAlpha, cardShow = 0, 0
     TWEEN.new(function(t)
         maskAlpha = t
-    end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
-        TWEEN.new(function(t)
-            cardShow = t
-        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
-            TASK.unlock('no_back')
-        end)
+    end):setDuration(.26):run():setOnFinish(function()
+        TWEEN.new(function(t) cardShow = t end):setDuration(.1):run()
     end)
 
     crProgress.f10 = getF10Completion()
@@ -436,9 +431,8 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if (key == 'escape' or key == '`') and TASK.lock('no_back') then
+    if (key == 'escape' or key == '`') and cardShow == 1 then
         SFX.play('menuclick')
-        TWEEN.tag_kill('stat_in')
         TWEEN.new(function(t)
             cardShow = 1 - t
         end):setDuration(.26):run():setOnFinish(function()
@@ -446,7 +440,6 @@ function scene.keyDown(key, isRep)
                 maskAlpha = 1 - t
             end):setDuration(.26):run():setOnFinish(function()
                 SCN.back('none')
-                TASK.unlock('no_back')
             end)
         end)
     end

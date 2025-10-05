@@ -220,7 +220,8 @@ local M = GAME.mod
 local MD = ModData
 local CD = Cards
 
---- Unsorted, like {'rEX','NH',...}
+---Unsorted, like {'rEX','NH',...}
+---@param real boolean current mod setting or literally selected cards
 function GAME.getHand(real)
     local list = {}
     if real then
