@@ -224,6 +224,10 @@ function scene.mouseMove(_, _, _, dy)
     end
 end
 
+function scene.touchMove(_, _, _, dy)
+    scroll = MATH.clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
+end
+
 function scene.mouseClick(x, y, k)
     if k ~= 1 or not MATH.between(x - baseX, 0, pw) then return end
     y = (y - (baseY - scroll1) - ph) / 120
@@ -235,11 +239,18 @@ function scene.mouseClick(x, y, k)
     end
 end
 
+function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
+
 function scene.keyDown(key, isRep)
     if isRep then return true end
     local bindID = TABLE.find(STAT.keybind, key)
     if bindID and bindID <= 18 and M.AS > 0 then
         set.sel[bindID] = (set.sel[bindID] + 1) % 3
+    elseif key == STAT.keybind[20] then
+        for i = 1, #set.sel do
+            set.sel[i] = 0
+        end
+        refresh()
     elseif key == 'escape' then
         SFX.play('menuclick')
         SCN.back('none')
