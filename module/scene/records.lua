@@ -119,6 +119,12 @@ local function query()
             (set.order == 'first' and recSorter.fast or recSorter.slow)
         )
     end
+    SFX.play(
+        #recList == 0 and 'combobreak' or
+        #recList == 1 and 'timer2' or
+        'timer1',
+        1, 0, Tone(0)
+    )
     maxScroll = max((#recList - 3.5) * 120, 0)
     scroll = MATH.clamp(scroll, 0, maxScroll)
 end
