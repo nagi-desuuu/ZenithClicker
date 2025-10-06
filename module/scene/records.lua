@@ -23,10 +23,10 @@ local scroll, scroll1, maxScroll
 local cd, timer = 0, 0
 local set = {
     sel = TABLE.new(0, #MD.deck),
-    match = 'include', ---@type 'include' | 'exact'
+    match = 'include', ---@type 'include' | 'exclude' | 'exact'
     floor = 1, ---@type number|false
     floorComp = '>', ---@type '=' | '<' | '>'
-    mode = 'altitude', ---@type 'altitude' | 'speedrun'
+    mode = 'altitude', ---@type 'altitude' | 'speedrun' | 'zp'
     order = 'first', ---@type 'first' | 'last'
 }
 
@@ -35,35 +35,48 @@ local set = {
 ---@field _speedrun number
 ---@field _floor number
 ---
----@field comboTextObj love.Text
----@field modNames string
----@field desc string
+---@field comboText love.Text
+---@field modsText love.Text
+---@field floorText love.Text
+---@field scoreText love.Text
+---@field extraText love.Text
 ---@field mp number
 
 ---@return Record?
 local function newRecord(list)
-    local modNames = #list == 0 and "No Mod" or table.concat(list, " ")
+    local mods = #list == 0 and "No Mod" or table.concat(list, " ")
     table.sort(list)
     local cmbID = table.concat(list)
     local height = BEST.highScore[cmbID]
     if height == 0 then return end
     local time = BEST.speedrun[cmbID]
-    local floor = GAME.calculateFloor(height)
-    local desc
+    local floor = height >= 6200 and 11 or GAME.calculateFloor(height)
+    local scoreText, floorText, extraText
+    local mp, zp = GAME.getComboMP(list), GAME.getComboZP(list)
     if set.mode == 'altitude' then
-        desc = ("%.2fm"):format(height)
-    else
-        desc = "F10 in " .. STRING.time(time)
+        floorText = "F" .. (floor <= 10 and floor or "Ω")
+        scoreText = ("%.2f M"):format(height)
+        extraText = ("%d ZP"):format(height * zp)
+    elseif set.mode == 'speedrun' then
+        floorText = "F10  GIGA"
+        scoreText = STRING.time(time)
+        extraText = ("%.1f m/s"):format(1650 / time)
+    elseif set.mode == 'zp' then
+        floorText = "F" .. (floor <= 10 and floor or "Ω")
+        scoreText = ("%d ZP"):format(height * zp)
+        extraText = ("%.2f M"):format(height)
     end
     return {
         _height = height,
         _speedrun = time,
         _floor = floor,
+        _zp = height * zp,
 
-        comboTextObj = GC.newText(FONT.get(50), cmbID == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'button')),
-        modNames = modNames,
-        desc = desc,
-        mp = GAME.getComboMP(list),
+        comboText = GC.newText(FONT.get(50), cmbID == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'button')),
+        modsText = GC.newText(FONT.get(30), mods .. (mp >= 2 and "  [" .. mp .. "]" or "")),
+        floorText = GC.newText(FONT.get(50), floorText),
+        scoreText = GC.newText(FONT.get(50), scoreText),
+        extraText = GC.newText(FONT.get(30), extraText),
     }
 end
 
@@ -74,10 +87,35 @@ local recSorter = {
     low = function(a, b) return a._height < b._height end,
     fast = function(a, b) return a._speedrun < b._speedrun end,
     slow = function(a, b) return a._speedrun > b._speedrun end,
+    high_zp = function(a, b) return a._zp > b._zp end,
+    low_zp = function(a, b) return a._zp < b._zp end,
 }
-local function query()
+local function clear()
+    for i = 1, #recList do
+        local R = recList[i]
+        R.comboText:release()
+        R.modsText:release()
+        R.floorText:release()
+        R.scoreText:release()
+        R.extraText:release()
+    end
     TABLE.clear(recList)
-    for i = 1, #recList do recList[i].comboTextObj:release() end
+    collectgarbage()
+end
+local function refresh()
+    clear()
+    maxScroll, scroll = 0, 0
+    cd = 1
+    timer = math.random()
+    local simp = set.match == 'exact' or set.mode == 'speedrun'
+    for i = 1, 13 do
+        scene.widgetList[#scene.widgetList - i]:setVisible(not simp)
+    end
+    ph = simp and 180 or 300
+end
+local function query()
+    clear()
+    for i = 1, #recList do recList[i].comboText:release() end
 
     local list = {}
     for i = 1, #MD.deck do
@@ -90,7 +128,7 @@ local function query()
     else
         for id, height in next, BEST.highScore do
             repeat
-                if set.mode == 'altitude' then
+                if set.mode ~= 'speedrun' then
                     -- floor check
                     local floor = GAME.calculateFloor(height)
                     if
@@ -109,13 +147,18 @@ local function query()
                 if #id < #table.concat(list) then break end
                 local l2 = {}
                 for m in id:gmatch('r?..') do table.insert(l2, m) end
-                if #l2 - #list ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
+                if set.match == 'include' then
+                    if #l2 - #list ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
+                elseif set.match == 'exclude' then
+                    if #l2 ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
+                end
 
                 table.insert(recList, newRecord(l2))
             until true
         end
         table.sort(recList,
             set.mode == 'altitude' and (set.order == 'first' and recSorter.high or recSorter.low) or
+            set.mode == 'zp' and (set.order == 'first' and recSorter.high_zp or recSorter.low_zp) or
             (set.order == 'first' and recSorter.fast or recSorter.slow)
         )
     end
@@ -127,18 +170,6 @@ local function query()
     )
     maxScroll = max((#recList - 3.5) * 120, 0)
     scroll = MATH.clamp(scroll, 0, maxScroll)
-end
-
-local function refresh()
-    TABLE.clear(recList)
-    maxScroll, scroll = 0, 0
-    cd = 1
-    timer = math.random()
-    local simp = set.match == 'exact' or set.mode == 'speedrun'
-    for i = 1, 13 do
-        scene.widgetList[#scene.widgetList - i]:setVisible(not simp)
-    end
-    ph = simp and 180 or 300
 end
 
 function scene.load()
@@ -162,7 +193,7 @@ function scene.load()
         TABLE.shuffle(pos)
     end
     for i = 1, 9 do
-        local w = scene.widgetList[4 + i]
+        local w = scene.widgetList[5 + i]
         w.x = baseX - 60 + 100 * pos[i]
         w:resetPos()
     end
@@ -175,7 +206,9 @@ function scene.load()
     -- if M.GV > 0 then set.order = M.GV == 1 and 'first' or 'last' end
     -- if BgmPlaying == 'tera' or BgmPlaying == 'terar' then set.mode == 'speedrun' end
 
-    query()
+    clear()
+    cd = 1.626
+    maxScroll = 0
 end
 
 function scene.mouseMove(_, _, _, dy)
@@ -228,9 +261,9 @@ end
 
 local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
-local gc_draw, gc_rectangle, gc_print, gc_printf = gc.draw, gc.rectangle, gc.print, gc.printf
+local gc_draw, gc_rectangle, gc_print = gc.draw, gc.rectangle, gc.print
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
-local gc_setAlpha = GC.setAlpha
+local mDraw, gc_setAlpha = GC.mDraw, GC.setAlpha
 local setFont = FONT.set
 
 local function drawBtn(x, y, w, h)
@@ -277,7 +310,7 @@ function scene.draw()
 
     -- Records
     if recList[1] then
-        local s = -4 + 1 + math.floor(scroll1 / 120)
+        local s = -3 + 1 + math.floor(scroll1 / 120)
         local e = MATH.clamp(s + 9, 1, #recList)
         s = math.max(s, 1)
         gc_translate(0, ph + (s - 1) * 120)
@@ -286,14 +319,15 @@ function scene.draw()
             drawBtn(0, 10, pw, 110)
 
             local R = recList[i]
-            setFont(50)
-            gc_setColor(clr.T)
-            gc_draw(R.comboTextObj, 15, 15, 0, math.min(760 / R.comboTextObj:getWidth(), 1), 1)
-            gc_printf(R.desc, 0, 15, pw - 15, 'right')
 
-            setFont(30)
             gc_setColor(clr.T2)
-            gc_print(R.modNames, 15, 72)
+            gc_draw(R.floorText, pw / 2, -5, 0, 2, 2, R.floorText:getWidth() / 2)
+            gc_draw(R.modsText, 15, 72)
+            gc_draw(R.extraText, pw - 15, 72, 0, 1, 1, R.extraText:getWidth())
+
+            gc_setColor(clr.T)
+            gc_draw(R.comboText, 15, 15, 0, math.min(888 / R.comboText:getWidth(), 1), 1)
+            gc_draw(R.scoreText, pw - 15, 15, 0, 1, 1, R.scoreText:getWidth())
 
             gc_translate(0, 120)
         end
@@ -339,7 +373,7 @@ scene.widgetList = {}
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
     textColor = clr.T, text = "ALTITUDE",
-    x = baseX - 60 + 100 * 2.6, y = baseY + 40,
+    x = baseX - 60 + 100 * 2.2, y = baseY + 40,
     disp = function() return set.mode == 'altitude' end,
     code = function()
         set.mode = 'altitude'
@@ -349,10 +383,20 @@ table.insert(scene.widgetList, WIDGET.new {
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
     textColor = clr.T, text = "SPEEDRUN",
-    x = baseX - 60 + 100 * 4.8, y = baseY + 40,
+    x = baseX - 60 + 100 * 4.3, y = baseY + 40,
     disp = function() return set.mode == 'speedrun' end,
     code = function()
         set.mode = 'speedrun'
+        refresh()
+    end,
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "ZP",
+    x = baseX - 60 + 100 * 6.6, y = baseY + 40,
+    disp = function() return set.mode == 'zp' end,
+    code = function()
+        set.mode = 'zp'
         refresh()
     end,
 })
@@ -361,7 +405,7 @@ table.insert(scene.widgetList, WIDGET.new {
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
     textColor = clr.T, text = "BEST FIRST",
-    x = baseX - 60 + 100 * 8.2, y = baseY + 40,
+    x = baseX - 60 + 100 * 8.3, y = baseY + 40,
     disp = function() return set.order == 'first' end,
     code = function()
         set.order = 'first'
@@ -415,8 +459,18 @@ table.insert(scene.widgetList, WIDGET.new {
 })
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
-    textColor = clr.T, text = "EXACT",
+    textColor = clr.T, text = "EXCLUDE",
     x = baseX - 60 + 100 * 3, y = baseY + 100 + 45,
+    disp = function() return set.match == 'exclude' end,
+    code = function()
+        set.match = 'exclude'
+        refresh()
+    end
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "EXACT",
+    x = baseX - 60 + 100 * 5, y = baseY + 100 + 45,
     disp = function() return set.match == 'exact' end,
     code = function()
         set.match = 'exact'
