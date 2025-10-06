@@ -290,7 +290,7 @@ end
 local function modNameSorter(a, b) return MD.prio_name[a] < MD.prio_name[b] end
 
 ---@param list string[] WILL BE SORTED!!!
----@param mode? 'ingame' | 'button' | 'record' | 'rpc'
+---@param mode? 'ingame' | 'button' | 'rpc'
 function GAME.getComboName(list, mode)
     local len = #list
     if mode == 'ingame' then
@@ -445,8 +445,8 @@ function GAME.getComboName(list, mode)
 
         -- Named Combo
         local combo = (
-            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
             M.DH == 2 and ComboData.gameEX or
+            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
             ComboData.game
         )[table.concat(TABLE.sort(list), ' ')]
         if combo then return combo.name end

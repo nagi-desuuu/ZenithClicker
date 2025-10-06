@@ -822,7 +822,7 @@ Achievements = {
         id = 'the_responsible_one_plus',
         name = "The Responsible One+",
         desc = [[Most sum of rank when perform a successful revive]],
-        quote = [[Outrunning death at breakneck speeds, saving lives one at a time.]],
+        quote = [["No matter what happens."]],
         scoreSimp = function(rank) return floor(rank) .. " Points" end,
         rank = numberRank(0, 16, 26, 36, 49, 64, 81),
     },
