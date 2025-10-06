@@ -58,7 +58,7 @@ local function newRecord(list)
         scoreText = ("%.2f M"):format(height)
         extraText = ("%d ZP"):format(height * zp)
     elseif set.mode == 'speedrun' then
-        floorText = "F10  GIGA"
+        floorText = "GIGA"
         scoreText = STRING.time(time)
         extraText = ("%.1f m/s"):format(1650 / time)
     elseif set.mode == 'zp' then
@@ -73,7 +73,7 @@ local function newRecord(list)
         _zp = height * zp,
 
         comboText = GC.newText(FONT.get(50), cmbID == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'button')),
-        modsText = GC.newText(FONT.get(30), mods .. (mp >= 2 and "  [" .. mp .. "]" or "")),
+        modsText = GC.newText(FONT.get(30), mods .. (mp > 2 and "  [" .. mp .. "]" or "")),
         floorText = GC.newText(FONT.get(50), floorText),
         scoreText = GC.newText(FONT.get(50), scoreText),
         extraText = GC.newText(FONT.get(30), extraText),
@@ -130,21 +130,22 @@ local function query()
             repeat
                 if set.mode ~= 'speedrun' then
                     -- floor check
-                    local floor = GAME.calculateFloor(height)
-                    if
-                        set.floorComp == '>' and floor < set.floor or
-                        set.floorComp == '<' and floor > set.floor or
-                        set.floorComp == '=' and floor ~= set.floor
-                    then
-                        break
+                    if not (set.floorComp == '>' and set.floor == 1 or set.floorComp == '<' and set.floor == 10) then
+                        local floor = GAME.calculateFloor(height)
+                        if
+                            set.floorComp == '>' and floor < set.floor or
+                            set.floorComp == '<' and floor > set.floor or
+                            set.floorComp == '=' and floor ~= set.floor
+                        then
+                            break
+                        end
                     end
                 else
                     -- speedrun check
                     if BEST.speedrun[id] == 1e99 then break end
                 end
-
                 -- combo check
-                if #id < #table.concat(list) then break end
+                if set.match ~= 'exclude' and #id < #table.concat(list) then break end
                 local l2 = {}
                 for m in id:gmatch('r?..') do table.insert(l2, m) end
                 if set.match == 'include' then
@@ -321,7 +322,7 @@ function scene.draw()
             local R = recList[i]
 
             gc_setColor(clr.T2)
-            gc_draw(R.floorText, pw / 2, -5, 0, 2, 2, R.floorText:getWidth() / 2)
+            gc_draw(R.floorText, pw * .626, -5, 0, 2, 2, R.floorText:getWidth() / 2)
             gc_draw(R.modsText, 15, 72)
             gc_draw(R.extraText, pw - 15, 72, 0, 1, 1, R.extraText:getWidth())
 
