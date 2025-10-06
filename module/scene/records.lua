@@ -31,16 +31,17 @@ local set = {
 }
 
 ---@class Record
+---@field _list string[]
 ---@field _height number
 ---@field _speedrun number
 ---@field _floor number
+---@field _zp number
 ---
 ---@field comboText love.Text
 ---@field modsText love.Text
 ---@field floorText love.Text
 ---@field scoreText love.Text
 ---@field extraText love.Text
----@field mp number
 
 ---@return Record?
 local function newRecord(list)
@@ -67,6 +68,7 @@ local function newRecord(list)
         extraText = ("%.2f M"):format(height)
     end
     return {
+        _list = list,
         _height = height,
         _speedrun = time,
         _floor = floor,
@@ -212,9 +214,24 @@ function scene.load()
     maxScroll = 0
 end
 
+function scene.unload()
+    clear()
+end
+
 function scene.mouseMove(_, _, _, dy)
     if love.mouse.isDown(1, 2) then
         scroll = MATH.clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
+    end
+end
+
+function scene.mouseClick(x, y, k)
+    if k ~= 1 or not MATH.between(x - baseX, 0, pw) then return end
+    y = (y - (baseY - scroll1) - ph) / 120
+    if y % 1 < 10 / 120 then return end
+    y = math.ceil(y)
+    if recList[y] then
+        MSG('dark', "Mod set applied!", 1)
+        PendingComboFromRecord = recList[y]._list
     end
 end
 
@@ -264,7 +281,7 @@ local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
 local gc_draw, gc_rectangle, gc_print = gc.draw, gc.rectangle, gc.print
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
-local mDraw, gc_setAlpha = GC.mDraw, GC.setAlpha
+local gc_setAlpha = GC.setAlpha
 local setFont = FONT.set
 
 local function drawBtn(x, y, w, h)
