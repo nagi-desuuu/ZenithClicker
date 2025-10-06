@@ -384,7 +384,15 @@ for i = 1, 9 do
         x = baseX - 60 + 100 * i, y = baseY + 100,
         disp = function() return set.sel[i] > 0 end,
         code = function(k)
-            set.sel[i] = k % 2 == 1 and (set.sel[i] + 1) % 3 or set.sel[i] == 0 and 2 or 0
+            if GAME.completion[MD.deck[i].id] > 0 then
+                if k == 2 then
+                    set.sel[i] = set.sel[i] == 0 and 2 or 0
+                else
+                    set.sel[i] = (set.sel[i] + 1) % 3
+                end
+            else
+                set.sel[i] = set.sel[i] == 0 and 1 or 0
+            end
             refresh()
         end,
     })
