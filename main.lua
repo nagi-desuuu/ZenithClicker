@@ -1703,6 +1703,10 @@ function Initialize(save)
         ACHV.plonk = nil
         STAT.version = 184
     end
+    if STAT.version == 184 then
+        ACHV.moon_struck = MATH.roundUnit(math.abs(ACHV.moon_struck - 2202.8), .1)
+        STAT.version = 185
+    end
 
     -- Some Initialization
     for i = 1, #Cards do

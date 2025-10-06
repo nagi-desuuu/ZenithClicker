@@ -35,9 +35,6 @@ end
 local function heightNumber(score)
     return string.format("%.2fm", score)
 end
-local function heightNumber1(score)
-    return string.format("%.1fm", score)
-end
 local function issuedScore()
     return "DONE!"
 end
@@ -1055,13 +1052,9 @@ Achievements = {
         name = "Moon Struck",
         desc = [[Finish the run at exactly 2202.8m]],
         quote = [["With this moonlight as my witness, will you take my hand for eternity?"]],
-        scoreSimp = heightNumber1,
-        rank = function(h)
-            local d = math.abs(h - 2202.8)
-            local l = { 0, 1, 2, 4, 8, 16, 26 }
-            return min(6 * (1 - ilLerp(l, d)), 5.9999)
-        end,
-        comp = function(new, old) return math.abs(new - 2202.8) < math.abs(old - 2202.8) end,
+        comp = '<',
+        scoreSimp = function(dist) return dist == 0 and "Flawless Landing!" or string.format("%.1fm away", dist) end,
+        rank = numberRankRev(26, 16, 8, 4, 2, 1, 0),
         credit = "@osk",
     },
 

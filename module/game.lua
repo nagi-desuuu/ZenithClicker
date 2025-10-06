@@ -2519,7 +2519,7 @@ function GAME.finish(reason)
         SubmitAchv('powerless', GAME.achv_noChargeH or GAME.roundHeight)
         local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
-        SubmitAchv('moon_struck', MATH.roundUnit(GAME.height, .1))
+        SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1))
         if GAME.height >= 6200 then IssueSecret('fomg') end
         SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
