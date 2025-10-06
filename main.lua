@@ -1704,7 +1704,7 @@ function Initialize(save)
         STAT.version = 184
     end
     if STAT.version == 184 then
-        ACHV.moon_struck = MATH.roundUnit(math.abs(ACHV.moon_struck - 2202.8), .1)
+        if ACHV.moon_struck then ACHV.moon_struck = MATH.roundUnit(math.abs(ACHV.moon_struck - 2202.8), .1) end
         STAT.version = 185
     end
 
