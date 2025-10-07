@@ -22,7 +22,12 @@ local CD = Cards
 
 local baseX, baseY = 200, 110
 local pw, ph = 1200, 300
+
 local cardPos = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+local revBGquads = {}
+for i = 1, 26 do
+    revBGquads[i] = GC.newQuad(MATH.rand(0, 1586 - pw), MATH.rand(0, 606 - 110), pw, 110, 1586, 606)
+end
 
 local scroll, scroll1, maxScroll
 local cd, timer = 0, 0
@@ -42,6 +47,7 @@ local set = {
 ---@field _floor number
 ---@field _zp number
 ---
+---@field revQuad love.Quad | false
 ---@field comboText love.Text
 ---@field modsText love.Text
 ---@field floorText love.Text
@@ -84,6 +90,7 @@ local function newRecord(list)
         floorText = GC.newText(FONT.get(50), floorText),
         scoreText = GC.newText(FONT.get(50), scoreText),
         extraText = GC.newText(FONT.get(30), extraText),
+        revQuad = mp > #list and TABLE.getRandom(revBGquads),
     }
 end
 
@@ -307,8 +314,12 @@ local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_setAlpha = GC.setAlpha
 local setFont = FONT.set
 
-local function drawBtn(x, y, w, h)
+local function drawBtn(x, y, w, h, revQuad)
     gc_rectangle('fill', x, y, w, h)
+    if revQuad then
+        gc_setColor(1, 1, 1)
+        gc_draw(TEXTURE.recRevBG, revQuad, 0, 10)
+    end
     gc_setColor(1, 1, 1, .2)
     gc_rectangle('fill', x, y, w, 3)
     gc_rectangle('fill', x, y + 3, 3, h - 3)
@@ -356,10 +367,9 @@ function scene.draw()
         s = max(s, 1)
         gc_translate(0, ph + (s - 1) * 120)
         for i = s, e do
-            gc_setColor(clr.D)
-            drawBtn(0, 10, pw, 110)
-
             local R = recList[i]
+            gc_setColor(clr.D)
+            drawBtn(0, 10, pw, 110, R.revQuad)
 
             gc_setColor(clr.T2)
             gc_draw(R.floorText, pw * .626, -5, 0, 2, 2, R.floorText:getWidth() / 2)

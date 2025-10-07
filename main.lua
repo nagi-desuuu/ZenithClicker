@@ -367,6 +367,7 @@ TEXTURE = {
     logo = assets 'icon.png',
     logo_old = assets 'icon_old.png',
 }
+TEXTURE = IMG.init(TEXTURE, true)
 local transition = { w = 128, h = 1 }
 for x = 0, 127 do
     table.insert(transition, { 'setCL', 1, 1, 1, 1 - x / 128 })
@@ -378,13 +379,16 @@ TEXTURE.darkCorner = GC.newCanvas(128, 128)
 GC.setCanvas(TEXTURE.darkCorner)
 GC.setColor(0, 0, 0)
 GC.blurCircle(.626, 64, 64, 64)
-GC.setCanvas()
 TEXTURE.lightDot = GC.newCanvas(32, 32)
 GC.setCanvas(TEXTURE.lightDot)
 GC.clear(1, 1, 1, 0)
 GC.setColor(1, 1, 1)
 GC.blurCircle(.26, 16, 16, 16)
-GC.setCanvas()
+TEXTURE.recRevBG = GC.newCanvas(1586, 606)
+GC.setCanvas(TEXTURE.recRevBG)
+GC.setColor(1, 1, 1)
+GC.draw(TEXTURE.panel.glass_a)
+GC.draw(TEXTURE.panel.glass_b)
 TEXTURE.recRevLight = GC.newCanvas(165, 120)
 GC.setCanvas(TEXTURE.recRevLight)
 GC.clear(1, .1, .1, 0)
@@ -392,7 +396,6 @@ GC.setColor(1, .1, .1)
 GC.blurCircle(-.2, 60, 60, 60)
 GC.blurCircle(-.6, 105, 60, 60)
 GC.setCanvas()
-TEXTURE = IMG.init(TEXTURE, true)
 
 FONT.load {
     serif = "assets/AbhayaLibre-Regular.ttf",
