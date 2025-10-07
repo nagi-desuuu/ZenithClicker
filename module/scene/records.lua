@@ -278,7 +278,7 @@ function scene.update(dt)
     local y0 = scroll1
     if math.abs(y0 - scroll) > .1 then
         scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
-        for i = 1, #scene.widgetList - 1 do
+        for i = 1, #scene.widgetList - 2 do
             local w = scene.widgetList[i]
             w._y = w._y + (y0 - scroll1)
         end
