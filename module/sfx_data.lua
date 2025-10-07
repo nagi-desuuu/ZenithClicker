@@ -82,7 +82,7 @@ return {
     harddrop = { 181, 0.4 },
     hold = { 52, 0.4 },
     irs = { 618, 0.2 },
-    -- ihs = { 556, 0.4 },
+    ihs = { 556, 0.4 },
     finessefault = { 361, 0.7 },
 
     clutch = { 66, 0.34 },

@@ -235,6 +235,7 @@ function scene.mouseClick(x, y, k)
     y = math.ceil(y)
     if recList[y] then
         MSG('dark', "Mod set applied!", 1)
+        SFX.play('ihs')
         PendingComboFromRecord = recList[y]._list
     end
 end
