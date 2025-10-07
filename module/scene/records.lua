@@ -2,6 +2,7 @@
 local scene = {}
 
 local max, min = math.max, math.min
+local clamp = MATH.clamp
 
 local clr = {
     D = { COLOR.HEX '1B3B22FF' },
@@ -10,14 +11,18 @@ local clr = {
     T2 = { COLOR.HEX '31583AFF' },
     cbFill = { COLOR.HEX '0B170EFF' },
     cbFrame = { COLOR.HEX '6AA782FF' },
+    btn1 = { COLOR.HEX '1F4E2CFF' },
+    btn2 = { COLOR.HEX '73E284FF' },
 }
 local colorRev = false
 
 local M = GAME.mod
 local MD = ModData
+local CD = Cards
 
 local baseX, baseY = 200, 110
 local pw, ph = 1200, 300
+local cardPos = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
 
 local scroll, scroll1, maxScroll
 local cd, timer = 0, 0
@@ -172,7 +177,7 @@ local function query()
         1, 0, Tone(0)
     )
     maxScroll = max((#recList - 3.5) * 120, 0)
-    scroll = MATH.clamp(scroll, 0, maxScroll)
+    scroll = clamp(scroll, 0, maxScroll)
 end
 
 function scene.load()
@@ -185,19 +190,19 @@ function scene.load()
     end
     scroll, scroll1 = 0, 0
 
-    local pos = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+    for i = 1, #CD do cardPos[i] = i end
     if M.MS == 1 then
         for _ = 1, math.random(2, 3) do
             local r1 = math.random(2, 8)
-            local r2 = MATH.clamp(math.random(r1 - 2, r1 + 2), 1, 9)
-            pos[r1], pos[r2] = pos[r2], pos[r1]
+            local r2 = clamp(math.random(r1 - 2, r1 + 2), 1, 9)
+            cardPos[r1], cardPos[r2] = cardPos[r2], cardPos[r1]
         end
     elseif M.MS == 2 then
-        TABLE.shuffle(pos)
+        TABLE.shuffle(cardPos)
     end
-    for i = 1, 9 do
+    for i = 1, #CD do
         local w = scene.widgetList[5 + i]
-        w.x = baseX - 60 + 100 * pos[i]
+        w.x = baseX - 60 + 100 * cardPos[i]
         w:resetPos()
     end
     -- for i = 1, 10 do
@@ -220,12 +225,12 @@ end
 
 function scene.mouseMove(_, _, _, dy)
     if love.mouse.isDown(1, 2) then
-        scroll = MATH.clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
+        scroll = clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
     end
 end
 
 function scene.touchMove(_, _, _, dy)
-    scroll = MATH.clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
+    scroll = clamp(scroll - dy * (1 + M.VL), 0, maxScroll)
 end
 
 function scene.mouseClick(x, y, k)
@@ -267,7 +272,7 @@ function scene.keyDown(key, isRep)
 end
 
 function scene.wheelMove(_, dy)
-    scroll = MATH.clamp(scroll - dy * 100 * (1 + M.VL), 0, maxScroll)
+    scroll = clamp(scroll - dy * 100 * (1 + M.VL), 0, maxScroll)
 end
 
 function scene.resize()
@@ -338,16 +343,16 @@ function scene.draw()
 
     -- Rev Glow
     gc_setColor(1, 1, 1)
-    for i = 1, 9 do
+    for i = 1, #CD do
         if set.sel[i] == 2 then
-            GC.draw(TEXTURE.statRevLight, -120 + 100 * i, 100 - 60)
+            gc_draw(TEXTURE.recRevLight, -120 + 100 * cardPos[i], 100 - 60)
         end
     end
 
     -- Records
     if recList[1] then
         local s = -3 + 1 + math.floor(scroll1 / 120)
-        local e = MATH.clamp(s + 9, 1, #recList)
+        local e = clamp(s + 9, 1, #recList)
         s = max(s, 1)
         gc_translate(0, ph + (s - 1) * 120)
         for i = s, e do
@@ -460,7 +465,7 @@ table.insert(scene.widgetList, WIDGET.new {
 })
 
 -- Mods
-for i = 1, 9 do
+for i = 1, #CD do
     table.insert(scene.widgetList, WIDGET.new {
         type = 'checkBox',
         fillColor = { COLOR.lerp(MD.color[MD.deck[i].id], COLOR.DD, .8) },
@@ -570,9 +575,9 @@ table.insert(scene.widgetList, WIDGET.new {
 table.insert(scene.widgetList, WIDGET.new {
     name = 'stat', type = 'button',
     pos = { 0, 0 }, x = 60, y = 230, w = 160, h = 60,
-    color = { COLOR.HEX '1F4E2C' },
+    color = clr.btn1,
     sound_hover = 'menutap',
-    fontSize = 30, text = "    RESET", textColor = { COLOR.HEX '73E284' },
+    fontSize = 30, text = "    RESET", textColor = clr.btn2,
     onClick = function() love.keypressed(STAT.keybind[20]) end,
 })
 
