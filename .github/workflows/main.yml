@@ -2,7 +2,7 @@ name: Main
 
 on:
   push:
-    branches: [main, ci-*, fix-*]
+    branches: [main, ci-*]
     tags: [v*]
   pull_request:
     branches: [main]
