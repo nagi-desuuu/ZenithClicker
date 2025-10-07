@@ -1888,14 +1888,25 @@ function GAME.commit(auto)
             if URM then
                 GAME.readyShuffle(max(GAME.floor, GAME.negFloor) * 2.6, true)
             else
-                local r1 = rnd(2, #CD - 1)
-                local r2 = r1 + MATH.coin(-1, 1)
-                local r3
-                if max(GAME.floor, GAME.negFloor) <= 8 then
-                    CD[r1], CD[r2] = CD[r2], CD[r1]
-                else
-                    repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
-                    CD[r1], CD[r2], CD[r3] = CD[r2], CD[r3], CD[r1]
+                print(GAME.lastFlip)
+                local lastPos
+                for i = 1, #CD do
+                    if CD[i].id == GAME.lastFlip then
+                        lastPos = i
+                        break
+                    end
+                end
+                local w = max(GAME.floor, GAME.negFloor) <= 8 and 2 or 3
+                local r
+                repeat r = rnd(#CD - w + 1) until r > lastPos + 1 or r + w < lastPos
+                if w == 2 then
+                    CD[r], CD[r + 1] = CD[r + 1], CD[r]
+                elseif w == 3 then
+                    if MATH.roll() then
+                        CD[r], CD[r + 1], CD[r + 2] = CD[r + 2], CD[r], CD[r + 1]
+                    else
+                        CD[r], CD[r + 1], CD[r + 2] = CD[r + 1], CD[r + 2], CD[r]
+                    end
                 end
                 GAME.refreshLayout()
             end
