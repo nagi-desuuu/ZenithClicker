@@ -24,7 +24,7 @@ local cd, timer = 0, 0
 local set = {
     sel = TABLE.new(0, #MD.deck),
     match = 'include', ---@type 'include' | 'exclude' | 'exact'
-    floor = 1, ---@type number|false
+    floor = 1,
     floorComp = '>', ---@type '=' | '<' | '>'
     mode = 'altitude', ---@type 'altitude' | 'speedrun' | 'zp'
     order = 'first', ---@type 'first' | 'last'
@@ -111,7 +111,7 @@ local function refresh()
     timer = math.random()
     local simp = set.match == 'exact' or set.mode == 'speedrun'
     for i = 1, 13 do
-        scene.widgetList[#scene.widgetList - i]:setVisible(not simp)
+        scene.widgetList[#scene.widgetList - 1 - i]:setVisible(not simp)
     end
     ph = simp and 180 or 300
 end
@@ -247,10 +247,16 @@ function scene.keyDown(key, isRep)
     if bindID and bindID <= 18 and M.AS > 0 then
         set.sel[bindID] = (set.sel[bindID] + 1) % 3
     elseif key == STAT.keybind[20] then
-        for i = 1, #set.sel do
-            set.sel[i] = 0
-        end
+        for i = 1, #set.sel do set.sel[i] = 0 end
+        set.match = 'include'
+        set.floor = 1
+        set.floorComp = '>'
+        set.mode = 'altitude'
+        set.order = 'first'
+        SFX.play('allclear')
         refresh()
+    elseif key == STAT.keybind[19] then
+        cd = min(cd, .01)
     elseif key == 'escape' then
         SFX.play('menuclick')
         SCN.back('none')
@@ -341,7 +347,7 @@ function scene.draw()
     if recList[1] then
         local s = -3 + 1 + math.floor(scroll1 / 120)
         local e = MATH.clamp(s + 9, 1, #recList)
-        s = math.max(s, 1)
+        s = max(s, 1)
         gc_translate(0, ph + (s - 1) * 120)
         for i = s, e do
             gc_setColor(clr.D)
@@ -355,7 +361,7 @@ function scene.draw()
             gc_draw(R.extraText, pw - 15, 72, 0, 1, 1, R.extraText:getWidth())
 
             gc_setColor(clr.T)
-            gc_draw(R.comboText, 15, 15, 0, math.min(888 / R.comboText:getWidth(), 1), 1)
+            gc_draw(R.comboText, 15, 15, 0, min(888 / R.comboText:getWidth(), 1), 1)
             gc_draw(R.scoreText, pw - 15, 15, 0, 1, 1, R.scoreText:getWidth())
 
             gc_translate(0, 120)
@@ -464,7 +470,7 @@ for i = 1, 9 do
         disp = function() return set.sel[i] > 0 end,
         code = function(k)
             if GAME.completion[MD.deck[i].id] > 0 then
-                if k == 2 then
+                if k == 2 or love.keyboard.isDown('lctrl', 'rctrl') then
                     set.sel[i] = set.sel[i] == 0 and 2 or 0
                 else
                     set.sel[i] = (set.sel[i] + 1) % 3
@@ -559,6 +565,14 @@ table.insert(scene.widgetList, WIDGET.new {
     sound_hover = 'menutap',
     fontSize = 30, text = "    BACK", textColor = 'DL',
     onClick = function() love.keypressed('escape') end,
+})
+table.insert(scene.widgetList, WIDGET.new {
+    name = 'stat', type = 'button',
+    pos = { 0, 0 }, x = 60, y = 230, w = 160, h = 60,
+    color = { COLOR.HEX '1F4E2C' },
+    sound_hover = 'menutap',
+    fontSize = 30, text = "    RESET", textColor = { COLOR.HEX '73E284' },
+    onClick = function() love.keypressed(STAT.keybind[20]) end,
 })
 
 return scene
