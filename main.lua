@@ -902,7 +902,7 @@ function RevMusicMode()
     return
         URM and M.EX == 2 or                   -- uEX
         GAME.anyRev and GAME.comboZP >= 2.6 or -- rev run with 2.6x ZP
-        GAME.anyUltra and GAME.comboZP >= 1.2  -- ultra run with 2x ZP
+        GAME.anyUltra and GAME.comboZP >= 1.2  -- ultra run with 1.2x ZP
 end
 
 ---@param name ZC.bgmName
