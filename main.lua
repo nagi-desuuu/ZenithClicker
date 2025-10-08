@@ -1236,8 +1236,8 @@ do -- Auto mute when unfocused
         coroutine.yield()
         while true do
             local dt = coroutine.yield()
-            local v = love.audio.getVolume()
-            love.audio.setVolume(math.max(v - dt * 2.6, 0))
+            local v = math.max(love.audio.getVolume() - dt * 2.6, 0)
+            love.audio.setVolume(v)
             if v == 0 then return end
         end
     end
@@ -1245,12 +1245,9 @@ do -- Auto mute when unfocused
         coroutine.yield()
         while true do
             local dt = coroutine.yield()
-            local v = love.audio.getVolume()
-            if v < 1 then
-                love.audio.setVolume(math.min(v + dt * 2.6, 1))
-            else
-                return
-            end
+            local v = math.min(love.audio.getVolume() + dt * 2.6, 1)
+            love.audio.setVolume(v)
+            if v == 1 then return end
         end
     end
     function ZENITHA.globalEvent.focus(f)
