@@ -35,10 +35,13 @@ local set = {
     sel = TABLE.new(0, #MD.deck),
     match = 'include', ---@type 'include' | 'exclude' | 'exact'
     floor = 1,
-    floorComp = '>', ---@type '=' | '<' | '>'
+    floorComp = '>', ---@type '>' | '<' | '='
+    mp = 1,
+    mpComp = '>', ---@type '>' | '<' | '='
     mode = 'altitude', ---@type 'altitude' | 'speedrun' | 'zp'
     order = 'first', ---@type 'first' | 'last'
 }
+local showMP, showFloor = true, true
 
 ---@class Record
 ---@field _list string[]
@@ -129,11 +132,11 @@ local function refresh()
     maxScroll, scroll = 0, 0
     cd = 1
     timer = math.random()
-    local simp = set.match == 'exact' or set.mode == 'speedrun'
-    for i = 1, 13 do
-        scene.widgetList[#scene.widgetList - 1 - i]:setVisible(not simp)
-    end
-    ph = simp and 180 or 300
+    showFloor = not (set.match == 'exact' or set.mode == 'speedrun')
+    for i = 1, 4 do scene.widgetList[#scene.widgetList - 1 - i]:setVisible(showFloor) end
+    showMP = not (set.match == 'exact')
+    for i = 1, 4 do scene.widgetList[#scene.widgetList - 5 - i]:setVisible(showMP) end
+    ph = not (showFloor or showMP) and 180 or 300
 end
 local function query()
     clear()
@@ -166,6 +169,17 @@ local function query()
                 else
                     -- speedrun check
                     if BEST.speedrun[setStr] > 1e26 then break end
+                end
+                -- mp check
+                if not (set.mpComp == '>' and set.mp == 1 or set.mpComp == '<' and set.mp == 18) then
+                    local mp = (#setStr - (ultra and 1 or 0) + setStr:count('r')) / 2
+                    if
+                        set.mpComp == '>' and mp < set.mp or
+                        set.mpComp == '<' and mp > set.mp or
+                        set.mpComp == '=' and mp ~= set.mp
+                    then
+                        break
+                    end
                 end
                 -- combo check
                 if ultra then setStr = setStr:sub(2) end
@@ -222,14 +236,6 @@ function scene.load()
         w.x = baseX - 60 + 100 * cardPos[i]
         w:resetPos()
     end
-    -- for i = 1, 10 do
-    --     local w = scene.widgetList[i + 12]
-    --     w.x = baseX - 60 + 100 * (M.EX < 2 and i or 11 - i)
-    --     w:resetPos()
-    -- end
-    -- if M.EX > 0 then set.match = 'exact' end
-    -- if M.GV > 0 then set.order = M.GV == 1 and 'first' or 'last' end
-    -- if BgmPlaying == 'tera' or BgmPlaying == 'terar' then set.mode == 'speedrun' end
 
     clear()
     cd = 1.626
@@ -290,6 +296,8 @@ function scene.keyDown(key, isRep)
         set.match = 'include'
         set.floor = 1
         set.floorComp = '>'
+        set.mp = 1
+        set.mpComp = '>'
         set.mode = 'altitude'
         set.order = 'first'
         SFX.play('allclear')
@@ -356,8 +364,20 @@ local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
 local gc_draw, gc_rectangle, gc_print = gc.draw, gc.rectangle, gc.print
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
-local gc_setAlpha = GC.setAlpha
+local gc_setAlpha, gc_mStr = GC.setAlpha, GC.mStr
 local setFont = FONT.set
+local gc_ucs_move, gc_ucs_back = GC.ucs_move, GC.ucs_back
+
+local function drawSliderComponents(x, y, w, w2, value)
+    gc_ucs_move('m', x, y)
+    gc_setColor(0, 0, 0, .26)
+    gc_rectangle('fill', -25, -28, w + w2 + 55, 56, 5)
+    gc_rectangle('fill', w + 25, -22, w2, 44, 3)
+    setFont(30)
+    gc_setColor(clr.T)
+    gc_mStr(value, w + 25 + w2 / 2, -20)
+    gc_ucs_back()
+end
 
 local function drawBtn(x, y, w, h, revQuad)
     gc_rectangle('fill', x, y, w, h)
@@ -391,6 +411,8 @@ function scene.draw()
     setFont(50)
     gc_setColor(clr.T)
     gc_print("ME", 15, 3, 0, .85, 1)
+    if showMP then drawSliderComponents(40, 206, 480, 105, set.mp .. " MP") end
+    if showFloor then drawSliderComponents(690, 206, 395, 72, "F" .. set.floor) end
 
     -- Searching timer
     if cd > 0 then
@@ -588,23 +610,67 @@ table.insert(scene.widgetList, WIDGET.new {
     end
 })
 
--- Floors
-for i = 1, 10 do
-    table.insert(scene.widgetList, WIDGET.new {
-        type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
-        textColor = clr.T, text = "F" .. i,
-        x = baseX - 60 + 100 * i, y = baseY + 210,
-        disp = function() return set.floor == i end,
-        code = function()
-            set.floor = i
-            refresh()
-        end,
-    })
-end
+-- MP
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'slider',
+    x = baseX + 40, y = baseY + 206, w = 480,
+    axis = { 1, 18, 1 },
+    frameColor = 'dD', fillColor = clr.D,
+    disp = function() return set.mp end,
+    code = function(value)
+        set.mp = value
+        refresh()
+    end,
+    sound_drag = 'rotate',
+})
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
     textColor = clr.T, text = "ABOVE",
-    x = baseX - 60 + 100 * 1, y = baseY + 210 + 45,
+    x = baseX - 60 + 100 * 1, y = baseY + 210 + 50,
+    disp = function() return set.mpComp == '>' end,
+    code = function()
+        set.mpComp = '>'
+        refresh()
+    end,
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "BELOW",
+    x = baseX - 60 + 100 * 2.6, y = baseY + 210 + 50,
+    disp = function() return set.mpComp == '<' end,
+    code = function()
+        set.mpComp = '<'
+        refresh()
+    end,
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "JUST",
+    x = baseX - 60 + 100 * 4.2, y = baseY + 210 + 50,
+    disp = function() return set.mpComp == '=' end,
+    code = function()
+        set.mpComp = '='
+        refresh()
+    end,
+})
+
+-- Floors
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'slider',
+    x = baseX + 690, y = baseY + 206, w = 395,
+    axis = { 1, 10, 1 },
+    frameColor = 'dD', fillColor = clr.D,
+    disp = function() return set.floor end,
+    code = function(value)
+        set.floor = value
+        refresh()
+    end,
+    sound_drag = 'rotate',
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "ABOVE",
+    x = baseX - 60 + 100 * 7.5, y = baseY + 210 + 50,
     disp = function() return set.floorComp == '>' end,
     code = function()
         set.floorComp = '>'
@@ -614,7 +680,7 @@ table.insert(scene.widgetList, WIDGET.new {
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
     textColor = clr.T, text = "BELOW",
-    x = baseX - 60 + 100 * 3, y = baseY + 210 + 45,
+    x = baseX - 60 + 100 * 9, y = baseY + 210 + 50,
     disp = function() return set.floorComp == '<' end,
     code = function()
         set.floorComp = '<'
@@ -624,7 +690,7 @@ table.insert(scene.widgetList, WIDGET.new {
 table.insert(scene.widgetList, WIDGET.new {
     type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
     textColor = clr.T, text = "JUST",
-    x = baseX - 60 + 100 * 5, y = baseY + 210 + 45,
+    x = baseX - 60 + 100 * 10.6, y = baseY + 210 + 50,
     disp = function() return set.floorComp == '=' end,
     code = function()
         set.floorComp = '='
