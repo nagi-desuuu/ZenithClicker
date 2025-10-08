@@ -577,8 +577,8 @@ scene.widgetList = {
                         refreshWidgets()
                     end
                     refreshSongInfo()
-                elseif data == UAN then
-                    _G[UAN]()
+                elseif data == 'UseAltName' then
+                    UseAltName()
                     SFX.play('social_dm')
                 else
                     local msg = "Invalid code '" .. data .. "' in clipboard."

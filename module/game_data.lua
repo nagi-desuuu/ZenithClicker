@@ -213,7 +213,6 @@ ComboData = {
         { set = "rGV rIN",          name = "The Grandmaster+" },
         { set = "NH rAS",           name = "Pristine" },
         { set = "GV rDH rAS",       name = "Storage Overload" },
-        { set = "rNH rIN",          name = "Fleeting Memory" },
         { set = "EX NH rMS GV",     name = "Bnuuy" },
         { set = "rNH rMS GV AS DP", name = "Grand-Master! Rounds" },
         { set = "rEX rVL DH",       name = "Sweat and Ruin" },

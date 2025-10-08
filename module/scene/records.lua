@@ -80,7 +80,7 @@ local function newRecord(list, isUltra)
         scoreText = ("%d ZP"):format(height * zp)
         extraText = ("%.2f M"):format(height)
     end
-    local comboText = setStr == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'button')
+    local comboText = setStr == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'record')
     if isUltra then
         ---@cast comboText string
         comboText = comboText:gsub("([^\"])", "ULTRA %1", 1)
@@ -366,7 +366,7 @@ local function drawBtn(x, y, w, h, revQuad)
         if colorRev then
             gc_draw(TEXTURE.recRevBG, revQuad, 0, 10)
         else
-            GC.setShader(Shader_RGswap)
+            GC.setShader(SHADER.swapRG)
             gc_draw(TEXTURE.recRevBG, revQuad, 0, 10)
             GC.setShader()
         end

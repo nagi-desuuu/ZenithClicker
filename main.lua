@@ -718,26 +718,10 @@ end
 
 BgScale = 1
 
-require 'module.game_data'
-require 'module.achv_data'
-
-Shader_Coloring = GC.newShader [[
-vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
-    return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);
-}]]
-Shader_Throb = GC.newShader [[
-vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
-    vec4 t = texture2D(tex, texCoord);
-    return vec4(1., 0., 0., (1.-step(t.a, .999)) * color.a * (1. - t.r) * (1. - length(texCoord.xy - .5)));
-}]]
-Shader_RGswap = GC.newShader [[
-vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
-    vec4 t = texture2D(tex, texCoord);
-    return vec4(t.grb, color.a * t.a);
-}]]
-
-GAME = require 'module/game'
-local M = GAME.mod
+require 'module/game_data'
+require 'module/achv_data'
+require 'module/shader'
+require 'module/game'
 
 for i = 1, #ModData.deck do table.insert(Cards, require 'module/card'.new(ModData.deck[i])) end
 GAME.refreshLayout()
@@ -745,67 +729,7 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
-local warpPS = GC.newParticleSystem(TEXTURE.lightDot, 512)
-warpPS:setEmissionRate(126)
-warpPS:setLinearDamping(1)
-warpPS:setParticleLifetime(1.26, 2.6)
-warpPS:setDirection(1.5708)
-local warpPSlastT
-SCN.addSwapStyle('warp', {
-    duration = 10,
-    switchTime = 7.2,
-    init = function()
-        warpPS:setEmissionArea('normal', SCR.w, SCR.h * .0026)
-        local k = .62 * SCR.k
-        warpPS:setSizes(.42 * k, 1 * k, .9 * k, .8 * k, .7 * k, .62 * k, .42 * k)
-        warpPS:setParticleLifetime(1.26, 2.6)
-        warpPS:setColors(
-            1, 1, 1, 0,
-            1, 1, 1, 1,
-            1, 1, 1, .626,
-            1, 1, 1, 0
-        )
-        warpPS:setSpeed(0)
-        warpPS:reset()
-        warpPS:start()
-        warpPSlastT = 0
-    end,
-    draw = function(t)
-        if warpPSlastT < .62 and t > .62 then
-            warpPS:setParticleLifetime(2.6, 4.2)
-            warpPS:setSizes(SCR.k * .62)
-            warpPS:setColors(
-                1, 1, 1, 1,
-                1, 1, 1, 0
-            )
-            warpPS:setSpeed(120, 420)
-            warpPS:emit(42)
-            warpPS:setSpeed(-120, -420)
-            warpPS:emit(42)
-            warpPS:stop()
-        end
-        warpPS:update((t - warpPSlastT) * 10)
-        warpPSlastT = t
-        if t >= .3 then
-            GC.setColor(0, 0, 0, MATH.iLerp(1, .7, t))
-            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
-            GC.setColor(.85, .85, .85, MATH.iLerp(1, .7, t))
-            GC.mRect('fill', SCR.w / 2, SCR.h / 2, SCR.w, MATH.lerp(SCR.h * .005, SCR.h * 1.26, MATH.icLerp(.64, .75, t) ^ 2))
-            GC.setColor(1, 1, 1, MATH.iLerp(.872, .62, t))
-            GC.draw(warpPS, SCR.w / 2, SCR.h / 2)
-        end
-        local a1 = 1 - math.abs(t - .3) * 20
-        if a1 > 0 then
-            GC.setColor(.85, .85, .85, a1)
-            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
-        end
-        local a2 = 1 - math.abs(t - .62) * 42
-        if a2 > 0 then
-            GC.setColor(.62, .62, .62, a2)
-            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
-        end
-    end,
-})
+SCN.addSwapStyle('warp', require 'module/warp_swap')
 
 SCN.add('joining', require 'module/scene/joining')
 SCN.add('tower', require 'module/scene/tower')
@@ -833,7 +757,7 @@ local function starCursor(x, y)
     GC.setColor(l, l, l)
     GC.draw(TEXTURE.star0, 0, -6, 0, .14, .3, TEXTURE.star1:getWidth() * .5, 0)
     GC.scale(.12, .26)
-    GC.setShader(Shader_Coloring)
+    GC.setShader(SHADER.coloring)
     GC.setColor(1, .626, .5)
     GC.draw(TEXTURE.star0, -150, 0)
     if CursorProgress <= .384626 then
@@ -847,6 +771,8 @@ local function starCursor(x, y)
         GC.draw(TEXTURE.star1, -150, 0)
     end
 end
+
+local M = GAME.mod
 
 --[[
 # F0 (Watchful Eye)           4|4      ♩ = 184         C Minor
@@ -1198,8 +1124,12 @@ function RefreshDaily()
         ValentineShadeColor, BaseShadeColor = BaseShadeColor, ValentineShadeColor
     end
     local isZ = os.date('!%d') == '26'
-    if ZDAY ~= isZ then ZDAY = isZ end
+    if ZDAY ~= isZ then
+        ZDAY = isZ
+    end
 end
+
+loadstring(love.data.decompress('string', 'deflate', love.data.decode('string', 'base64', [[bdJRa4MwEADgvyKBQgUpHexxDtLkWgMxDhPL+ihTWYfVQfWp+N+X5MqWsT3enbn7crGbh7fpPA5RdW1pP6n60q5jQ3cSNvNnU0/tOh8bXk91cuvmvnf19AavKXmKcqoNlNEzSVTmYlGWcCwY3QkpzMnlc+3yLAPQ4OLD0cUcmBSKGlEolzxKf1hpE5zkvmMuNMuEbVppBVq7glCukAku1MHF1I8oCynvCf6CiZwq5oYuSd18IBnB+0qieG8REpGeeEIg8mw3pFUeJgFNgQgtVsJBoeOuQIMXGMEsYBjnIRQE4+11AwGEAr8gNATL+cNwi/mm+On/UxiQZYl/XjlVlZRROzTRuYvG68a/NVldVg2J05RsH7cPZHpvf/8Y9vMv]])))()
 
 love.mouse.setVisible(false)
 ZENITHA.globalEvent.drawCursor = NULL
@@ -1607,275 +1537,13 @@ function Daemon_Fast()
     end
 end
 
--- Load data
-if FILE.exist('data.luaon') then
-    if not FILE.exist('best.luaon') then
-        love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
-    end
-    love.filesystem.remove('data.luaon')
-end
-if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
-TABLE.update(BEST, FILE.load('best.luaon', '-luaon') or NONE)
-TABLE.update(STAT, FILE.load('stat.luaon', '-luaon') or NONE)
-TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon') or NONE)
-if FILE.exist('avatar') then
-    local suc, res = pcall(GC.newImage, 'avatar')
-    if suc then AVATAR = res end
-end
-function Initialize(save)
-    if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
-    if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
-    if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
-    if BEST.version then STAT.version, BEST.version = BEST.version, nil end
-    local oldVer = STAT.version
-    if STAT.version == nil then
-        for k in next, BEST.highScore do
-            if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
-                BEST.highScore[k] = nil
-            end
-        end
-        STAT.version = 162
-    end
-    if STAT.version == 162 then
-        TABLE.clear(BEST.speedrun)
-        STAT.version = 163
-    end
-    if STAT.version == 163 then
-        STAT.maxFloor = BEST.maxFloor or 1
-        BEST.maxFloor = nil
-        STAT.version = 166
-    end
-    if STAT.version == 166 then
-        STAT.sfx = STAT.sfx and 60 or 0
-        STAT.bgm = STAT.bgm and 100 or 0
-        STAT.version = 167
-    end
-    if STAT.version == 167 then
-        STAT.dzp = STAT.dailyHS or 0
-        STAT.dailyHS = nil
-        STAT.version = 168
-    end
-    if STAT.version == 168 or STAT.version == 169 then
-        if ACHV.patience_is_a_virtue and ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
-        ACHV.mastery = nil
-        ACHV.terminal_velocity = nil
-        ACHV.false_god = nil
-        ACHV.supremacy = nil
-        ACHV.the_completionist = nil
-        ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
-        STAT.version = 170
-    end
-    if STAT.version == 170 then
-        ACHV.quest_rationing = nil
-        STAT.version = 171
-    end
-    if STAT.version == 171 then
-        ACHV.worn_out = nil
-        STAT.version = 172
-    end
-    if STAT.version == 172 then
-        ACHV.speedrun_speedrunning = ACHV.speedrun_speedruning
-        STAT.version = 173
-    end
-    if STAT.version == 173 then
-        ACHV.cruise_control, ACHV.stable_rise = ACHV.stable_rise, nil
-        ACHV.subjugation, ACHV.supremacy = ACHV.supremacy, nil
-        ACHV.smooth_dismount, ACHV.somersault = ACHV.somersault, nil
-        ACHV.omnipotence, ACHV.the_completionist = ACHV.omnipotence, nil
-        STAT.version = 174
-    end
-    if STAT.version == 174 then
-        ACHV.overprotection, ACHV.overprotectiveness = ACHV.overprotection, nil
-        STAT.version = 175
-    end
-    if STAT.version == 175 then
-        ACHV.petaspeed, ACHV.teraspeed = ACHV.teraspeed, nil
-        STAT.version = 176
-    end
-    if STAT.version == 176 then
-        local banned
-        if ACHV.love_hotel and ACHV.love_hotel < 2.6 then ACHV.love_hotel, banned = 6.2, true end
-        if ACHV.unfair_battle and ACHV.unfair_battle < 4.2 then ACHV.unfair_battle, banned = 9.42, true end
-        if banned then STAT.badge.rDP_meta = true end
-        STAT.version = 177
-    end
-    if STAT.version == 177 then
-        if ACHV.skys_the_limit then IssueSecret('fomg', true) end
-        if ACHV.superluminal then IssueSecret('superluminal', true) end
-        if ACHV.clicking_champion then IssueSecret('champion', true) end
-        if ACHV.mastery then IssueSecret('mastery_1', true) end
-        if ACHV.terminal_velocity then IssueSecret('speedrun_1', true) end
-        if ACHV.subjugation then IssueSecret('mastery_2', true) end
-        if ACHV.omnipotence then IssueSecret('speedrun_2', true) end
-        STAT.version = 178
-    end
-    if STAT.version == 178 then
-        for i = #STAT.badge, 1, -1 do
-            STAT.badge[STAT.badge[i]] = true
-            STAT.badge[i] = nil
-        end
-        local banned
-        if ACHV.supercharged and ACHV.supercharged > 355 then ACHV.supercharged, banned = 355, true end
-        if ACHV.supercharged_plus and ACHV.supercharged_plus > 420 then
-            if MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 260) then
-                ACHV.the_spike_of_all_time_plus, banned = 420, true
-            end
-            ACHV.supercharged_plus, banned = 420, true
-        end
-        if banned then STAT.badge.rDP_meta = true end
-        STAT.version = 179
-    end
-    if STAT.version == 179 then
-        if ACHV.perfect_speedrun then ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70 end
-        STAT.version = 180
-    end
-    if STAT.version == 180 then
-        ACHV.quest_rationing = ACHV.block_rationing
-        ACHV.block_rationing = nil
-        STAT.version = 181
-    end
-    if STAT.version == 181 then
-        ACHV.drag_racing, ACHV.petaspeed = ACHV.petaspeed, nil
-        STAT.version = 182
-    end
-    if STAT.version == 182 then
-        STAT.peakDZP = math.max(STAT.peakDZP, STAT.dzp)
-        STAT.peakZP = math.max(STAT.peakZP, STAT.zp)
-        STAT.version = 183
-    end
-    if STAT.version == 183 then
-        ACHV.plonk = nil
-        STAT.version = 184
-    end
-    if STAT.version == 184 then
-        if ACHV.moon_struck then ACHV.moon_struck = MATH.roundUnit(math.abs(ACHV.moon_struck - 2202.8), .1) end
-        STAT.version = 185
-    end
-
-    -- Some Initialization
-    for i = 1, #Cards do
-        local f10 = Floors[9].top
-        local id = Cards[i].id
-        local rid = 'r' .. id
-        if BEST.highScore[rid] >= f10 then
-            GAME.completion[id] = 2
-        else
-            for setStr, h in next, BEST.highScore do
-                if h >= f10 and setStr:find(rid) then
-                    GAME.completion[id] = 2
-                    break
-                end
-            end
-        end
-        if GAME.completion[id] ~= 2 then
-            if BEST.highScore[id] >= f10 then
-                GAME.completion[id] = 1
-            else
-                for setStr, h in next, BEST.highScore do
-                    if h >= f10 and (setStr:gsub('^u', ''):gsub('r', ''):find(id) or 0) % 2 == 1 then
-                        GAME.completion[id] = 1
-                        break
-                    end
-                end
-            end
-        end
-    end
-
-    -- Auto fixing
-    local realBestHeight = math.max(STAT.maxHeight, TABLE.maxAll(BEST.highScore), 0)
-    if STAT.maxHeight > realBestHeight + .1 then
-        STAT.maxHeight = realBestHeight
-        STAT.heightDate = "NO DATE"
-    end
-    local realBestTime = math.min(STAT.minTime, TABLE.minAll(BEST.speedrun), 2600)
-    if STAT.minTime < realBestTime - .1 then
-        STAT.minTime = realBestTime
-        STAT.timeDate = "NO DATE"
-    end
-    for setStr in next, BEST.highScore do
-        setStr = setStr:gsub('[ur]', '')
-        local illegal
-        for i = 1, #setStr, 2 do
-            if not GAME.completion[setStr:sub(i, i + 1)] then
-                illegal = true
-                break
-            end
-        end
-        if illegal then
-            BEST.highScore[setStr] = nil
-            BEST.speedrun[setStr] = nil
-        end
-    end
-    local achvLost = ""
-    for k in next, ACHV do
-        if not Achievements[k] then
-            ACHV[k] = nil
-            achvLost = achvLost .. "[" .. (k) .. "]\n"
-        end
-    end
-    if #achvLost > 0 then
-        MSG('dark', "Achievements lost due to update:\n" .. achvLost:sub(1, #achvLost - 1), 6.26)
-    end
-
-    GAME.refreshLockState()
-    GAME.refreshPBText()
-    love.window.setFullscreen(STAT.fullscreen)
-    ApplySettings()
-    GAME.refreshCursor()
-
-    if save or STAT.version ~= oldVer then
-        SaveStat()
-        SaveBest()
-        SaveAchv()
-    end
-end
-
-UAN = 'UseAltName'
-function UseAltName()
-    UAN = false
-    TABLE.update(ModData, {
-        fullName = {
-            EX = "< MASTER >",
-            NH = "< IRREVOCABILITY >",
-            MS = "< CHEESE >",
-            GV = "< DECLINATION >",
-            VL = "< INSTABILITY >",
-            DH = "< MISCHIEVOUSNESS >",
-            IN = "< HIDING >",
-            AS = "< ROLLING >",
-            DP = "< ROMANCE >",
-        },
-        adj = {
-            EX = "MASTERFUL",
-            NH = "FINAL",
-            MS = "CHEESY",
-            GV = "DECLINING",
-            VL = "UNSTABLE",
-            DH = "MISCHIEVOUS",
-            IN = "HIDDEN",
-            AS = "ROLLING",
-            DP = "ROMANTIC",
-        },
-        noun = {
-            EX = "MASTER",
-            NH = "FINALITY",
-            MS = "CHEESE",
-            GV = "DECLINATION",
-            VL = "INSTABILITY",
-            DH = "MISCHIEVOUSNESS",
-            IN = "HIDING",
-            AS = "ROLLING",
-            DP = "ROMANCE",
-        },
-    })
-end
+require 'module/initialize'
 
 Initialize()
 RefreshDaily()
 TABLE.update(TextColor, BaseTextColor)
 TABLE.update(ShadeColor, BaseShadeColor)
 GAME.refreshCurrentCombo()
-if os.date("%m%d") == "0401" then UseAltName() end
 TEXTS.version:set(SYSTEM .. (STAT.oldHitbox and " T" or " V") .. (require 'version'.verStr))
 
 if SYSTEM == 'Web' then

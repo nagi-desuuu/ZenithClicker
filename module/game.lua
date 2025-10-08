@@ -290,7 +290,7 @@ end
 local function modNameSorter(a, b) return MD.prio_name[a] < MD.prio_name[b] end
 
 ---@param list string[] WILL BE SORTED!!!
----@param mode? 'ingame' | 'button' | 'rpc'
+---@param mode? 'ingame' | 'button' | 'rpc' | 'record'
 function GAME.getComboName(list, mode)
     local len = #list
     if mode == 'ingame' then
@@ -412,11 +412,22 @@ function GAME.getComboName(list, mode)
         -- Empty
         if len == 0 then return "" end
 
-        -- Simple
-        if len == 1 then return MD.noun[list[1]] end
+        -- Named Combo
+        local combo = (
+            mode == 'record' and M.DH == 2 and ComboData.gameEX or
+            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
+            M.DH == 2 and ComboData.gameEX or
+            ComboData.game
+        )[table.concat(TABLE.sort(list), ' ')]
+        if combo then return combo.name end
 
         -- Super Set
-        if not (mode == 'button' and GAME.playing) then
+        if mode == 'button' and GAME.playing then
+            local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
+            if len_noDP >= 7 then
+                return len_noDP == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
+            end
+        else
             local cmbID = table.concat(list)
             if STRING.count(cmbID, "r") >= 2 then
                 local mp = GAME.getComboMP(list)
@@ -436,20 +447,7 @@ function GAME.getComboName(list, mode)
                         )
                 end
             end
-        else
-            local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
-            if len_noDP >= 7 then
-                return len_noDP == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
-            end
         end
-
-        -- Named Combo
-        local combo = (
-            M.DH == 2 and ComboData.gameEX or
-            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
-            ComboData.game
-        )[table.concat(TABLE.sort(list), ' ')]
-        if combo then return combo.name end
 
         -- General
         table.sort(list, modNameSorter)
@@ -2364,8 +2362,7 @@ function GAME.finish(reason)
                     size = GAME.comboMP == 18 and 2.6 or 1.626
                     duration = 12.6
                 else
-                    t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                    t = (GAME.anyUltra and "U-" or GAME.anyRev and "R-" or "") .. t
+                    t = (GAME.anyUltra and "U-" or GAME.anyRev and "R-" or "") .. (#hand == 1 and "MOD" or "COMBO") .. " MASTERED"
                     size = 2.26
                     color = 'lC'
                     duration = 6.2
@@ -2873,4 +2870,4 @@ function GAME.update(dt)
     end
 end
 
-return GAME
+_G.GAME = GAME

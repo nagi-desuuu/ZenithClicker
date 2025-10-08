@@ -638,7 +638,7 @@ function Card:draw()
             -- Rev Throb
             if not self.upright and GAME.revDeckSkin and faceUp then
                 gc_setColor(1, 1, 1, ThrobAlpha.card)
-                gc_setShader(Shader_Throb)
+                gc_setShader(SHADER.throb)
                 gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
                 gc_setShader()
             end
