@@ -61,7 +61,6 @@ local showMP, showFloor = true, true
 ---@return Record?
 local function newRecord(list, isUltra)
     local mods = #list == 0 and "No Mod" or table.concat(list, " ")
-    if isUltra then mods = mods:gsub('r', 'u') end
     table.sort(list)
     local setStr = (isUltra and 'u' or '') .. table.concat(list)
     local height = BEST.highScore[setStr]
@@ -97,7 +96,7 @@ local function newRecord(list, isUltra)
         _ultra = isUltra,
 
         comboText = GC.newText(FONT.get(50), comboText),
-        modsText = GC.newText(FONT.get(30), mods .. (mp > 2 and "  [" .. mp .. "]" or "")),
+        modsText = GC.newText(FONT.get(30), (isUltra and mods:gsub('r', 'u') or mods) .. (mp > 2 and "  [" .. mp .. "]" or "")),
         floorText = GC.newText(FONT.get(50), floorText),
         scoreText = GC.newText(FONT.get(50), scoreText),
         extraText = GC.newText(FONT.get(30), extraText),
@@ -149,7 +148,10 @@ local function query()
         end
     end
     if set.match == 'exact' then
-        recList[1] = newRecord(list)
+        for i = 0, 1 do
+            local rec = newRecord(list, i == 1)
+            if rec then table.insert(recList, rec) end
+        end
     else
         for setStr, height in next, BEST.highScore do
             repeat
@@ -203,11 +205,11 @@ local function query()
     end
     SFX.play(
         #recList == 0 and 'combobreak' or
-        #recList == 1 and 'timer2' or
+        set.match == 'exact' and 'timer2' or
         'timer1',
         1, 0, Tone(0)
     )
-    maxScroll = max((#recList - 3.5) * 120, 0)
+    maxScroll = max((#recList - 4) * 120, 0)
     scroll = clamp(scroll, 0, maxScroll)
 end
 
@@ -362,7 +364,7 @@ end
 
 local gc = love.graphics
 local gc_replaceTransform, gc_translate = gc.replaceTransform, gc.translate
-local gc_draw, gc_rectangle, gc_print = gc.draw, gc.rectangle, gc.print
+local gc_draw, gc_rectangle, gc_print, gc_printf = gc.draw, gc.rectangle, gc.print, gc.printf
 local gc_setColor, gc_setLineWidth = gc.setColor, gc.setLineWidth
 local gc_setAlpha, gc_mStr = GC.setAlpha, GC.mStr
 local setFont = FONT.set
@@ -485,6 +487,8 @@ function scene.overDraw()
     else
         gc_print("PERSONAL RECORDS", 15, 0)
     end
+    gc_replaceTransform(SCR.xOy_ur)
+    gc_printf(cd > 0 and "Searching..." or #recList .. " Results", -620, 0, 600, 'right')
 
     -- Bottom bar & text
     gc_replaceTransform(SCR.xOy_d)
