@@ -728,7 +728,7 @@ function scene.draw()
     local panelH = 697 + GAME.uiHide * (420 + GAME.height / 6.2)
 
     -- GigaSpeed BG
-    if GigaSpeed.alpha > 0 then
+    if GigaSpeed.alpha > 0 and not GAME.invisUI then
         local gigaPower = (1 - clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)) ^ 1.5
         if gigaPower > 0 then
             gc_replaceTransform(SCR.origin)
@@ -737,11 +737,9 @@ function scene.draw()
             gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
             gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
 
-            if not GAME.invisUI then
-                gc_replaceTransform(SCR.xOy)
-                gc_setAlpha(GigaSpeed.alpha * gigaPower)
-                gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
-            end
+            gc_replaceTransform(SCR.xOy)
+            gc_setAlpha(GigaSpeed.alpha * gigaPower)
+            gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
         end
     end
 
@@ -845,7 +843,7 @@ function scene.overDraw()
     gc_translate(0, DeckPress)
 
     -- Current combo
-    if not GAME.playing or M.IN < 2 then
+    if not (GAME.playing and M.IN == 2 or GAME.invisUI) then
         gc_setColor(TextColor)
         if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
         gc_mDraw(TEXTS.mod, 800, 396, 0, min(1, 760 / TEXTS.mod:getWidth()))
@@ -1271,7 +1269,7 @@ function scene.overDraw()
     end
 
     -- UI
-    if GAME.uiHide < 1 then
+    if GAME.uiHide < 1 and not GAME.invisUI then
         local exT = GAME.exTimer
         local revT = GAME.revTimer
         local d = GAME.uiHide * 70
