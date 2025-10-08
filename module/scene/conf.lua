@@ -78,6 +78,8 @@ local function refreshWidgets()
     scene.widgetList.changeAboutme:setVisible(not MusicPlayer)
     scene.widgetList.changeName:setVisible(not MusicPlayer)
     scene.widgetList.export:setVisible(not MusicPlayer)
+    scene.widgetList.audio:setVisible(not MusicPlayer)
+    scene.widgetList.mute:setVisible(not MusicPlayer)
 end
 
 local function refreshSongInfo()
@@ -281,48 +283,50 @@ function scene.draw()
 
     -- Music player info
     if MusicPlayer then
-        local sx, len = 260, 570
+        local len = 620
+        gc_ucs_move('m', 140, 202)
 
         FONT.set(30)
         gc_setColor(clr.T)
-        gc_print(STRING.time_simp(playTime), sx, 249, 0, .626)
-        gc_print(playingBgmLengthStr, sx + len - 45, 249, 0, .626)
+        gc_print(STRING.time_simp(playTime), 0, 49, 0, .626)
+        gc_print(playingBgmLengthStr, len - 45, 49, 0, .626)
 
         local data = BgmData[BgmPlaying]
         if BgmLooping then
             if data.loop[1] == 0 then
-                gc_print('D.C.', sx + len * data.loop[2] / playingBgmLength, 235, 0, .3)
+                gc_print('D.C.', len * data.loop[2] / playingBgmLength, 35, 0, .3)
             else
-                gc_print('S', sx + len * data.loop[1] / playingBgmLength, 235, 0, .3)
-                gc_print('D.S.', sx + len * data.loop[2] / playingBgmLength, 235, 0, .3)
+                gc_print('S', len * data.loop[1] / playingBgmLength, 35, 0, .3)
+                gc_print('D.S.', len * data.loop[2] / playingBgmLength, 35, 0, .3)
             end
         end
 
         gc_setColor(clr.L)
-        gc_rectangle('fill', sx, 246, len, 4)
+        gc_rectangle('fill', 0, 46, len, 4)
         if BgmPlaying == 'tera' or BgmPlaying == 'terar' then
             gc_setColor(COLOR.rainbow_light(2.6 * t))
         else
             gc_setColor(bgmColors[BgmPlaying] or clr.LT)
         end
-        gc_rectangle('fill', sx, 246, len * playTime / playingBgmLength, 4)
+        gc_rectangle('fill', 0, 46, len * playTime / playingBgmLength, 4)
 
-        gc_mStr(playingBgmTitle, sx + len / 2, 200)
+        gc_mStr(playingBgmTitle, len / 2, 0)
         gc_setColor(1, 1, 1, .35 - .26 * math.sin(playTime / (beatBar * beatLen) * 3.1416))
-        gc_mStr(playingBgmTitle, sx + len / 2, 200)
+        gc_mStr(playingBgmTitle, len / 2, 0)
         gc_setColor(clr.LT)
         gc_setAlpha(.26)
-        gc_printf(data.meta, sx + len / 2, 256, 2 * len, 'center', 0, .42, .42, len)
+        gc_printf(data.meta, len / 2, 56, 2 * len, 'center', 0, .42, .42, len)
 
         if BgmNeedSkip then
             local alpha = .26 + .62 * (-2.6 * t % 1)
             gc_setColor(COLOR.C)
             gc_setAlpha(alpha)
-            gc_mRect('fill', sx + len * BgmNeedSkip[1] / playingBgmLength, 248, 2, 9)
+            gc_mRect('fill', len * BgmNeedSkip[1] / playingBgmLength, 248, 2, 9)
             gc_setColor(COLOR.O)
             gc_setAlpha(alpha)
-            gc_mRect('fill', sx + len * BgmNeedSkip[2] / playingBgmLength, 248, 2, 9)
+            gc_mRect('fill', len * BgmNeedSkip[2] / playingBgmLength, 248, 2, 9)
         end
+        gc_ucs_back()
     end
 
     -- Top bar & title
@@ -654,12 +658,14 @@ scene.widgetList = {
     -- AUDIO
     WIDGET.new {
         type = 'text', alignX = 'left',
+        name = 'audio',
         text = "AUDIO",
         color = clr.T,
         fontSize = 50,
         x = baseX + 30, y = baseY + 250,
     },
     WIDGET.new {
+        name = 'mute',
         type = 'checkBox',
         fillColor = clr.cbFill,
         frameColor = clr.cbFrame,
