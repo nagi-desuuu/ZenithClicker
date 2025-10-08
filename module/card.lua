@@ -117,7 +117,9 @@ function Card:setActive(auto, key)
         end
         GAME.incrementPrompt('flip')
     end
-    GAME.lastFlip = self.id
+    if not auto then
+        GAME.lastFlip = self.id
+    end
 
     self.active = not self.active
     local noSpin, revOn
