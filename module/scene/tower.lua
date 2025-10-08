@@ -1596,6 +1596,7 @@ scene.widgetList = {
             GAME.refreshLayout()
             GAME.refreshUltra()
             GAME.refreshCurrentCombo()
+            GAME.refreshPBText()
             RefreshBGM()
             GAME.refreshRPC()
 

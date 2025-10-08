@@ -46,6 +46,7 @@ local set = {
 ---@field _speedrun number
 ---@field _floor number
 ---@field _zp number
+---@field _ultra? true
 ---
 ---@field revQuad love.Quad | false
 ---@field comboText love.Text
@@ -55,13 +56,14 @@ local set = {
 ---@field extraText love.Text
 
 ---@return Record?
-local function newRecord(list)
+local function newRecord(list, isUltra)
     local mods = #list == 0 and "No Mod" or table.concat(list, " ")
+    if isUltra then mods = mods:gsub('r', 'u') end
     table.sort(list)
-    local cmbID = table.concat(list)
-    local height = BEST.highScore[cmbID]
+    local setStr = (isUltra and 'u' or '') .. table.concat(list)
+    local height = BEST.highScore[setStr]
     if height == 0 then return end
-    local time = BEST.speedrun[cmbID]
+    local time = BEST.speedrun[setStr]
     local floor = height >= 6200 and 11 or GAME.calculateFloor(height)
     local scoreText, floorText, extraText
     local mp, zp = GAME.getComboMP(list), GAME.getComboZP(list)
@@ -78,14 +80,20 @@ local function newRecord(list)
         scoreText = ("%d ZP"):format(height * zp)
         extraText = ("%.2f M"):format(height)
     end
+    local comboText = setStr == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'button')
+    if isUltra then
+        ---@cast comboText string
+        comboText = comboText:gsub("([^\"])", "ULTRA %1", 1)
+    end
     return {
         _list = list,
         _height = height,
         _speedrun = time,
         _floor = floor,
         _zp = height * zp,
+        _ultra = isUltra,
 
-        comboText = GC.newText(FONT.get(50), cmbID == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'button')),
+        comboText = GC.newText(FONT.get(50), comboText),
         modsText = GC.newText(FONT.get(30), mods .. (mp > 2 and "  [" .. mp .. "]" or "")),
         floorText = GC.newText(FONT.get(50), floorText),
         scoreText = GC.newText(FONT.get(50), scoreText),
@@ -142,6 +150,8 @@ local function query()
     else
         for id, height in next, BEST.highScore do
             repeat
+                local ultra = id:sub(1, 1) == 'u'
+                if ultra then id = id:sub(2) end
                 if set.mode ~= 'speedrun' then
                     -- floor check
                     if not (set.floorComp == '>' and set.floor == 1 or set.floorComp == '<' and set.floor == 10) then
@@ -168,7 +178,7 @@ local function query()
                     if #l2 ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
                 end
 
-                table.insert(recList, newRecord(l2))
+                table.insert(recList, newRecord(l2, ultra))
             until true
         end
         table.sort(recList,
@@ -379,6 +389,12 @@ function scene.draw()
             gc_setColor(clr.T)
             gc_draw(R.comboText, 15, 15, 0, min(888 / R.comboText:getWidth(), 1), 1)
             gc_draw(R.scoreText, pw - 15, 15, 0, 1, 1, R.scoreText:getWidth())
+
+            if R._ultra then
+                gc_setColor(.42, 0, 0, .26)
+                gc_rectangle('fill', 0, 10, pw, 110)
+                gc_draw(TEXTURE.darkCorner, 0, 10, 0, pw / 128, 110 / 128)
+            end
 
             gc_translate(0, 120)
         end

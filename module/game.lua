@@ -988,10 +988,12 @@ function GAME.upFloor()
             GAME.setGigaspeedAnim(false)
             if GAME.teramusic then IssueAchv('blazing_speed') end
             GAME.stopTeraspeed('f10')
-            local t = BEST.speedrun[GAME.comboStr]
+
+            local setStr = (GAME.anyUltra and 'u' or '') .. GAME.comboStr
+            local t = BEST.speedrun[setStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
-                BEST.speedrun[GAME.comboStr] = roundTime
+                BEST.speedrun[setStr] = roundTime
                 SaveBest()
             end
 
@@ -1343,7 +1345,7 @@ function GAME.refreshLockState()
 end
 
 function GAME.refreshPBText()
-    local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    local setStr = (GAME.anyUltra and 'u' or '') .. table.concat(TABLE.sort(GAME.getHand(true)))
     local height = BEST.highScore[setStr]
     if height == 0 then
         TEXTS.pb:set("No score yet")
@@ -2347,9 +2349,10 @@ function GAME.finish(reason)
 
         -- Best
         local hand = GAME.getHand(true)
-        local oldPB = BEST.highScore[GAME.comboStr]
+        local setStr = (GAME.anyUltra and 'u' or '') .. GAME.comboStr
+        local oldPB = BEST.highScore[setStr]
         if GAME.roundHeight > oldPB then
-            BEST.highScore[GAME.comboStr] = GAME.roundHeight
+            BEST.highScore[setStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
                 local t
                 local size, color, duration
