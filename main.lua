@@ -368,13 +368,13 @@ TEXTURE = {
     logo_old = assets 'icon_old.png',
 }
 TEXTURE = IMG.init(TEXTURE, true)
-local transition = { w = 128, h = 1 }
-for x = 0, 127 do
-    table.insert(transition, { 'setCL', 1, 1, 1, 1 - x / 128 })
-    table.insert(transition, { 'fRect', x, 0, 1, 1 })
-end
-TEXTURE.transition = GC.load(transition)
 TEXTURE.pixel = GC.load { w = 1, h = 1, { 'clear', 1, 1, 1 } }
+TEXTURE.transition = GC.newCanvas(128, 1)
+GC.setCanvas(TEXTURE.transition)
+for x = 0, 127 do
+    GC.setColor(1, 1, 1, 1 - x / 128)
+    GC.rectangle('fill', x, 0, 1, 1)
+end
 TEXTURE.darkCorner = GC.newCanvas(128, 128)
 GC.setCanvas(TEXTURE.darkCorner)
 GC.setColor(0, 0, 0)

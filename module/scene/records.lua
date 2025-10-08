@@ -25,7 +25,7 @@ local pw, ph = 1200, 300
 
 local cardPos = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
 local revBGquads = {}
-for i = 1, 26 do
+for i = 1, 62 do
     revBGquads[i] = GC.newQuad(MATH.rand(0, 1586 - pw), MATH.rand(0, 606 - 110), pw, 110, 1586, 606)
 end
 
@@ -422,19 +422,21 @@ function scene.draw()
             gc_setColor(clr.D)
             drawBtn(0, 10, pw, 110, R.revQuad)
 
-            gc_setColor(clr.T2)
-            gc_draw(R.floorText, pw * .626, -5, 0, 2, 2, R.floorText:getWidth() / 2)
-            gc_draw(R.modsText, 15, 72)
-            gc_draw(R.extraText, pw - 15, 72, 0, 1, 1, R.extraText:getWidth())
-
             gc_setColor(clr.T)
             gc_draw(R.comboText, 15, 15, 0, min(888 / R.comboText:getWidth(), 1), 1)
             gc_draw(R.scoreText, pw - 15, 15, 0, 1, 1, R.scoreText:getWidth())
 
+            gc_setAlpha(.26)
+            gc_draw(R.floorText, pw * .626, -5, 0, 2, 2, R.floorText:getWidth() / 2)
+            gc_draw(R.modsText, 15, 72)
+            gc_draw(R.extraText, pw - 15, 72, 0, 1, 1, R.extraText:getWidth())
+
             if R._ultra then
-                gc_setColor(.42, 0, 0, .26)
+                gc_setColor(.8, 0, 0, .26)
                 gc_rectangle('fill', 0, 10, pw, 110)
-                gc_draw(TEXTURE.darkCorner, 0, 10, 0, pw / 128, 110 / 128)
+                gc_setColor(0, 0, 0, .62)
+                gc_draw(TEXTURE.transition, 0, 10, 1.5707963267948966, 42 / 128, -pw)
+                gc_draw(TEXTURE.transition, 0, 120, -1.5707963267948966, 42 / 128, pw)
             end
 
             gc_translate(0, 120)
