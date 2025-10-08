@@ -26,6 +26,10 @@ local function addSection(y)
     table.insert(lines, y)
 end
 
+for d = .5, 2.5, .5 do
+    addText({ COLOR.LD, "ZENITH" }, 40 + d, 20 + d)
+    addText({ COLOR.LD, "CLICKER" }, 80 + d, 95 + d)
+end
 addText("ZENITH", 40, 20)
 addText("CLICKER", 80, 95)
 
