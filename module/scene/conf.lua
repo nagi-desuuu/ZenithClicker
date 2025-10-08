@@ -660,6 +660,15 @@ scene.widgetList = {
         x = baseX + 30, y = baseY + 250,
     },
     WIDGET.new {
+        type = 'checkBox',
+        fillColor = clr.cbFill,
+        frameColor = clr.cbFrame,
+        textColor = clr.T, text = "MUTE ON UNFOCUS",
+        x = baseX + 562, y = baseY + 255,
+        disp = function() return STAT.autoMute end,
+        code = function() STAT.autoMute = not STAT.autoMute end,
+    },
+    WIDGET.new {
         type = 'slider',
         x = baseX + 240 + 85, y = baseY + 310, w = 400,
         axis = { 0, 100, 10 },

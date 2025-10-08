@@ -538,6 +538,8 @@ STAT = {
     bgm = 100,
 
     startCD = true,
+    autoMute = false,
+    oldHitbox = false,
 }
 
 ACHV = {}
@@ -1296,6 +1298,40 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         end
         MSG('dark', STAT.bgm > 0 and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
+    end
+end
+
+do -- Auto mute when unfocused
+    local function task_autoSoundOff()
+        coroutine.yield()
+        while true do
+            local dt = coroutine.yield()
+            local v = love.audio.getVolume()
+            love.audio.setVolume(math.max(v - dt * 2.6, 0))
+            if v == 0 then return end
+        end
+    end
+    local function task_autoSoundOn()
+        coroutine.yield()
+        while true do
+            local dt = coroutine.yield()
+            local v = love.audio.getVolume()
+            if v < 1 then
+                love.audio.setVolume(math.min(v + dt * 2.6, 1))
+            else
+                return
+            end
+        end
+    end
+    function ZENITHA.globalEvent.focus(f)
+        if not STAT.autoMute then return end
+        if f then
+            TASK.removeTask_code(task_autoSoundOff)
+            TASK.new(task_autoSoundOn)
+        else
+            TASK.removeTask_code(task_autoSoundOn)
+            TASK.new(task_autoSoundOff)
+        end
     end
 end
 
