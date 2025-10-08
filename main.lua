@@ -1724,8 +1724,8 @@ function Initialize(save)
         if BEST.highScore[rid] >= f10 then
             GAME.completion[id] = 2
         else
-            for cmb, h in next, BEST.highScore do
-                if h >= f10 and cmb:find(rid) then
+            for setStr, h in next, BEST.highScore do
+                if h >= f10 and setStr:find(rid) then
                     GAME.completion[id] = 2
                     break
                 end
@@ -1735,8 +1735,8 @@ function Initialize(save)
             if BEST.highScore[id] >= f10 then
                 GAME.completion[id] = 1
             else
-                for cmb, h in next, BEST.highScore do
-                    if h >= f10 and (cmb:gsub('r', ''):find(id) or 0) % 2 == 1 then
+                for setStr, h in next, BEST.highScore do
+                    if h >= f10 and (setStr:gsub('^u', ''):gsub('r', ''):find(id) or 0) % 2 == 1 then
                         GAME.completion[id] = 1
                         break
                     end
@@ -1756,18 +1756,18 @@ function Initialize(save)
         STAT.minTime = realBestTime
         STAT.timeDate = "NO DATE"
     end
-    for cmb in next, BEST.highScore do
-        cmb = cmb:gsub('r', '')
+    for setStr in next, BEST.highScore do
+        setStr = setStr:gsub('[ur]', '')
         local illegal
-        for i = 1, #cmb, 2 do
-            if not GAME.completion[cmb:sub(i, i + 1)] then
+        for i = 1, #setStr, 2 do
+            if not GAME.completion[setStr:sub(i, i + 1)] then
                 illegal = true
                 break
             end
         end
         if illegal then
-            BEST.highScore[cmb] = nil
-            BEST.speedrun[cmb] = nil
+            BEST.highScore[setStr] = nil
+            BEST.speedrun[setStr] = nil
         end
     end
     local achvLost = ""
