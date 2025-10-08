@@ -148,10 +148,9 @@ local function query()
     if set.match == 'exact' then
         recList[1] = newRecord(list)
     else
-        for id, height in next, BEST.highScore do
+        for setStr, height in next, BEST.highScore do
             repeat
-                local ultra = id:sub(1, 1) == 'u'
-                if ultra then id = id:sub(2) end
+                local ultra = setStr:sub(1, 1) == 'u'
                 if set.mode ~= 'speedrun' then
                     -- floor check
                     if not (set.floorComp == '>' and set.floor == 1 or set.floorComp == '<' and set.floor == 10) then
@@ -166,12 +165,13 @@ local function query()
                     end
                 else
                     -- speedrun check
-                    if BEST.speedrun[id] == 1e99 then break end
+                    if BEST.speedrun[setStr] > 1e26 then break end
                 end
                 -- combo check
-                if set.match ~= 'exclude' and #id < #table.concat(list) then break end
+                if ultra then setStr = setStr:sub(2) end
+                if set.match ~= 'exclude' and #setStr < #table.concat(list) then break end
                 local l2 = {}
-                for m in id:gmatch('r?..') do table.insert(l2, m) end
+                for m in setStr:gmatch('r?..') do table.insert(l2, m) end
                 if set.match == 'include' then
                     if #l2 - #list ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
                 elseif set.match == 'exclude' then
@@ -270,9 +270,22 @@ function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 function scene.keyDown(key, isRep)
     if isRep then return true end
     local bindID = TABLE.find(STAT.keybind, key)
-    if bindID and bindID <= 18 and M.AS > 0 then
-        set.sel[bindID] = (set.sel[bindID] + 1) % 3
+    if bindID and bindID <= 18 then
+        local i = bindID > 9 and bindID - 9 or bindID
+        if GAME.completion[MD.deck[i].id] > 0 then
+            if love.keyboard.isDown('lctrl', 'rctrl') then
+                set.sel[i] = set.sel[i] == 0 and 2 or 0
+            else
+                set.sel[i] = (set.sel[i] + 1) % 3
+            end
+        else
+            set.sel[i] = set.sel[i] == 0 and 1 or 0
+        end
+    elseif key == STAT.keybind[19] or key == 'return' then
+        -- Confirm
+        cd = min(cd, .01)
     elseif key == STAT.keybind[20] then
+        -- Reset
         for i = 1, #set.sel do set.sel[i] = 0 end
         set.match = 'include'
         set.floor = 1
@@ -281,8 +294,27 @@ function scene.keyDown(key, isRep)
         set.order = 'first'
         SFX.play('allclear')
         refresh()
-    elseif key == STAT.keybind[19] then
-        cd = min(cd, .01)
+    elseif key == 'tab' then
+        set.mode =
+            set.mode == 'altitude' and 'speedrun' or
+            set.mode == 'speedrun' and 'zp' or
+            'altitude'
+    elseif key == 'lshift' or key == 'rshift' then
+        set.match =
+            set.match == 'include' and 'exclude' or
+            set.match == 'exclude' and 'exact' or
+            'include'
+    elseif key == '[' then
+        set.order = 'first'
+    elseif key == ']' then
+        set.order = 'last'
+    elseif #key == 1 and MATH.between(key, '0', '9') then
+        set.floor = tonumber(key)
+        if set.floor == 0 then set.floor = 10 end
+    elseif key == '-' then
+        set.floorComp = '<'
+    elseif key == '=' then
+        set.floorComp = '>'
     elseif key == 'escape' then
         SFX.play('menuclick')
         SCN.back('none')
