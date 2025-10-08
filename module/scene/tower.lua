@@ -204,6 +204,16 @@ local function keyTrigger(key)
     end
 end
 
+local function ultraStateChange()
+    GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
+    GAME.refreshLayout()
+    GAME.refreshUltra()
+    GAME.refreshCurrentCombo()
+    GAME.refreshPBText()
+    RefreshBGM()
+    GAME.refreshRPC()
+end
+
 local function applyCombo(set)
     local changed
     for _, C in ipairs(Cards) do
@@ -214,6 +224,10 @@ local function applyCombo(set)
             if tar > 0 then C:setActive(true, tar == 2 and 2 or 1) end
             changed = true
         end
+    end
+    if (not set.ultra) ~= (not URM) then
+        URM = not URM
+        ultraStateChange()
     end
     if changed then SFX.play('mmstart') end
 end
@@ -1592,13 +1606,7 @@ scene.widgetList = {
             URM = PieceSFXID == 6 and RevUnlocked
             GC.setWireframe(PieceSFXID == 7)
 
-            GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
-            GAME.refreshLayout()
-            GAME.refreshUltra()
-            GAME.refreshCurrentCombo()
-            GAME.refreshPBText()
-            RefreshBGM()
-            GAME.refreshRPC()
+            ultraStateChange()
 
             if PieceSFXID == 7 and not GC.isWireframe() then
                 MSG({

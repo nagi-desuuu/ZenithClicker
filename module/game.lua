@@ -2365,7 +2365,7 @@ function GAME.finish(reason)
                     duration = 12.6
                 else
                     t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                    if GAME.anyRev then t = "R-" .. t end
+                    t = (GAME.anyUltra and "U-" or GAME.anyRev and "R-" or "") .. t
                     size = 2.26
                     color = 'lC'
                     duration = 6.2
@@ -2651,7 +2651,7 @@ function GAME.finish(reason)
         end)
     end
 
-    if URM then
+    if URM and GAME.height < 0 then
         GAME.nightcore = false
         GAME.slowmo = false
         GAME.glassCard = false

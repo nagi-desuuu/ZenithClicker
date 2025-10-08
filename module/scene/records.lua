@@ -259,6 +259,9 @@ function scene.mouseClick(x, y, k)
         MSG('dark', "Mod set applied!", 1)
         SFX.play('ihs')
         PendingComboFromRecord = recList[y]._list
+        if recList[y]._ultra then
+            PendingComboFromRecord.ultra = true
+        end
     end
 end
 
@@ -328,7 +331,13 @@ local function drawBtn(x, y, w, h, revQuad)
     gc_rectangle('fill', x, y, w, h)
     if revQuad then
         gc_setColor(1, 1, 1)
-        gc_draw(TEXTURE.recRevBG, revQuad, 0, 10)
+        if colorRev then
+            gc_draw(TEXTURE.recRevBG, revQuad, 0, 10)
+        else
+            GC.setShader(Shader_RGswap)
+            gc_draw(TEXTURE.recRevBG, revQuad, 0, 10)
+            GC.setShader()
+        end
     end
     gc_setColor(1, 1, 1, .2)
     gc_rectangle('fill', x, y, w, 3)
