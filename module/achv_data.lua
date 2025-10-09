@@ -54,7 +54,6 @@ end
 ---@field rank? 'floor' | fun(score):number
 ---@field type? 'competitive' | 'unranked' | 'issued' | 'event'
 ---@field hide? fun():boolean
----@field notUsed? true
 
 ---@type Map<Achievement>
 Achievements = {
@@ -1426,7 +1425,6 @@ local compFunc = {
 }
 
 do
-    TABLE.foreach(Achievements, function(v) return v.notUsed end, true)
     local i = 1
     repeat
         local achv = Achievements[i]
