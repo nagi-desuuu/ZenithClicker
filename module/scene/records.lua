@@ -28,12 +28,14 @@ local revBGquads = {}
 for i = 1, 62 do
     revBGquads[i] = GC.newQuad(MATH.rand(0, 1586 - pw), MATH.rand(0, 606 - 110), pw, 110, 1586, 606)
 end
+local cardIDs = {}
+for i = 1, #MD.deck do cardIDs[i] = MD.deck[i].id end
 
 local scroll, scroll1, maxScroll
 local cd, timer = 0, 0
 local set = {
     sel = TABLE.new(0, #MD.deck),
-    match = 'include', ---@type 'include' | 'exclude' | 'exact'
+    match = 'include', ---@type 'include' | 'exclude' | 'exact' | 'include+' | 'exclude+' | 'exact+'
     floor = 1,
     floorComp = '>', ---@type '>' | '<' | '='
     mp = 1,
@@ -144,7 +146,7 @@ local function query()
     local list = {}
     for i = 1, #MD.deck do
         if set.sel[i] > 0 then
-            table.insert(list, (set.sel[i] == 2 and 'r' or '') .. MD.deck[i].id)
+            table.insert(list, (set.sel[i] == 2 and 'r' or '') .. cardIDs[i])
         end
     end
     if set.match == 'exact' then
@@ -185,16 +187,60 @@ local function query()
                 end
                 -- combo check
                 if ultra then setStr = setStr:sub(2) end
-                if set.match ~= 'exclude' and #setStr < #table.concat(list) then break end
-                local l2 = {}
-                for m in setStr:gmatch('r?..') do table.insert(l2, m) end
+                local setL = {}; for m in setStr:gmatch('r?..') do table.insert(setL, m) end
+                local setS = TABLE.getValueSet(setL)
                 if set.match == 'include' then
-                    if #l2 - #list ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
+                    if #setL < #list then break end
+                    local notFound
+                    for i = 1, #set.sel do
+                        if set.sel[i] > 0 and not setS[(set.sel[i] == 2 and 'r' or '') .. cardIDs[i]] then
+                            notFound = true
+                            break
+                        end
+                    end
+                    if notFound then break end
                 elseif set.match == 'exclude' then
-                    if #l2 ~= #TABLE.subtract(TABLE.copy(l2), list) then break end
+                    local found
+                    for i = 1, #set.sel do
+                        if set.sel[i] > 0 and setS[(set.sel[i] == 2 and 'r' or '') .. cardIDs[i]] then
+                            found = true
+                            break
+                        end
+                    end
+                    if found then break end
+                elseif set.match == 'include+' then
+                    if #setL < #list then break end
+                    local notFound
+                    for i = 1, #set.sel do
+                        if set.sel[i] > 0 and not (setS[cardIDs[i]] or setS['r' .. cardIDs[i]]) then
+                            notFound = true
+                            break
+                        end
+                    end
+                    if notFound then break end
+                elseif set.match == 'exclude+' then
+                    if #setL + #list > 9 then break end
+                    local found
+                    for i = 1, #set.sel do
+                        if set.sel[i] > 0 and (setS[cardIDs[i]] or setS['r' .. cardIDs[i]]) then
+                            found = true
+                            break
+                        end
+                    end
+                    if found then break end
+                elseif set.match == 'exact+' then
+                    if #setL ~= #list then break end
+                    local notMatch
+                    for i = 1, #set.sel do
+                        if (set.sel[i] == 0) ~= not (setS[cardIDs[i]] or setS['r' .. cardIDs[i]]) then
+                            notMatch = true
+                            break
+                        end
+                    end
+                    if notMatch then break end
                 end
 
-                table.insert(recList, newRecord(l2, ultra))
+                table.insert(recList, newRecord(setL, ultra))
             until true
         end
         table.sort(recList,
@@ -280,7 +326,7 @@ function scene.keyDown(key, isRep)
     local bindID = TABLE.find(STAT.keybind, key)
     if bindID and bindID <= 18 then
         local i = bindID > 9 and bindID - 9 or bindID
-        if GAME.completion[MD.deck[i].id] > 0 then
+        if GAME.completion[cardIDs[i]] > 0 then
             if love.keyboard.isDown('lctrl', 'rctrl') then
                 set.sel[i] = set.sel[i] == 0 and 2 or 0
             else
@@ -289,6 +335,7 @@ function scene.keyDown(key, isRep)
         else
             set.sel[i] = set.sel[i] == 0 and 1 or 0
         end
+        refresh()
     elseif key == STAT.keybind[19] or key == 'return' then
         -- Confirm
         cd = min(cd, .01)
@@ -488,7 +535,7 @@ function scene.overDraw()
         gc_print("PERSONAL RECORDS", 15, 0)
     end
     gc_replaceTransform(SCR.xOy_ur)
-    gc_printf(cd > 0 and "Searching..." or #recList .. " Results", -620, 0, 600, 'right')
+    gc_printf(cd > 0 and "Searching..." or #recList .. " Result" .. (#recList == 1 and "" or "s"), -620, 0, 600, 'right')
 
     -- Bottom bar & text
     gc_replaceTransform(SCR.xOy_d)
@@ -563,14 +610,14 @@ table.insert(scene.widgetList, WIDGET.new {
 for i = 1, #CD do
     table.insert(scene.widgetList, WIDGET.new {
         type = 'checkBox',
-        fillColor = { COLOR.lerp(MD.color[MD.deck[i].id], COLOR.DD, .8) },
-        frameColor = { COLOR.lerp(MD.color[MD.deck[i].id], COLOR.DD, .26) },
-        textColor = { COLOR.lerp(MD.textColor[MD.deck[i].id], COLOR.LL, .26) },
-        text = MD.deck[i].id,
+        fillColor = { COLOR.lerp(MD.color[cardIDs[i]], COLOR.DD, .8) },
+        frameColor = { COLOR.lerp(MD.color[cardIDs[i]], COLOR.DD, .26) },
+        textColor = { COLOR.lerp(MD.textColor[cardIDs[i]], COLOR.LL, .26) },
+        text = cardIDs[i],
         x = baseX - 60 + 100 * i, y = baseY + 100,
         disp = function() return set.sel[i] > 0 end,
         code = function(k)
-            if GAME.completion[MD.deck[i].id] > 0 then
+            if GAME.completion[cardIDs[i]] > 0 then
                 if k == 2 or love.keyboard.isDown('lctrl', 'rctrl') then
                     set.sel[i] = set.sel[i] == 0 and 2 or 0
                 else
@@ -610,6 +657,36 @@ table.insert(scene.widgetList, WIDGET.new {
     disp = function() return set.match == 'exact' end,
     code = function()
         set.match = 'exact'
+        refresh()
+    end
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "INCLUDE+",
+    x = baseX - 60 + 100 * 7, y = baseY + 100 + 45,
+    disp = function() return set.match == 'include+' end,
+    code = function()
+        set.match = 'include+'
+        refresh()
+    end
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "EXCLUDE+",
+    x = baseX - 60 + 100 * 9, y = baseY + 100 + 45,
+    disp = function() return set.match == 'exclude+' end,
+    code = function()
+        set.match = 'exclude+'
+        refresh()
+    end
+})
+table.insert(scene.widgetList, WIDGET.new {
+    type = 'checkBox', fillColor = clr.cbFill, frameColor = clr.cbFrame,
+    textColor = clr.T, text = "EXACT+",
+    x = baseX - 60 + 100 * 11, y = baseY + 100 + 45,
+    disp = function() return set.match == 'exact+' end,
+    code = function()
+        set.match = 'exact+'
         refresh()
     end
 })
