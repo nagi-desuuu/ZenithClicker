@@ -1151,29 +1151,9 @@ BadgeData = {
         desc = "???",
     },
     {
-        id = 'exceed_dev',
-        name = "Successor",
-        desc = "Have a better score than Dev on 62% achievements",
-    },
-    {
-        id = 'exceed_dev_half',
-        name = "Apprentice",
-        desc = "Have a better score than Dev on 26% achievements",
-    },
-    {
         id = 'champion',
         name = "Clicker Champion",
         desc = "Attain 25k CR",
-    },
-    {
-        id = 'fomg',
-        name = "Interstellar",
-        desc = "Reached 6200m (max CR from Best Altitude)",
-    },
-    {
-        id = 'subluminal',
-        name = "Sub-luminal",
-        desc = "Reached F10 in under 76.2s (max CR from Best Speedrun)",
     },
     {
         id = 'mastery_1',
@@ -1196,14 +1176,24 @@ BadgeData = {
         desc = "Finished a speedrun with all single reversed mods",
     },
     {
-        id = 'fepsilon',
-        name = "Intergalactic",
-        desc = "Reached 12600m",
+        id = 'subluminal',
+        name = "Sub-luminal",
+        desc = "Reached F10 in under 76.2s (max CR from Best Speedrun)",
     },
     {
         id = 'superluminal',
         name = "Superluminal",
         desc = "Reached F10 in under 42s",
+    },
+    {
+        id = 'fomg',
+        name = "Interstellar",
+        desc = "Reached 6200m (max CR from Best Altitude)",
+    },
+    {
+        id = 'fepsilon',
+        name = "Intergalactic",
+        desc = "Reached 12600m",
     },
     {
         id = 'true_expert',
@@ -1226,6 +1216,16 @@ BadgeData = {
         desc = "Finished a speedrun with rIN & Invisible Card",
     },
     {
+        id = 'exceed_dev_half',
+        name = "Apprentice",
+        desc = "Have a better score than Dev on 26% achievements",
+    },
+    {
+        id = 'exceed_dev',
+        name = "Successor",
+        desc = "Have a better score than Dev on 62% achievements",
+    },
+    {
         id = 'rDP_meta',
         name = "Mechanical Heartbreaker",
         desc = "Abused the rDP mod to stay alive over 10 minutes",
@@ -1242,7 +1242,7 @@ for i = 1, #BadgeData do
     BadgeData[bd.id] = bd
 end
 
-DevScore = {clicker=923559,contender=8189,elegance=349580,garbage_offensive=1765368,tower_climber=5343131.73,tower_regular=25209,speed_player=4916,plonk=148.99,zenith_explorer=10666.27,zenith_explorer_plus=18681.62,clicker_speedrun=16.29665856,typer_speedrun=10.934573978,supercharged=288,supercharged_plus=447,multitasker=61866.8,effective=41446.887071386,zenith_speedrun=48.891,zenith_speedrun_plus=29.641,zenith_challenger=89682.07,divine_challenger=51215.3,zenith_speedrunner=496.103,divine_speedrunner=707.029,the_spike_of_all_time=424,the_spike_of_all_time_minus=192,clock_out=535,vip_list=69,GVIN=9358.41,ASNH=9830.74,DPEX=5417.82,GVNH=8373.29,DHMSNH=4603.14,DHEXNH=4520.53,DHEXMSVL=2766.57,ASEXVL=4432.7,swamp_water_lite=4878.84,swamp_water=2985.03,DHEXrGV=6096.52,rASrGV=12092.56,rGVrIN=3470.17,NHrAS=9560.7,GVrASrDH=3595.35,EXGVNHrMS=2860.57,ASDPGVrMSrNH=2005.6,DHrEXrVL=1664.66,ASGVrDPrMS=1853.87,NHVLrDPrGV=2178.42,VLrEXrIN=1688.17,rDPrEX=1721.17,INMSrDHrEX=1244.64,ASMSrDHrIN=773.9,swamp_water_lite_plus=4878.84,swamp_water_plus=2714.92,blight=7733.35,desolation=6284.45,havoc=3656.14,pandemonium=2068.58,inferno=1775.53,purgatory=1395.49,perdition=1395.49,cataclysm=1395.49,annihilation=777.19,armageddon=423.31,abyss=196.02,talentless=7817.15,quest_rationing=631.02,the_responsible_one=18,the_unreliable_one=14,the_responsible_one_plus=98,guardian_angel=6061.19,carried=5528.27,level_19_cap=7207.94,the_escape_artist=132,fel_magic=107,powerless=5845.4,empurple=2919.81,patience_is_a_virtue=2627.37,spotless=2916.6,honeymoon=2449.79,break_up=2046.91,overprotection=1986.85,clutch_main=191,sunk_cost=3980.74,wax_wings=2412.74,the_masterful_juggler=122,the_oblivious_artist=117,speed_bonus=10,arrogance=772.74,the_pacifist=350,detail_oriented=0,psychokinesis=1660.64,lovers_promise=10598.95,divine_rejection=1649.99,moon_struck=0,love_hotel=2.597011165,financially_responsible=5.898309714,unfair_battle=4.344901018,museum_heist=2.4841288230001,workaholic=2.3799148589999,human_experiment=2.733007991,thermal_anomaly=0.46684615700001,ultra_dash=0.49600276799998,perfect_speedrun=23.747579831,the_perfectionist=8310.52,cruise_control=21,drag_racing=29,dazed=16,the_spike_of_all_time_plus=487,cut_off=0,worn_out=0,the_harbinger=0,final_defiance=0,speedrun_speedrunning=0,abyss_weaver=0,royal_resistance=0,lovers_stand=0,romantic_homicide=0,blazing_speed=0,its_kinda_rare=0,benevolent_ambition=0,fruitless_effort=0,false_god=0,respectful=0,zenith_relocation=0,intended_glitch=0,lucky_coincidence=0,dark_force=0,zenith_traveler=0,VL=6275.59,NH=10586.4,MS=5384.91,IN=9293.06,GV=10604.39,EX=8612.63,DP=10598.95,identity=0,AS=18681.62,rVL=6036.9,rNH=4056.03,rMS=3721.81,rIN=5503.13,rGV=8520,rEX=2807.73,rDP=3980.74,rDH=4273.85,rAS=12315.11,smooth_dismount=0,DH=9644.52,}
+DevScore = { clicker = 923559, contender = 8189, elegance = 349580, garbage_offensive = 1765368, tower_climber = 5343131.73, tower_regular = 25209, speed_player = 4916, plonk = 148.99, zenith_explorer = 10666.27, zenith_explorer_plus = 18681.62, clicker_speedrun = 16.29665856, typer_speedrun = 10.934573978, supercharged = 288, supercharged_plus = 447, multitasker = 61866.8, effective = 41446.887071386, zenith_speedrun = 48.891, zenith_speedrun_plus = 29.641, zenith_challenger = 89682.07, divine_challenger = 51215.3, zenith_speedrunner = 496.103, divine_speedrunner = 707.029, the_spike_of_all_time = 424, the_spike_of_all_time_minus = 192, clock_out = 535, vip_list = 69, GVIN = 9358.41, ASNH = 9830.74, DPEX = 5417.82, GVNH = 8373.29, DHMSNH = 4603.14, DHEXNH = 4520.53, DHEXMSVL = 2766.57, ASEXVL = 4432.7, swamp_water_lite = 4878.84, swamp_water = 2985.03, DHEXrGV = 6096.52, rASrGV = 12092.56, rGVrIN = 3470.17, NHrAS = 9560.7, GVrASrDH = 3595.35, EXGVNHrMS = 2860.57, ASDPGVrMSrNH = 2005.6, DHrEXrVL = 1664.66, ASGVrDPrMS = 1853.87, NHVLrDPrGV = 2178.42, VLrEXrIN = 1688.17, rDPrEX = 1721.17, INMSrDHrEX = 1244.64, ASMSrDHrIN = 773.9, swamp_water_lite_plus = 4878.84, swamp_water_plus = 2714.92, blight = 7733.35, desolation = 6284.45, havoc = 3656.14, pandemonium = 2068.58, inferno = 1775.53, purgatory = 1395.49, perdition = 1395.49, cataclysm = 1395.49, annihilation = 777.19, armageddon = 423.31, abyss = 196.02, talentless = 7817.15, quest_rationing = 631.02, the_responsible_one = 18, the_unreliable_one = 14, the_responsible_one_plus = 98, guardian_angel = 6061.19, carried = 5528.27, level_19_cap = 7207.94, the_escape_artist = 132, fel_magic = 107, powerless = 5845.4, empurple = 2919.81, patience_is_a_virtue = 2627.37, spotless = 2916.6, honeymoon = 2449.79, break_up = 2046.91, overprotection = 1986.85, clutch_main = 191, sunk_cost = 3980.74, wax_wings = 2412.74, the_masterful_juggler = 122, the_oblivious_artist = 117, speed_bonus = 10, arrogance = 772.74, the_pacifist = 350, detail_oriented = 0, psychokinesis = 1660.64, lovers_promise = 10598.95, divine_rejection = 1649.99, moon_struck = 0, love_hotel = 2.597011165, financially_responsible = 5.898309714, unfair_battle = 4.344901018, museum_heist = 2.4841288230001, workaholic = 2.3799148589999, human_experiment = 2.733007991, thermal_anomaly = 0.46684615700001, ultra_dash = 0.49600276799998, perfect_speedrun = 23.747579831, the_perfectionist = 8310.52, cruise_control = 21, drag_racing = 29, dazed = 16, the_spike_of_all_time_plus = 487, cut_off = 0, worn_out = 0, the_harbinger = 0, final_defiance = 0, speedrun_speedrunning = 0, abyss_weaver = 0, royal_resistance = 0, lovers_stand = 0, romantic_homicide = 0, blazing_speed = 0, its_kinda_rare = 0, benevolent_ambition = 0, fruitless_effort = 0, false_god = 0, respectful = 0, zenith_relocation = 0, intended_glitch = 0, lucky_coincidence = 0, dark_force = 0, zenith_traveler = 0, VL = 6275.59, NH = 10586.4, MS = 5384.91, IN = 9293.06, GV = 10604.39, EX = 8612.63, DP = 10598.95, identity = 0, AS = 18681.62, rVL = 6036.9, rNH = 4056.03, rMS = 3721.81, rIN = 5503.13, rGV = 8520, rEX = 2807.73, rDP = 3980.74, rDH = 4273.85, rAS = 12315.11, smooth_dismount = 0, DH = 9644.52, }
 
 DevScore.contender = 6200
 DevScore.clicker = 620e3
@@ -1253,4 +1253,4 @@ DevScore.tower_regular = 2e4
 DevScore.speed_player = 2600
 DevScore.clock_out = 420
 DevScore.vip_list = 42
-DevScore.divine_rejection=1649.9
+DevScore.divine_rejection = 1649.9
