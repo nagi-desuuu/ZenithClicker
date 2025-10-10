@@ -1472,7 +1472,7 @@ function GAME.refreshDailyChallengeText()
                 str = str .. "   " .. combo.name
             end
         else
-            str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")"
+            str = str .. ("   (r$1 = reversed $1)"):repD(rev)
         end
         str = str .. "\nTry to get more ZP in one run using this mod combo.\n(Click to select them)"
     else
