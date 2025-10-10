@@ -251,7 +251,7 @@ local function query()
     end
     SFX.play(
         #recList == 0 and 'combobreak' or
-        set.match == 'exact' and 'timer2' or
+        #recList <= 4 and 'timer2' or
         'timer1',
         1, 0, Tone(0)
     )
@@ -321,20 +321,31 @@ end
 
 function scene.touchClick(x, y) scene.mouseClick(x, y, 1) end
 
+local function setMod(i, rev)
+    if GAME.completion[cardIDs[i]] > 0 then
+        if rev then
+            set.sel[i] = set.sel[i] == 0 and 2 or 0
+        else
+            set.sel[i] = (set.sel[i] + 1) % 3
+        end
+    else
+        set.sel[i] = set.sel[i] == 0 and 1 or 0
+    end
+    if set.sel[i] == 0 then
+        SFX.play('card_slide_' .. math.random(4))
+    elseif set.sel[i] == 1 then
+        SFX.play('card_select', .8)
+    elseif set.sel[i] == 2 then
+        SFX.play('card_select_reverse', 1)
+    end
+end
+
 function scene.keyDown(key, isRep)
     if isRep then return true end
     local bindID = TABLE.find(STAT.keybind, key)
     if bindID and bindID <= 18 then
         local i = bindID > 9 and bindID - 9 or bindID
-        if GAME.completion[cardIDs[i]] > 0 then
-            if love.keyboard.isDown('lctrl', 'rctrl') then
-                set.sel[i] = set.sel[i] == 0 and 2 or 0
-            else
-                set.sel[i] = (set.sel[i] + 1) % 3
-            end
-        else
-            set.sel[i] = set.sel[i] == 0 and 1 or 0
-        end
+        setMod(i, love.keyboard.isDown('lctrl', 'rctrl'))
         refresh()
     elseif key == STAT.keybind[19] or key == 'return' then
         -- Confirm
@@ -360,6 +371,9 @@ function scene.keyDown(key, isRep)
         set.match =
             set.match == 'include' and 'exclude' or
             set.match == 'exclude' and 'exact' or
+            set.match == 'exact' and 'include+' or
+            set.match == 'include+' and 'exclude+' or
+            set.match == 'exclude+' and 'exact+' or
             'include'
     elseif key == '[' then
         set.order = 'first'
@@ -613,19 +627,11 @@ for i = 1, #CD do
         fillColor = { COLOR.lerp(MD.color[cardIDs[i]], COLOR.DD, .8) },
         frameColor = { COLOR.lerp(MD.color[cardIDs[i]], COLOR.DD, .26) },
         textColor = { COLOR.lerp(MD.textColor[cardIDs[i]], COLOR.LL, .26) },
-        text = cardIDs[i],
+        text = cardIDs[i], sound_off = false, sound_on = false,
         x = baseX - 60 + 100 * i, y = baseY + 100,
         disp = function() return set.sel[i] > 0 end,
         code = function(k)
-            if GAME.completion[cardIDs[i]] > 0 then
-                if k == 2 or love.keyboard.isDown('lctrl', 'rctrl') then
-                    set.sel[i] = set.sel[i] == 0 and 2 or 0
-                else
-                    set.sel[i] = (set.sel[i] + 1) % 3
-                end
-            else
-                set.sel[i] = set.sel[i] == 0 and 1 or 0
-            end
+            setMod(i, k == 2 or love.keyboard.isDown('lctrl', 'rctrl'))
             refresh()
         end,
     })
