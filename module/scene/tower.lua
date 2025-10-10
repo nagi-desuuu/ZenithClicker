@@ -15,6 +15,7 @@ for i = 1, #MD.deck do ShortCut[i] = GC.newText(FONT.get(50)) end
 HoldingButtons = {}
 local HoldingButtons = HoldingButtons
 
+URM = false
 RevUnlocked = false
 UsingTouch = MOBILE
 local usingTouch = UsingTouch
@@ -226,8 +227,8 @@ local function applyCombo(set)
             changed = true
         end
     end
-    if (not set.ultra) ~= (not URM) then
-        URM = not URM
+    if set.ultra ~= nil and set.ultra ~= URM then
+        URM = set.ultra
         ultraStateChange()
     end
     if changed then SFX.play('mmstart') end
