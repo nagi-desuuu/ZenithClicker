@@ -212,8 +212,7 @@ local function ultraStateChange()
     GAME.refreshPBText()
     RefreshBGM()
     GAME.refreshRPC()
-    scene.widgetList.help2.text = URM and "!" or "?"
-    scene.widgetList.help2:reset()
+    RefreshHelpText()
 end
 
 local function applyCombo(set)
@@ -243,14 +242,6 @@ function scene.load()
     RevUnlocked = TABLE.countAll(GAME.completion, 0) < 9
 
     for i = 1, #MD.deck do ShortCut[i]:set(STAT.keybind[i]:upper()) end
-
-    scene.widgetList.help.floatText = (STRING.trimIndent [[
-        Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
-        The higher you go in the tower, the more tricky players you'll encounter!
-        There's no leaderboards yet, but how high can you reach?
-        Commit: $1    Reset: $2    Forfeit/Quit: ESC
-    ]]):repD(STAT.keybind[19]:upper(), STAT.keybind[20]:upper())
-    scene.widgetList.help:reset()
 
     GAME.refreshDailyChallengeText()
     TASK.unlock('sure_quit')
@@ -1584,7 +1575,7 @@ scene.widgetList = {
         name = 'help2', type = 'hint',
         pos = { 1, 0 }, x = -190, y = 275, w = 60, cornerR = 30,
         color = TextColor,
-        fontSize = 50, text = "?",
+        fontSize = 50, text = "", -- Dynamic text
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 30,
@@ -1632,7 +1623,7 @@ scene.widgetList = {
         name = 'help', type = 'hint',
         pos = { 1, 0 }, x = -50, y = 126, w = 80, cornerR = 40,
         color = TextColor,
-        fontSize = 50, text = "?",
+        fontSize = 50, text = "", -- Dynamic text
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 30,

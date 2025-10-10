@@ -886,6 +886,45 @@ function PlayBGM(name, force)
     end
 end
 
+function RefreshHelpText()
+    local s = SCN.scenes.tower.widgetList
+    ---@cast s Map<Zenitha.Widget.base|Zenitha.WidgetArg>
+    if URM then
+        s.help.text = "U"
+        s.help.floatText = STRING.trimIndent [[
+            Welcome to Zenith Clicker: Ultra Reverse. Activate a reversed mod to start suffering.
+            The higher you go in the tower, the more likely you are to die.
+            There's no leaderboards yet, and you are not expected to go much high up.
+            Forfeit/Quit: ESC    Forfeit/Quit: ESC    Forfeit/Quit: ESC
+        ]]
+        if GAME.height >= 0 then
+            s.help2.text = "!"
+            s.help2.floatText = "The final ULTRA REVERSE challenge.\n\"Because it is there.\""
+        else
+            s.help2.text = "B"
+            s.help2.floatText = "B" .. GAME.negFloor .. ": " .. NegFloors[GAME.negFloor].name .. "\n" .. NegTexts['b' .. GAME.negFloor].desc
+        end
+    else
+        s.help.text = "?"
+        s.help.floatText = (STRING.trimIndent [[
+            Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
+            The higher you go in the tower, the more tricky players you'll encounter!
+            There's no leaderboards yet, but how high can you reach?
+            Commit: $1    Reset: $2    Forfeit/Quit: ESC
+        ]]):repD(STAT.keybind[19]:upper(), STAT.keybind[20]:upper())
+        s.help2.text = "?"
+        local hand = GAME.getHand(true)
+        local lastLine = (
+            #hand == 0 and "Without any mods, " or
+            #hand == 1 and "With this mod, " or
+            "With this combo, "
+        ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
+        s.help2.floatText = "Each mod will multiply ZP gain with a certain rate.\n" .. lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
+    end
+    s.help:reset()
+    s.help2:reset()
+end
+
 function RefreshBGM(mode)
     if not BGM.isPlaying() then return end
     local pitch = M.GV > 0 and 2 ^ ((URM and M.GV == 2 and 3 or M.GV) / 12) or 1

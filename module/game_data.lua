@@ -572,7 +572,7 @@ NegFloors = {
     { bottom = -1650, name = "Distorted Gateways" },
     { bottom = -1e99, name = "Endless Void" },
 }
-local NegTexts = {
+NegTexts = {
     b1 = { -- The Basement
         desc = [[A basic storage room for the floors above... and below.]],
         begin = [[You find yourself in an unfamiliar place.]],

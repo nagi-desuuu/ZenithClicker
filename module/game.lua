@@ -1283,18 +1283,7 @@ function GAME.refreshCurrentCombo()
             #GAME.getHand(true) == #DAILY and
             TABLE.equal(TABLE.sort(GAME.getHand(true)), TABLE.sort(TABLE.copy(DAILY)))
 
-        local W = SCN.scenes.tower.widgetList.help2
-        if URM then
-            W.floatText = "The final ULTRA REVERSE challenge.\n\"Because it is there.\""
-        else
-            local lastLine = (
-                #hand == 0 and "Without any mods, " or
-                #hand == 1 and "With this mod, " or
-                "With this combo, "
-            ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
-            W.floatText = "Each mod will multiply ZP gain with a certain rate.\n" .. lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
-        end
-        W:reset()
+        RefreshHelpText()
     end
 end
 
