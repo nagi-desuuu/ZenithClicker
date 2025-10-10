@@ -886,17 +886,18 @@ function PlayBGM(name, force)
     end
 end
 
+local ultraHelp = {
+    COLOR.LL, "Welcome to ", COLOR.LR, "Zenith Clicker: ", COLOR.R, "Ultra Reverse", COLOR.LL, ". Activate a reversed mod to start ", COLOR.lR, "suffering.\n",
+    COLOR.LL, "The higher you go in the tower, the more likely you are to ", COLOR.R, "die.\n",
+    COLOR.LL, "There's no leaderboards yet, and ", COLOR.lR, "you are not expected to go much high up.\n",
+    COLOR.R, "Give Up: ", COLOR.LL, "ESC    ", COLOR.R, "Forfeit: ", COLOR.LL, "ESC    ", COLOR.R, "Quit: ", COLOR.LL, "ESC"
+}
 function RefreshHelpText()
     local s = SCN.scenes.tower.widgetList
     ---@cast s Map<Zenitha.Widget.base|Zenitha.WidgetArg>
     if URM then
         s.help.text = "U"
-        s.help.floatText = STRING.trimIndent [[
-            Welcome to Zenith Clicker: Ultra Reverse. Activate a reversed mod to start suffering.
-            The higher you go in the tower, the more likely you are to die.
-            There's no leaderboards yet, and you are not expected to go much high up.
-            Forfeit/Quit: ESC    Forfeit/Quit: ESC    Forfeit/Quit: ESC
-        ]]
+        s.help.floatText = ultraHelp
         if GAME.height >= 0 then
             s.help2.text = "!"
             s.help2.floatText = "The final ULTRA REVERSE challenge.\n\"Because it is there.\""
