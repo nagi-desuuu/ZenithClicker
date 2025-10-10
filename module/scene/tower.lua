@@ -1146,7 +1146,7 @@ function scene.overDraw()
         local rank = GAME.rank
         gc_setColor(rankColor[rank - 1] or COLOR.dL)
         if GAME.DPlock then gc_setAlpha(.26) end
-        gc_setLineWidth(GAME.fastLeak and 2 or 6)
+        gc_setLineWidth(26 / (GAME.leakSpeed + 2))
         gc_mRect('line', 800, 965, 420 + 6, 26)
         gc_rectangle('fill', 800 - 35, 985, 70, 6)
         for i = 1, min(rank - 1, 6) do

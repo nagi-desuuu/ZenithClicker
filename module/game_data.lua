@@ -1196,9 +1196,19 @@ BadgeData = {
         desc = "Finished a speedrun with all single reversed mods",
     },
     {
+        id = 'true_expert',
+        name = "True Expert",
+        desc = "Finished a speedrun with rEX & closeCard",
+    },
+    {
         id = 'true_master',
         name = "True Master",
         desc = "Finished a speedrun with rGV & Nightcore",
+    },
+    {
+        id = 'true_strength',
+        name = "True Strength",
+        desc = "Finished a speedrun with rVL & fastLeak",
     },
     {
         id = 'true_invis',

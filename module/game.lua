@@ -100,6 +100,7 @@ local ins, rem = table.insert, table.remove
 ---@field timerMul number
 ---@field attackMul number
 ---@field xpLockLevelMax number
+---@field leakSpeed number
 ---@field invincible boolean
 ---
 ---@field onAlly boolean
@@ -1010,7 +1011,9 @@ function GAME.upFloor()
             end
             if GAME.time <= 76.2 then IssueSecret('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
+            if GAME.closeCard and GAME.comboStr == 'rEX' then IssueSecret('true_expert') end
             if GAME.nightcore and GAME.comboStr == 'rGV' then IssueSecret('true_master') end
+            if GAME.fastLeak and GAME.comboStr == 'rVL' then IssueSecret('true_strength') end
             if GAME.invisCard and GAME.comboStr == 'rIN' then IssueSecret('true_invis') end
         end
 
@@ -2021,6 +2024,7 @@ function GAME.start()
     GAME.isUltraRun = GAME.anyUltra
     GAME.attackMul = GAME.isUltraRun and .62 or 1
     GAME.xpLockLevelMax = URM and M.NH == 2 and 1 or 5
+    GAME.leakSpeed = (M.EX > 0 and 5 or 3) + (GAME.fastLeak and 8 or 0)
     GAME.invincible = false
 
     TASK.unlock('sure_quit')
@@ -2802,7 +2806,7 @@ function GAME.update(dt)
     if GAME.xpLockTimer > 0 then
         GAME.xpLockTimer = GAME.xpLockTimer - dt
     else
-        GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60 * (GAME.fastLeak and 2.6 or 1)
+        GAME.xp = GAME.xp - dt * GAME.leakSpeed * GAME.rank * (GAME.rank + 1) / 60
         if GAME.xp <= 0 then
             GAME.xp = 0
             if GAME.rank > 1 then
