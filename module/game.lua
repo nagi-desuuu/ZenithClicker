@@ -794,8 +794,8 @@ function GAME.takeDamage(dmg, reason, toAlly)
     end
 end
 
-function GAME.addHeight(h)
-    h = h * GAME.rank / 4
+function GAME.addHeight(h, realHeight)
+    h = h * (realHeight and 1 or GAME.rank / 4)
     GAME.heightBonus = GAME.heightBonus + h
     GAME.heightBuffer = GAME.heightBuffer + h
     if h >= 6 and TASK.lock('speed_tick_whirl', 2.6) then SFX.play('speed_tick_whirl') end
@@ -1645,7 +1645,7 @@ function GAME.commit(auto)
         end
 
         GAME.heal((dblCorrect and 3 or 1) * GAME.dmgHeal)
-        if MATH.between(Floors[GAME.floor].top - (GAME.height + GAME.heightBuffer), 0, 2) then GAME.addHeight(3) end
+        if MATH.between(Floors[GAME.floor].top - (GAME.height + GAME.heightBuffer), 0, 2) then GAME.addHeight(3, true) end
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
