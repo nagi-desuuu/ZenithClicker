@@ -73,7 +73,7 @@ local function newRecord(list, isUltra)
     local mp, zp = GAME.getComboMP(list), GAME.getComboZP(list)
     if set.mode == 'altitude' then
         floorText = "F" .. (floor <= 10 and floor or "Ω")
-        scoreText = ("%.2f M"):format(height)
+        scoreText = ("%.1f M"):format(height)
         extraText = ("%d ZP"):format(height * zp)
     elseif set.mode == 'speedrun' then
         floorText = "GIGA"
@@ -82,7 +82,7 @@ local function newRecord(list, isUltra)
     elseif set.mode == 'zp' then
         floorText = "F" .. (floor <= 10 and floor or "Ω")
         scoreText = ("%d ZP"):format(height * zp)
-        extraText = ("%.2f M"):format(height)
+        extraText = ("%.1f M"):format(height)
     end
     local comboText = setStr == "" and [["QUICK PICK"]] or GAME.getComboName(list, 'record')
     if isUltra then
