@@ -830,6 +830,7 @@ end
 
 local gvTimerColor1 = { 1, .942, .872, 0 }
 local gvTimerColor2 = { 0, 0, 0, 0 }
+local altitudeText = { 0, COLOR.dL, "m" }
 function scene.overDraw()
     local t = love.timer.getTime()
     if GAME.zenithTraveler then return end
@@ -1183,7 +1184,8 @@ function scene.overDraw()
         gc_mRect('fill', 800, 965, 420 * GAME.xp / (4 * rank), 3 * min(GAME.xpLockLevel, 5))
 
         -- Height & Time
-        TEXTS.height:set(("%.1fm"):format(GAME.height))
+        altitudeText[1] = ("%.1f"):format(GAME.roundHeight)
+        TEXTS.height:set(altitudeText)
         TEXTS.time:set(STRING.time_simp(GAME.time))
         gc_setColor(COLOR.D)
         local wid, hgt = TEXTS.height:getDimensions()
