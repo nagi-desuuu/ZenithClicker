@@ -141,6 +141,12 @@ function Initialize(save)
         if ACHV.moon_struck then ACHV.moon_struck = MATH.roundUnit(math.abs(ACHV.moon_struck - 2202.8), .1) end
         STAT.version = 185
     end
+    if STAT.version == 185 then
+        STAT.badge.subluminal, STAT.badge.superluminal = STAT.badge.superluminal, nil
+        if TABLE.minAll(BEST.speedrun) <= 42 then STAT.badge.superluminal = true end
+        if TABLE.maxAll(BEST.highScore) >= 12600 then STAT.badge.fepsilon = true end
+        STAT.version = 186
+    end
 
     -- Some Initialization
     for i = 1, #Cards do

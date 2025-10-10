@@ -1171,8 +1171,8 @@ BadgeData = {
         desc = "Reached 6200m (max CR from Best Altitude)",
     },
     {
-        id = 'superluminal',
-        name = "Superluminal",
+        id = 'subluminal',
+        name = "Sub-luminal",
         desc = "Reached F10 in under 76.2s (max CR from Best Speedrun)",
     },
     {
@@ -1194,6 +1194,16 @@ BadgeData = {
         id = 'speedrun_2',
         name = "Omnipotence",
         desc = "Finished a speedrun with all single reversed mods",
+    },
+    {
+        id = 'fepsilon',
+        name = "Intergalactic",
+        desc = "Reached 12600m",
+    },
+    {
+        id = 'superluminal',
+        name = "Superluminal",
+        desc = "Reached F10 in under 42s",
     },
     {
         id = 'true_expert',

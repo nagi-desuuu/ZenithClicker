@@ -1009,7 +1009,8 @@ function GAME.upFloor()
                 for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
                 if _t >= #MD.deck then IssueSecret('speedrun_2') end
             end
-            if GAME.time <= 76.2 then IssueSecret('superluminal') end
+            if GAME.time <= 76.2 then IssueSecret('subluminal') end
+            if GAME.time <= 42 then IssueSecret('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
             if GAME.closeCard and GAME.comboStr == 'rEX' then IssueSecret('true_expert') end
             if GAME.nightcore and GAME.comboStr == 'rGV' then IssueSecret('true_master') end
@@ -2269,6 +2270,9 @@ function GAME.finish(reason)
                 )
                 MSG('dark', hintText, 6.26)
                 SFX.play('notify')
+            end
+            if GAME.height >= 12600 then
+                IssueSecret('fepsilon')
             end
         end
 
