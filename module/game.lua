@@ -2385,7 +2385,16 @@ function GAME.finish(reason)
             SaveBest()
         end
 
-        TEXTS.endHeight:set(("%.1fm"):format(GAME.roundHeight))
+        local resStr = {}
+        if GAME.nightcore then TABLE.append(resStr, { COLOR.lR, "Z" }) end
+        if GAME.slowmo then TABLE.append(resStr, { COLOR.lG, "S" }) end
+        if GAME.glassCard then TABLE.append(resStr, { COLOR.lB, "J" }) end
+        if GAME.fastLeak then TABLE.append(resStr, { COLOR.lO, "L" }) end
+        if GAME.invisUI then TABLE.append(resStr, { COLOR.lM, "T" }) end
+        if GAME.invisCard then TABLE.append(resStr, { COLOR.lY, "O" }) end
+        if GAME.closeCard then TABLE.append(resStr, { COLOR.lC, "I" }) end
+        if #resStr > 0 then ins(resStr, " ") end
+        TEXTS.endHeight:set(TABLE.append(resStr, { COLOR.LL, ("%.1fm"):format(GAME.roundHeight) }))
         local endFloorStr
         if GAME.roundHeight >= 0 then
             if GAME.floor >= 10 and GAME.omega then
