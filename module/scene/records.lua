@@ -342,10 +342,11 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
+    local ctrl = love.keyboard.isDown('lctrl', 'rctrl')
     local bindID = TABLE.find(STAT.keybind, key)
     if bindID and bindID <= 18 then
         local i = bindID > 9 and bindID - 9 or bindID
-        setMod(i, love.keyboard.isDown('lctrl', 'rctrl'))
+        setMod(i, ctrl)
         refresh()
     elseif key == STAT.keybind[19] or key == 'return' then
         -- Confirm
@@ -367,6 +368,7 @@ function scene.keyDown(key, isRep)
             set.mode == 'altitude' and 'speedrun' or
             set.mode == 'speedrun' and 'zp' or
             'altitude'
+        refresh()
     elseif key == 'lshift' or key == 'rshift' then
         set.match =
             set.match == 'include' and 'exclude' or
@@ -375,17 +377,28 @@ function scene.keyDown(key, isRep)
             set.match == 'include+' and 'exclude+' or
             set.match == 'exclude+' and 'exact+' or
             'include'
+        refresh()
     elseif key == '[' then
         set.order = 'first'
+        refresh()
     elseif key == ']' then
         set.order = 'last'
+        refresh()
     elseif #key == 1 and MATH.between(key, '0', '9') then
-        set.floor = tonumber(key)
-        if set.floor == 0 then set.floor = 10 end
+        if ctrl then
+            set.mp = tonumber(key)
+            if set.mp == 0 then set.mp = 10 end
+        else
+            set.floor = tonumber(key)
+            if set.floor == 0 then set.floor = 10 end
+        end
+        refresh()
     elseif key == '-' then
-        set.floorComp = '<'
+        if ctrl then set.mpComp = '<' else set.floorComp = '<' end
+        refresh()
     elseif key == '=' then
-        set.floorComp = '>'
+        if ctrl then set.mpComp = '=' else set.floorComp = '=' end
+        refresh()
     elseif key == 'escape' then
         SFX.play('menuclick')
         SCN.back('none')
@@ -416,7 +429,7 @@ function scene.update(dt)
 
     if cd > 0 then
         timer = timer + dt
-        cd = cd - dt * (set.match == 'exact' and 2.6 or 1.26)
+        cd = cd - dt * ((set.match == 'exact' or set.match == 'exact+') and 2.6 or 1.26)
         if cd <= 0 then
             query()
         end
