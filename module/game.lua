@@ -2047,7 +2047,7 @@ function GAME.start()
 
     -- Statistics
     GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
-    GAME.prevPB = BEST.highScore[GAME.comboStr]
+    GAME.prevPB = BEST.highScore[(GAME.isUltraRun and 'u' or '') .. GAME.comboStr]
     if GAME.prevPB == 0 then GAME.prevPB = -2600 end
     GAME.totalFlip = 0
     GAME.totalQuest = 0
