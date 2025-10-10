@@ -2234,7 +2234,7 @@ function GAME.finish(reason)
 
     local unlockDuo
     if GAME.totalQuest > 2.6 then
-        LOG('info', ("[%s] (%s) F%d %.1fm in %.3fs"):format(reason, table.concat(GAME.getHand(true), ', '), GAME.floor, GAME.height, GAME.time))
+        LOG('info', ("[%s] (%s) F%d %.1fm in %.3fs"):format(reason, table.concat(GAME.getHand(true), ', '), GAME.floor, GAME.roundHeight, GAME.time))
 
         if GAME.floor >= 10 then
             local unlockRev = 0
@@ -2278,7 +2278,7 @@ function GAME.finish(reason)
 
         -- Statistics
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
-        if GAME.height > STAT.maxHeight then
+        if GAME.roundHeight > STAT.maxHeight then
             STAT.maxHeight = GAME.roundHeight
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
@@ -2288,7 +2288,7 @@ function GAME.finish(reason)
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalPerfect = STAT.totalPerfect + GAME.totalPerfect
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
-        STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.height), .1)
+        STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.roundHeight), .1)
         STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .1)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1) + (GAME.negFloor - 1)
         STAT.totalGiga = STAT.totalGiga + GAME.gigaCount + GAME.teraCount
@@ -2540,8 +2540,8 @@ function GAME.finish(reason)
         SubmitAchv('powerless', GAME.achv_noChargeH or GAME.roundHeight)
         local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
-        SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1))
-        if GAME.height >= 6200 then IssueSecret('fomg') end
+        SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.roundHeight - 2202.8), .1))
+        if GAME.roundHeight >= 6200 then IssueSecret('fomg') end
         SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
         if GAME.floor < 10 then SubmitAchv('divine_rejection', GAME.roundHeight) end
