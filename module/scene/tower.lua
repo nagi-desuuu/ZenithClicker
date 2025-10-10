@@ -212,6 +212,8 @@ local function ultraStateChange()
     GAME.refreshPBText()
     RefreshBGM()
     GAME.refreshRPC()
+    scene.widgetList.help2.text = URM and "!" or "?"
+    scene.widgetList.help2:reset()
 end
 
 local function applyCombo(set)
@@ -527,7 +529,7 @@ local gc_line, gc_rectangle, gc_circle, gc_arc = gc.line, gc.rectangle, gc.circl
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
 local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
 local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
-local gc_setColorMask, gc_mStr = GC.setColorMask, GC.mStr
+local gc_setColorMask = GC.setColorMask
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
@@ -1149,11 +1151,11 @@ function scene.overDraw()
         local h = 100 - GAME.uiHide * 100
         gc_move('m', 0, h)
 
-        -- Thruster
+        -- Thruster (XP bar)
         local rank = GAME.rank
         gc_setColor(rankColor[rank - 1] or COLOR.dL)
         if GAME.DPlock then gc_setAlpha(.26) end
-        gc_setLineWidth(6)
+        gc_setLineWidth(GAME.fastLeak and 2 or 6)
         gc_mRect('line', 800, 965, 420 + 6, 26)
         gc_rectangle('fill', 800 - 35, 985, 70, 6)
         for i = 1, min(rank - 1, 6) do
@@ -1587,44 +1589,39 @@ scene.widgetList = {
         labelPos = 'leftBottom',
         floatFontSize = 30,
         floatText = "", -- Dynamic text
-        onPress = function()
+        onPress = function(k)
             if STAT.maxFloor < 10 then return SFX.play('no') end
-            PieceSFXID = (PieceSFXID or 0) % 8 + 1
-            if PieceSFXID <= 7 then
-                local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
-                SFX.play(piece, 1, 0, Tone(6))
+            if k == 2 or kbIsDown('lctrl', 'rctrl') or next(revHold) then
+                if RevUnlocked then
+                    URM = not URM
+                    SFX.play(URM and 'exchange' or 'undo')
+                    ultraStateChange()
+                else
+                    SFX.play('no')
+                end
             else
-                SFX.play('allclear')
-            end
-            GAME.nightcore = PieceSFXID == 1
-            GAME.slowmo = PieceSFXID == 2
-            GAME.glassCard = PieceSFXID == 3
-            GAME.invisCard = PieceSFXID == 4
-            GAME.invisUI = PieceSFXID == 5
-            URM = PieceSFXID == 6 and RevUnlocked
-            GC.setWireframe(PieceSFXID == 7)
+                PieceSFXID = (PieceSFXID or 0) % 8 + 1
+                if PieceSFXID <= 7 then
+                    local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
+                    SFX.play(piece, 1, 0, Tone(6))
+                else
+                    SFX.play('allclear')
+                end
+                GAME.nightcore = PieceSFXID == 1
+                GAME.slowmo = PieceSFXID == 2
+                GAME.glassCard = PieceSFXID == 3
+                GAME.fastLeak = PieceSFXID == 4
+                GAME.invisUI = PieceSFXID == 5
+                GAME.invisCard = PieceSFXID == 6
+                GAME.closeCard = PieceSFXID == 7
 
-            ultraStateChange()
+                GAME.refreshLayout()
+                RefreshBGM()
+                GAME.refreshRPC()
 
-            if PieceSFXID == 7 and not GC.isWireframe() then
                 MSG({
                     cat = 'dark',
-                    str = "Wireframe Vision is not available on this platform.",
-                    time = 2.6
-                })
-            else
-                MSG({
-                    cat = 'dark',
-                    str = PieceSFXID == 6 and not URM and "O - ?" or ({
-                        "Z - Nightcore",
-                        "S - Sloooooow-mo",
-                        "J - Glass Card",
-                        "L - Invisible Card",
-                        "T - Invisible UI",
-                        "O - Ultra Reversed Mods",
-                        "I - Wireframe Vision",
-                        "ALLCLEAR",
-                    })[PieceSFXID],
+                    str = ("1Z - Nightcore;2S - Sloooooow-mo;3J - Glass Card;4L - Fast Leak;5T - Invisible UI;6I - Invisible Card;7O - Close Card;8ALLCLEAR;"):match(PieceSFXID .. "(.-);"),
                     time = 1.2
                 })
             end

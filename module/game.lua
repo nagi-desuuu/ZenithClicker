@@ -170,6 +170,8 @@ local GAME = {
     nightcore = false,
     slowmo = false,
     glassCard = false,
+    closeCard = false,
+    fastLeak = false,
     invisCard = false,
     invisUI = false,
 
@@ -1281,20 +1283,23 @@ function GAME.refreshCurrentCombo()
             #GAME.getHand(true) == #DAILY and
             TABLE.equal(TABLE.sort(GAME.getHand(true)), TABLE.sort(TABLE.copy(DAILY)))
 
-        local lastLine = (
-            #hand == 0 and "Without any mods, " or
-            #hand == 1 and "With this mod, " or
-            "With this combo, "
-        ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
         local W = SCN.scenes.tower.widgetList.help2
-        W.floatText = "Each mod will multiply ZP gain with a certain rate.\n" ..
-            lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
+        if URM then
+            W.floatText = "The final ULTRA REVERSE challenge.\n\"Because it is there.\""
+        else
+            local lastLine = (
+                #hand == 0 and "Without any mods, " or
+                #hand == 1 and "With this mod, " or
+                "With this combo, "
+            ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
+            W.floatText = "Each mod will multiply ZP gain with a certain rate.\n" .. lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
+        end
         W:reset()
     end
 end
 
 function GAME.refreshLayout()
-    local baseDist = (M.EX > 0 and (URM and M.EX == 2 and 80 or 100) or 110) + M.VL * 20
+    local baseDist = 110 + (M.EX > 0 and (URM and M.EX == 2 and -30 or -10) or 0) + M.VL * 20 + (GAME.closeCard and -30 or 0)
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
     local baseY = 726 + (URM and M.GV == 2 and 50 or 15 * M.GV)
     if FloatOnCard then
@@ -2808,7 +2813,7 @@ function GAME.update(dt)
     if GAME.xpLockTimer > 0 then
         GAME.xpLockTimer = GAME.xpLockTimer - dt
     else
-        GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+        GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60 * (GAME.fastLeak and 2.6 or 1)
         if GAME.xp <= 0 then
             GAME.xp = 0
             if GAME.rank > 1 then
