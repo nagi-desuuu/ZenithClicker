@@ -1054,10 +1054,11 @@ function ReloadTexts()
     for _, W in next, SCN.scenes.conf.widgetList do W:reset() end
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     for _, W in next, SCN.scenes.records.widgetList do W:reset() end
-    if SCN.cur == 'stat' then RefreshProfile() end
     AboutText:setFont(FONT.get(70))
     EndText:setFont(FONT.get(70))
     EndText2:setFont(FONT.get(70))
+    if SCN.cur == 'stat' then RefreshProfile() end
+    if SCN.cur == 'records' then SCN.scenes.records.load() end
 end
 
 VALENTINE = false
