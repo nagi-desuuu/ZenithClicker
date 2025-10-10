@@ -33,7 +33,7 @@ local function heightFloor(h)
     end
 end
 local function heightNumber(score)
-    return string.format("%.2fm", score)
+    return string.format("%.1fm", score)
 end
 local function issuedScore()
     return "DONE!"
@@ -128,7 +128,7 @@ Achievements = {
         desc = [[Highest altitude within the first 7 quests]],
         quote = [[Pour intention into each flip, and even a single quest can shake the world.]],
         credit = "@Ponies",
-        scoreSimp = function(h) return string.format("%.2fm", h) end,
+        scoreSimp = function(h) return string.format("%.1fm", h) end,
         scoreFull = function(h) return string.format("%.2f m/quest", h / 7) end,
         rank = numberRank(60, 75, 90, 100, 110, 120, 135),
     },
@@ -1042,7 +1042,7 @@ Achievements = {
         desc = [[End a run just before F10]],
         quote = [[A blinding flash of light, a painful crash to the bottom.]],
         credit = '@Flowerling',
-        scoreSimp = function(h) return string.format("%.2fm", h) end,
+        scoreSimp = function(h) return string.format("%.1fm", h) end,
         rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
     },
     { -- moon_struck

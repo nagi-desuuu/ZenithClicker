@@ -2288,8 +2288,8 @@ function GAME.finish(reason)
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalPerfect = STAT.totalPerfect + GAME.totalPerfect
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
-        STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.height), .01)
-        STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .01)
+        STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.height), .1)
+        STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .1)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1) + (GAME.negFloor - 1)
         STAT.totalGiga = STAT.totalGiga + GAME.gigaCount + GAME.teraCount
         if GAME.floor >= 10 then
@@ -2522,7 +2522,7 @@ function GAME.finish(reason)
         for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
         SubmitAchv('divine_challenger', _t, true)
 
-        SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .01))
+        SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .1))
         SubmitAchv('effective', zpGain)
         SubmitAchv('drag_racing', GAME.peakRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
@@ -2544,9 +2544,7 @@ function GAME.finish(reason)
         if GAME.height >= 6200 then IssueSecret('fomg') end
         SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
-        if GAME.floor < 10 and Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
-            SubmitAchv('divine_rejection', GAME.roundHeight)
-        end
+        if GAME.floor < 10 then SubmitAchv('divine_rejection', GAME.roundHeight) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'DP' then
             if VALENTINE then SubmitAchv('lovers_promise', GAME.roundHeight) end
@@ -2807,7 +2805,7 @@ function GAME.update(dt)
         end
     end
 
-    GAME.roundHeight = ceil(GAME.height * 100) / 100
+    GAME.roundHeight = floor(GAME.height * 10) / 10
 
     if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
 

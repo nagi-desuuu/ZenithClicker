@@ -145,7 +145,16 @@ function Initialize(save)
         STAT.badge.subluminal, STAT.badge.superluminal = STAT.badge.superluminal, nil
         if TABLE.minAll(BEST.speedrun) <= 42 then STAT.badge.superluminal = true end
         if TABLE.maxAll(BEST.highScore) >= 12600 then STAT.badge.fepsilon = true end
+        if ACHV.divine_rejection then
+            ACHV.divine_rejection = math.floor(ACHV.divine_rejection * 10) / 10
+        end
         STAT.version = 186
+    end
+    if STAT.version == 186 then
+        for k, v in next, BEST.highScore do
+            BEST.highScore[k] = math.floor(v * 10) / 10
+        end
+        STAT.version = 187
     end
 
     -- Some Initialization
