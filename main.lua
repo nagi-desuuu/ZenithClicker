@@ -1571,7 +1571,7 @@ function Daemon_Fast()
         end
 
         -- Button text animation
-        if TASK.lock("buttonTextCD", .042) then
+        if TASK.lock("buttonTextCD", .035) then
             local changed
             if M.DH == 0 then
                 if startBtnPtr > 1 then
@@ -1579,7 +1579,7 @@ function Daemon_Fast()
                     changed = true
                 end
             else
-                if startBtnPtr < #startBtnTexts then
+                if startBtnPtr < 14 then -- #startBtnTexts
                     startBtnPtr = startBtnPtr + 1
                     changed = true
                 end
@@ -1597,7 +1597,7 @@ function Daemon_Fast()
                     changed = true
                 end
             else
-                if resetBtnPtr < #resetBtnTexts then
+                if resetBtnPtr < 10 then -- #resetBtnTexts
                     resetBtnPtr = resetBtnPtr + 1
                     changed = true
                 end
