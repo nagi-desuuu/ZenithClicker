@@ -197,16 +197,16 @@ ModData = {
 
 ComboData = {
     menu = {
-        { set = 'NH GV',            name = "A Modern Classic" },
-        { set = 'NH MS DH',         name = "Deadlock" },
-        { set = 'MS DH AS',         name = "The Escape Artist" },
-        { set = 'GV IN',            name = "The Grandmaster" },
-        { set = 'EX NH DH',         name = "Emperor's Decadence" },
-        { set = 'EX MS VL DH',      name = "Divine Mastery" },
-        { set = 'NH AS',            name = "The Starving Artist" },
-        { set = 'EX VL AS',         name = "The Con Artist" },
-        { set = 'EX DP',            name = "Trained Professionals" },
-        { set = 'EX MS',            name = "Block Rationing" },
+        { set = "NH GV",            name = "A Modern Classic" },
+        { set = "NH MS DH",         name = "Deadlock" },
+        { set = "MS DH AS",         name = "The Escape Artist" },
+        { set = "GV IN",            name = "The Grandmaster" },
+        { set = "EX NH DH",         name = "Emperor's Decadence" },
+        { set = "EX MS VL DH",      name = "Divine Mastery" },
+        { set = "NH AS",            name = "The Starving Artist" },
+        { set = "EX VL AS",         name = "The Con Artist" },
+        { set = "EX DP",            name = "Trained Professionals" },
+        { set = "EX MS",            name = "Block Rationing" },
 
         { set = "EX rGV DH",        name = "Demonic Speed" },
         { set = "rGV rAS",          name = "Whizzing Wizard" },
@@ -240,16 +240,16 @@ ComboData = {
     },
 
     game = {
-        { set = 'NH GV',       name = "A Modern Classic" },
-        { set = 'NH MS DH',    name = "Deadlock" },
-        { set = 'MS DH AS',    name = "The Escape Artist" },
-        { set = 'GV IN',       name = "The Grandmaster" },
-        { set = 'EX NH DH',    name = "Emperor's Decadence" },
-        { set = 'EX MS VL DH', name = "Divine Mastery" },
-        { set = 'NH AS',       name = "The Starving Artist" },
-        { set = 'EX VL AS',    name = "The Con Artist" },
-        { set = 'EX DP',       name = "Trained Professionals" },
-        { set = 'EX MS',       name = "Block Rationing" },
+        { set = "NH GV",       name = "A Modern Classic" },
+        { set = "NH MS DH",    name = "Deadlock" },
+        { set = "MS DH AS",    name = "The Escape Artist" },
+        { set = "GV IN",       name = "The Grandmaster" },
+        { set = "EX NH DH",    name = "Emperor's Decadence" },
+        { set = "EX MS VL DH", name = "Divine Mastery" },
+        { set = "NH AS",       name = "The Starving Artist" },
+        { set = "EX VL AS",    name = "The Con Artist" },
+        { set = "EX DP",       name = "Trained Professionals" },
+        { set = "EX MS",       name = "Block Rationing" },
     },
 
     -- rDH database, from tetr.io's community:
