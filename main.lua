@@ -1445,24 +1445,13 @@ function UltraVlCheck(id, auto)
     return true
 end
 
-function RefreshButtonText()
-    local W
-    W = SCN.scenes.tower.widgetList.start
-    W.text = M.DH > 0 and 'COMMENCE' or 'START'
-    W:reset()
-    W = SCN.scenes.tower.widgetList.reset
-    W.text = M.AS > 0 and 'SPIN' or 'RESET'
-    W:reset()
-end
-
--- Muisc syncing daemon
--- DiscordRPC syncing daemon
 DiscordState = {}
 function Daemon_Slow()
     TASK.yieldT(1)
     local lib = BGM._srcLib
     local length = BGM.getDuration()
     while true do
+        -- Muisc syncing
         if BgmPlaying == 'f0' and BGM.isPlaying() then
             local t0 = lib[BgmSet.f0[1]].source:tell()
             for i = #BgmSet.f0, 2, -1 do
@@ -1476,6 +1465,8 @@ function Daemon_Slow()
                 end
             end
         end
+
+        -- DiscordRPC syncing
         if DiscordState.needUpdate and not TASK.getLock('RPC_update') then
             DiscordState.needUpdate = nil
             DiscordRPC.update(DiscordState)
@@ -1484,10 +1475,6 @@ function Daemon_Slow()
     end
 end
 
--- Throb tranpaency daemon
--- Messy position daemon
--- Expert guitar randomization daemon
--- Mouse holding animation daemon
 function Daemon_Fast()
     local max = math.max
     local hsv = COLOR.HSV
@@ -1496,12 +1483,18 @@ function Daemon_Fast()
     local expApproach = MATH.expApproach
     local deckSize = #ModData.deck
 
+    local startBtnTexts = { "START", "STAR", "STA", "ST", "S", "", "C", "CO", "COM", "COMM", "COMME", "COMMEN", "COMMENC", "COMMENCE" }
+    local resetBtnTexts = { "RESET", "RESE", "RES", "RE", "R", "", "S", "SP", "SPI", "SPIN" }
+    local startBtnPtr = 1
+    local resetBtnPtr = 1
+
     local t1 = -.1
     local t = 0
     while true do
         if BgmPlaying then
             local bar = 2 * 60 / BgmData[BgmPlaying].bpm * 4
             local T = BGM.tell()
+            -- Throb tranpaency
             ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
             ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
             ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
@@ -1512,7 +1505,7 @@ function Daemon_Fast()
                 GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
             end
 
-            -- MS shaking
+            -- Messy position shaking
             if T < t1 then t1 = -.1 end
             if T > t1 + 2 * 60 / BgmData[BgmPlaying].bpm then
                 t1 = T
@@ -1548,10 +1541,12 @@ function Daemon_Fast()
 
         local dt = yield()
 
+        -- Mouse holding animation
         if not STAT.syscursor then
             pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
         end
 
+        -- Achievement saving
         if saveAchvTimer then
             saveAchvTimer = saveAchvTimer - dt
             if saveAchvTimer <= 0 then
@@ -1560,10 +1555,12 @@ function Daemon_Fast()
             end
         end
 
+        -- uVL timer reducing
         for k, v in next, uVLpool do
             uVLpool[k] = max(v - dt, 0)
         end
 
+        -- Reverse background animation
         if GAME.revDeckSkin and SYSTEM ~= 'Web' then
             if M.NH > 0 then dt = dt * (1 - M.NH * .42) end
             if M.AS > 0 then dt = dt * (1 + M.AS) end
@@ -1571,6 +1568,45 @@ function Daemon_Fast()
             local v = dt * GAME.bgXdir * (26 + 2.6 * GAME.rank)
             if M.GV > 0 then v = v * (.62 + M.GV * 2.6 * math.sin(t * 2.6 * (M.GV - .5))) end
             GAME.bgX = GAME.bgX + v
+        end
+
+        -- Button text animation
+        if TASK.lock("buttonTextCD", .042) then
+            local changed
+            if M.DH == 0 then
+                if startBtnPtr > 1 then
+                    startBtnPtr = startBtnPtr - 1
+                    changed = true
+                end
+            else
+                if startBtnPtr < #startBtnTexts then
+                    startBtnPtr = startBtnPtr + 1
+                    changed = true
+                end
+            end
+            if changed then
+                local W = SCN.scenes.tower.widgetList.start
+                W.text = startBtnTexts[startBtnPtr]
+                W:reset()
+                changed = false
+            end
+
+            if M.AS == 0 then
+                if resetBtnPtr > 1 then
+                    resetBtnPtr = resetBtnPtr - 1
+                    changed = true
+                end
+            else
+                if resetBtnPtr < #resetBtnTexts then
+                    resetBtnPtr = resetBtnPtr + 1
+                    changed = true
+                end
+            end
+            if changed then
+                local W = SCN.scenes.tower.widgetList.reset
+                W.text = resetBtnTexts[resetBtnPtr]
+                W:reset()
+            end
         end
     end
 end

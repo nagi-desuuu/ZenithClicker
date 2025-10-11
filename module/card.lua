@@ -198,13 +198,9 @@ function Card:setActive(auto, key)
         if self.id == 'EX' then
             TWEEN.new(tween_expertOn):setDuration(M.EX > 0 and .26 or .1):run()
             TABLE.clear(HoldingButtons)
-        elseif self.id == 'DH' then
-            RefreshButtonText()
         elseif self.id == 'IN' then
             for _, C in ipairs(CD) do C:flip() end
             noSpin = M.IN == 1
-        elseif self.id == 'AS' then
-            RefreshButtonText()
         end
         SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler)
         GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM

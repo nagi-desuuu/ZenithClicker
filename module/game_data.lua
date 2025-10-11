@@ -668,7 +668,6 @@ NegEvents = {
             GAME.attackMul = GAME.attackMul - .1
             GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.AS = 0
-            RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
@@ -802,7 +801,6 @@ NegEvents = {
             GAME.attackMul = GAME.attackMul - .1
             GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.DH = 0
-            RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
