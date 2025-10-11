@@ -1095,6 +1095,7 @@ function ReloadTexts()
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
     for _, W in next, SCN.scenes.records.widgetList do W:reset() end
     AboutText:setFont(FONT.get(70))
+    DevNoteText:setFont(FONT.get(30))
     EndText:setFont(FONT.get(70))
     EndText2:setFont(FONT.get(70))
     if SCN.cur == 'stat' then RefreshProfile() end
