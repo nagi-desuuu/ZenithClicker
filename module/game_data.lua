@@ -574,14 +574,14 @@ NegFloors = {
 }
 NegTexts = {
     b1 = { -- The Basement
-        desc = [[A basic storage room for the floors above... and below.]],
+        desc = "A basic storage room for the floors above... and below.",
         begin = [[You find yourself in an unfamiliar place.]],
         noAS = [[You passed the security check without any prohibited items.]],
         ASoff = [[To prevent mech heart users from entering, the AS mod has been confiscated.]],
         -- egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
     },
     b2 = { -- Zenith Restaurant
-        desc = [[A lively restaurant with a lovely atmosphere. Though the prices here are slightly outrageous...]],
+        desc = "A lively restaurant with a lovely atmosphere.\nThough the prices here are slightly outrageous...",
         begin = [[The smell of food calms your senses...]],
         effStart = [[Illusions dance before your eyes...]],
         noVL = [[You feel yourself getting weaker...]],
@@ -590,7 +590,7 @@ NegTexts = {
         INoff = [[Your mind is becoming clearer...]],
     },
     b3 = { -- Underground Parking
-        desc = [[A boundless parking lot for all of these visitors.]],
+        desc = "A boundless parking lot for all of these visitors.",
         begin = [[The vast lot's tranquility reassures you.]],
         effStart = [[But a realization dawned - you were lost.]],
         mid1 = [["Where am I?"]],
@@ -599,21 +599,21 @@ NegTexts = {
         mid2 = [["Where am I going?"]],
     },
     b4 = { -- The Bunker
-        desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
+        desc = "A regular bunker...\nafter witnessing the Corruption, you definitely know why it was built.",
         begin = [[You feel safe away from the above.]],
         effStart = [[The barren bunker begins to feel ghostly.]],
         noMS = [[It seems that luck was against you...]],
         MSoff = [[You organized your thoughts...]],
     },
     b5 = { -- The Infirmary
-        desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
+        desc = "The medical sector of the tower, filled with incomprehensible technology.\nThey look similar to the ones in the Laboratory...",
         begin = [[Endless beeping echoes through the halls you roam.]],
         effStart = [[One horrifying scene after another floods your vision.]],
         noDH = [[A sinister thought crosses your mind...]],
         DHoff = [[You shuddered while walking in this terrifying place.]],
     },
     b6 = { -- Decayed Catacombs
-        desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]],
+        desc = "A complex of the dead,\nnow decaying into an even more unsettling shell of itself.",
         begin = [[The feeling of safety slipped away.]],
         effStart = [[Your attention strays...]],
         mid = [[You begin to hear something calling your name...]],
@@ -621,14 +621,14 @@ NegTexts = {
         NHoff = [[You overcome your fear.]],
     },
     b7 = { -- Sacreligious Ruins
-        desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]],
+        desc = "The remains of a previously sacred chapel, the spirits of those,\nwho worshipped the gods above linger on...",
         desc2 = [[Whispers of a missing artifact echo throughout the area...]],
         begin = [[You pray that nothing dire becomes of you.]],
         effStart = [[Spacetime ahead is heavily warped...]],
         mid = [[You know you have to go as fast as possible.]],
     },
     b8 = { -- Singularity Reactor
-        desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]],
+        desc = "Fueled by the power of the cosmos and the stolen artifact, powering something...",
         begin = [[You are overwhelmed by the reactor's magnitude.]],
         mid1 = [[Dizzy spells.]],
         mid2 = [[Blurred vision.]],
@@ -636,7 +636,7 @@ NegTexts = {
         -- mid = [[The mysterious voice is growing ever nearer...]],
     },
     b9 = { -- Distorted Gateways
-        desc = [[A hall of millions of gateways to different realities, towers and wastelands... the mere thought of something like this is sickening...]],
+        desc = "A hall of millions of gateways to different realities, towers and wastelands...\nThe mere thought of something like this is sickening...",
         desc2 = [[The entrance to a false promise of paradise.]],
         desc3 = [[You reach the bottom... or it seemed to be at first glance... one last gateway was left...]],
         begin = [[The endless void beckons you...]],
@@ -644,7 +644,7 @@ NegTexts = {
         -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
     },
     b10 = { -- Endless Void
-        desc = [[A realm of absolutely nothing, none have ever returned.]],
+        desc = "A realm of absolutely nothing, none have ever returned.",
         desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
         -- begin = [[...and you pass the point of no return.]],
         -- mid1 = [[Everything begins to go quiet.]],
