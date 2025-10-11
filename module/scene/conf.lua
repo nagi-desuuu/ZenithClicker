@@ -321,10 +321,10 @@ function scene.draw()
             local alpha = .26 + .62 * (-2.6 * t % 1)
             gc_setColor(COLOR.C)
             gc_setAlpha(alpha)
-            gc_mRect('fill', len * BgmNeedSkip[1] / playingBgmLength, 248, 2, 9)
+            gc_mRect('fill', len * BgmNeedSkip[1] / playingBgmLength, 48, 2, 9)
             gc_setColor(COLOR.O)
             gc_setAlpha(alpha)
-            gc_mRect('fill', len * BgmNeedSkip[2] / playingBgmLength, 248, 2, 9)
+            gc_mRect('fill', len * BgmNeedSkip[2] / playingBgmLength, 48, 2, 9)
         end
         gc_ucs_back()
     end
