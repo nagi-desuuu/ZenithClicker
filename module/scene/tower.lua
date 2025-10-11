@@ -1621,7 +1621,7 @@ scene.widgetList = {
 
                 MSG({
                     cat = 'dark',
-                    str = ("1Z - Nightcore;2S - Sloooooow-mo;3J - Glass Card;4L - Fast Leak;5T - Invisible UI;6I - Invisible Card;7O - Close Card;8ALLCLEAR;"):match(PieceSFXID .. "(.-);"),
+                    str = ("1Z - Nightcore;2S - Sloooooow-mo;3J - Glass Card;4L - Fast Leak;5T - Invisible UI;6O - Invisible Card;7I - Close Card;8ALLCLEAR;"):match(PieceSFXID .. "(.-);"),
                     time = 1.2
                 })
             end
