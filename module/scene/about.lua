@@ -139,13 +139,18 @@ function scene.load()
     scroll, scroll1 = 0, -620
 
     devCommentary = require('module.devCommentary')
-    local setStr = (GAME.anyUltra and 'u' or '') .. table.concat(TABLE.sort(GAME.getHand(true)))
+    local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    local cID = table.concat(GAME.getHand(true), " ")
+    if GAME.anyUltra then
+        setStr = 'u' .. cID
+        cID = cID:gsub("r", "u")
+    end
     local text
-    if devCommentary[setStr] then
+    if devCommentary[cID] then
         if BEST.highScore[setStr] < Floors[9].top then
             text = devCommentary.notFinished
         else
-            text = devCommentary[table.concat(GAME.getHand(true), " ")]
+            text = devCommentary[cID]
         end
     else
         text = devCommentary.noComment
