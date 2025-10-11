@@ -2658,11 +2658,14 @@ function GAME.finish(reason)
     end
 
     if URM and GAME.height < 0 then
+        PieceSFXID = 0
         GAME.nightcore = false
         GAME.slowmo = false
         GAME.glassCard = false
-        GAME.invisCard = false
+        GAME.fastLeak = false
         GAME.invisUI = false
+        GAME.invisCard = false
+        GAME.closeCard = false
     end
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
