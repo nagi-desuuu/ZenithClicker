@@ -136,4 +136,169 @@ return {
     ['uDP'] = STRING.trimIndent [[
         No more leniency. 50% more damage to ally.
     ]],
+
+    ['NH GV'] = STRING.trimIndent [[
+        A Modern Classic, a combo ported from QP2, and it's not very worth talking about.
+        It's basically no mod run, very straightforward.
+        Maybe NH rGV? This feels a bit better.
+    ]],
+    ['NH MS DH'] = STRING.trimIndent [[
+        Deadlock, a combo ported from QP2, and it's not very worth talking about.
+        It's basically MS run but need a bit more concentrating.
+        No much idea on this.
+    ]],
+    ['MS DH AS'] = STRING.trimIndent [[
+        The Escape Artist, a combo ported from QP2, and it's not very...Oh I modified this one, because QP2 did
+        QP2 made the target "garbage lines dig with spin", so I changed it to "quests with wound triggered".
+        Hmm it's not that matching? But anyway it plays not bad lol
+    ]],
+    ['GV IN'] = STRING.trimIndent [[
+        The Grandmaster, a combo ported from QP2, and it's not very worth talking about.
+        IN gameplay but need a bit more concentrating.
+        This one has a bit potential, so you will see rGV rIN later.
+    ]],
+    ['EX NH DH'] = STRING.trimIndent [[
+        Emperor's Decadence, a combo ported from QP2, and it's not very worth talking about.
+        EX gameplay but need a bit more concentrating.
+    ]],
+    ['EX MS VL DH'] = STRING.trimIndent [[
+        Divine Mastery, a combo ported from QP2, and it's not very worth talking about.
+        EX gameplay but need a bit more concentrating and endurancew.
+    ]],
+    ['NH AS'] = STRING.trimIndent [[
+        The Starving Artist, a combo ported from QP2.
+        This one is a bit interesting, since you just cannot easily cancel when you made mistakes.
+        Later we have a harder version: NH rAS, which force you learning how to solve rAS wounds, or just play perfectly if you can.
+    ]],
+    ['EX VL AS'] = STRING.trimIndent [[
+        The Con Artist, a combo ported from QP2, and it's not very worth talking about.
+        AS gameplay but need a bit more concentrating.
+    ]],
+    ['EX DP'] = STRING.trimIndent [[
+        Trained Professionals, a combo ported from QP2, and it's not very worth talking about.
+        EX gameplay but a tiny bit harder because DP increases the difficulty of quests a bit.
+    ]],
+    ['EX MS'] = STRING.trimIndent [[
+        Block Rationing, a combo ported from QP2, modified to "height in limited quests".
+        I'll admit this one is a bit rng, but you can improve consistency with some tricks,
+        like stalling at start to get some free height, and make good use of the XP protection on last few quests.
+    ]],
+    ['EX rGV DH'] = STRING.trimIndent [[
+        Demonic Speed, an original combo made very early from ZC community.
+        Honestly it's not very fun in mechanics, basically just harder rGV requiring more accuracy.
+    ]],
+    ['rGV rAS'] = STRING.trimIndent [[
+        Whizzing Wizard, an original combo added after reversed mod background animation update iirc
+        This looks so dizzy and so cool lol, though it plays almost same with rAS run if you won't make mistakes.
+    ]],
+    ['rGV rIN'] = STRING.trimIndent [[
+        The Grandmaster+, reversed version of The Grandmaster, which is closer to its original meaning.
+        Well, you can see that ZC's upright mods are kinda too easy, and the reversed mods have similar difficulty with QP2's normal mods.
+        This is intended, to let everyone be able to enjoy playing with mods.
+    ]],
+    ['NH rAS'] = STRING.trimIndent [[
+        Pristine, reversed version of The Starving Artist.
+        This combo forces you to learn how to deal with AS wounds after each mistake. It's interesting, isn't it?
+    ]],
+    ['GV rDH rAS'] = STRING.trimIndent [[
+        Storage Overload, an original combo from ZC community.
+        GV+rAS doesn't allow you guess too hurry, so this needs you know all 2-mod combos and many 3-mod combos to finish, which fitting its title.
+        Well but it's not really necessary, you could also wait for the hint, so it shouldn't be too hard.
+    ]],
+    ['EX NH rMS GV'] = STRING.trimIndent [[
+        Bnuuy, an original combo from ZC community.
+        This one is not very fun in mechanics, basically just rMS gameplay but mistakes are punished more with EX+NH+GV.
+        Feels like catching bunnies? I guess that's how it got the name lol
+    ]],
+    ['rNH rMS GV AS DP'] = STRING.trimIndent [[
+        Grand-Master! Rounds, an original combo I made, featured with TGM4 meme.
+        rNH for pikii (freezing cells), rMS for messy field if you are not pro enough, GV for high gravity,
+        AS for all pieces rotated on spawn, and DP for arcade allowing two players.
+    ]],
+    ['rEX rVL DH'] = STRING.trimIndent [[
+        Sweat and Ruin, an original combo from ZC community.
+        rEX gameplay but limit your speed with rVL+DH, which fits the title well.
+    ]],
+    ['rMS GV AS rDP'] = STRING.trimIndent [[
+        Cupid's Gamble, an original combo from ZC community.
+        This one has a mixed gameplay of rMS+AS mixed with rDP.
+    ]],
+    ['NH rGV VL rDP'] = STRING.trimIndent [[
+        Despairful Longing, an original combo from ZC community.
+        A stricter rDP requiring fast reaction and accuracy.
+    ]],
+    ['rEX VL rIN'] = STRING.trimIndent [[
+        Authoritarian Delusion, an original combo from ZC community.
+        Just rEX+rIN gameplay and it fits the title well.
+    ]],
+    ['rEX rDP'] = STRING.trimIndent [[
+        Tyrannical Dyarchy, an original combo I made.
+        rEX+rDP, though rEX fatigue overrides rDP's one, weakening actual effects of rDP,
+        rDP still forces you not to surge, which is the normal way to skip F9-stage of a rEX run.
+    ]],
+    ['rEX MS rDH IN'] = STRING.trimIndent [[
+        Sisyphean Monarchy, an original combo from ZC community.
+        rEX but you have to be familiar with most rDH combos and finding cards quickly, or you will be like tragic Sisyphus.
+    ]],
+    ['MS rDH rIN AS'] = STRING.trimIndent [[
+        Kitsune Trickery, an original combo from ZC community.
+        This achievement replaced "Brain Capacity" (rDH rIN) with a bit more difficulty for rDH pros.
+        Another TGM4 meme achievement lol
+    ]],
+    ['NH rGV'] = STRING.trimIndent [[
+        Clutch Main, an original combo from ZC community.
+        Introduces "clutch" into actual gameplay, which is kinda interesting.
+    ]],
+    ['EX VL'] = STRING.trimIndent [[
+        Wax Wings, an original... achievement I made? If I remember correctly...
+        Playing "without losing a rank" with EX VL fits so well with the community combo "Icarus"'s myth story.
+        It's so unbelievable that it successfully combines mod combo & rank system & texts and plays interesting.
+    ]],
+    ['rMS rGV rIN'] = STRING.trimIndent [[
+        The Masterful Juggler, an original combo from ZC community.
+        Combined with the target "Highest B2B chain reached", this makes more sense.
+    ]],
+    ['DH rIN AS'] = STRING.trimIndent [[
+        The Oblivious Artist, an original combo from ZC community.
+        This one was "doing the inverse first", but I felt it sounds too forcing, so it got changed to this.
+    ]],
+    ['VL DH rIN'] = STRING.trimIndent [[
+        Empurple, an original combo from ZC community. Just Powerless with some mods.
+        Main difficulty should come from "hard mode" of reverse mod, reducing XP you could get.
+    ]],
+    ['EX VL rIN rDP'] = STRING.trimIndent [[
+        Love Hotel, F2 speedrunning combo.
+        I think I shouldn't explain why these mods...
+    ]],
+    ['EX MS AS'] = STRING.trimIndent [[
+        Financially Responsible, F3 speedrunning combo.
+        This achievement series is basically all supercharged tier,
+        but at least we could use mods and flavor texts to make them plays kinda different.
+    ]],
+    ['EX rVL rDP'] = STRING.trimIndent [[
+        Unfair Battle, F4 speedrunning combo.
+        Since F4 is still not high, using some hard mods is acceptable.
+    ]],
+    ['DH DP'] = STRING.trimIndent [[
+        Museum Heist, F5 speedrunning combo.
+        This is the start of floor speedrunning achievements!
+        Though it was assigned supercharged tier by Garbo, cute achievements which has a clear upper bound like this are fine here.
+    ]],
+    ['EX rGV VL'] = STRING.trimIndent [[
+        Workaholic, F6 speedrunning combo.
+        Another supercharged achievement... If you won't be slowed down a lot by EX VL.
+    ]],
+    ['MS VL AS'] = STRING.trimIndent [[
+        Human Experiment, F7 speedrunning combo.
+        Supercharged with AS! Oh wait there's also MS...
+    ]],
+    ['EX GV DH'] = STRING.trimIndent [[
+        Thermal Anomaly, F8 speedrunning combo.
+        Finally we have an almost pure supercharged floor speedrun, except there's EX.
+        Why most floor speedrunning achievements has EX, but I forgot why...
+    ]],
+    ['MS GV AS'] = STRING.trimIndent [[
+        Dazed, an original combo from ZC community.
+        Another supercharged achievement...? Maybe it's more like a combination of supercharged and MS mastery.
+    ]],
 }
