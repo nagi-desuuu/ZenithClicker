@@ -156,6 +156,10 @@ function Initialize(save)
         end
         STAT.version = 187
     end
+    if STAT.version == 187 then
+        ACHV.dazed = nil
+        STAT.version = 188
+    end
 
     -- Some Initialization
     for i = 1, #Cards do

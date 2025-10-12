@@ -932,6 +932,7 @@ function GAME.upFloor()
         if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', roundFloorTime) end
     elseif GAME.floor == 9 then
         SubmitAchv('ultra_dash', GAME.floorTime)
+        if GAME.comboStr == 'ASGVMS' then SubmitAchv('dazed', GAME.rank) end
     end
 
     -- Update section time
@@ -2577,8 +2578,6 @@ function GAME.finish(reason)
             --     if GAME.achv_totalResetCount == 0 then
             --         SubmitAchv('minimalism', GAME.achv_maxChain)
             --     end
-        elseif GAME.comboStr == 'ASGVMS' then
-            SubmitAchv('dazed', GAME.peakRank)
         end
         if M.EX < 2 and M.DP < 2 then
             SubmitAchv('speed_bonus', GAME.gigaCount + GAME.teraCount)

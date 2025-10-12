@@ -1179,7 +1179,7 @@ Achievements = {
         quote = [[Ascending the tower at a stable, yet swift rate.]],
         credit = "@FMichael",
         scoreSimp = function(rank) return "Rank " .. (rank == 26 and "26 (Max)" or rank) end,
-        rank = numberRank(9, 11, 13, 14, 15, 16, 18),
+        rank = numberRank(10, 12, 13, 14, 15, 16, 18),
     },
     { -- drag_racing
         ex = true,
@@ -1195,11 +1195,11 @@ Achievements = {
         ex = true,
         id = 'dazed',
         name = "Dazed",
-        desc = [[Highest CSP achieved after Floor 10 using MS GV AS]],
+        desc = [[Highest rank when hitting F10 with MS GV AS]],
         quote = [[Illusions dance around you...]],
         credit = "@The_111thBlitzer",
         scoreSimp = function(rank) return "Rank " .. rank end,
-        rank = numberRank(8, 10, 11, 12, 13, 14, 16),
+        rank = numberRank(10, 10, 11, 12, 13, 14, 16),
     },
     { -- the_spike_of_all_time_plus
         ex = true,
