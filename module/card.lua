@@ -222,7 +222,7 @@ function Card:setActive(auto, key)
             key and clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6)
         )
         local toneName = 'card_tone_' .. ModData.name[self.id]
-        local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1
+        local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaspeed and .26 or 0) or 1
         if revOn then
             SFX.play(toneName .. postfix, toneVol, 0, Tone(0))
             if URM then
