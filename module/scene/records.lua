@@ -65,7 +65,7 @@ local function newRecord(list, isUltra)
     local mods = #list == 0 and "No Mod" or table.concat(list, " ")
     table.sort(list)
     local setStr = (isUltra and 'u' or '') .. table.concat(list)
-    local height = rawget(BEST.highScore,setStr)
+    local height = rawget(BEST.highScore, setStr)
     if not height then return end
     local time = BEST.speedrun[setStr]
     local floor = height >= 6200 and 11 or GAME.calculateFloor(height)
@@ -242,7 +242,8 @@ local function query()
                     if notMatch then break end
                 end
 
-                table.insert(recList, newRecord(setL, ultra))
+                local rec = newRecord(setL, ultra)
+                if rec then table.insert(recList, rec) end
             until true
         end
         table.sort(recList,
