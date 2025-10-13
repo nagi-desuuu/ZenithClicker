@@ -66,7 +66,6 @@ local function newRecord(list, isUltra)
     table.sort(list)
     local setStr = (isUltra and 'u' or '') .. table.concat(list)
     local height = BEST.highScore[setStr]
-    if height == 0 then return end
     local time = BEST.speedrun[setStr]
     local floor = height >= 6200 and 11 or GAME.calculateFloor(height)
     local scoreText, floorText, extraText
@@ -174,6 +173,7 @@ local function query()
                     -- speedrun check
                     if BEST.speedrun[setStr] > 1e26 then break end
                 end
+
                 -- mp check
                 if not (set.mpComp == '>' and set.mp == 1 or set.mpComp == '<' and set.mp == 18) then
                     local mp = (#setStr - (ultra and 1 or 0) + setStr:count('r')) / 2
@@ -185,6 +185,7 @@ local function query()
                         break
                     end
                 end
+
                 -- combo check
                 if ultra then setStr = setStr:sub(2) end
                 local setL = {}; for m in setStr:gmatch('r?..') do table.insert(setL, m) end
