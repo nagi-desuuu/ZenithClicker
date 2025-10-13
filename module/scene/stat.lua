@@ -166,7 +166,7 @@ function RefreshProfile()
     -- github link
     FONT.set(50)
     GC.setColor(scoreColor)
-    GC.printf("↗  VIEW SOURCE FILE", 0, 640, 1200, 'center')
+    GC.printf("↗  VIEW FULL RECORDS", 0, 640, 1200, 'center')
     -- bottom dark
     GC.setColor(0, 0, 0, .3)
     GC.rectangle('fill', 0, 720, 1200, -3)
@@ -415,16 +415,11 @@ end
 
 function scene.load()
     SetMouseVisible(true)
-    TASK.lock('no_back')
     maskAlpha, cardShow = 0, 0
     TWEEN.new(function(t)
         maskAlpha = t
-    end):setTag('stat_in'):setDuration(.26):run():setOnFinish(function()
-        TWEEN.new(function(t)
-            cardShow = t
-        end):setTag('stat_in'):setDuration(.1):run():setOnFinish(function()
-            TASK.unlock('no_back')
-        end)
+    end):setDuration(.26):run():setOnFinish(function()
+        TWEEN.new(function(t) cardShow = t end):setDuration(.1):run()
     end)
 
     crProgress.f10 = getF10Completion()
@@ -436,9 +431,8 @@ end
 
 function scene.keyDown(key, isRep)
     if isRep then return true end
-    if (key == 'escape' or key == '`') and TASK.lock('no_back') then
+    if (key == 'escape' or key == '`') and cardShow == 1 then
         SFX.play('menuclick')
-        TWEEN.tag_kill('stat_in')
         TWEEN.new(function(t)
             cardShow = 1 - t
         end):setDuration(.26):run():setOnFinish(function()
@@ -446,7 +440,6 @@ function scene.keyDown(key, isRep)
                 maskAlpha = 1 - t
             end):setDuration(.26):run():setOnFinish(function()
                 SCN.back('none')
-                TASK.unlock('no_back')
             end)
         end)
     end
@@ -489,16 +482,13 @@ scene.widgetList = {
         floatText = "", -- Dynamic text
     },
     WIDGET.new {
-        name = 'link', type = 'hint',
+        name = 'full', type = 'button_invis',
         pos = { .5, .5 }, x = 0, y = 210, w = 800, h = 60,
-        color = COLOR.X,
-        labelPos = 'top',
-        labelDist = 6,
-        floatFontSize = 30,
-        floatText = "Open github repo with browser",
         onPress = function()
-            SFX.play('menuconfirm')
-            love.system.openURL("https://github.com/MrZ626/ZenithClicker")
+            if cardShow == 1 then
+                SFX.play('menuconfirm')
+                SCN.swapTo('records', 'none')
+            end
         end,
     },
     -- CLOSE button

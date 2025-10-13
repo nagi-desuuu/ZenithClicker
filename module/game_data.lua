@@ -197,24 +197,22 @@ ModData = {
 
 ComboData = {
     menu = {
-        { set = 'NH GV',            name = "A Modern Classic" },
-        { set = 'NH MS DH',         name = "Deadlock" },
-        { set = 'MS DH AS',         name = "The Escape Artist" },
-        { set = 'GV IN',            name = "The Grandmaster" },
-        { set = 'EX NH DH',         name = "Emperor's Decadence" },
-        { set = 'EX MS VL DH',      name = "Divine Mastery" },
-        { set = 'NH AS',            name = "The Starving Artist" },
-        { set = 'EX VL AS',         name = "The Con Artist" },
-        { set = 'EX DP',            name = "Trained Professionals" },
-        { set = 'EX MS',            name = "Block Rationing" },
+        { set = "NH GV",            name = "A Modern Classic" },
+        { set = "NH MS DH",         name = "Deadlock" },
+        { set = "MS DH AS",         name = "The Escape Artist" },
+        { set = "GV IN",            name = "The Grandmaster" },
+        { set = "EX NH DH",         name = "Emperor's Decadence" },
+        { set = "EX MS VL DH",      name = "Divine Mastery" },
+        { set = "NH AS",            name = "The Starving Artist" },
+        { set = "EX VL AS",         name = "The Con Artist" },
+        { set = "EX DP",            name = "Trained Professionals" },
+        { set = "EX MS",            name = "Block Rationing" },
 
         { set = "EX rGV DH",        name = "Demonic Speed" },
         { set = "rGV rAS",          name = "Whizzing Wizard" },
         { set = "rGV rIN",          name = "The Grandmaster+" },
         { set = "NH rAS",           name = "Pristine" },
         { set = "GV rDH rAS",       name = "Storage Overload" },
-        { set = "rNH rGV rVL",      name = "Sweatshop" },
-        { set = "rNH rIN",          name = "Fleeting Memory" },
         { set = "EX NH rMS GV",     name = "Bnuuy" },
         { set = "rNH rMS GV AS DP", name = "Grand-Master! Rounds" },
         { set = "rEX rVL DH",       name = "Sweat and Ruin" },
@@ -227,6 +225,7 @@ ComboData = {
 
         { set = "NH rGV",           name = "Clutch Main" },
         { set = "EX VL",            name = "Wax Wings" },
+        { set = "rMS rGV rIN",      name = "The Masterful Juggler" },
         { set = "DH rIN AS",        name = "The Oblivious Artist" },
         { set = "VL DH rIN",        name = "Empurple" },
 
@@ -237,20 +236,20 @@ ComboData = {
         { set = "EX rGV VL",        name = "Workaholic" },
         { set = "MS VL AS",         name = "Human Experiment" },
         { set = "EX GV DH",         name = "Thermal Anomaly" },
-        { set = "rMS rGV rIN",      name = "The Masterful Juggler" },
+        { set = "MS GV AS",         name = "Dazed" },
     },
 
     game = {
-        { set = 'NH GV',       name = "A Modern Classic" },
-        { set = 'NH MS DH',    name = "Deadlock" },
-        { set = 'MS DH AS',    name = "The Escape Artist" },
-        { set = 'GV IN',       name = "The Grandmaster" },
-        { set = 'EX NH DH',    name = "Emperor's Decadence" },
-        { set = 'EX MS VL DH', name = "Divine Mastery" },
-        { set = 'NH AS',       name = "The Starving Artist" },
-        { set = 'EX VL AS',    name = "The Con Artist" },
-        { set = 'EX DP',       name = "Trained Professionals" },
-        { set = 'EX MS',       name = "Block Rationing" },
+        { set = "NH GV",       name = "A Modern Classic" },
+        { set = "NH MS DH",    name = "Deadlock" },
+        { set = "MS DH AS",    name = "The Escape Artist" },
+        { set = "GV IN",       name = "The Grandmaster" },
+        { set = "EX NH DH",    name = "Emperor's Decadence" },
+        { set = "EX MS VL DH", name = "Divine Mastery" },
+        { set = "NH AS",       name = "The Starving Artist" },
+        { set = "EX VL AS",    name = "The Con Artist" },
+        { set = "EX DP",       name = "Trained Professionals" },
+        { set = "EX MS",       name = "Block Rationing" },
     },
 
     -- rDH database, from tetr.io's community:
@@ -348,7 +347,7 @@ ComboData = {
         { set = "NH DH AS",       name = "Shapeshifter" },
         { set = "NH DH DP",       name = "Good and Evil" },
         { set = "NH IN AS",       name = "The Blind Artist" },
-        { set = "NH IN DP",       name = "No-contact Relationship" },
+        { set = "NH IN DP",       name = "No contact Relationship" },
         { set = "NH AS DP",       name = "Ecstatic Dance" },
         { set = "MS GV VL",       name = "Survival" },
         { set = "MS GV DH",       name = "Double Down" },
@@ -439,6 +438,7 @@ ComboData = {
         { set = "NH GV DH AS",    name = "Dance Dance Revolution" },
         { set = "NH GV IN AS",    name = "Divine Failure" },
         { set = "NH GV IN DP",    name = "Silver Anniversary" },
+        { set = "NH GV AS DP",    name = "Can't Let Go" },
         { set = "NH VL DH IN",    name = "Spilled Milk" },
         { set = "NH VL DH AS",    name = "The Restrained Artist" },
         { set = "NH VL IN AS",    name = "Vigilante" },
@@ -572,16 +572,16 @@ NegFloors = {
     { bottom = -1650, name = "Distorted Gateways" },
     { bottom = -1e99, name = "Endless Void" },
 }
-local NegTexts = {
+NegTexts = {
     b1 = { -- The Basement
-        desc = [[A basic storage room for the floors above... and below.]],
+        desc = "A basic storage room for the floors above... and below.",
         begin = [[You find yourself in an unfamiliar place.]],
         noAS = [[You passed the security check without any prohibited items.]],
         ASoff = [[To prevent mech heart users from entering, the AS mod has been confiscated.]],
         -- egg = [[Garbo checks the imprisoned mech heart users here from time to time, except rtxtile, who kept escaping somehow?]],
     },
     b2 = { -- Zenith Restaurant
-        desc = [[A lively restaurant with a lovely atmosphere. Though the prices here are slightly outrageous...]],
+        desc = "A lively restaurant with a lovely atmosphere.\nThough the prices here are slightly outrageous...",
         begin = [[The smell of food calms your senses...]],
         effStart = [[Illusions dance before your eyes...]],
         noVL = [[You feel yourself getting weaker...]],
@@ -590,7 +590,7 @@ local NegTexts = {
         INoff = [[Your mind is becoming clearer...]],
     },
     b3 = { -- Underground Parking
-        desc = [[A boundless parking lot for all of these visitors.]],
+        desc = "A boundless parking lot for all of these visitors.",
         begin = [[The vast lot's tranquility reassures you.]],
         effStart = [[But a realization dawned - you were lost.]],
         mid1 = [["Where am I?"]],
@@ -599,21 +599,21 @@ local NegTexts = {
         mid2 = [["Where am I going?"]],
     },
     b4 = { -- The Bunker
-        desc = [[A regular bunker... after witnessing the Corruption, you definitely know why it was built.]],
+        desc = "A regular bunker...\nafter witnessing the Corruption, you definitely know why it was built.",
         begin = [[You feel safe away from the above.]],
         effStart = [[The barren bunker begins to feel ghostly.]],
         noMS = [[It seems that luck was against you...]],
         MSoff = [[You organized your thoughts...]],
     },
     b5 = { -- The Infirmary
-        desc = [[The medical sector of the tower, filled with incomprehensible technology. they look similar to the ones in the Laboratory...]],
+        desc = "The medical sector of the tower, filled with incomprehensible technology.\nThey look similar to the ones in the Laboratory...",
         begin = [[Endless beeping echoes through the halls you roam.]],
         effStart = [[One horrifying scene after another floods your vision.]],
         noDH = [[A sinister thought crosses your mind...]],
         DHoff = [[You shuddered while walking in this terrifying place.]],
     },
     b6 = { -- Decayed Catacombs
-        desc = [[A complex of the dead, now decaying into an even more unsettling shell of itself.]],
+        desc = "A complex of the dead,\nnow decaying into an even more unsettling shell of itself.",
         begin = [[The feeling of safety slipped away.]],
         effStart = [[Your attention strays...]],
         mid = [[You begin to hear something calling your name...]],
@@ -621,14 +621,14 @@ local NegTexts = {
         NHoff = [[You overcome your fear.]],
     },
     b7 = { -- Sacreligious Ruins
-        desc = [[The remains of a previously sacred chapel, the spirits of those, who worshipped the gods above linger on...]],
+        desc = "The remains of a previously sacred chapel, the spirits of those,\nwho worshipped the gods above linger on...",
         desc2 = [[Whispers of a missing artifact echo throughout the area...]],
         begin = [[You pray that nothing dire becomes of you.]],
         effStart = [[Spacetime ahead is heavily warped...]],
         mid = [[You know you have to go as fast as possible.]],
     },
     b8 = { -- Singularity Reactor
-        desc = [[Fueled by the power of the cosmos and the stolen artifact, powering something...]],
+        desc = "Fueled by the power of the cosmos and the stolen artifact, powering something...",
         begin = [[You are overwhelmed by the reactor's magnitude.]],
         mid1 = [[Dizzy spells.]],
         mid2 = [[Blurred vision.]],
@@ -636,7 +636,7 @@ local NegTexts = {
         -- mid = [[The mysterious voice is growing ever nearer...]],
     },
     b9 = { -- Distorted Gateways
-        desc = [[A hall of millions of gateways to different realities, towers and wastelands... the mere thought of something like this is sickening...]],
+        desc = "A hall of millions of gateways to different realities, towers and wastelands...\nThe mere thought of something like this is sickening...",
         desc2 = [[The entrance to a false promise of paradise.]],
         desc3 = [[You reach the bottom... or it seemed to be at first glance... one last gateway was left...]],
         begin = [[The endless void beckons you...]],
@@ -644,7 +644,7 @@ local NegTexts = {
         -- begin = [[You feel nostalgia at the sight of a familiar tower.]],
     },
     b10 = { -- Endless Void
-        desc = [[A realm of absolutely nothing, none have ever returned.]],
+        desc = "A realm of absolutely nothing, none have ever returned.",
         desc2 = [[You look back above... yet you've already gone too far in this insane abyss for you to see anything.]],
         -- begin = [[...and you pass the point of no return.]],
         -- mid1 = [[Everything begins to go quiet.]],
@@ -668,7 +668,6 @@ NegEvents = {
             GAME.attackMul = GAME.attackMul - .1
             GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.AS = 0
-            RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
@@ -802,7 +801,6 @@ NegEvents = {
             GAME.attackMul = GAME.attackMul - .1
             GAME.dmgTimerMul = GAME.dmgTimerMul + .01
             GAME.mod.DH = 0
-            RefreshButtonText()
             GAME.refreshModIcon()
             GAME.refreshRPC()
         end,
@@ -1151,29 +1149,9 @@ BadgeData = {
         desc = "???",
     },
     {
-        id = 'exceed_dev',
-        name = "Successor",
-        desc = "Have a better score than Dev on 62% achievements",
-    },
-    {
-        id = 'exceed_dev_half',
-        name = "Apprentice",
-        desc = "Have a better score than Dev on 26% achievements",
-    },
-    {
         id = 'champion',
         name = "Clicker Champion",
         desc = "Attain 25k CR",
-    },
-    {
-        id = 'fomg',
-        name = "Interstellar",
-        desc = "Reached 6200m (max CR from Best Altitude)",
-    },
-    {
-        id = 'superluminal',
-        name = "Superluminal",
-        desc = "Reached F10 in under 76.2s (max CR from Best Speedrun)",
     },
     {
         id = 'mastery_1',
@@ -1196,14 +1174,49 @@ BadgeData = {
         desc = "Finished a speedrun with all single reversed mods",
     },
     {
+        id = 'subluminal',
+        name = "Sub-luminal",
+        desc = "Reached F10 in under 76.2s (max CR from Best Speedrun)",
+    },
+    {
+        id = 'superluminal',
+        name = "Superluminal",
+        desc = "Reached F10 in under 42s",
+    },
+    {
+        id = 'fomg',
+        name = "Interstellar",
+        desc = "Reached 6200m (max CR from Best Altitude)",
+    },
+    {
+        id = 'fepsilon',
+        name = "Intergalactic",
+        desc = "Reached 12600m",
+    },
+    {
+        id = 'true_expert',
+        name = "True Expert",
+        desc = "Finished a speedrun with rEX & closeCard",
+    },
+    {
         id = 'true_master',
         name = "True Master",
         desc = "Finished a speedrun with rGV & Nightcore",
     },
     {
+        id = 'true_strength',
+        name = "True Strength",
+        desc = "Finished a speedrun with rVL & fastLeak",
+    },
+    {
         id = 'true_invis',
         name = "True Invisible",
         desc = "Finished a speedrun with rIN & Invisible Card",
+    },
+    {
+        id = 'universal_gravitation',
+        name = "Universal Gravitation",
+        desc = "Finished a speedrun with negative altitude",
     },
     {
         id = 'rDP_meta',
@@ -1215,6 +1228,16 @@ BadgeData = {
         name = "Surge Protector",
         desc = "Reached the B2B cap",
     },
+    {
+        id = 'exceed_dev_half',
+        name = "Apprentice",
+        desc = "Have a better score than Dev on 26% achievements",
+    },
+    {
+        id = 'exceed_dev',
+        name = "Successor",
+        desc = "Have a better score than Dev on 62% achievements",
+    },
 }
 for i = 1, #BadgeData do
     local bd = BadgeData[i]
@@ -1222,7 +1245,7 @@ for i = 1, #BadgeData do
     BadgeData[bd.id] = bd
 end
 
-DevScore = {clicker=873639,contender=7741,elegance=328220,garbage_offensive=1657900,tower_climber=5066418.91,tower_regular=23694,speed_player=4487,plonk=148.99,zenith_explorer=10666.27,zenith_explorer_plus=18681.62,clicker_speedrun=16.656704472,typer_speedrun=11.331562803,supercharged=288,supercharged_plus=447,multitasker=61866.8,effective=41446.887071386,zenith_speedrun=48.891,zenith_speedrun_plus=30.267,zenith_challenger=89682.07,divine_challenger=50726.25,zenith_speedrunner=497.213,divine_speedrunner=731.627,the_spike_of_all_time=412,the_spike_of_all_time_minus=192,clock_out=454,vip_list=62,GVIN=9358.41,ASNH=9830.74,DPEX=5417.82,GVNH=8373.29,DHMSNH=4603.14,DHEXNH=4520.53,DHEXMSVL=2766.57,ASEXVL=4432.7,swamp_water_lite=4878.84,swamp_water=2985.03,DHEXrGV=6096.52,rASrGV=12092.56,rGVrIN=3470.17,NHrAS=9560.7,GVrASrDH=3595.35,rGVrNHrVL=3001.72,rINrNH=3434.26,EXGVNHrMS=2582.25,ASDPGVrMSrNH=2005.6,DHrEXrVL=1664.66,ASGVrDPrMS=1853.87,NHVLrDPrGV=2178.42,VLrEXrIN=1688.17,rDPrEX=1721.17,INMSrDHrEX=1244.64,ASMSrDHrIN=773.9,swamp_water_lite_plus=4878.84,swamp_water_plus=2714.92,blight=7733.35,desolation=6284.45,havoc=3656.14,pandemonium=2068.58,inferno=1775.53,purgatory=1257,perdition=1130.78,cataclysm=1130.78,annihilation=777.19,armageddon=423.31,abyss=196.02,talentless=7817.15,quest_rationing=631.02,the_responsible_one=18,the_unreliable_one=14,carried=5528.27,guardian_angel=6061.19,speed_bonus=10,level_19_cap=7207.94,the_escape_artist=132,fel_magic=107,powerless=5845.4,empurple=2919.81,patience_is_a_virtue=2627.37,spotless=2916.6,honeymoon=2449.79,break_up=2046.91,overprotection=1986.85,clutch_main=191,sunk_cost=3980.74,wax_wings=2412.74,the_masterful_juggler=122,the_oblivious_artist=117,arrogance=772.74,the_pacifist=350,detail_oriented=0,psychokinesis=1660.64,divine_rejection=1649.99,lovers_promise=10598.95,love_hotel=2.597011165,financially_responsible=5.898309714,unfair_battle=4.344901018,museum_heist=2.4841288230001,workaholic=2.3799148589999,human_experiment=2.733007991,thermal_anomaly=0.46684615700001,ultra_dash=0.49600276799998,perfect_speedrun=26.352237618,the_perfectionist=8310.52,cruise_control=21,drag_racing=29,the_spike_of_all_time_plus=487,cut_off=0,worn_out=0,the_harbinger=0,final_defiance=0,speedrun_speedrunning=0,abyss_weaver=0,royal_resistance=0,lovers_stand=0,VL=6275.59,NH=10586.4,its_kinda_rare=0,benevolent_ambition=0,fruitless_effort=0,false_god=0,respectful=0,DH=9644.52,AS=18681.62,lucky_coincidence=0,dark_force=0,zenith_traveler=0,smooth_dismount=0,rGV=8520,rEX=2807.73,rDP=3980.74,rDH=4273.85,rAS=12315.11,romantic_homicide=0,blazing_speed=0,MS=5384.91,IN=9293.06,GV=10604.39,EX=8612.63,DP=10598.95,rVL=6036.9,rNH=4056.03,identity=0,intended_glitch=0,zenith_relocation=0,rMS=3232.76,rIN=5503.13}
+DevScore = { speed_bonus = 10, arrogance = 772.74, the_pacifist = 350, detail_oriented = 0, psychokinesis = 1660.64, lovers_promise = 10598.95, divine_rejection = 1649.9, moon_struck = 0, love_hotel = 2.597011165, financially_responsible = 5.898309714, unfair_battle = 4.344901018, museum_heist = 2.4841288230001, workaholic = 2.3799148589999, human_experiment = 2.733007991, thermal_anomaly = 0.46684615700001, ultra_dash = 0.49600276799998, perfect_speedrun = 23.747579831, the_perfectionist = 8310.52, cruise_control = 21, drag_racing = 29, dazed = 16, the_spike_of_all_time_plus = 497, cut_off = 0, worn_out = 0, the_harbinger = 0, final_defiance = 0, speedrun_speedrunning = 0, abyss_weaver = 0, royal_resistance = 0, lovers_stand = 0, romantic_homicide = 0, blazing_speed = 0, its_kinda_rare = 0, benevolent_ambition = 0, fruitless_effort = 0, false_god = 0, respectful = 0, zenith_relocation = 0, intended_glitch = 0, lucky_coincidence = 0, dark_force = 0, zenith_traveler = 0, smooth_dismount = 0, clicker = 944737, identity = 0, contender = 8369, elegance = 359096, garbage_offensive = 1812854, tower_climber = 5430796.2, tower_regular = 25762, speed_player = 5072, plonk = 148.99, zenith_explorer = 10666.27, zenith_explorer_plus = 18681.62, clicker_speedrun = 16.29665856, typer_speedrun = 10.934573978, supercharged = 288, supercharged_plus = 447, multitasker = 61866.8, effective = 41446.887071386, zenith_speedrun = 48.891, zenith_speedrun_plus = 29.641, zenith_challenger = 89682.07, divine_challenger = 51215.3, zenith_speedrunner = 496.103, divine_speedrunner = 707.029, the_spike_of_all_time = 437, the_spike_of_all_time_minus = 192, clock_out = 563, vip_list = 70, GVIN = 9358.41, ASNH = 9830.74, DPEX = 5417.82, GVNH = 8373.29, DHMSNH = 4603.14, DHEXNH = 4520.53, DHEXMSVL = 2766.57, VL = 6275.59, NH = 10586.4, MS = 5384.91, IN = 9293.06, GV = 10604.39, EX = 8612.63, DP = 10598.95, DH = 9644.52, AS = 18681.62, rVL = 6036.9, rNH = 4056.03, rMS = 3721.81, rIN = 5503.13, rGV = 8520, rEX = 2807.73, rDP = 3980.74, rDH = 4273.85, rAS = 12315.11, swamp_water_plus = 2714.92, blight = 7733.35, desolation = 6284.45, havoc = 3656.14, pandemonium = 2068.58, inferno = 1775.53, swamp_water_lite_plus = 4878.84, ASMSrDHrIN = 773.9, INMSrDHrEX = 1244.64, rDPrEX = 1721.17, VLrEXrIN = 1688.17, NHVLrDPrGV = 2178.42, ASGVrDPrMS = 1853.87, DHrEXrVL = 1664.66, ASDPGVrMSrNH = 2005.6, EXGVNHrMS = 2860.57, GVrASrDH = 3595.35, NHrAS = 9560.7, rGVrIN = 3470.17, rASrGV = 12092.56, DHEXrGV = 6096.52, swamp_water = 2985.03, swamp_water_lite = 4878.84, ASEXVL = 4432.7, purgatory = 1395.49, perdition = 1395.49, cataclysm = 1395.49, annihilation = 777.19, armageddon = 423.31, abyss = 196.02, talentless = 7817.15, quest_rationing = 631.02, the_responsible_one = 18, the_unreliable_one = 14, the_responsible_one_plus = 98, guardian_angel = 6061.19, carried = 5528.27, level_19_cap = 7207.94, the_escape_artist = 132, fel_magic = 107, powerless = 5845.4, empurple = 2919.81, patience_is_a_virtue = 2627.37, spotless = 2916.6, honeymoon = 2449.79, break_up = 2046.91, overprotection = 1986.85, clutch_main = 191, sunk_cost = 3980.74, wax_wings = 2412.74, the_masterful_juggler = 122, the_oblivious_artist = 117 }
 
 DevScore.contender = 6200
 DevScore.clicker = 620e3

@@ -112,11 +112,13 @@ function Card:setActive(auto, key)
         if not auto then
             if self.id ~= GAME.lastFlip then
                 GAME.nixPrompt('flip_single')
-                GAME.lastFlip = self.id
             end
             GAME.incrementPrompt('flip_single')
         end
         GAME.incrementPrompt('flip')
+    end
+    if not auto then
+        GAME.lastFlip = self.id
     end
 
     self.active = not self.active
@@ -196,13 +198,9 @@ function Card:setActive(auto, key)
         if self.id == 'EX' then
             TWEEN.new(tween_expertOn):setDuration(M.EX > 0 and .26 or .1):run()
             TABLE.clear(HoldingButtons)
-        elseif self.id == 'DH' then
-            RefreshButtonText()
         elseif self.id == 'IN' then
             for _, C in ipairs(CD) do C:flip() end
             noSpin = M.IN == 1
-        elseif self.id == 'AS' then
-            RefreshButtonText()
         end
         SCN.scenes.tower.widgetList.reset:setVisible(not GAME.zenithTraveler)
         GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
@@ -224,7 +222,7 @@ function Card:setActive(auto, key)
             key and clampInterpolate(-200, -4.2, 200, 4.2, self.y - MY) or MATH.rand(-2.6, 2.6)
         )
         local toneName = 'card_tone_' .. ModData.name[self.id]
-        local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaTime and .26 or 0) or 1
+        local toneVol = GAME.playing and .8 + GAME.floor * .02 - (GAME.gigaspeed and .26 or 0) or 1
         if revOn then
             SFX.play(toneName .. postfix, toneVol, 0, Tone(0))
             if URM then
@@ -638,7 +636,7 @@ function Card:draw()
             -- Rev Throb
             if not self.upright and GAME.revDeckSkin and faceUp then
                 gc_setColor(1, 1, 1, ThrobAlpha.card)
-                gc_setShader(Shader_Throb)
+                gc_setShader(SHADER.throb)
                 gc_draw(img, -img:getWidth() / 2, -img:getHeight() / 2)
                 gc_setShader()
             end

@@ -100,6 +100,7 @@ local ins, rem = table.insert, table.remove
 ---@field timerMul number
 ---@field attackMul number
 ---@field xpLockLevelMax number
+---@field leakSpeed number
 ---@field invincible boolean
 ---
 ---@field onAlly boolean
@@ -170,6 +171,8 @@ local GAME = {
     nightcore = false,
     slowmo = false,
     glassCard = false,
+    closeCard = false,
+    fastLeak = false,
     invisCard = false,
     invisUI = false,
 
@@ -197,6 +200,7 @@ local GAME = {
     achv_obliviousQuest = nil,
     achv_doublePass = nil,
     achv_level19capH = nil,
+    achv_totalResetCount = nil,
 }
 
 GAME.playing = false
@@ -219,7 +223,8 @@ local M = GAME.mod
 local MD = ModData
 local CD = Cards
 
---- Unsorted, like {'rEX','NH',...}
+---Unsorted, like {'rEX','NH',...}
+---@param real boolean current mod setting or literally selected cards
 function GAME.getHand(real)
     local list = {}
     if real then
@@ -267,28 +272,28 @@ end
 function GAME.getComboZP(list)
     local m = TABLE.getValueSet(list)
     local zp = 1
-
     if m.EX then zp = zp * 1.4 elseif m.rEX then zp = zp * 2.6 end
-    if m.NH then zp = zp * 1.1 elseif m.rNH then zp = zp * 1.6 end
-    if m.MS then zp = zp * 1.2 elseif m.rMS then zp = zp * 2.0 end
-    if m.GV then zp = zp * 1.1 elseif m.rGV then zp = zp * (1.2 + .020026 * (#list - 1)) end
-    if m.VL then zp = zp * 1.1 elseif m.rVL then zp = zp * (1.2 + .020026 * (#list - 1)) end
-    if m.DH then zp = zp * 1.2 elseif m.rDH then zp = zp * (m.rIN and 2 or 1.6) end
-    if m.IN then zp = zp * 1.1 elseif m.rIN then zp = zp * (m.rNH and ((m.DP or m.rDP) and 2 or 2.2) or 1.6) end
+    if m.NH then zp = zp * 1.1 elseif m.rNH then zp = zp * 1.8 end
+    if m.MS then zp = zp * 1.2 elseif m.rMS then zp = zp * (m.rGV and 2.0 or 1.7) end
+    if m.GV then zp = zp * 1.1 elseif m.rGV then zp = zp * (1.2 + .02 * (#list - 1)) end
+    if m.VL then zp = zp * 1.1 elseif m.rVL then zp = zp * (1.2 + .02 * (#list - 1)) end
+    if m.DH then zp = zp * 1.2 elseif m.rDH then zp = zp * (m.rIN and 2.0 or 1.6) end
+    if m.IN then zp = zp * 1.1 elseif m.rIN then zp = zp * 1.6 end
     if m.AS then zp = zp * .85 elseif m.rAS then zp = zp * 1.1 end
-    if m.DP then zp = zp * .95 elseif m.rDP then zp = zp * (m.rEX and 1.6 or 2.2) end
+    if m.DP then zp = zp * .95 elseif m.rDP then zp = zp * (m.rEX and 1.8 or 2.1) end
 
     local hardCnt = STRING.count(table.concat(list), "r")
     if m.EX then hardCnt = hardCnt + 1 end
     if hardCnt >= 2 then zp = zp * 0.99 ^ (hardCnt - 1) end
+    if zp > 100 then zp = 100 end -- 101.22x if not capped
 
     return zp
 end
 
-local function modSortFunc(a, b) return MD.prio_name[a] < MD.prio_name[b] end
+local function modNameSorter(a, b) return MD.prio_name[a] < MD.prio_name[b] end
 
 ---@param list string[] WILL BE SORTED!!!
----@param mode? 'ingame' | 'button' | 'rpc'
+---@param mode? 'ingame' | 'button' | 'rpc' | 'record'
 function GAME.getComboName(list, mode)
     local len = #list
     if mode == 'ingame' then
@@ -364,7 +369,7 @@ function GAME.getComboName(list, mode)
         if M.DH == 2 then
             TABLE.shuffle(list)
         else
-            table.sort(list, modSortFunc)
+            table.sort(list, modNameSorter)
             if M.DH == 1 and MATH.roll((#list - 1) / 6.26) then
                 local r1, r2 = rnd(#list), rnd(#list - 1)
                 if r2 >= r1 then r2 = r2 + 1 end
@@ -410,19 +415,31 @@ function GAME.getComboName(list, mode)
         -- Empty
         if len == 0 then return "" end
 
-        -- Simple
-        if len == 1 then return MD.noun[list[1]] end
+        -- Named Combo
+        local combo = (
+            mode == 'record' and M.DH == 2 and ComboData.gameEX or
+            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
+            M.DH == 2 and ComboData.gameEX or
+            ComboData.game
+        )[table.concat(TABLE.sort(list), ' ')]
+        if combo then return combo.name end
 
         -- Super Set
-        if not (mode == 'button' and GAME.playing) then
-            if GAME.anyRev and STRING.count(table.concat(list), "r") >= 2 then
+        if mode == 'button' and GAME.playing then
+            local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
+            if len_noDP >= 7 then
+                return len_noDP == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
+            end
+        else
+            local cmbID = table.concat(list)
+            if STRING.count(cmbID, "r") >= 2 then
                 local mp = GAME.getComboMP(list)
                 if mp >= 8 then return RevSwampName[min(mp, #RevSwampName)] end
             else
                 local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
                 if len_noDP >= 7 then
                     return
-                        GAME.anyRev and (
+                        cmbID:find('r') and (
                             len_noDP == 7 and [["AMBROSIA SODA"]] or
                             len_noDP == 8 and [["AMBROSIA WINE"]] or
                             [["AMBROSIA MOONSHINE"]]
@@ -433,23 +450,10 @@ function GAME.getComboName(list, mode)
                         )
                 end
             end
-        else
-            local len_noDP = len - (TABLE.find(list, 'DP') and 1 or 0)
-            if len_noDP >= 7 then
-                return len_noDP == 7 and [["SWAMP WATER LITE"]] or [["SWAMP WATER"]]
-            end
         end
 
-        -- Named Combo
-        local combo = (
-            (mode == 'rpc' or not GAME.playing) and ComboData.menu or
-            M.DH == 2 and ComboData.gameEX or
-            ComboData.game
-        )[table.concat(TABLE.sort(list), ' ')]
-        if combo then return combo.name end
-
         -- General
-        table.sort(list, modSortFunc)
+        table.sort(list, modNameSorter)
         local str = ""
         for i = 1, len - 1 do str = str .. MD.adj[list[i]] .. " " end
         return str .. MD.noun[list[len]]
@@ -481,8 +485,8 @@ end
 
 local floorHeights = {}
 for i = 0, 9 do ins(floorHeights, Floors[i].top) end
-function GAME.getBgFloor()
-    return floor(1 + 9 * MATH.ilLerp(floorHeights, GAME.bgH))
+function GAME.calculateFloor(h)
+    return floor(1 + 9 * MATH.ilLerp(floorHeights, h))
 end
 
 function GAME.task_gigaspeed()
@@ -793,8 +797,8 @@ function GAME.takeDamage(dmg, reason, toAlly)
     end
 end
 
-function GAME.addHeight(h)
-    h = h * GAME.rank / 4
+function GAME.addHeight(h, realHeight)
+    h = h * (realHeight and 1 or GAME.rank / 4)
     GAME.heightBonus = GAME.heightBonus + h
     GAME.heightBuffer = GAME.heightBuffer + h
     if h >= 6 and TASK.lock('speed_tick_whirl', 2.6) then SFX.play('speed_tick_whirl') end
@@ -935,6 +939,7 @@ function GAME.upFloor()
         if GAME.comboStr == 'DHEXGV' then SubmitAchv('thermal_anomaly', roundFloorTime) end
     elseif GAME.floor == 9 then
         SubmitAchv('ultra_dash', GAME.floorTime)
+        if GAME.comboStr == 'ASGVMS' then SubmitAchv('dazed', GAME.rank) end
     end
 
     -- Update section time
@@ -992,10 +997,12 @@ function GAME.upFloor()
             GAME.setGigaspeedAnim(false)
             if GAME.teramusic then IssueAchv('blazing_speed') end
             GAME.stopTeraspeed('f10')
-            local t = BEST.speedrun[GAME.comboStr]
+
+            local setStr = (GAME.anyUltra and 'u' or '') .. GAME.comboStr
+            local t = BEST.speedrun[setStr]
             SFX.play('applause', GAME.time < t and t < 1e99 and 1 or .42)
             if GAME.time < t then
-                BEST.speedrun[GAME.comboStr] = roundTime
+                BEST.speedrun[setStr] = roundTime
                 SaveBest()
             end
 
@@ -1010,9 +1017,12 @@ function GAME.upFloor()
                 for id in next, MD.name do if rawget(BEST.speedrun, 'r' .. id) then _t = _t + 1 end end
                 if _t >= #MD.deck then IssueSecret('speedrun_2') end
             end
-            if GAME.time <= 76.2 then IssueSecret('superluminal') end
+            if GAME.time <= 76.2 then IssueSecret('subluminal') end
+            if GAME.time <= 42 then IssueSecret('superluminal') end
             if GAME.time - GAME.gigaspeedEntered >= 300 then IssueAchv('worn_out') end
+            if GAME.closeCard and GAME.comboStr == 'rEX' then IssueSecret('true_expert') end
             if GAME.nightcore and GAME.comboStr == 'rGV' then IssueSecret('true_master') end
+            if GAME.fastLeak and GAME.comboStr == 'rVL' then IssueSecret('true_strength') end
             if GAME.invisCard and GAME.comboStr == 'rIN' then IssueSecret('true_invis') end
         end
 
@@ -1180,11 +1190,11 @@ local modIconPos = {
     { 0,  -1.5 }, { 0, 0.5 }, { 1, -0.5 }, { 1, 1.5 },
     { 2, -1.5 }, { 2, 0.5 }, { 3, -0.5 }, { 3, 1.5 },
 }
-
+local function modIconSorter(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end
 function GAME.refreshModIcon()
     GAME.modIB:clear()
     local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    table.sort(hand, modIconSorter)
     local quad, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra[hand[1]] or TEXTURE.modQuad_ig[hand[1]]
@@ -1227,7 +1237,7 @@ end
 function GAME.refreshResultModIcon()
     GAME.resIB:clear()
     local hand = GAME.getHand(true)
-    table.sort(hand, function(a, b) return MD.prio_icon[a] < MD.prio_icon[b] end)
+    table.sort(hand, modIconSorter)
     local quad, w, _
     if #hand == 1 then
         quad = URM and TEXTURE.modQuad_ultra_res[hand[1]] or TEXTURE.modQuad_res[hand[1]]
@@ -1285,20 +1295,12 @@ function GAME.refreshCurrentCombo()
             #GAME.getHand(true) == #DAILY and
             TABLE.equal(TABLE.sort(GAME.getHand(true)), TABLE.sort(TABLE.copy(DAILY)))
 
-        local lastLine = (
-            #hand == 0 and "Without any mods, " or
-            #hand == 1 and "With this mod, " or
-            "With this combo, "
-        ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
-        local W = SCN.scenes.tower.widgetList.help2
-        W.floatText = "Each mod will multiply ZP gain with a certain rate.\n" ..
-            lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
-        W:reset()
+        RefreshHelpText()
     end
 end
 
 function GAME.refreshLayout()
-    local baseDist = (M.EX > 0 and (URM and M.EX == 2 and 80 or 100) or 110) + M.VL * 20
+    local baseDist = 110 + (M.EX > 0 and (URM and M.EX == 2 and -30 or -10) or 0) + M.VL * 20 + (GAME.closeCard and -30 or 0)
     local baseL, baseR = 800 - 4 * baseDist - 70, 800 + 4 * baseDist + 70
     local baseY = 726 + (URM and M.GV == 2 and 50 or 15 * M.GV)
     if FloatOnCard then
@@ -1347,7 +1349,7 @@ function GAME.refreshLockState()
 end
 
 function GAME.refreshPBText()
-    local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    local setStr = (GAME.anyUltra and 'u' or '') .. table.concat(TABLE.sort(GAME.getHand(true)))
     local height = BEST.highScore[setStr]
     if height == 0 then
         TEXTS.pb:set("No score yet")
@@ -1448,15 +1450,15 @@ function GAME.refreshLifeState()
     end
 end
 
+local function modCardSorter(a, b) return MD.prio_card[a] < MD.prio_card[b] end
 function GAME.refreshDailyChallengeText()
     TEXTS.dcBest:set(
         STAT.dailyBest > 0 and
         ("%.0fm  %.0fZP"):format(STAT.dailyBest / GAME.getComboZP(DAILY), STAT.dailyBest)
         or ""
     )
-    local sortedDaily = TABLE.copy(DAILY)
     DailyAvailable = true
-    for _, v in next, sortedDaily do
+    for _, v in next, DAILY do
         if v:find('r') then
             if GAME.completion[v:sub(2)] == 0 then
                 DailyAvailable = false
@@ -1471,10 +1473,19 @@ function GAME.refreshDailyChallengeText()
     end
     local str
     if DailyAvailable then
+        local sortedDaily = TABLE.copy(DAILY)
+        table.sort(sortedDaily, modCardSorter)
         str = "Today's Combo: " .. table.concat(sortedDaily, " ")
-        table.sort(sortedDaily, function(a, b) return MD.prio_card[a] < MD.prio_card[b] end)
-        local rev = str:match("r%S+")
-        if rev and GAME.completion then str = str .. "   (" .. rev .. " = reversed " .. rev:sub(2) .. ")" end
+        local rev = str:match("r(%S+)")
+        if not rev then
+            local key = table.concat(TABLE.sort(sortedDaily), ' ')
+            local combo = ComboData.menu[key] or ComboData.gameEX[key]
+            if combo then
+                str = str .. "   " .. combo.name
+            end
+        else
+            str = str .. ("   (r$1 = reversed $1)"):repD(rev)
+        end
         str = str .. "\nTry to get more ZP in one run using this mod combo.\n(Click to select them)"
     else
         str = "Oops! Today's mod combo is not available for you...\nComplete more mods to unlock some content."
@@ -1500,11 +1511,18 @@ function GAME.cancelAll(instant)
 end
 
 function GAME.task_cancelAll(instant)
-    if GAME.playing then
+    if GAME.playing and not instant then
         if GAME.achv_resetCount == 0 then
             GAME.achv_noResetH = GAME.roundHeight
         end
         GAME.achv_resetCount = GAME.achv_resetCount + 1
+        -- if GAME.achv_totalResetCount == 0 then
+        --     if GAME.comboStr == 'ASDHNHVL' then
+        --         SubmitAchv('minimalism', GAME.achv_maxChain)
+        --         if GAME.totalQuest >= 26 then SFX.play('btb_break') end
+        --     end
+        -- end
+        GAME.achv_totalResetCount = GAME.achv_totalResetCount + 1
     end
     local list = TABLE.copy(CD, 0)
     local needFlip = {}
@@ -1633,7 +1651,7 @@ function GAME.commit(auto)
         end
 
         GAME.heal((dblCorrect and 3 or 1) * GAME.dmgHeal)
-        if MATH.between(Floors[GAME.floor].top - (GAME.height + GAME.heightBuffer), 0, 2) then GAME.addHeight(3) end
+        if MATH.between(Floors[GAME.floor].top - (GAME.height + GAME.heightBuffer), 0, 2) then GAME.addHeight(3, true) end
 
         local dp = TABLE.find(hand, 'DP')
         local attack = 3
@@ -1876,14 +1894,24 @@ function GAME.commit(auto)
             if URM then
                 GAME.readyShuffle(max(GAME.floor, GAME.negFloor) * 2.6, true)
             else
-                local r1 = rnd(2, #CD - 1)
-                local r2 = r1 + MATH.coin(-1, 1)
-                local r3
-                if max(GAME.floor, GAME.negFloor) <= 8 then
-                    CD[r1], CD[r2] = CD[r2], CD[r1]
-                else
-                    repeat r3 = rnd(r1 - 2, r1 + 2) until r3 ~= r1 and r3 ~= r2 and MATH.between(r3, 1, #CD)
-                    CD[r1], CD[r2], CD[r3] = CD[r2], CD[r3], CD[r1]
+                local lastPos
+                for i = 1, #CD do
+                    if CD[i].id == GAME.lastFlip then
+                        lastPos = i
+                        break
+                    end
+                end
+                local w = max(GAME.floor, GAME.negFloor) <= 8 and 2 or 3
+                local r
+                repeat r = rnd(#CD - w + 1) until r > lastPos + 1 or r + w < lastPos
+                if w == 2 then
+                    CD[r], CD[r + 1] = CD[r + 1], CD[r]
+                elseif w == 3 then
+                    if MATH.roll() then
+                        CD[r], CD[r + 1], CD[r + 2] = CD[r + 2], CD[r], CD[r + 1]
+                    else
+                        CD[r], CD[r + 1], CD[r + 2] = CD[r + 1], CD[r + 2], CD[r]
+                    end
                 end
                 GAME.refreshLayout()
             end
@@ -2005,6 +2033,7 @@ function GAME.start()
     GAME.isUltraRun = GAME.anyUltra
     GAME.attackMul = GAME.isUltraRun and .62 or 1
     GAME.xpLockLevelMax = URM and M.NH == 2 and 1 or 5
+    GAME.leakSpeed = (M.EX > 0 and 5 or 3) + (GAME.fastLeak and 8 or 0)
     GAME.invincible = false
 
     TASK.unlock('sure_quit')
@@ -2020,7 +2049,7 @@ function GAME.start()
 
     -- Statistics
     GAME.comboStr = table.concat(TABLE.sort(GAME.getHand(true)))
-    GAME.prevPB = BEST.highScore[GAME.comboStr]
+    GAME.prevPB = BEST.highScore[(GAME.isUltraRun and 'u' or '') .. GAME.comboStr]
     if GAME.prevPB == 0 then GAME.prevPB = -2600 end
     GAME.totalFlip = 0
     GAME.totalQuest = 0
@@ -2166,6 +2195,7 @@ function GAME.start()
     GAME.achv_obliviousQuest = 0
     GAME.achv_doublePass = 0
     GAME.achv_level19capH = false
+    GAME.achv_totalResetCount = 0
     if M.DP > 0 then IssueAchv('intended_glitch') end
 end
 
@@ -2212,7 +2242,7 @@ function GAME.finish(reason)
 
     local unlockDuo
     if GAME.totalQuest > 2.6 then
-        LOG('info', ("[%s] (%s) F%d %.2fm in %.3fs"):format(reason, table.concat(GAME.getHand(true), ', '), GAME.floor, GAME.height, GAME.time))
+        LOG('info', ("[%s] (%s) F%d %.1fm in %.3fs"):format(reason, table.concat(GAME.getHand(true), ', '), GAME.floor, GAME.roundHeight, GAME.time))
 
         if GAME.floor >= 10 then
             local unlockRev = 0
@@ -2249,11 +2279,14 @@ function GAME.finish(reason)
                 MSG('dark', hintText, 6.26)
                 SFX.play('notify')
             end
+            if GAME.height >= 12600 then
+                IssueSecret('fepsilon')
+            end
         end
 
         -- Statistics
         STAT.maxFloor = max(STAT.maxFloor, GAME.floor)
-        if GAME.height > STAT.maxHeight then
+        if GAME.roundHeight > STAT.maxHeight then
             STAT.maxHeight = GAME.roundHeight
             STAT.heightDate = os.date("%y.%m.%d %H:%M%p")
         end
@@ -2263,8 +2296,8 @@ function GAME.finish(reason)
         STAT.totalQuest = STAT.totalQuest + GAME.totalQuest
         STAT.totalPerfect = STAT.totalPerfect + GAME.totalPerfect
         STAT.totalAttack = STAT.totalAttack + GAME.totalAttack
-        STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.height), .01)
-        STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .01)
+        STAT.totalHeight = roundUnit(STAT.totalHeight + abs(GAME.roundHeight), .1)
+        STAT.totalBonus = roundUnit(STAT.totalBonus + abs(GAME.heightBonus), .1)
         STAT.totalFloor = STAT.totalFloor + (GAME.floor - 1) + (GAME.negFloor - 1)
         STAT.totalGiga = STAT.totalGiga + GAME.gigaCount + GAME.teraCount
         if GAME.floor >= 10 then
@@ -2324,17 +2357,31 @@ function GAME.finish(reason)
 
         -- Best
         local hand = GAME.getHand(true)
-        local oldPB = BEST.highScore[GAME.comboStr]
+        local setStr = (GAME.anyUltra and 'u' or '') .. GAME.comboStr
+        local oldPB = BEST.highScore[setStr]
         if GAME.roundHeight > oldPB then
-            BEST.highScore[GAME.comboStr] = GAME.roundHeight
+            BEST.highScore[setStr] = GAME.roundHeight
             if #hand > 0 and oldPB < Floors[9].top and GAME.floor >= 10 then
-                local t = #hand == 1 and "MOD MASTERED" or "COMBO MASTERED"
-                if GAME.anyRev then t = "R-" .. t end
+                local t
+                local size, color, duration
+                if GAME.comboMP >= 8 then
+                    if not YOU_LOST_THE_GAME then YOU_LOST_THE_GAME = love.data.decompress('string', 'deflate', love.data.decode('string', 'base64', "NY5bboMwEEW3MgvIJib2BE9lbOoHKv1DgRaUBCi0XX/HlfJ5jubeO+8w9ftwXYdxOEVYf8d96pfP+3gccJuvN7Ev8JiPYV+3TcAWmMb7cEpwbPOyiPPwvffL8bHuDyGGr5++tJ0tVyYBqBxInzRFbzGxdwCBlEWuxRpsvQIwaJNQg05T7R3nGuA1ky0n7C4UnAegt8SuyhxNOc2hwuRDB5ACuqhIoqIpaH6OaKJSoDChsl2UzphDy604dI4NP//BlkLZx1BjRVoXd/GBYkJriz93MUqa8J8ar9B2TSTgCI4kDMkQyAd/")):split(',') end
+                    t = YOU_LOST_THE_GAME[GAME.comboMP]
+                    local p = (GAME.comboMP - 8) / 10
+                    color = { COLOR.HSL(MATH.lerp(-.2, 0, p), 1, MATH.lerp(.626, .5, p)) }
+                    size = GAME.comboMP == 18 and 2.6 or 1.626
+                    duration = 12.6
+                else
+                    t = (GAME.anyUltra and "U-" or GAME.anyRev and "R-" or "") .. (#hand == 1 and "MOD" or "COMBO") .. " MASTERED"
+                    size = 2.26
+                    color = 'lC'
+                    duration = 6.2
+                end
                 TEXT:add {
                     text = t,
-                    x = 800, y = 226, k = 2.26, fontSize = 70,
+                    x = 800, y = 226, k = size, fontSize = 70,
                     style = 'beat', inPoint = .26, outPoint = .62,
-                    color = 'lC', duration = 6.2,
+                    color = color, duration = duration,
                 }
                 SFX.play('worldrecord', 1, 0, Tone(#hand == 1 and -1 or 0))
             elseif GAME.floor >= 2 then
@@ -2350,7 +2397,16 @@ function GAME.finish(reason)
             SaveBest()
         end
 
-        TEXTS.endHeight:set(("%.1fm"):format(GAME.roundHeight))
+        local resStr = {}
+        if GAME.nightcore then TABLE.append(resStr, { COLOR.lR, "Z" }) end
+        if GAME.slowmo then TABLE.append(resStr, { COLOR.lG, "S" }) end
+        if GAME.glassCard then TABLE.append(resStr, { COLOR.lB, "J" }) end
+        if GAME.fastLeak then TABLE.append(resStr, { COLOR.lO, "L" }) end
+        if GAME.invisUI then TABLE.append(resStr, { COLOR.lM, "T" }) end
+        if GAME.invisCard then TABLE.append(resStr, { COLOR.lY, "O" }) end
+        if GAME.closeCard then TABLE.append(resStr, { COLOR.lC, "I" }) end
+        if #resStr > 0 then ins(resStr, " ") end
+        TEXTS.endHeight:set(TABLE.append(resStr, { COLOR.LL, ("%.1fm"):format(GAME.roundHeight) }))
         local endFloorStr
         if GAME.roundHeight >= 0 then
             if GAME.floor >= 10 and GAME.omega then
@@ -2474,7 +2530,7 @@ function GAME.finish(reason)
         for id in next, MD.name do _t = _t + BEST.highScore['r' .. id] end
         SubmitAchv('divine_challenger', _t, true)
 
-        SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .01))
+        SubmitAchv('multitasker', roundUnit(GAME.height * GAME.comboMP, .1))
         SubmitAchv('effective', zpGain)
         SubmitAchv('drag_racing', GAME.peakRank)
         table.sort(maxCSP, function(a, b) return a[1] > b[1] end)
@@ -2492,13 +2548,11 @@ function GAME.finish(reason)
         SubmitAchv('powerless', GAME.achv_noChargeH or GAME.roundHeight)
         local soat = SubmitAchv('the_spike_of_all_time', GAME.maxSpikeWeak)
         SubmitAchv('the_spike_of_all_time_plus', GAME.maxSpike, soat)
-        -- if abs(GAME.height - 2202.8) <= 10 then SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.height - 2202.8), .1)) end
-        if GAME.height >= 6200 then IssueSecret('fomg') end
+        SubmitAchv('moon_struck', MATH.roundUnit(abs(GAME.roundHeight - 2202.8), .1))
+        if GAME.roundHeight >= 6200 then IssueSecret('fomg') end
         SubmitAchv('plonk', GAME.achv_plonkH or GAME.roundHeight)
         SubmitAchv('psychokinesis', GAME.achv_noManualFlipH or GAME.roundHeight)
-        if GAME.floor < 10 and Floors[9].top - 24 <= GAME.height and GAME.height < Floors[9].top then
-            SubmitAchv('divine_rejection', GAME.roundHeight)
-        end
+        if GAME.floor < 10 then SubmitAchv('divine_rejection', GAME.roundHeight) end
         if GAME.heightBonus / GAME.height * 100 >= 260 then IssueAchv('fruitless_effort') end
         if GAME.comboStr == 'DP' then
             if VALENTINE then SubmitAchv('lovers_promise', GAME.roundHeight) end
@@ -2527,12 +2581,17 @@ function GAME.finish(reason)
             SubmitAchv('the_masterful_juggler', GAME.achv_maxChain)
         elseif GAME.comboStr == 'DHVLrIN' then
             SubmitAchv('empurple', GAME.achv_noChargeH or GAME.roundHeight)
+            -- elseif GAME.comboStr == 'ASDHNHVL' then
+            --     if GAME.achv_totalResetCount == 0 then
+            --         SubmitAchv('minimalism', GAME.achv_maxChain)
+            --     end
         end
         if M.EX < 2 and M.DP < 2 then
             SubmitAchv('speed_bonus', GAME.gigaCount + GAME.teraCount)
         end
         if M.DP > 0 then
             SubmitAchv('the_responsible_one', GAME.reviveCount)
+            SubmitAchv('the_responsible_one_plus', GAME.reviveCount * GAME.comboMP)
             SubmitAchv('guardian_angel', GAME.achv_maxReviveH or 0)
             SubmitAchv('carried', GAME.achv_carriedH or GAME.roundHeight)
             SubmitAchv('honeymoon', GAME.achv_shareModH or GAME.roundHeight)
@@ -2604,12 +2663,16 @@ function GAME.finish(reason)
         end)
     end
 
-    if URM then
+    if URM and GAME.height < 0 then
+        PieceSFXID = 0
         GAME.nightcore = false
         GAME.slowmo = false
         GAME.glassCard = false
-        GAME.invisCard = false
+        GAME.fastLeak = false
         GAME.invisUI = false
+        GAME.invisCard = false
+        GAME.closeCard = false
+        if GAME.gigaTime then IssueSecret('zenith_and_nadir') end
     end
 
     TWEEN.new(GAME.anim_setMenuHide_rev):setDuration(GAME.slowmo and 2.6 or .26):setUnique('uiHide'):run()
@@ -2651,6 +2714,7 @@ function GAME.update(dt)
             GAME.addHeight(-dt * 260)
         end
         if KBisDown('backspace') and TASK.lock("test_freezeTimer", 1 / 26) then GAME.dmgTimer = GAME.dmgDelay end
+        if KBisDown('rshift') and GAME.gravTimer then GAME.gravTimer = GAME.gravDelay end
         if KBisDown('\\') and TASK.lock("test_charge", 1 / 26) then
             GAME.chain = GAME.chain + 1
             if M.AS < 2 then
@@ -2751,7 +2815,7 @@ function GAME.update(dt)
         end
     end
 
-    GAME.roundHeight = ceil(GAME.height * 100) / 100
+    GAME.roundHeight = floor(GAME.height * 10) / 10
 
     if GAME.height >= Floors[GAME.floor].top then GAME.upFloor() end
 
@@ -2763,7 +2827,7 @@ function GAME.update(dt)
     if GAME.xpLockTimer > 0 then
         GAME.xpLockTimer = GAME.xpLockTimer - dt
     else
-        GAME.xp = GAME.xp - dt * (M.EX > 0 and 5 or 3) * GAME.rank * (GAME.rank + 1) / 60
+        GAME.xp = GAME.xp - dt * GAME.leakSpeed * GAME.rank * (GAME.rank + 1) / 60
         if GAME.xp <= 0 then
             GAME.xp = 0
             if GAME.rank > 1 then
@@ -2832,4 +2896,4 @@ function GAME.update(dt)
     end
 end
 
-return GAME
+_G.GAME = GAME

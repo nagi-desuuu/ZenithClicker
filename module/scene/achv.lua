@@ -5,9 +5,9 @@ local max, min = math.max, math.min
 local floor, ceil, sin = math.floor, math.ceil, math.sin
 
 local clr = {
-    D = { COLOR.HEX '19311E' },
-    L = { COLOR.HEX '4DA667' },
-    T = { COLOR.HEX '6FAC82' },
+    D = { COLOR.HEX '19311EFF' },
+    L = { COLOR.HEX '4DA667FF' },
+    T = { COLOR.HEX '6FAC82FF' },
 }
 local colorRev = false
 
@@ -230,27 +230,28 @@ local function refreshAchivement()
     }
     local swFin
     local maxMMP, maxZP = 0, 0
-    for k, v in next, BEST.highScore do
-        submit(k, v)
-        local revCount = STRING.count(k, 'r')
-        local count = (#k - revCount) / 2
-        local len_noDP = count - (k:find('DP') and not k:find('rDP') and 1 or 0)
+    for setStr, h in next, BEST.highScore do
+        setStr = setStr:gsub('^u', '')
+        submit(setStr, h)
+        local revCount = STRING.count(setStr, 'r')
+        local count = (#setStr - revCount) / 2
+        local len_noDP = count - (setStr:find('DP') and not setStr:find('rDP') and 1 or 0)
         if len_noDP >= 7 then
             for i = len_noDP, 7, -1 do
-                if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', v, swFin) or swFin end
-                swFin = SubmitAchv(sw[i - 6], v, swFin) or swFin
+                if revCount > 0 then swFin = SubmitAchv(sw[i - 6] .. '_plus', h, swFin) or swFin end
+                swFin = SubmitAchv(sw[i - 6], h, swFin) or swFin
             end
         end
         local mp = count + revCount
         if revCount >= 2 and mp >= 8 then
             for m = mp, 8, -1 do
-                submit(RevSwampName[min(m, #RevSwampName)]:sub(2, -2):lower(), v, m < mp)
+                submit(RevSwampName[min(m, #RevSwampName)]:sub(2, -2):lower(), h, m < mp)
             end
         end
-        maxMMP = max(maxMMP, v * mp)
+        maxMMP = max(maxMMP, h * mp)
         local l = {}
-        for m in k:gmatch('r?%w%w') do l[m] = true end
-        maxZP = max(maxZP, v * GAME.getComboZP(l))
+        for m in setStr:gmatch('r?%w%w') do l[m] = true end
+        maxZP = max(maxZP, h * GAME.getComboZP(l))
     end
     submit('multitasker', maxMMP)
     submit('effective', maxZP)

@@ -5,10 +5,11 @@ local scroll, scroll1 = 0, 0
 local maxScroll = 620
 
 local clr = {
-    D = { COLOR.HEX '1F1F1F' },
-    L = { COLOR.HEX '656565' },
+    D = { COLOR.HEX '1F1F1FFF' },
+    L = { COLOR.HEX '656565FF' },
 }
 
+DevNoteText = GC.newText(FONT.get(30))
 AboutText = GC.newText(FONT.get(70))
 local lines = {}
 
@@ -26,16 +27,14 @@ local function addSection(y)
     table.insert(lines, y)
 end
 
+for d = .5, 2.5, .5 do
+    addText({ COLOR.LD, "ZENITH" }, 40 + d, 20 + d)
+    addText({ COLOR.LD, "CLICKER" }, 80 + d, 95 + d)
+end
 addText("ZENITH", 40, 20)
 addText("CLICKER", 80, 95)
 
 addSection(220)
-
-addText(STRING.trimIndent [[
-    FLIP THE TAROT CARDS IN THIS MODERN YET UNFAMILIAR OFFLINE CLICKER.
-    PLAY TO IMPROVE YOUR SKILLS, AND GAIN CR FROM VARIOUS MODS
-    - THE CLICKER FUTURE IS YOURS!
-]], 0, 23, .3, 800)
 
 addSection(350)
 
@@ -132,11 +131,31 @@ addText({
 }, 0, 60, .26)
 
 local timer
+local devCommentary
 function scene.load()
     MSG.clear()
     timer = 0
     SetMouseVisible(true)
     scroll, scroll1 = 0, -620
+
+    devCommentary = require('module.devCommentary')
+    local setStr = table.concat(TABLE.sort(GAME.getHand(true)))
+    local cID = table.concat(GAME.getHand(true), " ")
+    if GAME.anyUltra then
+        setStr = 'u' .. cID
+        cID = cID:gsub("r", "u")
+    end
+    local text
+    if devCommentary[cID] then
+        if BEST.highScore[setStr] < Floors[9].top then
+            text = devCommentary.notFinished
+        else
+            text = devCommentary[cID]
+        end
+    else
+        text = devCommentary.noComment
+    end
+    DevNoteText:setf(text, 2000, 'center')
 end
 
 function scene.mouseMove(_, _, _, dy)
@@ -170,7 +189,6 @@ function scene.update(dt)
             IssueAchv('respectful')
         end
     end
-    if GAME.mod.EX == 2 then scroll = math.min(scroll + .26, maxScroll) end
     local y0 = scroll1
     scroll1 = MATH.expApproach(scroll1, scroll, dt * 26)
     GAME.bgH = math.max(GAME.bgH + (y0 - scroll1) / 355, 0)
@@ -201,6 +219,7 @@ function scene.draw()
     if GAME.anyRev then ky = -ky end
     gc_mDraw(icon, -170, 100, 0, kx, ky)
     gc_draw(AboutText)
+    gc_draw(DevNoteText, 0, 285 - DevNoteText:getHeight() * (.68 / 2), 0, .68, .68, 1000, 0)
 
     gc_setColor(1, 1, 1, .2)
     gc_setLineWidth(0.5)

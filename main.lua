@@ -238,10 +238,8 @@ TEXTURE = {
             DHEXrGV = aq(10, 3),      -- Demonic Speed
             rASrGV = aq(11, 3),       -- Whizzing Wizard
             rGVrIN = aq(9, 3),        -- The Grandmaster+
-            NHrAS = aq(1, 2),         -- Pristine
+            NHrAS = aq(5, 5),         -- Pristine
             GVrASrDH = aq(11, 2),     -- Storage Overload
-            rGVrNHrVL = aq(9, 2),     -- Sweatshop
-            rINrNH = aq(14, 6),       -- Fleeting Memory
             EXGVNHrMS = aq(12, 6),    -- Bnuuy
             ASDPGVrMSrNH = aq(10, 3), -- Grand-Master! Rounds
             DHrEXrVL = aq(9, 6),      -- Sweat and Ruin
@@ -271,9 +269,9 @@ TEXTURE = {
             quest_rationing = aq(2, 7),
             the_responsible_one = aq(1, 6),
             the_unreliable_one = aq(15, 2),
-            carried = aq(3, 8),
+            the_responsible_one_plus = aq(1, 6),
             guardian_angel = aq(3, 6),
-            speed_bonus = aq(9, 4),
+            carried = aq(3, 8),
             level_19_cap = aq(16, 2),
             the_escape_artist = aq(1, 5),
             fel_magic = aq(9, 7),
@@ -289,13 +287,14 @@ TEXTURE = {
             wax_wings = aq(12, 5),
             the_masterful_juggler = aq(11, 7),
             the_oblivious_artist = aq(14, 7),
+            speed_bonus = aq(9, 4),
             arrogance = aq(3, 5),
             the_pacifist = aq(4, 1),
             detail_oriented = aq(8, 6),
             psychokinesis = aq(8, 6),
-            divine_rejection = aq(7, 6),
-            -- moon_struck = aq(),
             lovers_promise = aq(8, 7),
+            divine_rejection = aq(7, 6),
+            moon_struck = aq(7, 6),
 
             love_hotel = aq(16, 5),
             financially_responsible = aq(16, 5),
@@ -309,6 +308,7 @@ TEXTURE = {
             the_perfectionist = aq(15, 5),
             cruise_control = aq(15, 5),
             drag_racing = aq(5, 6),
+            dazed = aq(5, 6),
             the_spike_of_all_time_plus = aq(5, 6),
 
             cut_off = aq(6, 2),
@@ -367,25 +367,35 @@ TEXTURE = {
     logo = assets 'icon.png',
     logo_old = assets 'icon_old.png',
 }
-local transition = { w = 128, h = 1 }
-for x = 0, 127 do
-    table.insert(transition, { 'setCL', 1, 1, 1, 1 - x / 128 })
-    table.insert(transition, { 'fRect', x, 0, 1, 1 })
-end
-TEXTURE.transition = GC.load(transition)
+TEXTURE = IMG.init(TEXTURE, true)
 TEXTURE.pixel = GC.load { w = 1, h = 1, { 'clear', 1, 1, 1 } }
+TEXTURE.transition = GC.newCanvas(128, 1)
+GC.setCanvas(TEXTURE.transition)
+for x = 0, 127 do
+    GC.setColor(1, 1, 1, 1 - x / 128)
+    GC.rectangle('fill', x, 0, 1, 1)
+end
 TEXTURE.darkCorner = GC.newCanvas(128, 128)
 GC.setCanvas(TEXTURE.darkCorner)
 GC.setColor(0, 0, 0)
 GC.blurCircle(.626, 64, 64, 64)
-GC.setCanvas()
 TEXTURE.lightDot = GC.newCanvas(32, 32)
 GC.setCanvas(TEXTURE.lightDot)
 GC.clear(1, 1, 1, 0)
 GC.setColor(1, 1, 1)
 GC.blurCircle(.26, 16, 16, 16)
+TEXTURE.recRevBG = GC.newCanvas(1586, 606)
+GC.setCanvas(TEXTURE.recRevBG)
+GC.setColor(1, 1, 1)
+GC.draw(TEXTURE.panel.glass_a)
+GC.draw(TEXTURE.panel.glass_b)
+TEXTURE.recRevLight = GC.newCanvas(165, 120)
+GC.setCanvas(TEXTURE.recRevLight)
+GC.clear(1, .1, .1, 0)
+GC.setColor(1, .1, .1)
+GC.blurCircle(-.2, 60, 60, 60)
+GC.blurCircle(-.6, 105, 60, 60)
 GC.setCanvas()
-TEXTURE = IMG.init(TEXTURE, true)
 
 FONT.load {
     serif = "assets/AbhayaLibre-Regular.ttf",
@@ -528,6 +538,8 @@ STAT = {
     bgm = 100,
 
     startCD = true,
+    autoMute = false,
+    oldHitbox = false,
 }
 
 ACHV = {}
@@ -706,21 +718,10 @@ end
 
 BgScale = 1
 
-require 'module.game_data'
-require 'module.achv_data'
-
-Shader_Coloring = GC.newShader [[
-vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
-    return vec4(color.rgb, color.a * texture2D(tex, texCoord).a);
-}]]
-Shader_Throb = GC.newShader [[
-vec4 effect(vec4 color, sampler2D tex, vec2 texCoord, vec2 scrCoord) {
-    vec4 t = texture2D(tex, texCoord);
-    return vec4(1., 0., 0., (1.-step(t.a, .999)) * color.a * (1. - t.r) * (1. - length(texCoord.xy - .5)));
-}]]
-
-GAME = require 'module/game'
-local M = GAME.mod
+require 'module/game_data'
+require 'module/achv_data'
+require 'module/shader'
+require 'module/game'
 
 for i = 1, #ModData.deck do table.insert(Cards, require 'module/card'.new(ModData.deck[i])) end
 GAME.refreshLayout()
@@ -728,71 +729,12 @@ for i, C in ipairs(Cards) do
     Cards[C.id], C.x, C.y = C, C.tx, C.ty + 260 + 26 * 1.6 ^ i
 end
 
-local warpPS = GC.newParticleSystem(TEXTURE.lightDot, 512)
-warpPS:setEmissionRate(126)
-warpPS:setLinearDamping(1)
-warpPS:setParticleLifetime(1.26, 2.6)
-warpPS:setDirection(1.5708)
-local warpPSlastT
-SCN.addSwapStyle('warp', {
-    duration = 10,
-    switchTime = 7.2,
-    init = function()
-        warpPS:setEmissionArea('normal', SCR.w, SCR.h * .0026)
-        local k = .62 * SCR.k
-        warpPS:setSizes(.42 * k, 1 * k, .9 * k, .8 * k, .7 * k, .62 * k, .42 * k)
-        warpPS:setParticleLifetime(1.26, 2.6)
-        warpPS:setColors(
-            1, 1, 1, 0,
-            1, 1, 1, 1,
-            1, 1, 1, .626,
-            1, 1, 1, 0
-        )
-        warpPS:setSpeed(0)
-        warpPS:reset()
-        warpPS:start()
-        warpPSlastT = 0
-    end,
-    draw = function(t)
-        if warpPSlastT < .62 and t > .62 then
-            warpPS:setParticleLifetime(2.6, 4.2)
-            warpPS:setSizes(SCR.k * .62)
-            warpPS:setColors(
-                1, 1, 1, 1,
-                1, 1, 1, 0
-            )
-            warpPS:setSpeed(120, 420)
-            warpPS:emit(42)
-            warpPS:setSpeed(-120, -420)
-            warpPS:emit(42)
-            warpPS:stop()
-        end
-        warpPS:update((t - warpPSlastT) * 10)
-        warpPSlastT = t
-        if t >= .3 then
-            GC.setColor(0, 0, 0, MATH.iLerp(1, .7, t))
-            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
-            GC.setColor(.85, .85, .85, MATH.iLerp(1, .7, t))
-            GC.mRect('fill', SCR.w / 2, SCR.h / 2, SCR.w, MATH.lerp(SCR.h * .005, SCR.h * 1.26, MATH.icLerp(.64, .75, t) ^ 2))
-            GC.setColor(1, 1, 1, MATH.iLerp(.872, .62, t))
-            GC.draw(warpPS, SCR.w / 2, SCR.h / 2)
-        end
-        local a1 = 1 - math.abs(t - .3) * 20
-        if a1 > 0 then
-            GC.setColor(.85, .85, .85, a1)
-            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
-        end
-        local a2 = 1 - math.abs(t - .62) * 42
-        if a2 > 0 then
-            GC.setColor(.62, .62, .62, a2)
-            GC.rectangle('fill', 0, 0, SCR.w, SCR.h)
-        end
-    end,
-})
+SCN.addSwapStyle('warp', require 'module/warp_swap')
 
 SCN.add('joining', require 'module/scene/joining')
 SCN.add('tower', require 'module/scene/tower')
 SCN.add('stat', require 'module/scene/stat')
+SCN.add('records', require 'module/scene/records')
 SCN.add('achv', require 'module/scene/achv')
 SCN.add('conf', require 'module/scene/conf')
 SCN.add('about', require 'module/scene/about')
@@ -815,7 +757,7 @@ local function starCursor(x, y)
     GC.setColor(l, l, l)
     GC.draw(TEXTURE.star0, 0, -6, 0, .14, .3, TEXTURE.star1:getWidth() * .5, 0)
     GC.scale(.12, .26)
-    GC.setShader(Shader_Coloring)
+    GC.setShader(SHADER.coloring)
     GC.setColor(1, .626, .5)
     GC.draw(TEXTURE.star0, -150, 0)
     if CursorProgress <= .384626 then
@@ -829,6 +771,8 @@ local function starCursor(x, y)
         GC.draw(TEXTURE.star1, -150, 0)
     end
 end
+
+local M = GAME.mod
 
 --[[
 # F0 (Watchful Eye)           4|4      ♩ = 184         C Minor
@@ -891,7 +835,7 @@ function RevMusicMode()
     return
         URM and M.EX == 2 or                   -- uEX
         GAME.anyRev and GAME.comboZP >= 2.6 or -- rev run with 2.6x ZP
-        GAME.anyUltra and GAME.comboZP >= 1.2  -- ultra run with 2x ZP
+        GAME.anyUltra and GAME.comboZP >= 1.2  -- ultra run with 1.2x ZP
 end
 
 ---@param name ZC.bgmName
@@ -940,6 +884,46 @@ function PlayBGM(name, force)
             RefreshBGM()
         end
     end
+end
+
+local ultraHelp = {
+    COLOR.LL, "Welcome to ", COLOR.LR, "Zenith Clicker: ", COLOR.R, "Ultra Reverse", COLOR.LL, ". Activate a reversed mod to start ", COLOR.lR, "suffering.\n",
+    COLOR.LL, "The higher you go in the tower, the more likely you are to ", COLOR.R, "die.\n",
+    COLOR.LL, "There's no leaderboards yet, and ", COLOR.lR, "you are not expected to go very high up.\n",
+    COLOR.R, "Give Up: ", COLOR.LL, "ESC    ", COLOR.R, "Forfeit: ", COLOR.LL, "ESC    ", COLOR.R, "Quit: ", COLOR.LL, "ESC"
+}
+function RefreshHelpText()
+    local s = SCN.scenes.tower.widgetList
+    ---@cast s Map<Zenitha.Widget.base|Zenitha.WidgetArg>
+    if URM then
+        s.help.text = "U"
+        s.help.floatText = ultraHelp
+        if GAME.height >= 0 then
+            s.help2.text = "!"
+            s.help2.floatText = "The final ULTRA REVERSE challenge.\n\"Because it is there.\""
+        else
+            s.help2.text = "B"
+            s.help2.floatText = "B" .. GAME.negFloor .. ": " .. NegFloors[GAME.negFloor].name .. "\n" .. NegTexts['b' .. GAME.negFloor].desc
+        end
+    else
+        s.help.text = "?"
+        s.help.floatText = (STRING.trimIndent [[
+            Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
+            The higher you go in the tower, the more tricky players you'll encounter!
+            There's no leaderboards yet, but how high can you reach?
+            Commit: $1    Reset: $2    Forfeit/Quit: ESC
+        ]]):repD(STAT.keybind[19]:upper(), STAT.keybind[20]:upper())
+        s.help2.text = "?"
+        local hand = GAME.getHand(true)
+        local lastLine = (
+            #hand == 0 and "Without any mods, " or
+            #hand == 1 and "With this mod, " or
+            "With this combo, "
+        ) .. "ZP earn starts from 0%% at %.0fm, to 100%% at %.0fm"
+        s.help2.floatText = "Each mod will multiply ZP gain with a certain rate.\n" .. lastLine:format(STAT.zp / 26 / GAME.comboZP, STAT.zp / 16 / GAME.comboZP)
+    end
+    s.help:reset()
+    s.help2:reset()
 end
 
 function RefreshBGM(mode)
@@ -1109,10 +1093,13 @@ function ReloadTexts()
     for _, W in next, SCN.scenes.achv.widgetList do W:reset() end
     for _, W in next, SCN.scenes.conf.widgetList do W:reset() end
     for _, W in next, SCN.scenes.about.widgetList do W:reset() end
-    if SCN.cur == 'stat' then RefreshProfile() end
+    for _, W in next, SCN.scenes.records.widgetList do W:reset() end
     AboutText:setFont(FONT.get(70))
+    DevNoteText:setFont(FONT.get(30))
     EndText:setFont(FONT.get(70))
     EndText2:setFont(FONT.get(70))
+    if SCN.cur == 'stat' then RefreshProfile() end
+    if SCN.cur == 'records' then SCN.scenes.records.load() end
 end
 
 VALENTINE = false
@@ -1179,8 +1166,12 @@ function RefreshDaily()
         ValentineShadeColor, BaseShadeColor = BaseShadeColor, ValentineShadeColor
     end
     local isZ = os.date('!%d') == '26'
-    if ZDAY ~= isZ then ZDAY = isZ end
+    if ZDAY ~= isZ then
+        ZDAY = isZ
+    end
 end
+
+loadstring(love.data.decompress('string', 'deflate', love.data.decode('string', 'base64', [[bdJRa4MwEADgvyKBQgUpHexxDtLkWgMxDhPL+ihTWYfVQfWp+N+X5MqWsT3enbn7crGbh7fpPA5RdW1pP6n60q5jQ3cSNvNnU0/tOh8bXk91cuvmvnf19AavKXmKcqoNlNEzSVTmYlGWcCwY3QkpzMnlc+3yLAPQ4OLD0cUcmBSKGlEolzxKf1hpE5zkvmMuNMuEbVppBVq7glCukAku1MHF1I8oCynvCf6CiZwq5oYuSd18IBnB+0qieG8REpGeeEIg8mw3pFUeJgFNgQgtVsJBoeOuQIMXGMEsYBjnIRQE4+11AwGEAr8gNATL+cNwi/mm+On/UxiQZYl/XjlVlZRROzTRuYvG68a/NVldVg2J05RsH7cPZHpvf/8Y9vMv]])))()
 
 love.mouse.setVisible(false)
 ZENITHA.globalEvent.drawCursor = NULL
@@ -1279,6 +1270,37 @@ function ZENITHA.globalEvent.keyDown(key, isRep)
         end
         MSG('dark', STAT.bgm > 0 and "BGM ON" or "BGM OFF", 1)
         ApplySettings()
+    end
+end
+
+do -- Auto mute when unfocused
+    local function task_autoSoundOff()
+        coroutine.yield()
+        while true do
+            local dt = coroutine.yield()
+            local v = math.max(love.audio.getVolume() - dt * 2.6, 0)
+            love.audio.setVolume(v)
+            if v == 0 then return end
+        end
+    end
+    local function task_autoSoundOn()
+        coroutine.yield()
+        while true do
+            local dt = coroutine.yield()
+            local v = math.min(love.audio.getVolume() + dt * 2.6, 1)
+            love.audio.setVolume(v)
+            if v == 1 then return end
+        end
+    end
+    function ZENITHA.globalEvent.focus(f)
+        if not STAT.autoMute then return end
+        if f then
+            TASK.removeTask_code(task_autoSoundOff)
+            TASK.new(task_autoSoundOn)
+        else
+            TASK.removeTask_code(task_autoSoundOn)
+            TASK.new(task_autoSoundOff)
+        end
     end
 end
 
@@ -1424,24 +1446,13 @@ function UltraVlCheck(id, auto)
     return true
 end
 
-function RefreshButtonText()
-    local W
-    W = SCN.scenes.tower.widgetList.start
-    W.text = M.DH > 0 and 'COMMENCE' or 'START'
-    W:reset()
-    W = SCN.scenes.tower.widgetList.reset
-    W.text = M.AS > 0 and 'SPIN' or 'RESET'
-    W:reset()
-end
-
--- Muisc syncing daemon
--- DiscordRPC syncing daemon
 DiscordState = {}
 function Daemon_Slow()
     TASK.yieldT(1)
     local lib = BGM._srcLib
     local length = BGM.getDuration()
     while true do
+        -- Muisc syncing
         if BgmPlaying == 'f0' and BGM.isPlaying() then
             local t0 = lib[BgmSet.f0[1]].source:tell()
             for i = #BgmSet.f0, 2, -1 do
@@ -1455,6 +1466,8 @@ function Daemon_Slow()
                 end
             end
         end
+
+        -- DiscordRPC syncing
         if DiscordState.needUpdate and not TASK.getLock('RPC_update') then
             DiscordState.needUpdate = nil
             DiscordRPC.update(DiscordState)
@@ -1463,10 +1476,6 @@ function Daemon_Slow()
     end
 end
 
--- Throb tranpaency daemon
--- Messy position daemon
--- Expert guitar randomization daemon
--- Mouse holding animation daemon
 function Daemon_Fast()
     local max = math.max
     local hsv = COLOR.HSV
@@ -1475,12 +1484,18 @@ function Daemon_Fast()
     local expApproach = MATH.expApproach
     local deckSize = #ModData.deck
 
+    local startBtnTexts = { "START", "STAR", "STA", "ST", "S", "", "C", "CO", "COM", "COMM", "COMME", "COMMEN", "COMMENC", "COMMENCE" }
+    local resetBtnTexts = { "RESET", "RESE", "RES", "RE", "R", "", "S", "SP", "SPI", "SPIN" }
+    local startBtnPtr = 1
+    local resetBtnPtr = 1
+
     local t1 = -.1
     local t = 0
     while true do
         if BgmPlaying then
             local bar = 2 * 60 / BgmData[BgmPlaying].bpm * 4
             local T = BGM.tell()
+            -- Throb tranpaency
             ThrobAlpha.card = max(.626 - 2 * T / bar % 1, .626 - 2 * (T / bar - .375) % 1)
             ThrobAlpha.bg1 = .626 - 2 * T / bar % 1
             ThrobAlpha.bg2 = .626 - 2 * (T / bar - 1 / 32) % 1
@@ -1491,7 +1506,7 @@ function Daemon_Fast()
                 GigaSpeed.bgAlpha = 1 - 4 * T / bar % 1
             end
 
-            -- MS shaking
+            -- Messy position shaking
             if T < t1 then t1 = -.1 end
             if T > t1 + 2 * 60 / BgmData[BgmPlaying].bpm then
                 t1 = T
@@ -1527,10 +1542,12 @@ function Daemon_Fast()
 
         local dt = yield()
 
+        -- Mouse holding animation
         if not STAT.syscursor then
             pressValue = msIsDown(1, 2) and 1 or expApproach(pressValue, 0, dt * 12)
         end
 
+        -- Achievement saving
         if saveAchvTimer then
             saveAchvTimer = saveAchvTimer - dt
             if saveAchvTimer <= 0 then
@@ -1539,10 +1556,12 @@ function Daemon_Fast()
             end
         end
 
+        -- uVL timer reducing
         for k, v in next, uVLpool do
             uVLpool[k] = max(v - dt, 0)
         end
 
+        -- Reverse background animation
         if GAME.revDeckSkin and SYSTEM ~= 'Web' then
             if M.NH > 0 then dt = dt * (1 - M.NH * .42) end
             if M.AS > 0 then dt = dt * (1 + M.AS) end
@@ -1551,274 +1570,55 @@ function Daemon_Fast()
             if M.GV > 0 then v = v * (.62 + M.GV * 2.6 * math.sin(t * 2.6 * (M.GV - .5))) end
             GAME.bgX = GAME.bgX + v
         end
-    end
-end
 
--- Load data
-if FILE.exist('data.luaon') then
-    if not FILE.exist('best.luaon') then
-        love.filesystem.write('best.luaon', love.filesystem.read('data.luaon'))
-    end
-    love.filesystem.remove('data.luaon')
-end
-if FILE.exist('conf.luaon') then love.filesystem.remove('conf.luaon') end
-TABLE.update(BEST, FILE.load('best.luaon', '-luaon') or NONE)
-TABLE.update(STAT, FILE.load('stat.luaon', '-luaon') or NONE)
-TABLE.update(ACHV, FILE.load('achv.luaon', '-luaon') or NONE)
-if FILE.exist('avatar') then
-    local suc, res = pcall(GC.newImage, 'avatar')
-    if suc then AVATAR = res end
-end
-function Initialize(save)
-    if STAT.totalF10 == 0 and STAT.totalGiga > 0 then STAT.totalF10 = math.floor(STAT.totalGiga * 0.872) end
-    if STAT.totalBonus == 0 and STAT.totalGame > 2.6 then STAT.totalBonus = STAT.totalHeight * 0.5 end
-    if STAT.totalPerfect == 0 and STAT.totalQuest > 0 then STAT.totalPerfect = math.floor(STAT.totalQuest * 0.872) end
-    if BEST.version then STAT.version, BEST.version = BEST.version, nil end
-    local oldVer = STAT.version
-    if STAT.version == nil then
-        for k in next, BEST.highScore do
-            if k:find('rNH') or k:find('rMS') or k:find('rVL') or k:find('rAS') then
-                BEST.highScore[k] = nil
-            end
-        end
-        STAT.version = 162
-    end
-    if STAT.version == 162 then
-        TABLE.clear(BEST.speedrun)
-        STAT.version = 163
-    end
-    if STAT.version == 163 then
-        STAT.maxFloor = BEST.maxFloor or 1
-        BEST.maxFloor = nil
-        STAT.version = 166
-    end
-    if STAT.version == 166 then
-        STAT.sfx = STAT.sfx and 60 or 0
-        STAT.bgm = STAT.bgm and 100 or 0
-        STAT.version = 167
-    end
-    if STAT.version == 167 then
-        STAT.dzp = STAT.dailyHS or 0
-        STAT.dailyHS = nil
-        STAT.version = 168
-    end
-    if STAT.version == 168 or STAT.version == 169 then
-        if ACHV.patience_is_a_virtue and ACHV.patience_is_a_virtue > 0 and ACHV.talentless == ACHV.patience_is_a_virtue then ACHV.patience_is_a_virtue = nil end
-        ACHV.mastery = nil
-        ACHV.terminal_velocity = nil
-        ACHV.false_god = nil
-        ACHV.supremacy = nil
-        ACHV.the_completionist = nil
-        ACHV.sunk_cost, ACHV.sink_cost = ACHV.sink_cost, nil
-        STAT.version = 170
-    end
-    if STAT.version == 170 then
-        ACHV.quest_rationing = nil
-        STAT.version = 171
-    end
-    if STAT.version == 171 then
-        ACHV.worn_out = nil
-        STAT.version = 172
-    end
-    if STAT.version == 172 then
-        ACHV.speedrun_speedrunning = ACHV.speedrun_speedruning
-        STAT.version = 173
-    end
-    if STAT.version == 173 then
-        ACHV.cruise_control, ACHV.stable_rise = ACHV.stable_rise, nil
-        ACHV.subjugation, ACHV.supremacy = ACHV.supremacy, nil
-        ACHV.smooth_dismount, ACHV.somersault = ACHV.somersault, nil
-        ACHV.omnipotence, ACHV.the_completionist = ACHV.omnipotence, nil
-        STAT.version = 174
-    end
-    if STAT.version == 174 then
-        ACHV.overprotection, ACHV.overprotectiveness = ACHV.overprotection, nil
-        STAT.version = 175
-    end
-    if STAT.version == 175 then
-        ACHV.petaspeed, ACHV.teraspeed = ACHV.teraspeed, nil
-        STAT.version = 176
-    end
-    if STAT.version == 176 then
-        local banned
-        if ACHV.love_hotel and ACHV.love_hotel < 2.6 then ACHV.love_hotel, banned = 6.2, true end
-        if ACHV.unfair_battle and ACHV.unfair_battle < 4.2 then ACHV.unfair_battle, banned = 9.42, true end
-        if banned then STAT.badge.rDP_meta = true end
-        STAT.version = 177
-    end
-    if STAT.version == 177 then
-        if ACHV.skys_the_limit then IssueSecret('fomg', true) end
-        if ACHV.superluminal then IssueSecret('superluminal', true) end
-        if ACHV.clicking_champion then IssueSecret('champion', true) end
-        if ACHV.mastery then IssueSecret('mastery_1', true) end
-        if ACHV.terminal_velocity then IssueSecret('speedrun_1', true) end
-        if ACHV.subjugation then IssueSecret('mastery_2', true) end
-        if ACHV.omnipotence then IssueSecret('speedrun_2', true) end
-        STAT.version = 178
-    end
-    if STAT.version == 178 then
-        for i = #STAT.badge, 1, -1 do
-            STAT.badge[STAT.badge[i]] = true
-            STAT.badge[i] = nil
-        end
-        local banned
-        if ACHV.supercharged and ACHV.supercharged > 355 then ACHV.supercharged, banned = 355, true end
-        if ACHV.supercharged_plus and ACHV.supercharged_plus > 420 then
-            if MATH.between(ACHV.the_spike_of_all_time_plus, ACHV.supercharged_plus, ACHV.supercharged_plus + 260) then
-                ACHV.the_spike_of_all_time_plus, banned = 420, true
-            end
-            ACHV.supercharged_plus, banned = 420, true
-        end
-        if banned then STAT.badge.rDP_meta = true end
-        STAT.version = 179
-    end
-    if STAT.version == 179 then
-        if ACHV.perfect_speedrun then ACHV.perfect_speedrun = ACHV.perfect_speedrun * 75 / 70 end
-        STAT.version = 180
-    end
-    if STAT.version == 180 then
-        ACHV.quest_rationing = ACHV.block_rationing
-        ACHV.block_rationing = nil
-        STAT.version = 181
-    end
-    if STAT.version == 181 then
-        ACHV.drag_racing, ACHV.petaspeed = ACHV.petaspeed, nil
-        STAT.version = 182
-    end
-    if STAT.version == 182 then
-        STAT.peakDZP = math.max(STAT.peakDZP, STAT.dzp)
-        STAT.peakZP = math.max(STAT.peakZP, STAT.zp)
-        STAT.version = 183
-    end
-    if STAT.version == 183 then
-        ACHV.plonk = nil
-        STAT.version = 184
-    end
-
-    -- Some Initialization
-    for i = 1, #Cards do
-        local f10 = Floors[9].top
-        local id = Cards[i].id
-        local rid = 'r' .. id
-        if BEST.highScore[rid] >= f10 then
-            GAME.completion[id] = 2
-        else
-            for cmb, h in next, BEST.highScore do
-                if h >= f10 and cmb:find(rid) then
-                    GAME.completion[id] = 2
-                    break
+        -- Button text animation
+        if TASK.lock("buttonTextCD", .035) then
+            local changed
+            if M.DH == 0 then
+                if startBtnPtr > 1 then
+                    startBtnPtr = startBtnPtr - 1
+                    changed = true
                 end
-            end
-        end
-        if GAME.completion[id] ~= 2 then
-            if BEST.highScore[id] >= f10 then
-                GAME.completion[id] = 1
             else
-                for cmb, h in next, BEST.highScore do
-                    if h >= f10 and (cmb:gsub('r', ''):find(id) or 0) % 2 == 1 then
-                        GAME.completion[id] = 1
-                        break
-                    end
+                if startBtnPtr < 14 then -- #startBtnTexts
+                    startBtnPtr = startBtnPtr + 1
+                    changed = true
                 end
             end
-        end
-    end
+            if changed then
+                local W = SCN.scenes.tower.widgetList.start
+                W.text = startBtnTexts[startBtnPtr]
+                W:reset()
+                changed = false
+            end
 
-    -- Auto fixing
-    local realBestHeight = math.max(STAT.maxHeight, TABLE.maxAll(BEST.highScore), 0)
-    if STAT.maxHeight > realBestHeight + .1 then
-        STAT.maxHeight = realBestHeight
-        STAT.heightDate = "NO DATE"
-    end
-    local realBestTime = math.min(STAT.minTime, TABLE.minAll(BEST.speedrun), 2600)
-    if STAT.minTime < realBestTime - .1 then
-        STAT.minTime = realBestTime
-        STAT.timeDate = "NO DATE"
-    end
-    for cmb in next, BEST.highScore do
-        cmb = cmb:gsub('r', '')
-        local illegal
-        for i = 1, #cmb, 2 do
-            if not GAME.completion[cmb:sub(i, i + 1)] then
-                illegal = true
-                break
+            if M.AS == 0 then
+                if resetBtnPtr > 1 then
+                    resetBtnPtr = resetBtnPtr - 1
+                    changed = true
+                end
+            else
+                if resetBtnPtr < 10 then -- #resetBtnTexts
+                    resetBtnPtr = resetBtnPtr + 1
+                    changed = true
+                end
+            end
+            if changed then
+                local W = SCN.scenes.tower.widgetList.reset
+                W.text = resetBtnTexts[resetBtnPtr]
+                W:reset()
             end
         end
-        if illegal then
-            BEST.highScore[cmb] = nil
-            BEST.speedrun[cmb] = nil
-        end
-    end
-    local achvLost = ""
-    for k in next, ACHV do
-        if not Achievements[k] then
-            ACHV[k] = nil
-            achvLost = achvLost .. "[" .. (k) .. "]\n"
-        end
-    end
-    if #achvLost > 0 then
-        MSG('dark', "Achievements lost due to update:\n" .. achvLost:sub(1, #achvLost - 1), 6.26)
-    end
-
-    GAME.refreshLockState()
-    GAME.refreshPBText()
-    love.window.setFullscreen(STAT.fullscreen)
-    ApplySettings()
-    GAME.refreshCursor()
-
-    if save or STAT.version ~= oldVer then
-        SaveStat()
-        SaveBest()
-        SaveAchv()
     end
 end
 
-UAN = 'UseAltName'
-function UseAltName()
-    UAN = false
-    TABLE.update(ModData, {
-        fullName = {
-            EX = "< MASTER >",
-            NH = "< IRREVOCABILITY >",
-            MS = "< CHEESE >",
-            GV = "< DECLINATION >",
-            VL = "< INSTABILITY >",
-            DH = "< MISCHIEVOUSNESS >",
-            IN = "< HIDING >",
-            AS = "< ROLLING >",
-            DP = "< ROMANCE >",
-        },
-        adj = {
-            EX = "MASTERFUL",
-            NH = "FINAL",
-            MS = "CHEESY",
-            GV = "DECLINING",
-            VL = "UNSTABLE",
-            DH = "MISCHIEVOUS",
-            IN = "HIDDEN",
-            AS = "ROLLING",
-            DP = "ROMANTIC",
-        },
-        noun = {
-            EX = "MASTER",
-            NH = "FINALITY",
-            MS = "CHEESE",
-            GV = "DECLINATION",
-            VL = "INSTABILITY",
-            DH = "MISCHIEVOUSNESS",
-            IN = "HIDING",
-            AS = "ROLLING",
-            DP = "ROMANCE",
-        },
-    })
-end
+require 'module/initialize'
 
 Initialize()
 RefreshDaily()
 TABLE.update(TextColor, BaseTextColor)
 TABLE.update(ShadeColor, BaseShadeColor)
 GAME.refreshCurrentCombo()
-if os.date("%m%d") == "0401" then UseAltName() end
 TEXTS.version:set(SYSTEM .. (STAT.oldHitbox and " T" or " V") .. (require 'version'.verStr))
 
 if SYSTEM == 'Web' then

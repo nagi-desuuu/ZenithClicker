@@ -33,7 +33,7 @@ local function heightFloor(h)
     end
 end
 local function heightNumber(score)
-    return string.format("%.2fm", score)
+    return string.format("%.1fm", score)
 end
 local function issuedScore()
     return "DONE!"
@@ -54,7 +54,6 @@ end
 ---@field rank? 'floor' | fun(score):number
 ---@field type? 'competitive' | 'unranked' | 'issued' | 'event'
 ---@field hide? fun():boolean
----@field notUsed? true
 
 ---@type Map<Achievement>
 Achievements = {
@@ -129,7 +128,7 @@ Achievements = {
         desc = [[Highest altitude within the first 7 quests]],
         quote = [[Pour intention into each flip, and even a single quest can shake the world.]],
         credit = "@Ponies",
-        scoreSimp = function(h) return string.format("%.2fm", h) end,
+        scoreSimp = function(h) return string.format("%.1fm", h) end,
         scoreFull = function(h) return string.format("%.2f m/quest", h / 7) end,
         rank = numberRank(60, 75, 90, 100, 110, 120, 135),
     },
@@ -570,26 +569,6 @@ Achievements = {
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         hide = function() return GAME.completion.DH == 0 or GAME.completion.AS == 0 end,
     },
-    { -- rGVrNHrVL
-        ex = true,
-        id = 'rGVrNHrVL',
-        name = "Sweatshop",
-        desc = [[HFD with rNH rGV rVL mods]],
-        quote = [[Carefree life is not for the asking, someone else is carrying the burden for you.]],
-        credit = "@obsidian",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
-        hide = function() return GAME.completion.NH == 0 or GAME.completion.GV == 0 or GAME.completion.VL == 0 end,
-    },
-    { -- rINrNH
-        ex = true,
-        id = 'rINrNH',
-        name = "Fleeting Memory",
-        desc = [[HFD with rNH rIN mods]],
-        quote = [[In the blink of an eye, gone. Forgotten.]],
-        credit = "@FMichael",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 1800),
-        hide = function() return GAME.completion.NH == 0 or GAME.completion.IN == 0 end,
-    },
     { -- EXGVNHrMS
         ex = true,
         id = 'EXGVNHrMS',
@@ -834,14 +813,15 @@ Achievements = {
         rank = numberRank(0, 2, 3, 4, 5, 6, 8),
         hide = function() return GAME.completion.DP == 0 end,
     },
-    { -- carried
+    { -- the_responsible_one_plus
         ex = true,
-        id = 'carried',
-        name = "Carried",
-        desc = [[HFD without passing any quest with both players alive, with at least DP]],
-        quote = [["I have no idea how to play the game, can you unlock the mods for me?"]],
-        credit = "@obsidian",
-        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
+        id = 'the_responsible_one_plus',
+        name = "The Responsible One+",
+        desc = [[Highest amount of revivals performed, multiplied with MP]],
+        quote = [["Is this going to be a recurring theme?"]],
+        credit = "@FCSplayz",
+        scoreSimp = function(rank) return floor(rank) .. " Points" end,
+        rank = numberRank(0, 16, 26, 36, 49, 64, 81),
     },
     { -- guardian_angel
         id = 'guardian_angel',
@@ -851,14 +831,14 @@ Achievements = {
         scoreSimp = heightNumber,
         rank = numberRank(0, 626, 942, 1620, 2000, 2600, 4200),
     },
-    { -- speed_bonus
+    { -- carried
         ex = true,
-        id = 'speed_bonus',
-        name = "Speed Bonus",
-        desc = [[Trigger any speedrun animation as many times as possible within a single run, without using rEX or rDP]],
-        quote = [[Three steps forward, two steps back. Six steps forward, five steps back.]],
-        scoreSimp = function(kill) return kill .. " Entries" end,
-        rank = numberRank(0, 2, 3, 3, 4, 4, 5),
+        id = 'carried',
+        name = "Carried",
+        desc = [[HFD without passing any quest with both players alive, with at least DP]],
+        quote = [["I have no idea how to play the game, can you unlock the mods for me?"]],
+        credit = "@obsidian",
+        rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
     { -- level_19_cap
         ex = true,
@@ -965,7 +945,7 @@ Achievements = {
         ex = true,
         id = 'sunk_cost',
         name = "Sunk Cost",
-        desc = [[HFD without losing ranks]],
+        desc = [[HFD without losing a rank]],
         quote = [[Cross the line, and the descent begins.]],
         rank = floorRank(1, 3, 5, 7, 9, 10, 2000),
     },
@@ -973,7 +953,7 @@ Achievements = {
         ex = true,
         id = 'wax_wings',
         name = "Wax Wings",
-        desc = [[HFD without losing ranks, with EX VL]],
+        desc = [[HFD without losing a rank, with EX VL]],
         quote = [["Bold in vanity, began to soar, rising upon his wings to touch the skies."]],
         credit = "@Flowerling",
         rank = floorRank(1, 3, 5, 7, 8, 9, 10),
@@ -999,6 +979,15 @@ Achievements = {
         scoreSimp = function(quest) return floor(quest) .. " Quests" end,
         rank = numberRank(0, 12, 26, 40, 50, 60, 80),
         hide = function() return GAME.completion.IN == 0 end,
+    },
+    { -- speed_bonus
+        ex = true,
+        id = 'speed_bonus',
+        name = "Speed Bonus",
+        desc = [[Trigger any speedrun animation as many times as possible within a single run, without using rEX or rDP]],
+        quote = [[Three steps forward, two steps back. Six steps forward, five steps back.]],
+        scoreSimp = function(kill) return kill .. " Entries" end,
+        rank = numberRank(0, 2, 3, 3, 4, 4, 5),
     },
     { -- arrogance
         ex = true,
@@ -1037,27 +1026,6 @@ Achievements = {
         quote = [[Real magic exists!]],
         rank = floorRank(26, 42, 62, 126, 3, 4, 5),
     },
-    { -- divine_rejection
-        ex = true,
-        id = 'divine_rejection',
-        name = "Divine Rejection",
-        desc = [[End a run just before F10]],
-        quote = [[A blinding flash of light, a painful crash to the bottom.]],
-        credit = '@Flowerling',
-        scoreSimp = function(h) return string.format("%.2fm", h) end,
-        rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
-    },
-    { -- moon_struck
-        ex = true,
-        id = 'moon_struck',
-        name = "Moon Struck",
-        desc = [[Finish the run at exactly 2202.8m (±16/±8/±4/±2/±1/±0)]],
-        quote = [[TODO]],
-        scoreSimp = heightNumber,
-        rank = NULL,
-        credit = "@osk",
-        notUsed = true,
-    },
     { -- lovers_promise
         id = 'lovers_promise',
         name = "Lover's Promise",
@@ -1066,6 +1034,27 @@ Achievements = {
         scoreSimp = heightNumber,
         rank = floorRank(1, 3, 5, 7, 9, 10, 2600),
         type = 'event',
+    },
+    { -- divine_rejection
+        ex = true,
+        id = 'divine_rejection',
+        name = "Divine Rejection",
+        desc = [[End a run just before F10]],
+        quote = [[A blinding flash of light, a painful crash to the bottom.]],
+        credit = '@Flowerling',
+        scoreSimp = function(h) return string.format("%.1fm", h) end,
+        rank = numberRank(1626, 1626, 1635, 1640, 1645, 1647.8, 1649),
+    },
+    { -- moon_struck
+        ex = true,
+        id = 'moon_struck',
+        name = "Moon Struck",
+        desc = [[Finish the run at exactly 2202.8m]],
+        quote = [["With this moonlight as my witness, will you take my hand for eternity?"]],
+        comp = '<',
+        scoreSimp = function(dist) return dist == 0 and "Flawless Landing!" or string.format("%.1fm away", dist) end,
+        rank = numberRankRev(26, 16, 8, 4, 2, 1, 0),
+        credit = "@osk",
     },
 
     { title = "Supercharged Clone", credit = "@Garbo" },
@@ -1186,11 +1175,11 @@ Achievements = {
         ex = true,
         id = 'cruise_control',
         name = "Cruise Control",
-        desc = [[Highest rank maintained for least 1 min in one run]],
+        desc = [[Highest rank maintained for at least 1 min in one run]],
         quote = [[Ascending the tower at a stable, yet swift rate.]],
         credit = "@FMichael",
         scoreSimp = function(rank) return "Rank " .. (rank == 26 and "26 (Max)" or rank) end,
-        rank = numberRank(9, 11, 13, 14, 15, 16, 18),
+        rank = numberRank(10, 12, 13, 14, 15, 16, 18),
     },
     { -- drag_racing
         ex = true,
@@ -1201,6 +1190,16 @@ Achievements = {
         credit = "@GameTilDead",
         scoreSimp = function(rank) return "Rank " .. rank end,
         rank = numberRank(12, 14, 15, 16, 17, 18, 20),
+    },
+    { -- dazed
+        ex = true,
+        id = 'dazed',
+        name = "Dazed",
+        desc = [[Highest rank when hitting F10 with MS GV AS]],
+        quote = [[Illusions dance around you...]],
+        credit = "@The_111thBlitzer",
+        scoreSimp = function(rank) return "Rank " .. rank end,
+        rank = numberRank(10, 10, 11, 12, 13, 14, 16),
     },
     { -- the_spike_of_all_time_plus
         ex = true,
@@ -1426,7 +1425,6 @@ local compFunc = {
 }
 
 do
-    TABLE.foreach(Achievements, function(v) return v.notUsed end, true)
     local i = 1
     repeat
         local achv = Achievements[i]

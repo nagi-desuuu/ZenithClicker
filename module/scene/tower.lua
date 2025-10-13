@@ -15,6 +15,7 @@ for i = 1, #MD.deck do ShortCut[i] = GC.newText(FONT.get(50)) end
 HoldingButtons = {}
 local HoldingButtons = HoldingButtons
 
+URM = false
 RevUnlocked = false
 UsingTouch = MOBILE
 local usingTouch = UsingTouch
@@ -204,6 +205,35 @@ local function keyTrigger(key)
     end
 end
 
+local function ultraStateChange()
+    GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
+    GAME.refreshLayout()
+    GAME.refreshUltra()
+    GAME.refreshCurrentCombo()
+    GAME.refreshPBText()
+    RefreshBGM()
+    GAME.refreshRPC()
+    RefreshHelpText()
+end
+
+local function applyCombo(set)
+    local changed
+    for _, C in ipairs(Cards) do
+        local cur = C.active and (C.upright and 1 or 2) or 0
+        local tar = TABLE.find(set, C.id) and 1 or TABLE.find(set, 'r' .. C.id) and 2 or 0
+        if cur ~= tar then
+            if cur > 0 then C:setActive(true) end
+            if tar > 0 then C:setActive(true, tar == 2 and 2 or 1) end
+            changed = true
+        end
+    end
+    if set.ultra ~= nil and set.ultra ~= URM then
+        URM = set.ultra
+        ultraStateChange()
+    end
+    if changed then SFX.play('mmstart') end
+end
+
 function scene.load()
     if SYSTEM == 'Web' and TASK.lock('web_warn') then
         MSG('warn',
@@ -214,17 +244,14 @@ function scene.load()
 
     for i = 1, #MD.deck do ShortCut[i]:set(STAT.keybind[i]:upper()) end
 
-    scene.widgetList.help.floatText = (STRING.trimIndent [[
-        Welcome to Zenith Clicker! Choose the required tarot cards and send players to scale the tower.
-        The higher you go in the tower, the more tricky players you'll encounter!
-        There's no leaderboards yet, but how high can you reach?
-        Commit: $1    Reset: $2    Forfeit/Quit: ESC
-    ]]):repD(STAT.keybind[19]:upper(), STAT.keybind[20]:upper())
-    scene.widgetList.help:reset()
-
     GAME.refreshDailyChallengeText()
     TASK.unlock('sure_quit')
     ZENITHA.setAppInfo("Zenith Clicker")
+
+    if PendingComboFromRecord then
+        applyCombo(PendingComboFromRecord)
+        PendingComboFromRecord = nil
+    end
 end
 
 function scene.unload()
@@ -388,7 +415,7 @@ local expApproach = MATH.expApproach
 function scene.update(dt)
     if GAME.nightcore then dt = dt * 2.6 end
     if GAME.zenithTraveler and M.EX == 2 then
-        local f = GAME.getBgFloor()
+        local f = GAME.calculateFloor(GAME.bgH)
         GAME.height = max(GAME.height - dt * (f * (f + 1) + 10) * (M.VL + 1), 0)
     end
     if dt > .26 then dt = .26 end
@@ -494,7 +521,7 @@ local gc_line, gc_rectangle, gc_circle, gc_arc = gc.line, gc.rectangle, gc.circl
 local gc_mRect, gc_mDraw, gc_mDrawQ, gc_strokeDraw = GC.mRect, GC.mDraw, GC.mDrawQ, GC.strokeDraw
 local gc_setAlpha, gc_move, gc_back = GC.setAlpha, GC.ucs_move, GC.ucs_back
 local gc_blurCircle, gc_strokePrint = GC.blurCircle, GC.strokePrint
-local gc_setColorMask, gc_mStr = GC.setColorMask, GC.mStr
+local gc_setColorMask = GC.setColorMask
 local setFont = FONT.set
 
 local chargeIcon = GC.load {
@@ -524,8 +551,8 @@ local reviveRot = { -.095, .15, -.17 }
 function DrawBG(brightness, showRuler)
     gc_replaceTransform(SCR.origin)
     if GAME.bgH > -50 then
-        local bgFloor = GAME.getBgFloor()
-        if STAT.bg then
+        local bgFloor = GAME.calculateFloor(GAME.bgH)
+        if STAT.bg and not GAME.invisUI then
             if bgFloor < 10 then
                 gc_setColor(1, 1, 1)
                 local bottom = Floors[bgFloor - 1].top
@@ -663,58 +690,56 @@ function scene.draw()
         DrawBG(STAT.bgBrightness, true)
     end
 
-    -- Wind Particles
-    if GAME.height <= 1650 then
-        gc_replaceTransform(SCR.origin)
-        local dh = GAME.bgH - GAME.bgLastH
-        GAME.bgLastH = GAME.bgH
-        for i = 1, 62 do
-            local w = Wind[i]
-            w[2] = w[2] + dh / w[3] / 42
-            if w[2] < 0 or w[2] > 1 then
-                w[1], w[2] = math.random(), w[2] % 1
-            end
-            WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, 0, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
-        end
-        gc_setColor(1, 1, 1, GAME.uiHide *
-            clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
-            cLerp(.62, 1, abs(dh * 26))
-        )
-        gc_draw(WindBatch)
-    end
-
-    -- PB Line
-    drawPBline(GAME.prevPB, true)
-
-    -- KM Line
-    if GAME.floor >= 10 then
-        gc_setColor(1, 1, 1, GAME.uiHide)
-        drawPBline(MATH.roundUnit(GAME.bgH, 1000), false, 6, TEXTS.lineKM)
-    end
-
-    local panelH = 697 + GAME.uiHide * (420 + GAME.height / 6.2)
-
-    -- GigaSpeed BG
-    if GigaSpeed.alpha > 0 then
-        local gigaPower = (1 - clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)) ^ 1.5
-        if gigaPower > 0 then
+    if not GAME.invisUI then
+        -- Wind Particles
+        if GAME.height <= 1650 then
             gc_replaceTransform(SCR.origin)
-            gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha * gigaPower)
-            local h1 = SCR.y + 470 * SCR.k
-            gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
-            gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
+            local dh = GAME.bgH - GAME.bgLastH
+            GAME.bgLastH = GAME.bgH
+            for i = 1, 62 do
+                local w = Wind[i]
+                w[2] = w[2] + dh / w[3] / 42
+                if w[2] < 0 or w[2] > 1 then
+                    w[1], w[2] = math.random(), w[2] % 1
+                end
+                WindBatch:set(i, w[1] * SCR.w, (w[2] * 1.2 - .1) * SCR.h, 0, 5, (-6 - dh * 260) / w[3] * SCR.k, .5, 0)
+            end
+            gc_setColor(1, 1, 1, GAME.uiHide *
+                clamp((GAME.rank - 2) / 6, .26, 1) * .26 *
+                cLerp(.62, 1, abs(dh * 26))
+            )
+            gc_draw(WindBatch)
+        end
 
-            if not GAME.invisUI then
+        -- PB Line
+        drawPBline(GAME.prevPB, true)
+
+        -- KM Line
+        if GAME.floor >= 10 then
+            gc_setColor(1, 1, 1, GAME.uiHide)
+            drawPBline(MATH.roundUnit(GAME.bgH, 1000), false, 6, TEXTS.lineKM)
+        end
+
+        local panelH = 697 + GAME.uiHide * (420 + GAME.height / 6.2)
+
+        -- GigaSpeed BG
+        if GigaSpeed.alpha > 0 then
+            local gigaPower = (1 - clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)) ^ 1.5
+            if gigaPower > 0 then
+                gc_replaceTransform(SCR.origin)
+                gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .42 * GigaSpeed.alpha * gigaPower)
+                local h1 = SCR.y + 470 * SCR.k
+                gc_draw(TEXTURE.transition, 0, 0, 0, .42 / 128 * SCR.w, h1)
+                gc_draw(TEXTURE.transition, SCR.w, 0, 0, -.42 / 128 * SCR.w, h1)
+
                 gc_replaceTransform(SCR.xOy)
                 gc_setAlpha(GigaSpeed.alpha * gigaPower)
                 gc_draw(TEXTURE.transition, 800 - 1586 / 2, panelH - 303, 1.5708, 26, 1586, 0, 1)
             end
         end
-    end
 
-    gc_replaceTransform(SCR.xOy)
+        gc_replaceTransform(SCR.xOy)
 
-    if not GAME.invisUI then
         -- Mod icons
         if GAME.uiHide > 0 then
             gc_setColor(1, 1, 1, GAME.uiHide * (M.IN == 0 and 1 or 1 - M.IN * (.26 + .1 * sin(t * 2.6))))
@@ -805,64 +830,65 @@ end
 
 local gvTimerColor1 = { 1, .942, .872, 0 }
 local gvTimerColor2 = { 0, 0, 0, 0 }
+local altitudeText = { 0, COLOR.dL, "m" }
 function scene.overDraw()
     local t = love.timer.getTime()
     if GAME.zenithTraveler then return end
 
     gc_translate(0, DeckPress)
 
-    -- Current combo
-    if not GAME.playing or M.IN < 2 then
-        gc_setColor(TextColor)
-        if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
-        gc_mDraw(TEXTS.mod, 800, 396, 0, min(1, 760 / TEXTS.mod:getWidth()))
-    end
-
-    -- Glow
-    if ImpactGlow[1] then
-        gc_setBlendMode('add')
-        for i = 1, #ImpactGlow do
-            local L = ImpactGlow[i]
-            gc_setColor(L.r, L.g, L.b, L.t)
-            gc_blurCircle(0, L.x, L.y, 120 * (L.t + 1.6) ^ 2)
-        end
-        gc_setBlendMode('alpha')
-    end
-
-    -- GigaSpeed Timer
-    if GigaSpeed.alpha > 0 then
-        local w, h = TEXTS.gigatime:getDimensions()
-        local gigaFade = clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)
-        gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .2 * (GigaSpeed.alpha - gigaFade))
-        gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
-        if M.DP < 2 then
-            gc_setAlpha(GigaSpeed.alpha)
-            gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
-            if gigaFade > 0 then
-                local l = gigaFade == 1 and .5 or .8
-                gc_setColor(l, l, l, GigaSpeed.alpha * gigaFade)
-                gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
-            end
-        end
-    end
-
-    -- GigaSpeed Anim
-    if GigaSpeed.textTimer then
-        gc_setBlendMode('add')
-        gc_setColor(.26, .26, .26)
-        if GigaSpeed.isTera then
-            for p = -10, 10, 3 do
-                gc_mDraw(TEXTS.teraspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 5 * 2600, 355, 0, 2.6)
-            end
-        else
-            for p = -10, 10, 3 do
-                gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + p * .012) ^ 5 * 2600, 395, 0, 1.6)
-            end
-        end
-        gc_setBlendMode('alpha')
-    end
-
     if not GAME.invisUI then
+        -- Current combo
+        if not GAME.playing or M.IN < 2 then
+            gc_setColor(TextColor)
+            if M.IN == 2 then gc_setAlpha(.42 + .26 * sin(t * 2.6)) end
+            gc_mDraw(TEXTS.mod, 800, 396, 0, min(1, 760 / TEXTS.mod:getWidth()))
+        end
+
+        -- Glow
+        if ImpactGlow[1] then
+            gc_setBlendMode('add')
+            for i = 1, #ImpactGlow do
+                local L = ImpactGlow[i]
+                gc_setColor(L.r, L.g, L.b, L.t)
+                gc_blurCircle(0, L.x, L.y, 120 * (L.t + 1.6) ^ 2)
+            end
+            gc_setBlendMode('alpha')
+        end
+
+        -- GigaSpeed Timer
+        if GigaSpeed.alpha > 0 then
+            local w, h = TEXTS.gigatime:getDimensions()
+            local gigaFade = clamp((GAME.time - (GAME.gigaspeedEntered or GAME.time) - 120) / 180, 0, 1)
+            gc_setColor(GigaSpeed.r, GigaSpeed.g, GigaSpeed.b, .2 * (GigaSpeed.alpha - gigaFade))
+            gc_strokeDraw('full', 3, TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+            if M.DP < 2 then
+                gc_setAlpha(GigaSpeed.alpha)
+                gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+                if gigaFade > 0 then
+                    local l = gigaFade == 1 and .5 or .8
+                    gc_setColor(l, l, l, GigaSpeed.alpha * gigaFade)
+                    gc_draw(TEXTS.gigatime, 800, 264, 0, 1.5, 1.2, w * .5, h * .5)
+                end
+            end
+        end
+
+        -- GigaSpeed Anim
+        if GigaSpeed.textTimer then
+            gc_setBlendMode('add')
+            gc_setColor(.26, .26, .26)
+            if GigaSpeed.isTera then
+                for p = -10, 10, 3 do
+                    gc_mDraw(TEXTS.teraspeed, 800 + (GigaSpeed.textTimer + p * .01) ^ 5 * 2600, 355, 0, 2.6)
+                end
+            else
+                for p = -10, 10, 3 do
+                    gc_mDraw(TEXTS.gigaspeed, 800 + (GigaSpeed.textTimer + p * .012) ^ 5 * 2600, 395, 0, 1.6)
+                end
+            end
+            gc_setBlendMode('alpha')
+        end
+
         -- Spike counter
         if GAME.spikeCounter >= 8 and GAME.spikeTimer > 0 then
             gc_push('transform')
@@ -1034,7 +1060,55 @@ function scene.overDraw()
                 end
                 gc_pop()
             end
+
+            -- Revive Task
+            local task = GAME.currentTask
+            if task then
+                local allyDie = GAME.life2 <= 0
+                gc_push('transform')
+
+                -- Lock
+                gc_translate(allyDie and 1150 or 450, 450)
+                gc_setColor(1, 1, 1)
+                local texture = TEXTURE.revive[M.DP < 2 and 'norm' or allyDie and 'rev_right' or 'rev_left']
+                local taskID
+                for i = #GAME.reviveTasks, 1, -1 do
+                    gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4)
+                    if GAME.reviveTasks[i] == GAME.currentTask then
+                        taskID = i
+                        break
+                    end
+                end
+
+                -- Text
+                gc_rotate(reviveRot[taskID])
+                gc_translate(reviveMove[taskID], 0)
+                local txt = task.textObj
+                local w, h = txt:getDimensions()
+                local ky = h < 40 and 1 or .7
+                if task.target == 1 then
+                    local kx = min(ky, 310 / w)
+                    gc_draw(txt, (310 - w * kx) / 2, h < 40 and -12 or -22, 0, kx, ky)
+                else
+                    local kx = min(ky, 240 / w)
+                    gc_draw(txt, 0, h < 40 and -12 or -22, 0, kx, ky)
+                    -- Progres
+                    local w2 = task.progObj:getWidth()
+                    gc_draw(task.progObj, 310, -22, 0, min((300 - w * kx) / w2, 1.5), 1.5, w2)
+                end
+
+                -- gc_setColor(0, 1, 0)
+                -- gc_rectangle('line', 0, -25, 310, 63.5)
+                gc_pop()
+
+                -- Short Text & Panel
+                gc_setColor(.3, .1, 0, .62)
+                gc_mRect('fill', 800, 330, GAME.currentTask.shortObj:getWidth() * 1.6 + 50, 75, 20)
+                gc_setColor(1, 1, 1)
+                gc_mDraw(GAME.currentTask.shortObj, 800, 330, 0, 1.6)
+            end
         end
+
 
         -- Quests
         for i = 1, #GAME.quests do
@@ -1060,52 +1134,6 @@ function scene.overDraw()
         end
     end
 
-    -- Revive Task
-    local task = GAME.currentTask
-    if GAME.playing and task then
-        local allyDie = GAME.life2 <= 0
-        gc_push('transform')
-
-        -- Lock
-        gc_translate(allyDie and 1150 or 450, 450)
-        gc_setColor(1, 1, 1)
-        local texture = TEXTURE.revive[M.DP < 2 and 'norm' or allyDie and 'rev_right' or 'rev_left']
-        local taskID
-        for i = #GAME.reviveTasks, 1, -1 do
-            gc_mDrawQ(texture, reviveQuad[i], 0, 0, 0, .4)
-            if GAME.reviveTasks[i] == GAME.currentTask then
-                taskID = i
-                break
-            end
-        end
-
-        -- Text
-        gc_rotate(reviveRot[taskID])
-        gc_translate(reviveMove[taskID], 0)
-        local txt = task.textObj
-        local w, h = txt:getDimensions()
-        local ky = h < 40 and 1 or .7
-        if task.target == 1 then
-            local kx = min(ky, 310 / w)
-            gc_draw(txt, (310 - w * kx) / 2, h < 40 and -12 or -22, 0, kx, ky)
-        else
-            local kx = min(ky, 240 / w)
-            gc_draw(txt, 0, h < 40 and -12 or -22, 0, kx, ky)
-            -- Progres
-            local w2 = task.progObj:getWidth()
-            gc_draw(task.progObj, 310, -22, 0, min((300 - w * kx) / w2, 1.5), 1.5, w2)
-        end
-
-        -- gc_setColor(0, 1, 0)
-        -- gc_rectangle('line', 0, -25, 310, 63.5)
-        gc_pop()
-
-        -- Short Text & Panel
-        gc_setColor(.3, .1, 0, .62)
-        gc_mRect('fill', 800, 330, GAME.currentTask.shortObj:getWidth() * 1.6 + 50, 75, 20)
-        gc_setColor(1, 1, 1)
-        gc_mDraw(GAME.currentTask.shortObj, 800, 330, 0, 1.6)
-    end
 
     -- Debug
     -- setFont(30) gc_setColor(1, 1, 1)
@@ -1118,11 +1146,11 @@ function scene.overDraw()
         local h = 100 - GAME.uiHide * 100
         gc_move('m', 0, h)
 
-        -- Thruster
+        -- Thruster (XP bar)
         local rank = GAME.rank
         gc_setColor(rankColor[rank - 1] or COLOR.dL)
         if GAME.DPlock then gc_setAlpha(.26) end
-        gc_setLineWidth(6)
+        gc_setLineWidth(26 / (GAME.leakSpeed + 2))
         gc_mRect('line', 800, 965, 420 + 6, 26)
         gc_rectangle('fill', 800 - 35, 985, 70, 6)
         for i = 1, min(rank - 1, 6) do
@@ -1158,7 +1186,8 @@ function scene.overDraw()
         gc_mRect('fill', 800, 965, 420 * GAME.xp / (4 * rank), 3 * min(GAME.xpLockLevel, 5))
 
         -- Height & Time
-        TEXTS.height:set(("%.1fm"):format(GAME.height))
+        altitudeText[1] = ("%.1f"):format(GAME.roundHeight)
+        TEXTS.height:set(altitudeText)
         TEXTS.time:set(STRING.time_simp(GAME.time))
         gc_setColor(COLOR.D)
         local wid, hgt = TEXTS.height:getDimensions()
@@ -1211,127 +1240,129 @@ function scene.overDraw()
         for i = #Cards, 1, -1 do Cards[i]:draw() end
     end
 
-    -- Allspin keyboard hint
-    if M.AS > 0 and M.EX == 0 then
-        for i = 1, #Cards do
-            local obj = ShortCut[i]
-            local x, y = Cards[i].x + 90, Cards[i].y + 155
-            local k = min(60 / obj:getWidth(), 1)
+    if not GAME.invisUI then
+        -- Allspin keyboard hint
+        if M.AS > 0 and M.EX == 0 then
+            for i = 1, #Cards do
+                local obj = ShortCut[i]
+                local x, y = Cards[i].x + 90, Cards[i].y + 155
+                local k = min(60 / obj:getWidth(), 1)
+                gc_setColor(ShadeColor)
+                gc_strokeDraw(
+                    'full', 3 * k, obj, x, y, 0, k, k,
+                    obj:getWidth() / 2, obj:getHeight() / 2
+                )
+                gc_setColor(COLOR.lR)
+                gc_mDraw(obj, x, y, 0, k)
+            end
+        end
+
+        -- Section time
+        if GAME.uiHide > 0 then
+            gc_replaceTransform(SCR.xOy_dr)
+            local ox, oy = TEXTS.floorTime:getDimensions()
+            gc_setColor(0, 0, 0, .626)
+            gc_draw(TEXTS.floorTime, -10, -5 + 260 * (1 - GAME.uiHide), 0, .7, .7, ox, oy)
+            gc_setColor(.626, .626, .626, .626)
+            gc_draw(TEXTS.floorTime, -10, -5 + 260 * (1 - GAME.uiHide), 0, .7, .7, ox, oy)
+        end
+
+        -- UI
+        if GAME.uiHide < 1 then
+            local exT = GAME.exTimer
+            local revT = GAME.revTimer
+            local d = GAME.uiHide * 70
+
+            gc_replaceTransform(SCR.xOy_u)
+
+            -- Top bar & texts
             gc_setColor(ShadeColor)
-            gc_strokeDraw(
-                'full', 3 * k, obj, x, y, 0, k, k,
-                obj:getWidth() / 2, obj:getHeight() / 2
-            )
-            gc_setColor(COLOR.lR)
-            gc_mDraw(obj, x, y, 0, k)
+            gc_rectangle('fill', -1300, -d, 2600, 70)
+            gc_setColor(TextColor)
+            gc_setAlpha(.626)
+            gc_rectangle('fill', -1300, 70 - d, 2600, 3)
+            gc_replaceTransform(SCR.xOy_ul)
+            local h = TEXTS.title:getHeight()
+            gc_setColor(TextColor)
+            gc_draw(TEXTS.title, lerp(-181, 10, exT), (h / 2 + 2) - d, 0, 1, 1 - 2 * revT, 0, (h / 2 + 2))
+            gc_replaceTransform(SCR.xOy_ur)
+            gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
+            gc_replaceTransform(SCR.xOy_dl)
+            gc_translate(0, DeckPress + d)
+            if revT > 0 then
+                gc_draw(TEXTS.slogan, 6, 2 + (exT + revT) * 42, 0, 1, 1, 0, TEXTS.slogan:getHeight())
+                gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT + revT) * 42, 0, 1, 1, 0, TEXTS.slogan_EX:getHeight())
+                gc_draw(TEXTS.slogan_rEX, 6, 2 + (1 - revT) * 42, 0, 1, 1, 0, TEXTS.slogan_rEX:getHeight())
+            else
+                gc_draw(TEXTS.slogan, 6, 2 + exT * 42, 0, 1, 1, 0, TEXTS.slogan:getHeight())
+                gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT) * 42, 0, 1, 1, 0, TEXTS.slogan_EX:getHeight())
+            end
+            gc_replaceTransform(SCR.xOy_dr)
+            gc_translate(0, DeckPress)
+            gc_draw(TEXTS.credit, -5, d, 0, .872, .872, TEXTS.credit:getDimensions())
         end
-    end
 
-    -- Section time
-    if GAME.uiHide > 0 then
-        gc_replaceTransform(SCR.xOy_dr)
-        local ox, oy = TEXTS.floorTime:getDimensions()
-        gc_setColor(0, 0, 0, .626)
-        gc_draw(TEXTS.floorTime, -10, -5 + 260 * (1 - GAME.uiHide), 0, .7, .7, ox, oy)
-        gc_setColor(.626, .626, .626, .626)
-        gc_draw(TEXTS.floorTime, -10, -5 + 260 * (1 - GAME.uiHide), 0, .7, .7, ox, oy)
-    end
-
-    -- UI
-    if GAME.uiHide < 1 then
-        local exT = GAME.exTimer
-        local revT = GAME.revTimer
-        local d = GAME.uiHide * 70
-
-        gc_replaceTransform(SCR.xOy_u)
-
-        -- Top bar & texts
-        gc_setColor(ShadeColor)
-        gc_rectangle('fill', -1300, -d, 2600, 70)
-        gc_setColor(TextColor)
-        gc_setAlpha(.626)
-        gc_rectangle('fill', -1300, 70 - d, 2600, 3)
-        gc_replaceTransform(SCR.xOy_ul)
-        local h = TEXTS.title:getHeight()
-        gc_setColor(TextColor)
-        gc_draw(TEXTS.title, lerp(-181, 10, exT), (h / 2 + 2) - d, 0, 1, 1 - 2 * revT, 0, (h / 2 + 2))
-        gc_replaceTransform(SCR.xOy_ur)
-        gc_draw(TEXTS.pb, -10, -d, 0, 1, 1, TEXTS.pb:getWidth(), 0)
-        gc_replaceTransform(SCR.xOy_dl)
-        gc_translate(0, DeckPress + d)
-        if revT > 0 then
-            gc_draw(TEXTS.slogan, 6, 2 + (exT + revT) * 42, 0, 1, 1, 0, TEXTS.slogan:getHeight())
-            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT + revT) * 42, 0, 1, 1, 0, TEXTS.slogan_EX:getHeight())
-            gc_draw(TEXTS.slogan_rEX, 6, 2 + (1 - revT) * 42, 0, 1, 1, 0, TEXTS.slogan_rEX:getHeight())
-        else
-            gc_draw(TEXTS.slogan, 6, 2 + exT * 42, 0, 1, 1, 0, TEXTS.slogan:getHeight())
-            gc_draw(TEXTS.slogan_EX, 6, 2 + (1 - exT) * 42, 0, 1, 1, 0, TEXTS.slogan_EX:getHeight())
+        -- Card Info
+        if not GAME.playing and FloatOnCard then
+            local C = Cards[FloatOnCard]
+            local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id
+            gc_replaceTransform(SCR.xOy_d)
+            gc_move('m', 0, 126 * (1 - C.float))
+            gc_setColor(ShadeColor)
+            gc_setAlpha(.7)
+            gc_rectangle('fill', -888 / 2, -145, 888, 120, 10)
+            if GAME.anyRev and M[infoID] == 2 then
+                local text = URM and MD.ultraName[infoID] or MD.revName[infoID]
+                setFont(70)
+                gc_push('transform')
+                gc_translate(0, -118)
+                gc_scale(1 + sin(t / 2.6) * .026)
+                gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
+                gc_strokePrint('full', 6, COLOR.DW, nil, text, 130, -35 + 4, 2600, 'center', 0, .9, 1)
+                gc_strokePrint('full', 4, COLOR.dW, nil, text, 130, -35 + 2, 2600, 'center', 0, .9, 1)
+                gc_strokePrint(
+                    'full', 2, COLOR.W, URM and COLOR.D or COLOR.L,
+                    text, 130, -35, 2600, 'center', 0, .9, 1
+                )
+                gc_pop()
+                setFont(30)
+                gc_strokePrint(
+                    'full', 2, COLOR.dW, URM and COLOR.D or COLOR.W,
+                    (URM and MD.ultraDesc or MD.revDesc)[infoID], 260, -68, 2600, 'center', 0, .8, 1
+                )
+            else
+                setFont(70)
+                gc_strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 130, -150, 2600, 'center', 0, .9, 1)
+                setFont(30)
+                gc_strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 260, -73, 2600, 'center', 0, .8, 1)
+            end
+            gc_back()
         end
-        gc_replaceTransform(SCR.xOy_dr)
-        gc_translate(0, DeckPress)
-        gc_draw(TEXTS.credit, -5, d, 0, .872, .872, TEXTS.credit:getDimensions())
-    end
 
-    -- Card Info
-    if not GAME.playing and FloatOnCard then
-        local C = Cards[FloatOnCard]
-        local infoID = C.lock and (C.id == 'DP' and 'lockDP' or 'lock') or C.id
-        gc_replaceTransform(SCR.xOy_d)
-        gc_move('m', 0, 126 * (1 - C.float))
-        gc_setColor(ShadeColor)
-        gc_setAlpha(.7)
-        gc_rectangle('fill', -888 / 2, -145, 888, 120, 10)
-        if GAME.anyRev and M[infoID] == 2 then
-            local text = URM and MD.ultraName[infoID] or MD.revName[infoID]
-            setFont(70)
-            gc_push('transform')
-            gc_translate(0, -118)
-            gc_scale(1 + sin(t / 2.6) * .026)
-            gc_shear(sin(t) * .26, cos(t * 1.2) * .026)
-            gc_strokePrint('full', 6, COLOR.DW, nil, text, 130, -35 + 4, 2600, 'center', 0, .9, 1)
-            gc_strokePrint('full', 4, COLOR.dW, nil, text, 130, -35 + 2, 2600, 'center', 0, .9, 1)
-            gc_strokePrint(
-                'full', 2, COLOR.W, URM and COLOR.D or COLOR.L,
-                text, 130, -35, 2600, 'center', 0, .9, 1
-            )
-            gc_pop()
-            setFont(30)
-            gc_strokePrint(
-                'full', 2, COLOR.dW, URM and COLOR.D or COLOR.W,
-                (URM and MD.ultraDesc or MD.revDesc)[infoID], 260, -68, 2600, 'center', 0, .8, 1
-            )
-        else
-            setFont(70)
-            gc_strokePrint('full', 3, ShadeColor, TextColor, MD.fullName[infoID], 130, -150, 2600, 'center', 0, .9, 1)
-            setFont(30)
-            gc_strokePrint('full', 2, ShadeColor, TextColor, MD.desc[infoID], 260, -73, 2600, 'center', 0, .8, 1)
+        -- Forfeit Panel
+        if GAME.forfeitTimer > 0 then
+            gc_replaceTransform(SCR.origin)
+            local alpha = min(GAME.forfeitTimer * 2.6, 1)
+            local h = SCR.h * GAME.forfeitTimer * .5
+
+            -- Body
+            gc_setColor(.8, .2, .0626, alpha)
+            gc_rectangle('fill', 0, SCR.h, SCR.w, -h)
+
+            -- Blur
+            gc_setColor(1, 1, 1, alpha * .355)
+            gc_draw(TEXTURE.transition, 0, SCR.h - h, 1.5708, h / 128, SCR.w, 0, 1)
+            gc_setColor(1, 0, 0, alpha * .42)
+            gc_draw(TEXTURE.transition, 0, SCR.h - h, -1.5708, SCR.k * 42 / 128, SCR.w)
+
+            -- Line
+            gc_setColor(1, 0, 0, alpha)
+            gc_rectangle('fill', 0, SCR.h - h, SCR.w, -5 * SCR.k)
+
+            -- Text
+            gc_setColor(1, .872, .872, alpha)
+            gc_mDraw(TEXTS.forfeit, SCR.w / 2, SCR.h - h * .5, 0, SCR.k, SCR.k)
         end
-        gc_back()
-    end
-
-    -- Forfeit Panel
-    if GAME.forfeitTimer > 0 then
-        gc_replaceTransform(SCR.origin)
-        local alpha = min(GAME.forfeitTimer * 2.6, 1)
-        local h = SCR.h * GAME.forfeitTimer * .5
-
-        -- Body
-        gc_setColor(.8, .2, .0626, alpha)
-        gc_rectangle('fill', 0, SCR.h, SCR.w, -h)
-
-        -- Blur
-        gc_setColor(1, 1, 1, alpha * .355)
-        gc_draw(TEXTURE.transition, 0, SCR.h - h, 1.5708, h / 128, SCR.w, 0, 1)
-        gc_setColor(1, 0, 0, alpha * .42)
-        gc_draw(TEXTURE.transition, 0, SCR.h - h, -1.5708, SCR.k * 42 / 128, SCR.w)
-
-        -- Line
-        gc_setColor(1, 0, 0, alpha)
-        gc_rectangle('fill', 0, SCR.h - h, SCR.w, -5 * SCR.k)
-
-        -- Text
-        gc_setColor(1, .872, .872, alpha)
-        gc_mDraw(TEXTS.forfeit, SCR.w / 2, SCR.h - h * .5, 0, SCR.k, SCR.k)
     end
 
     -- TimeMul
@@ -1401,9 +1432,11 @@ function scene.overDraw()
     end
 
     -- Version number
-    gc_replaceTransform(SCR.xOy_d)
-    gc_setColor(.626, .626, .626, .626)
-    gc_mDraw(TEXTS.version, GAME.invisUI and 0 or -260 * GAME.uiHide, -10, 0, .62)
+    if not GAME.invisUI then
+        gc_replaceTransform(SCR.xOy_d)
+        gc_setColor(.626, .626, .626, .626)
+        gc_mDraw(TEXTS.version, GAME.invisUI and 0 or -260 * GAME.uiHide, -10, 0, .62)
+    end
 end
 
 local function button_start()
@@ -1544,71 +1577,51 @@ scene.widgetList = {
         floatText = "NO DATA",
         onPress = function()
             if not DailyAvailable then return end
-            local changed
-            for _, C in ipairs(Cards) do
-                local cur = C.active and (C.upright and 1 or 2) or 0
-                local tar = TABLE.find(DAILY, C.id) and 1 or TABLE.find(DAILY, 'r' .. C.id) and 2 or 0
-                if cur ~= tar then
-                    if cur > 0 then C:setActive(true) end
-                    if tar > 0 then C:setActive(true, tar == 2 and 2 or 1) end
-                    changed = true
-                end
-            end
-            if changed then SFX.play('mmstart') end
+            applyCombo(DAILY)
         end,
     },
     WIDGET.new {
         name = 'help2', type = 'hint',
         pos = { 1, 0 }, x = -190, y = 275, w = 60, cornerR = 30,
         color = TextColor,
-        fontSize = 50, text = "?",
+        fontSize = 50, text = "", -- Dynamic text
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 30,
         floatText = "", -- Dynamic text
-        onPress = function()
+        onPress = function(k)
             if STAT.maxFloor < 10 then return SFX.play('no') end
-            PieceSFXID = (PieceSFXID or 0) % 8 + 1
-            if PieceSFXID <= 7 then
-                local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
-                SFX.play(piece, 1, 0, Tone(6))
+            if k == 2 or kbIsDown('lctrl', 'rctrl') or next(revHold) then
+                if RevUnlocked then
+                    URM = not URM
+                    SFX.play(URM and 'exchange' or 'undo')
+                    ultraStateChange()
+                else
+                    SFX.play('no')
+                end
             else
-                SFX.play('allclear')
-            end
-            GAME.nightcore = PieceSFXID == 1
-            GAME.slowmo = PieceSFXID == 2
-            GAME.glassCard = PieceSFXID == 3
-            GAME.invisCard = PieceSFXID == 4
-            GAME.invisUI = PieceSFXID == 5
-            URM = PieceSFXID == 6 and RevUnlocked
-            GC.setWireframe(PieceSFXID == 7)
+                PieceSFXID = (PieceSFXID or 0) % 8 + 1
+                if PieceSFXID <= 7 then
+                    local piece = ('zsjltoi'):sub(PieceSFXID, PieceSFXID)
+                    SFX.play(piece, 1, 0, Tone(6))
+                else
+                    SFX.play('allclear')
+                end
+                GAME.nightcore = PieceSFXID == 1
+                GAME.slowmo = PieceSFXID == 2
+                GAME.glassCard = PieceSFXID == 3
+                GAME.fastLeak = PieceSFXID == 4
+                GAME.invisUI = PieceSFXID == 5
+                GAME.invisCard = PieceSFXID == 6
+                GAME.closeCard = PieceSFXID == 7
 
-            GAME.hardMode = M.EX > 0 or GAME.anyRev and not URM
-            GAME.refreshLayout()
-            GAME.refreshUltra()
-            GAME.refreshCurrentCombo()
-            RefreshBGM()
-            GAME.refreshRPC()
+                GAME.refreshLayout()
+                RefreshBGM()
+                GAME.refreshRPC()
 
-            if PieceSFXID == 7 and not GC.isWireframe() then
                 MSG({
                     cat = 'dark',
-                    str = "Wireframe Vision is not available on this platform.",
-                    time = 2.6
-                })
-            else
-                MSG({
-                    cat = 'dark',
-                    str = PieceSFXID == 6 and not URM and "O - ?" or ({
-                        "Z - Nightcore",
-                        "S - Sloooooow-mo",
-                        "J - Glass Card",
-                        "L - Invisible Card",
-                        "T - Invisible UI",
-                        "O - Ultra Reversed Mods",
-                        "I - Wireframe Vision",
-                        "ALLCLEAR",
-                    })[PieceSFXID],
+                    str = ("1Z - Nightcore;2S - Sloooooow-mo;3J - Glass Card;4L - Fast Leak;5T - Invisible UI;6O - Invisible Card;7I - Close Card;8ALLCLEAR;"):match(PieceSFXID .. "(.-);"),
                     time = 1.2
                 })
             end
@@ -1619,7 +1632,7 @@ scene.widgetList = {
         name = 'help', type = 'hint',
         pos = { 1, 0 }, x = -50, y = 126, w = 80, cornerR = 40,
         color = TextColor,
-        fontSize = 50, text = "?",
+        fontSize = 50, text = "", -- Dynamic text
         sound_hover = 'menutap',
         labelPos = 'leftBottom',
         floatFontSize = 30,
