@@ -36,7 +36,7 @@ return {
     ]],
     ['VL'] = STRING.trimIndent [[
         A rather interesting mod that introduces clicking technique and endurance to the game.
-        "receiving double garbages" in Tetris can correspond to "clicking the mouse twice as much".
+        "receiving double garbages" in Tetris can correspond to "clicking the mouse twice as much". And sure, you also get doubled XP from that as in QP2.
         QP2 also cancel double, so I made canceling still one-click. Feels good but it actually leads to more mistakes —pretty interesting, isn't it?
     ]],
     ['DH'] = STRING.trimIndent [[
@@ -86,6 +86,7 @@ return {
         Double clicks? Quadruple clicks! Due to health reasons, Left+Right click is allowed here, it's still very tiring to double double clicks for each card,
         and you could even use keyboard to further reduce the inputs, but that's also harder to coordinate. Which strat is the best? Up to you.
         Oh and don't forget that in QP2 there's only triple garbages but no triple cancelling, so you need to click 4 times to cancel a card too :>
+        Tips: EX or any reversed mod activates "hard mode", reducing your XP gain from selecting (clearing single gives 1 atk in QP2). So what if XP leaks...
     ]],
     ['rDH'] = STRING.trimIndent [[
         When I came to design this mod, QP2's rDH was still "messy garbage + no cancelling", not the current "messy garbage + dig to attack" one
@@ -111,6 +112,7 @@ return {
 
     ['uEX'] = STRING.trimIndent [[
         No more leniency. Let's tighten cards spacing.
+        I doubt is it possible to drop from F10 to...
     ]],
     ['uNH'] = STRING.trimIndent [[
         No more leniency. No XP protection,  no Surge attack.
