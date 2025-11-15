@@ -877,6 +877,7 @@ end
 
 function GAME.startTeraAnim()
     GAME.teramusic = true
+    GAME.teradrop = false
     GAME.teraspeedFloor[GAME.floor] = true
     GAME.teraCount = GAME.teraCount + 1
     GigaSpeed.isTera = true
@@ -887,8 +888,17 @@ function GAME.startTeraAnim()
 end
 
 function GAME.stopTeraspeed(mode)
+    if GigaSpeed.isTera then
+        GAME.tera10 = true
+    end
     GAME.teramusic = false
     if mode == 'drop' then
+            if GAME.anyRev then
+                SFX.play('teraendr')
+            else
+                SFX.play('teraend' .. rnd(4))
+            end
+        GAME.teradrop = true
         PlayBGM('f' .. max(GAME.floor, GAME.negFloor), true)
     end
 end
@@ -1031,6 +1041,27 @@ function GAME.upFloor()
         SubmitAchv('zenith_speedrun_plus', roundTime)
         SubmitAchv('detail_oriented', GAME.totalFlip)
     end
+
+    if GAME.floor == 10 then
+        if GAME.anyRev then
+            if GAME.teradrop then
+                SFX.play('f9rend')
+            elseif GAME.tera10 then
+                SFX.play('teraendr')
+            else
+                SFX.play('f9rend')
+            end
+        else
+            if GAME.teradrop then
+                SFX.play('f9end')
+            elseif GAME.tera10 then
+                SFX.play('teraend' .. rnd(4))
+            else
+                SFX.play('f9end')
+            end 
+        end
+    end
+
     PlayBGM('f' .. GAME.floor)
     GAME.refreshRPC()
 end
@@ -2110,6 +2141,8 @@ function GAME.start()
     GAME.gigaCount = 0
     GAME.teraCount = 0
     GAME.teramusic = false
+    GAME.tera10 = false
+    GAME.teradrop = false
     GAME.atkBuffer = 0
     GAME.atkBufferCap = 8 + (M.DH == 1 and M.NH < 2 and 2 or 0)
     GAME.shuffleMessiness = false
