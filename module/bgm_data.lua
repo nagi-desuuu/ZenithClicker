@@ -32,7 +32,7 @@ return {
     f4r = 'assets/music/f4-rev.ogg',
     f5r = 'assets/music/f5-rev.ogg',
     f6r = 'assets/music/f6-rev.ogg',
-    f7r = 'assets/music/f7-rev.ogg',
+    f7r = 'assets/music/f7-rev.wav',
     f8r = 'assets/music/f8-rev.ogg',
     f9r = 'assets/music/f9-rev.ogg',
     f10r = 'assets/music/f10-rev.ogg',
